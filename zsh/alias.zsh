@@ -1,0 +1,7 @@
+alias cat="bat"
+alias top="htop"
+alias zshconfg="vim ~/.zsh"
+alias ohmyzsh="vim ~/.oh-my-zsh"
+alias ll="exa --color-scale --icons --time-style long-iso -lhbg"
+alias la="exa --color-scale --icons --time-style long-iso -lahbg"
+alias ls="exa"
