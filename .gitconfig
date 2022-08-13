@@ -1,0 +1,8 @@
+[core]
+	autocrlf = input
+	quotepath = false
+[user]
+	name = sskim91
+	email = tjdtjq91@gmail.com
+[includeIf "gitdir:~/dev/"]
+	path = .gitconfig_personal

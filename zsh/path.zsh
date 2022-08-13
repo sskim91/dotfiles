@@ -18,6 +18,7 @@ export PATH="/usr/local/opt/maven/bin:$PATH"
 # node
 export PATH="/usr/local/opt/icu4c/bin:$PATH"
 export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
 
 # NVM
 export NVM_DIR="$HOME/.nvm"
