@@ -60,10 +60,67 @@ function javahome() {
     /usr/libexec/java_home -v $1
 }
 
+#-------------------------------------------------------------------------------
+# Extract many types of compressed packages
+#-------------------------------------------------------------------------------
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2)  tar -jxvf "$1"                        ;;
+      *.tar.gz)   tar -zxvf "$1"                        ;;
+      *.bz2)      bunzip2 "$1"                          ;;
+      *.dmg)      hdiutil mount "$1"                    ;;
+      *.gz)       gunzip "$1"                           ;;
+      *.tar)      tar -xvf "$1"                         ;;
+      *.tbz2)     tar -jxvf "$1"                        ;;
+      *.tgz)      tar -zxvf "$1"                        ;;
+      *.zip)      unzip "$1"                            ;;
+      *.ZIP)      unzip "$1"                            ;;
+      *.pax)      cat "$1" | pax -r                     ;;
+      *.pax.Z)    uncompress "$1" --stdout | pax -r     ;;
+      *.Z)        uncompress "$1"                       ;;
+      *) echo "'$1' cannot be extracted/mounted via extract()" ;;
+    esac
+  else
+     echo "'$1' is not a valid file to extract"
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# IP check
+#-------------------------------------------------------------------------------
+function myip() {
+  curl -s "ifconfig.me"
+}
+
+#-------------------------------------------------------------------------------
+# Echo with yellow color
+#-------------------------------------------------------------------------------
+function e() {
+  if [ "$1" = "" ]; then
+    echo "Print text in \033[0;33mYellow\033[0m color"
+    echo ""
+    echo "Usage:"
+    echo '  e "<text>"'
+    return 0;
+  fi;
+
+  local TEXT="$1"
+  echo -e "\033[0;33m${TEXT}\033[0m"
+}
+
+
 # ref: https://www.lesstif.com/lpt/tail-bat-pipe-123338881.html
 #-------------------------------------------------------------------------------
 # tail 과 bat 명령을 pipe로 연결해서 더 편리하게 로그 파일 보기
 #-------------------------------------------------------------------------------
 function battail {
     tail -f "$@" | bat --paging=never -l log
+}
+
+#-------------------------------------------------------------------------------
+#  search google
+#-------------------------------------------------------------------------------
+function google() {
+    open /Applications/Google\ Chrome.app/ "http://www.google.com/search?q= $1";
 }

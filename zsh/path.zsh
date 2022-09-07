@@ -2,6 +2,9 @@
 export PATH="$HOME/.jenv/bin:$PATH"
 if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 
+# NEOVIM
+export EDITOR="/usr/local/bin/nvim"
+
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/shims:$PATH"
