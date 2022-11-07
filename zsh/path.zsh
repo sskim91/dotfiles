@@ -12,11 +12,17 @@ export PATH="$PYENV_ROOT/shims:$PATH"
 # maven
 export PATH="/usr/local/opt/maven/bin:$PATH"
 
+# bat
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
 # oracle cloud
 #export ORACLE_HOME=~/Oracle/instantclient_19_8
 #export TNS_ADMIN=$ORACLE_HOME/network/admin
 #export NLS_LANG=English_America.UTF8
 #export PATH=$PATH:$ORACLE_HOME
+
+#HOMEBREW
+export HOMEBREW_GITHUB_API_TOKEN="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"
 
 # node
 export PATH="/usr/local/opt/icu4c/bin:$PATH"

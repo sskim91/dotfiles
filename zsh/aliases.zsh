@@ -6,6 +6,10 @@ alias cat="bat"
 alias top="htop"
 alias zshconfg="vim ~/.zsh"
 alias ohmyzsh="vim ~/.oh-my-zsh"
+alias rm="rm -i"
+
+alias update="brew update && brew upgrade && brew cleanup"
+alias services="brew services"
 
 alias ll="exa --color-scale --icons --time-style long-iso -lhbg"
 alias la="exa --color-scale --icons --time-style long-iso -lahbg"
@@ -16,3 +20,4 @@ alias c="clear"
 alias h="history"
 alias hs="history | grep"
 alias hsi="history -i | grep"
+
