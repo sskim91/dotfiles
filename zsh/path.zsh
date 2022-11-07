@@ -22,7 +22,7 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 #export PATH=$PATH:$ORACLE_HOME
 
 #HOMEBREW
-export HOMEBREW_GITHUB_API_TOKEN="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"
+export HOMEBREW_GITHUB_API_TOKEN="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"
 
 # node
 export PATH="/usr/local/opt/icu4c/bin:$PATH"
