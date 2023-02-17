@@ -4,7 +4,7 @@ alias vi="nvim"
 alias vimdiff="nvim -d"
 alias cat="bat"
 alias top="htop"
-alias zshconfg="vim ~/.zsh"
+alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias rm="rm -i"
 

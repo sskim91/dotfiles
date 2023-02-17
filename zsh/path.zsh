@@ -22,7 +22,7 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 #export PATH=$PATH:$ORACLE_HOME
 
 #HOMEBREW
-export HOMEBREW_GITHUB_API_TOKEN="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"
+export HOMEBREW_GITHUB_API_TOKEN="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"
 
 # node
 export PATH="/usr/local/opt/icu4c/bin:$PATH"
@@ -33,3 +33,6 @@ export PATH="/usr/local/sbin:$PATH"
 export NVM_DIR="$HOME/.nvm"
   [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
   [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+#poetry
+export PATH="$HOME/.local/bin:$PATH"
