@@ -13,7 +13,9 @@ brew "bat"
 brew "coreutils"
 brew "dive"
 brew "exa"
+brew "gh"
 brew "git"
+brew "go"
 brew "gradle"
 brew "htop"
 brew "jenv"
@@ -23,6 +25,7 @@ brew "mas"
 brew "maven"
 brew "neofetch"
 brew "neovim"
+brew "nginx"
 brew "nvm"
 brew "procs"
 brew "putty"
@@ -31,8 +34,10 @@ brew "redis"
 brew "telnet"
 brew "tldr"
 brew "tmux"
+brew "wget"
 brew "zsh"
 cask "1password"
+cask "1password-cli"
 cask "alfred"
 cask "anydesk"
 cask "aws-vpn-client"
@@ -50,6 +55,7 @@ cask "font-jetbrains-mono-nerd-font"
 cask "font-ubuntu-mono-nerd-font"
 cask "forklift"
 cask "google-chrome"
+cask "google-earth-pro"
 cask "istat-menus"
 cask "iterm2"
 cask "jetbrains-toolbox"
@@ -60,26 +66,27 @@ cask "microsoft-edge"
 cask "mounty"
 cask "ngrok"
 cask "notion"
+cask "obsidian"
 cask "onedrive"
 cask "pdf-expert"
 cask "postman"
+cask "qgis"
 cask "ridibooks"
-cask "skype"
 cask "slack"
 cask "sourcetree"
 cask "teamviewer"
 cask "termius"
 cask "visual-studio-code"
+cask "wireshark"
 cask "zeplin"
 cask "zoom"
 cask "zulu"
 cask "zulu11"
 cask "zulu17"
 cask "zulu8"
+mas "1Password for Safari", id: 1569813296
+mas "Cleaner One", id: 1473079126
 mas "DayGram", id: 977949232
-mas "GarageBand", id: 682658836
-mas "iMovie", id: 408981434
-mas "Jira", id: 1475897096
 mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
 mas "Microsoft Excel", id: 462058435
@@ -92,7 +99,6 @@ mas "Octotree", id: 1457450145
 mas "Pages", id: 409201541
 mas "PhotoScape X", id: 929507092
 mas "PopClip", id: 445189367
-mas "Trello", id: 1278508951
 mas "반디집", id: 1265704574
 mas "알라딘 ebook", id: 1023251042
 mas "유니콘", id: 1231935892

@@ -1,8 +1,8 @@
 {
-  "title": "caps_lock + h/j/k/l/u/i to arrow keys and home end",
+  "title": "caps_lock 조합",
   "rules": [
     {
-        "description": "caps_lock 조합",
+        "description": "caps_lock 화살표",
         "manipulators": [
             {
                 "from": {
@@ -127,6 +127,43 @@
                     }
                 ],
                 "type": "basic"
+            }
+        ]
+    },
+    {
+        "description": "caps_lock page_up, page_down",
+        "manipulators": [
+            {
+                "from": {
+                    "key_code": "caps_lock",
+                    "modifiers": {
+                        "optional": [
+                            "any"
+                        ]
+                    }
+                },
+                "to": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 1
+                        }
+                    }
+                ],
+                "to_after_key_up": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 0
+                        }
+                    }
+                ],
+                "to_if_alone": [
+                    {
+                        "key_code": "caps_lock"
+                    }
+                ],
+                "type": "basic"
             },
             {
                 "conditions": [
@@ -137,7 +174,7 @@
                     }
                 ],
                 "from": {
-                    "key_code": "r",
+                    "key_code": "e",
                     "modifiers": {
                         "optional": [
                             "any"
@@ -160,7 +197,7 @@
                     }
                 ],
                 "from": {
-                    "key_code": "f",
+                    "key_code": "d",
                     "modifiers": {
                         "optional": [
                             "any"
@@ -170,6 +207,43 @@
                 "to": [
                     {
                         "key_code": "page_down"
+                    }
+                ],
+                "type": "basic"
+            }
+        ]
+    },
+    {
+        "description": "caps_lock delete or backspace",
+        "manipulators": [
+            {
+                "from": {
+                    "key_code": "caps_lock",
+                    "modifiers": {
+                        "optional": [
+                            "any"
+                        ]
+                    }
+                },
+                "to": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 1
+                        }
+                    }
+                ],
+                "to_after_key_up": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 0
+                        }
+                    }
+                ],
+                "to_if_alone": [
+                    {
+                        "key_code": "caps_lock"
                     }
                 ],
                 "type": "basic"
@@ -216,6 +290,89 @@
                 "to": [
                     {
                         "key_code": "delete_forward"
+                    }
+                ],
+                "type": "basic"
+            }
+        ]
+    },
+    {
+        "description": "caps_lock home and end",
+        "manipulators": [
+            {
+                "from": {
+                    "key_code": "caps_lock",
+                    "modifiers": {
+                        "optional": [
+                            "any"
+                        ]
+                    }
+                },
+                "to": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 1
+                        }
+                    }
+                ],
+                "to_after_key_up": [
+                    {
+                        "set_variable": {
+                            "name": "caps_lock pressed",
+                            "value": 0
+                        }
+                    }
+                ],
+                "to_if_alone": [
+                    {
+                        "key_code": "caps_lock"
+                    }
+                ],
+                "type": "basic"
+            },
+            {
+                "conditions": [
+                    {
+                        "name": "caps_lock pressed",
+                        "type": "variable_if",
+                        "value": 1
+                    }
+                ],
+                "from": {
+                    "key_code": "r",
+                    "modifiers": {
+                        "optional": [
+                            "any"
+                        ]
+                    }
+                },
+                "to": [
+                    {
+                        "key_code": "home"
+                    }
+                ],
+                "type": "basic"
+            },
+            {
+                "conditions": [
+                    {
+                        "name": "caps_lock pressed",
+                        "type": "variable_if",
+                        "value": 1
+                    }
+                ],
+                "from": {
+                    "key_code": "f",
+                    "modifiers": {
+                        "optional": [
+                            "any"
+                        ]
+                    }
+                },
+                "to": [
+                    {
+                        "key_code": "end"
                     }
                 ],
                 "type": "basic"
