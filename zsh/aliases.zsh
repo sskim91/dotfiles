@@ -6,11 +6,13 @@ alias .....='cd ../../../../'
 alias .4='cd ../../../../'
 alias .5='cd ../../../../..'
 alias dl="cd ~/Downloads"
+alias desk="cd ~/Desktop"
 
 alias vim="nvim"
 alias vi="nvim"
 alias vimdiff="nvim -d"
 alias cat="bat"
+
 alias top="htop"
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"

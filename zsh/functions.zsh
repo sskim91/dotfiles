@@ -138,7 +138,7 @@ function e() {
 # tail 과 bat 명령을 pipe로 연결해서 더 편리하게 로그 파일 보기
 #-------------------------------------------------------------------------------
 function battail {
-    tail -f "$@" | bat --paging=never -l log
+    tail -f "$@" | bat -plaintext --paging=never -l log
 }
 
 #-------------------------------------------------------------------------------
@@ -146,4 +146,18 @@ function battail {
 #-------------------------------------------------------------------------------
 function google() {
     open /Applications/Google\ Chrome.app/ "http://www.google.com/search?q= $1";
+}
+
+#-------------------------------------------------------------------------------
+#  copy cat content
+#-------------------------------------------------------------------------------
+function catcp() {
+  if [ "$1" = "" ]; then
+    echo "Copy File to Clipboard"
+    echo "Usage:"
+    echo '  e "<file>"'
+    return 0
+  fi
+
+  cat "$1" | pbcopy
 }

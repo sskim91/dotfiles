@@ -1,3 +1,6 @@
+#TLDR
+export TLDR_AUTO_UPDATE_DISABLED="FALSE"
+
 # JENV
 export PATH="$HOME/.jenv/bin:$PATH"
 if which jenv > /dev/null; then eval "$(jenv init -)"; fi
@@ -36,3 +39,7 @@ export NVM_DIR="$HOME/.nvm"
 
 #poetry
 export PATH="$HOME/.local/bin:$PATH"
+
+#fd fzf
+export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+export FZF_DEFAULT_OPTS="--ansi"
