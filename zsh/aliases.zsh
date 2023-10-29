@@ -1,12 +1,16 @@
 alias cd..="cd .."
 alias ..='cd ..'
-alias ...='cd ../../../'
-alias ....='cd ../../../../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
 alias .....='cd ../../../../'
+alias .2='cd ../../'
+alias .3='cd ../../../'
 alias .4='cd ../../../../'
-alias .5='cd ../../../../..'
+alias .5='cd ../../../../../'
+
 alias dl="cd ~/Downloads"
 alias desk="cd ~/Desktop"
+alias dot="cd ~/.dotfiles"
 
 alias vim="nvim"
 alias vi="nvim"
@@ -25,10 +29,10 @@ alias mv='mv -i'
 alias update="brew update && brew upgrade && brew cleanup"
 alias services="brew services"
 
-alias ll="exa --color-scale --icons --time-style long-iso -lhbg"
-alias la="exa --color-scale --icons --time-style long-iso -lahbg"
-alias ls="exa"
-alias lt="exa --tree --level=2"
+alias ll="eza --color-scale --icons --time-style long-iso -lhbg"
+alias la="eza --color-scale --icons --time-style long-iso -lahbg"
+alias ls="eza"
+alias lt="eza --tree --level=2"
 
 alias c="clear"
 

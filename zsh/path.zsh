@@ -2,8 +2,8 @@
 export TLDR_AUTO_UPDATE_DISABLED="FALSE"
 
 # JENV
-export PATH="$HOME/.jenv/bin:$PATH"
-if which jenv > /dev/null; then eval "$(jenv init -)"; fi
+#export PATH="$HOME/.jenv/bin:$PATH"
+#if which jenv > /dev/null; then eval "$(jenv init -)"; fi
 
 # NEOVIM
 export EDITOR="/usr/local/bin/nvim"
@@ -42,4 +42,9 @@ export PATH="$HOME/.local/bin:$PATH"
 
 #fd fzf
 export FZF_DEFAULT_COMMAND="fd --type file --color=always"
-export FZF_DEFAULT_OPTS="--ansi"
+export FZF_DEFAULT_OPTS="--height 60% --layout=reverse --ansi"
+
+#ngrok
+if command -v ngrok &>/dev/null; then
+    eval "$(ngrok completion)"
+fi

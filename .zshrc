@@ -78,6 +78,9 @@ plugins=(
   zsh-autosuggestions
   alias-tips
   zsh-dircolors-solarized
+  fzf
+  docker
+  docker-compose
 )
 
 source $ZSH/oh-my-zsh.sh

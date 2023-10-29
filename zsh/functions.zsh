@@ -138,7 +138,7 @@ function e() {
 # tail 과 bat 명령을 pipe로 연결해서 더 편리하게 로그 파일 보기
 #-------------------------------------------------------------------------------
 function battail {
-    tail -f "$@" | bat -plaintext --paging=never -l log
+    tail -f "$@" | bat --style=plain --paging=never -l log
 }
 
 #-------------------------------------------------------------------------------
@@ -160,4 +160,34 @@ function catcp() {
   fi
 
   cat "$1" | pbcopy
+}
+
+
+#-------------------------------------------------------------------------------
+#  fh - search in your command history and execute selected command
+#  ref - https://sourabhbajaj.com/mac-setup/iTerm/fzf.html
+#-------------------------------------------------------------------------------
+function fh() {
+  eval $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
+
+#-------------------------------------------------------------------------------
+#  fd - cd to selected directory
+#  ref - https://sourabhbajaj.com/mac-setup/iTerm/fzf.html
+#-------------------------------------------------------------------------------
+function fd() {
+  local dir
+  dir=$(find ${1:-.} -path '*/\.*' -prune \
+                  -o -type d -print 2> /dev/null | fzf +m) &&
+  cd "$dir"
+}
+
+#-------------------------------------------------------------------------------
+#  preview fzf
+#  ref - https://github.com/junegunn/fzf
+#-------------------------------------------------------------------------------
+function fzfv() {
+  fzf --preview '[[ $(file --mime {}) =~ binary ]] &&
+                echo {} is a binary file ||
+                (bat --style=plain --color=always {}) 2> /dev/null | head -500'
 }
