@@ -31,8 +31,8 @@ alias mv='mv -i'
 alias update="brew update && brew upgrade && brew cleanup"
 alias services="brew services"
 
-alias ll="eza --color-scale all --icons --time-style long-iso -lhbg"
-alias la="eza --color-scale all --icons --time-style long-iso -lahbg"
+alias ll="eza --color-scale all --icons --time-style long-iso -lhbg --git"
+alias la="eza --color-scale all --icons --time-style long-iso -lahbg --git"
 alias ls="eza"
 alias lt="eza --tree --level=2"
 
