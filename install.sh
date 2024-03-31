@@ -38,8 +38,8 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 git clone https://github.com/dracula/zsh.git zsh-dracular
 mkdir -p $ZSH/themes/lib
-mv zsh-dracula/dracula.zsh-theme $ZSH/themes/dracula.zsh-theme
-mv zsh-dracula/lib/async.zsh $ZSH/themes/lib/async.zsh
+mv zsh-dracula/dracula.zsh-theme $ZSH/themes
+mv zsh-dracula/lib/async.zsh $ZSH/themes/lib
 
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
 git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions

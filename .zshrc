@@ -77,10 +77,10 @@ plugins=(
   zsh-completions
   zsh-autosuggestions
   alias-tips
-  zsh-dircolors-solarized
   fzf
   docker
   docker-compose
+  asdf
 )
 
 source $ZSH/oh-my-zsh.sh
