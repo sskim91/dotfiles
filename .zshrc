@@ -119,4 +119,6 @@ prompt_context() {
 
 eval $(/opt/homebrew/bin/brew shellenv)
 
+source ~/fzf-git.sh/fzf-git.sh
+
 source <(cat $DOTFILES/zsh/*zsh)

@@ -3,6 +3,7 @@
 	quotepath = false
 	excludesfile = /Users/sskim/.gitignore_global
 	editor = nvim
+	pager = delta
 [user]
 	name = sskim91
 	email = tjdtjq91@gmail.com
@@ -16,3 +17,17 @@
 	trustExitCode = true
 [commit]
 	template = /Users/sskim/.stCommitMsg
+
+[interactive]
+    diffFilter = delta --color-only
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    side-by-side = true
+    # delta detects terminal colors automatically; set one of these to disable auto-detection
+    # dark = true
+    # light = true
+
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default
