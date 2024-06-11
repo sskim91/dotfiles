@@ -8,7 +8,9 @@
 	name = sskim91
 	email = tjdtjq91@gmail.com
 [includeIf "gitdir:~/dev/"]
-	path = .gitconfig_personal
+    path = .gitconfig_personal
+[includeIf "gitdir:~/mqnic-src/"]
+    path = .gitconfig_company
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
