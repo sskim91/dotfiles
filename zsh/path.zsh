@@ -24,6 +24,10 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 #export NLS_LANG=English_America.UTF8
 #export PATH=$PATH:$ORACLE_HOME
 
+# asdf
+export ASDF_DATA_DIR="/Users/sskim/.asdf"
+export PATH="$ASDF_DATA_DIR/shims:$PATH"
+
 #HOMEBREW
 export HOMEBREW_GITHUB_API_TOKEN="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"
 
