@@ -81,6 +81,7 @@ plugins=(
   docker
   docker-compose
   asdf
+  kubectl
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -124,7 +125,3 @@ source ~/fzf-git.sh/fzf-git.sh
 source ~/.asdf/plugins/java/set-java-home.zsh
 
 source <(cat $DOTFILES/zsh/*zsh)
-
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

@@ -32,14 +32,14 @@ export PATH="$ASDF_DATA_DIR/shims:$PATH"
 export HOMEBREW_GITHUB_API_TOKEN="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"
 
 # node
-export PATH="/usr/local/opt/icu4c/bin:$PATH"
-export PATH="/usr/local/opt/icu4c/sbin:$PATH"
-export PATH="/usr/local/sbin:$PATH"
+# export PATH="/usr/local/opt/icu4c/bin:$PATH"
+# export PATH="/usr/local/opt/icu4c/sbin:$PATH"
+# export PATH="/usr/local/sbin:$PATH"
 
 # NVM
-export NVM_DIR="$HOME/.nvm"
-  [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-  [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"                                       # This loads nvm
+# [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
 
 #poetry
 export PATH="$HOME/.local/bin:$PATH"
@@ -74,15 +74,16 @@ _fzf_comprun() {
   shift
 
   case "$command" in
-    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
-    export|unset) fzf --preview "eval 'echo \$'{}"         "$@" ;;
-    ssh)          fzf --preview 'dig {}'                   "$@" ;;
-    *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
+  cd) fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+  export | unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
+  ssh) fzf --preview 'dig {}' "$@" ;;
+  *) fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
   esac
 }
 
-
 #ngrok
 if command -v ngrok &>/dev/null; then
-    eval "$(ngrok completion)"
+  eval "$(ngrok completion)"
 fi
+
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
