@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "<<< INSERT YOUR API KEY HERE >>>",
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/Users/sskim/mqnic-src",
+        "/Users/sskim/Downloads"
+      ],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "jetbrains": {
+      "command": "npx",
+      "args": ["-y", "@jetbrains/mcp-proxy"],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0",
+        "LOG_ENABLED": "true"
+      }
+    }
+  }
+}
