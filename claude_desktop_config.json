@@ -30,6 +30,35 @@
         "ASDF_NODEJS_VERSION": "22.14.0",
         "LOG_ENABLED": "true"
       }
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_TOKEN>",
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://localhost/mydb"
+      ],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
     }
   }
 }
