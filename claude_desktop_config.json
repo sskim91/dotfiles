@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-brave-search"],
       "env": {
-        "BRAVE_API_KEY": "<<< INSERT YOUR API KEY HERE >>>",
+        "BRAVE_API_KEY": "<YOUR_TOKEN>",
         "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
         "ASDF_NODEJS_VERSION": "22.14.0"
       }
@@ -15,7 +15,10 @@
         "-y",
         "@modelcontextprotocol/server-filesystem",
         "/Users/sskim/mqnic-src",
-        "/Users/sskim/Downloads"
+        "/Users/sskim/Downloads",
+        "/Users/sskim/dev",
+        "/Users/sskim/Library/CloudStorage/OneDrive-개인/inflearn",
+        "/Users/sskim/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
       ],
       "env": {
         "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
@@ -56,6 +59,37 @@
         "postgresql://localhost/mydb"
       ],
       "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "Confluence communication server": {
+      "command": "npx",
+      "args": ["-y", "@zereight/mcp-confluence"],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0",
+        "CONFLUENCE_URL": "https://mqnic.atlassian.net",
+        "JIRA_URL": "https://mqnic.atlassian.net",
+        "CONFLUENCE_API_MAIL": "sskim91@mqnic.com",
+        "CONFLUENCE_API_KEY": "<YOUR_TOKEN>",
+        "CONFLUENCE_IS_CLOUD": "true"
+      }
+    },
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-puppeteer"],
+      "env": {
+        "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
+        "ASDF_NODEJS_VERSION": "22.14.0"
+      }
+    },
+    "slack": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "<YOUR_TOKEN>",
+        "SLACK_TEAM_ID": "<TEAM ID>",
         "PATH": "/Users/sskim/.asdf/shims:/opt/homebrew/bin:/usr/bin:/bin",
         "ASDF_NODEJS_VERSION": "22.14.0"
       }

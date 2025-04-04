@@ -82,6 +82,7 @@ plugins=(
   docker-compose
   asdf
   kubectl
+  poetry
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -125,3 +126,7 @@ source ~/fzf-git.sh/fzf-git.sh
 source ~/.asdf/plugins/java/set-java-home.zsh
 
 source <(cat $DOTFILES/zsh/*zsh)
+
+# uv CLI autocomplete setup
+eval "$(uv generate-shell-completion zsh)"
+eval "$(uvx --generate-shell-completion zsh)"
