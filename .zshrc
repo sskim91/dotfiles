@@ -83,6 +83,7 @@ plugins=(
   asdf
   kubectl
   poetry
+  you-should-use
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -124,6 +125,7 @@ eval $(/opt/homebrew/bin/brew shellenv)
 source ~/fzf-git.sh/fzf-git.sh
 
 source ~/.asdf/plugins/java/set-java-home.zsh
+source ~/.asdf/plugins/golang/set-env.zsh
 
 source <(cat $DOTFILES/zsh/*zsh)
 
