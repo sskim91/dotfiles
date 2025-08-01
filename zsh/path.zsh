@@ -28,6 +28,9 @@ export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 export ASDF_DATA_DIR="/Users/sskim/.asdf"
 export PATH="$ASDF_DATA_DIR/shims:$PATH"
 
+# rust
+export PATH="$HOME/.asdf/installs/rust/stable/bin:$PATH"
+
 #HOMEBREW
 export HOMEBREW_GITHUB_API_TOKEN="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"
 

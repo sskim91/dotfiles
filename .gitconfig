@@ -1,16 +1,16 @@
 [core]
-	autocrlf = input
-	quotepath = false
+	autocrlf = input                # macOS/Linux에서는 input 설정 권장 (CRLF → LF 자동 변환, 출력은 그대로)
+	quotepath = false              # 한글 파일명 등 인코딩된 경로를 깨지지 않게 그대로 출력
 	excludesfile = /Users/sskim/.gitignore_global
-	editor = nvim
-	pager = delta
+	editor = nvim                  # 커밋 메시지 작성 등 Git 기본 에디터로 Neovim 설정
+	pager = delta                  # Git diff 등의 출력에 delta 툴을 pager로 사용 (가독성 향상)
 [user]
-	name = sskim91
-	email = tjdtjq91@gmail.com
+	name = 김성섭
+	email = sskim91@mqnic.com
 [includeIf "gitdir:~/dev/"]
-    path = .gitconfig_personal
+    path = .gitconfig_personal     # ~/dev/ 이하에서는 개인 설정 파일(.gitconfig_personal)을 추가로 로드
 [includeIf "gitdir:~/mqnic-src/"]
-    path = .gitconfig_company
+    path = .gitconfig_company      # ~/mqnic-src/ 이하에서는 회사 설정 파일(.gitconfig_company)을 추가로 로드
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
@@ -21,15 +21,13 @@
 	template = /Users/sskim/.stCommitMsg
 
 [interactive]
-    diffFilter = delta --color-only
+    diffFilter = delta --color-only  # interactive 모드에서 delta로 색상만 출력 (수정은 Git 내부 처리)
 [delta]
-    navigate = true    # use n and N to move between diff sections
-    side-by-side = true
-    # delta detects terminal colors automatically; set one of these to disable auto-detection
-    # dark = true
+    navigate = true               # n / N 키로 diff 사이를 이동할 수 있도록 설정
+    side-by-side = true           # delta diff 출력을 좌우 비교 방식으로 표시
+    # dark = true                 # 색상 테마 강제 설정 가능 (자동 감지 방지용)
     # light = true
-
 [merge]
-    conflictstyle = diff3
+    conflictstyle = diff3         # 충돌 시 common ancestor 정보를 함께 보여줌 (3-way merge 보기 용이)
 [diff]
-    colorMoved = default
+    colorMoved = default          # 이동된 코드 블록 색상 표시 방식 (default: Git 기본값 사용)

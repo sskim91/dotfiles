@@ -59,3 +59,6 @@ alias du='du -ch'
 
 alias ag="alias | grep " # +command
 
+## serena MCP alias
+alias add-serena="bash ~/.dotfiles/add-serena-uvx.sh"
+

@@ -191,3 +191,25 @@ function fzfv() {
                 echo {} is a binary file ||
                 (bat --style=plain --color=always {}) 2> /dev/null | head -500'
 }
+
+# Claude
+ccv() {
+  local env_vars=(
+    "ENABLE_BACKGROUND_TASKS=true"
+    "FORCE_AUTO_BACKGROUND_TASKS=true"
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true"
+    "CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true"
+  )
+  
+  local claude_args=()
+  
+  if [ "$1" = "-y" ]; then
+    claude_args+=("--dangerously-skip-permissions")
+  elif [ "$1" = "-r" ]; then
+    claude_args+=("--resume")
+  elif [ "$1" = "-ry" ] || [ "$1" = "-yr" ]; then
+    claude_args+=("--resume" "--dangerously-skip-permissions")
+  fi
+  
+  env "${env_vars[@]}" claude "${claude_args[@]}"
+}

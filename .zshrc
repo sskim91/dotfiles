@@ -132,3 +132,8 @@ source <(cat $DOTFILES/zsh/*zsh)
 # uv CLI autocomplete setup
 eval "$(uv generate-shell-completion zsh)"
 eval "$(uvx --generate-shell-completion zsh)"
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/sskim/.lmstudio/bin"
+# End of LM Studio CLI section
+
