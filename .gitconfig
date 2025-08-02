@@ -5,8 +5,8 @@
 	editor = nvim                  # 커밋 메시지 작성 등 Git 기본 에디터로 Neovim 설정
 	pager = delta                  # Git diff 등의 출력에 delta 툴을 pager로 사용 (가독성 향상)
 [user]
-	name = 김성섭
-	email = sskim91@mqnic.com
+	name = sskim91
+	email = tjdtjq91@gmail.com
 [includeIf "gitdir:~/dev/"]
     path = .gitconfig_personal     # ~/dev/ 이하에서는 개인 설정 파일(.gitconfig_personal)을 추가로 로드
 [includeIf "gitdir:~/mqnic-src/"]
