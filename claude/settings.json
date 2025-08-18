@@ -1,0 +1,62 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); dir=$(basename \"$(echo \"$input\" | jq -r '.workspace.current_dir')\"); branch=$(cd \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" && git branch --show-current 2>/dev/null || echo \"no-git\"); ccusage=$(ccusage blocks --json | jq -r '.blocks[] | select(.isActive == true) | \"🔥 $\\((.burnRate.costPerHour * 100 | round) / 100)/hour | ⏱️  \\(.projection.remainingMinutes / 60 | floor)h \\(.projection.remainingMinutes % 60)m left | 💰 \\(.totalTokens / 17213778 * 100 | floor)% ($\\((.costUSD * 100 | round) / 100))\"'); printf \"\\033[1;95m%s\\033[0m \\033[90m|\\033[0m \\033[96m%s\\033[0m \\033[90m|\\033[0m git:\\033[94m%s\\033[0m \\033[90m|\\033[0m %s\" \"$model\" \"$dir\" \"$branch\" \"$ccusage\""
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh format",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh check",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh format",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh check",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh review",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
