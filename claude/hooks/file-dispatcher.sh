@@ -6,12 +6,14 @@ INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
 HOOK_TYPE="${1:-format}"  # format, check, or review
 
-# Determine file extension
+# Determine file extension - TypeScript and JavaScript are now separate
 if [[ "$FILE_PATH" =~ \.py$ ]]; then
 	LANGUAGE="python"
 elif [[ "$FILE_PATH" =~ \.java$ ]]; then
 	LANGUAGE="java"
-elif [[ "$FILE_PATH" =~ \.(js|jsx|ts|tsx)$ ]]; then
+elif [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]]; then
+	LANGUAGE="typescript"
+elif [[ "$FILE_PATH" =~ \.(js|jsx|mjs|cjs)$ ]]; then
 	LANGUAGE="javascript"
 elif [[ "$FILE_PATH" =~ \.(go)$ ]]; then
 	LANGUAGE="go"
