@@ -1,9 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh",
-    "padding": 0
-  },
   "hooks": {
     "PreToolUse": [
       {
@@ -59,5 +54,11 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "model": "opus"
 }

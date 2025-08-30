@@ -1,128 +1,139 @@
-tap "buo/cask-upgrade"
-tap "homebrew/bundle"
-tap "homebrew/cask-fonts"
-tap "homebrew/cask-versions"
-tap "homebrew/services"
-tap "mdogan/zulu"
-tap "mongodb/brew"
-brew "apr-util"
+# Extendable version manager with support for Ruby, Node.js, Erlang & more
+brew "asdf"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
-brew "coreutils"
-brew "dive"
-brew "duf"
+# Modern, maintained replacement for ls
 brew "eza"
-brew "fd"
+# Command-line fuzzy finder written in Go
 brew "fzf"
-brew "gh"
-brew "git"
-brew "go"
-brew "gping"
-brew "gradle"
-brew "htop"
-brew "httpie"
-brew "jq"
-brew "jython"
-brew "kotlin"
-brew "mas"
-brew "maven"
-brew "neofetch"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
+# Open source relational database management system
+brew "mysql-client"
+# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-brew "nginx"
-brew "nvm"
-brew "procs"
-brew "putty"
-brew "pyenv"
-brew "redis"
-brew "subversion"
-brew "telnet"
-brew "tldr"
-brew "tmux"
-brew "wget"
-brew "zsh"
+# Package compiler and linker metadata toolkit
+brew "pkgconf"
+# Pack repository contents into a single AI-friendly file
+brew "repomix"
+# Official tldr client written in Rust
+brew "tlrc"
+# Password manager that keeps all passwords secure behind one password
 cask "1password"
-cask "1password-cli"
+# Application launcher and productivity software
 cask "alfred"
-cask "alt-tab"
+# Allows connection to a computer remotely
 cask "anydesk"
-cask "aws-vpn-client"
-cask "bettertouchtool"
-cask "dbeaver-community"
+# OpenAI's official ChatGPT desktop app
+cask "chatgpt"
+# Anthropic's official Claude AI desktop app
+cask "claude"
+# Write, edit, and chat about your code with AI
+cask "cursor"
+# AI-powered translator
 cask "deepl"
+# Utilities designed to make common development tasks easier
+cask "devtoys"
+# Voice and text chat software
 cask "discord"
-cask "docker"
-cask "dropbox"
-cask "firefox-developer-edition"
-cask "flux"
+# App to build and share containerised applications and microservices
+cask "docker-desktop"
+# Web browser
+cask "firefox@developer-edition"
 cask "font-fira-code"
 cask "font-fira-code-nerd-font"
+cask "font-google-sans-code"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-ubuntu-mono-nerd-font"
-cask "forklift"
+# Web browser
 cask "google-chrome"
+# Client for the Google Drive storage service
+cask "google-drive"
+# Dedicated scratchpad for developers
 cask "heynote"
-cask "istat-menus"
+# Testing client for REST, GraphQL, and HTTP APIs
+cask "httpie-desktop"
+# Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# JetBrains tools manager
 cask "jetbrains-toolbox"
+# Keyboard customiser
 cask "karabiner-elements"
-cask "kubernetic"
+# Discover, download, and run local LLMs
+cask "lm-studio"
+# Software for Logitech devices
 cask "logitech-options"
-cask "macs-fan-control"
+# Provides updates to various Microsoft products
 cask "microsoft-auto-update"
+# Multi-platform web browser
 cask "microsoft-edge"
-cask "microsoft-teams"
-cask "mounty"
-cask "namechanger"
-cask "ngrok"
+# Spreadsheet software
+cask "microsoft-excel"
+# Presentation software
+cask "microsoft-powerpoint"
+# Word processor
+cask "microsoft-word"
+# Media player
+cask "movist-pro"
+# Web browser
+cask "naver-whale"
+# App to write, plan, collaborate, and get organised
+cask "notion"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
+# Get up and running with large language models locally
+cask "ollama-app"
+# Cloud storage client
 cask "onedrive"
+# PDF reader, editor and annotator
 cask "pdf-expert"
+# Collaboration platform for API development
 cask "postman"
+# Ebook reader
 cask "ridibooks"
+# Team communication and collaboration software
 cask "slack"
-cask "smartsvn"
+# Graphical client for Git version control
 cask "sourcetree"
-cask "teamviewer"
+# Messaging app with a focus on speed and security
+cask "telegram"
+# SSH client
 cask "termius"
+# Virtual machines UI using QEMU
+cask "utm"
+# Open-source code editor
 cask "visual-studio-code"
-cask "wireshark"
-cask "zeplin"
+# Video communication and virtual meeting platform
 cask "zoom"
-cask "zulu"
-mas "1Password for Safari", id: 1569813296
-mas "Cleaner One", id: 1473079126
-mas "DayGram", id: 977949232
-mas "Keynote", id: 409183694
-mas "Magnet", id: 441258766
-mas "Microsoft Excel", id: 462058435
-mas "Microsoft OneNote", id: 784801555
-mas "Microsoft Outlook", id: 985367838
-mas "Microsoft PowerPoint", id: 462062816
-mas "Microsoft Word", id: 462054704
-mas "Numbers", id: 409203825
-mas "Pages", id: 409201541
-mas "PhotoScape X", id: 929507092
-mas "PopClip", id: 445189367
-mas "반디집", id: 1265704574
-mas "유니콘", id: 1231935892
-mas "유니콘 HTTPS", id: 1475628500
-mas "카카오톡", id: 869223134
+vscode "adpyke.codesnap"
 vscode "akamud.vscode-theme-onedark"
+vscode "anthropic.claude-code"
 vscode "cardinal90.multi-cursor-case-preserve"
+vscode "clemenspeters.format-json"
 vscode "dbaeumer.vscode-eslint"
+vscode "dineug.vuerd-vscode"
+vscode "docker.docker"
 vscode "editorconfig.editorconfig"
 vscode "emilast.logfilehighlighter"
 vscode "esbenp.prettier-vscode"
 vscode "formulahendry.auto-rename-tag"
 vscode "formulahendry.code-runner"
 vscode "foxundermoon.shell-format"
+vscode "github.copilot"
+vscode "github.copilot-chat"
+vscode "google.geminicodeassist"
 vscode "isudox.vscode-jetbrains-keybindings"
 vscode "mechatroner.rainbow-csv"
+vscode "ms-azuretools.vscode-containers"
 vscode "ms-azuretools.vscode-docker"
 vscode "ms-ceintl.vscode-language-pack-ko"
 vscode "ms-kubernetes-tools.vscode-kubernetes-tools"
+vscode "ms-python.black-formatter"
 vscode "ms-python.debugpy"
 vscode "ms-python.isort"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
+vscode "ms-python.vscode-python-envs"
 vscode "ms-toolsai.jupyter"
 vscode "ms-toolsai.jupyter-keymap"
 vscode "ms-toolsai.jupyter-renderers"
@@ -136,13 +147,18 @@ vscode "ms-vscode-remote.vscode-remote-extensionpack"
 vscode "ms-vscode.remote-explorer"
 vscode "ms-vscode.remote-server"
 vscode "naumovs.color-highlight"
+vscode "njpwerner.autodocstring"
 vscode "oderwat.indent-rainbow"
+vscode "openai.chatgpt"
 vscode "pkief.material-icon-theme"
+vscode "qwtel.sqlite-viewer"
 vscode "redhat.vscode-xml"
 vscode "redhat.vscode-yaml"
 vscode "ritwickdey.liveserver"
 vscode "techer.open-in-browser"
+vscode "tomoki1207.pdf"
 vscode "vincaslt.highlight-matching-tag"
 vscode "wayou.vscode-todo-highlight"
 vscode "xabikos.javascriptsnippets"
 vscode "xabikos.reactsnippets"
+vscode "yzane.markdown-pdf"
