@@ -1,0 +1,457 @@
+# Git Commit Custom Command Guide
+
+## Purpose
+안전하고 체계적인 Git 커밋을 위한 커스텀 커맨드 가이드
+
+## Core Philosophy
+> "A well-crafted Git commit message is the best way to communicate context about a change to fellow developers (and indeed to their future selves)."
+
+좋은 커밋 메시지는:
+- 코드 리뷰를 더 효율적으로 만듭니다
+- 프로젝트 히스토리를 이해하기 쉽게 만듭니다
+- 버그의 원인을 추적하기 쉽게 만듭니다
+- 팀 협업의 품질을 높입니다
+
+## Command Flow
+
+### Phase 1: Pre-Commit Verification
+1. **Check git status first**
+   - `git status` 실행하여 현재 상태 파악
+   - Untracked files 확인
+   - Modified files 확인
+   - Branch 이름 확인 (main/master가 아닌 경우 경고)
+
+2. **Review .gitignore**
+   - `.gitignore` 파일 확인
+   - 민감한 파일들이 제외되었는지 검증
+   - 필수 ignore 항목 체크:
+     - `.env`, `.env.*` (환경 변수)
+     - `*.key`, `*.pem`, `*.cert` (인증서/키 파일)
+     - `node_modules/`, `venv/`, `.venv/` (의존성)
+     - `.DS_Store`, `Thumbs.db` (시스템 파일)
+     - `*.log`, `*.pid` (로그/프로세스 파일)
+     - `.idea/`, `.vscode/` (IDE 설정 - 선택적)
+
+3. **Sensitive Information Check**
+   - 스테이징할 파일들 검사
+   - 절대 커밋하면 안 되는 패턴:
+     ```
+     - API keys: /api[_-]?key/i
+     - Passwords: /password\s*=\s*["'].+["']/i
+     - Tokens: /token\s*=\s*["'].+["']/i
+     - AWS credentials: /aws_access_key_id|aws_secret_access_key/i
+     - Private keys: /BEGIN\s+(RSA|DSA|EC|OPENSSH)\s+PRIVATE\s+KEY/
+     ```
+
+### Phase 2: Staging Strategy
+1. **Selective Staging**
+   - 전체 추가 (`git add .`) 전에 개별 파일 검토
+   - 큰 바이너리 파일 체크 (>10MB)
+   - Generated files 제외 확인 (build/, dist/, *.min.js)
+
+2. **Staging Commands Priority**
+   ```bash
+   # 1. 먼저 수정된 파일만 확인
+   git diff
+   
+   # 2. 개별 파일 추가 권장
+   git add <specific-file>
+   
+   # 3. Interactive staging for complex changes
+   git add -p  # 부분적으로 추가
+   
+   # 4. 전체 추가는 마지막 수단
+   git add .  # 주의: .gitignore 확인 필수
+   ```
+
+### Phase 3: Pre-Commit Validation
+1. **Diff Review**
+   - `git diff --staged` 실행
+   - 각 변경사항 검토
+   - 의도하지 않은 변경 확인
+
+2. **File Size Check**
+   - 100MB 이상 파일 경고
+   - LFS 사용 권장 대상 식별
+
+3. **Lint/Format Check** (언어별)
+   - Python: `ruff check`, `black --check`
+   - JavaScript: `eslint`, `prettier --check`
+   - Java: `checkstyle`, `google-java-format`
+
+### Phase 4: Commit Message
+
+#### The Seven Rules of a Great Git Commit Message
+1. **Separate subject from body with a blank line**
+2. **Limit the subject line to 50 characters**
+3. **Capitalize the subject line**
+4. **Do not end the subject line with a period**
+5. **Use the imperative mood in the subject line**
+6. **Wrap the body at 72 characters**
+7. **Use the body to explain what and why vs. how**
+
+#### Message Structure
+```
+<type>(<scope>): <subject>
+                             ← Blank line
+<body>
+                             ← Blank line
+<footer>
+```
+
+#### Subject Line Rules
+1. **Imperative Mood Test**
+   - Your subject should complete: "If applied, this commit will..."
+   - ✅ Good: "Add user authentication"
+   - ❌ Bad: "Added user authentication"
+   - ❌ Bad: "Adding user authentication"
+
+2. **Type Prefixes** (Optional but recommended)
+   - `feat`: 새로운 기능
+   - `fix`: 버그 수정
+   - `docs`: 문서 변경
+   - `style`: 코드 포맷팅 (로직 변경 없음)
+   - `refactor`: 리팩토링
+   - `test`: 테스트 추가/수정
+   - `chore`: 빌드, 설정 변경
+   - `perf`: 성능 개선
+
+3. **Subject Examples**
+   ```
+   ✅ Good Examples:
+   - Fix memory leak in user session handler
+   - Add OAuth2 authentication for API endpoints
+   - Refactor database connection pooling
+   - Update README with installation instructions
+   
+   ❌ Bad Examples:
+   - fixed bug                    # Too vague
+   - Added new feature.           # Period at end, past tense
+   - changing api endpoints       # Not imperative, not capitalized
+   - Fix bug in the system that was causing issues when users tried to... # Too long
+   ```
+
+#### Body Writing Guidelines
+1. **Explain the Context**
+   - What was the problem?
+   - Why is this change necessary?
+   - What are the consequences of this change?
+
+2. **Body Template**
+   ```
+   [Current behavior/Problem]
+   
+   [Solution/Change made]
+   
+   [Impact/Benefits]
+   ```
+
+3. **Good Body Example**
+   ```
+   Fix race condition in payment processing
+   
+   The payment processor was occasionally processing the same 
+   payment twice when users double-clicked the submit button.
+   
+   This commit adds a mutex lock around the payment processing
+   logic and implements idempotency keys to ensure each payment
+   is processed exactly once.
+   
+   Fixes #842
+   ```
+
+#### Footer Guidelines
+- **Issue References**: `Fixes #123`, `Closes #456`
+- **Breaking Changes**: Start with `BREAKING CHANGE:`
+- **Co-authors**: `Co-authored-by: name <email>`
+- **Reviewed-by**: `Reviewed-by: name <email>`
+
+#### Commit Message Quality Checklist
+- [ ] Subject line completes "If applied, this commit will..."
+- [ ] Subject line ≤ 50 characters
+- [ ] Subject line starts with capital letter
+- [ ] No period at end of subject
+- [ ] Blank line between subject and body
+- [ ] Body lines wrapped at 72 characters
+- [ ] Body explains WHY, not HOW
+- [ ] Referenced related issues/tickets
+
+### Phase 5: Final Checks
+1. **Commit Simulation**
+   ```bash
+   # Dry run to check what will be committed
+   git commit --dry-run -v
+   ```
+
+2. **Hook Verification**
+   - Pre-commit hooks 실행 확인
+   - 실패 시 수정 후 재시도
+
+### Critical Constraints (절대 금지사항)
+
+#### 🚫 NEVER Commit:
+1. **Credentials & Secrets**
+   - API keys, tokens, passwords
+   - Database connection strings with passwords
+   - SSH private keys
+   - AWS/GCP/Azure credentials
+   - Encryption keys
+
+2. **Personal Information**
+   - 실제 이메일 주소 (테스트 외)
+   - 전화번호, 주민번호
+   - 신용카드 정보
+   - 개인 식별 가능 정보 (PII)
+
+3. **System Files**
+   - `.env` files (use `.env.example` instead)
+   - Local configuration files
+   - IDE-specific settings (optional)
+   - OS-generated files
+
+4. **Large Files**
+   - Binary files > 100MB
+   - Database dumps
+   - Log files
+   - Cache directories
+
+#### ⚠️ Warning Triggers:
+1. **Branch Protection**
+   - Direct commit to main/master
+   - Force push without coordination
+   - Rewriting public history
+
+2. **File Patterns**
+   - Files containing "test" or "temp" in production commits
+   - TODO comments in critical code
+   - Commented-out code blocks
+
+### Emergency Rollback
+
+If you accidentally committed sensitive data:
+
+```bash
+# 1. DO NOT PUSH YET
+
+# 2. Remove from last commit (if not pushed)
+git reset HEAD~1
+
+# 3. If already pushed (coordinate with team)
+git revert <commit-hash>
+
+# 4. For sensitive data removal
+# Use BFG Repo-Cleaner or git filter-branch
+# Then force push and notify all team members
+```
+
+### Automation Script Template
+
+```bash
+#!/bin/bash
+# Safe commit helper with enhanced checks
+
+set -e  # Exit on error
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# 1. Status check
+echo "📊 Checking git status..."
+git status
+
+# Check current branch
+CURRENT_BRANCH=$(git branch --show-current)
+if [[ "$CURRENT_BRANCH" == "main" ]] || [[ "$CURRENT_BRANCH" == "master" ]]; then
+    echo -e "${YELLOW}⚠️  Warning: You're on $CURRENT_BRANCH branch${NC}"
+    read -p "Are you sure you want to commit directly to $CURRENT_BRANCH? (y/n): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "Consider creating a feature branch:"
+        echo "  git checkout -b feature/your-feature-name"
+        exit 1
+    fi
+fi
+
+# 2. Gitignore verification
+if [ ! -f .gitignore ]; then
+    echo -e "${YELLOW}⚠️  Warning: No .gitignore file found!${NC}"
+    read -p "Continue without .gitignore? (y/n): " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        exit 1
+    fi
+fi
+
+# 3. Sensitive pattern check (enhanced)
+echo "🔍 Scanning for sensitive patterns..."
+SENSITIVE_PATTERNS="(api[_-]?key|password|token|secret|private[_-]?key|credentials|aws_access_key|aws_secret)"
+if git diff --staged | grep -iE "$SENSITIVE_PATTERNS"; then
+    echo -e "${RED}❌ Potential sensitive data detected!${NC}"
+    echo "Please review the staged changes and remove sensitive information."
+    exit 1
+fi
+
+# Check for common sensitive files
+SENSITIVE_FILES=".env|.env.local|.env.production|credentials|secrets"
+if git diff --staged --name-only | grep -E "$SENSITIVE_FILES"; then
+    echo -e "${RED}❌ Sensitive file detected in staging!${NC}"
+    echo "Consider using .env.example instead"
+    exit 1
+fi
+
+# 4. Large file check with better formatting
+echo "📦 Checking file sizes..."
+LARGE_FILES_FOUND=0
+while IFS= read -r file; do
+    if [ -f "$file" ]; then
+        size=$(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null)
+        if [ "$size" -gt 104857600 ]; then  # 100MB
+            echo -e "${RED}❌ Large file: $file ($(numfmt --to=iec-i --suffix=B $size))${NC}"
+            LARGE_FILES_FOUND=1
+        elif [ "$size" -gt 10485760 ]; then  # 10MB warning
+            echo -e "${YELLOW}⚠️  Large file warning: $file ($(numfmt --to=iec-i --suffix=B $size))${NC}"
+        fi
+    fi
+done < <(git diff --staged --name-only)
+
+if [ "$LARGE_FILES_FOUND" -eq 1 ]; then
+    echo "Consider using Git LFS for large files:"
+    echo "  git lfs track '*.zip' && git add .gitattributes"
+    exit 1
+fi
+
+# 5. Show staged changes with context
+echo "📝 Staged changes:"
+git diff --staged --stat
+echo ""
+echo "Files to be committed:"
+git diff --staged --name-status
+
+# 6. Commit message preview
+echo ""
+echo "💬 Preparing commit message..."
+echo "Remember the imperative mood test:"
+echo "  'If applied, this commit will...'"
+echo ""
+
+# 7. Final confirmation with options
+echo "Choose an action:"
+echo "  [c] Commit with message"
+echo "  [v] Commit with verbose mode (see diff in editor)"
+echo "  [p] Review changes again (git diff --staged)"
+echo "  [a] Abort"
+read -p "Your choice: " -n 1 -r
+echo
+
+case $REPLY in
+    c|C)
+        git commit
+        ;;
+    v|V)
+        git commit -v
+        ;;
+    p|P)
+        git diff --staged
+        echo ""
+        read -p "Ready to commit? (y/n): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            git commit -v
+        else
+            echo "❌ Commit cancelled"
+        fi
+        ;;
+    *)
+        echo "❌ Commit cancelled"
+        exit 0
+        ;;
+esac
+
+echo -e "${GREEN}✅ Commit completed successfully!${NC}"
+```
+
+## Quick Reference
+
+### Safe Commit Checklist
+- [ ] `git status` 실행 및 확인
+- [ ] `.gitignore` 파일 존재 및 내용 확인
+- [ ] Sensitive data scan 완료
+- [ ] Large files check 완료
+- [ ] `git diff --staged` 검토
+- [ ] Commit message 규칙 준수
+- [ ] Branch 확인 (main/master 직접 커밋 주의)
+
+### Command Sequence
+```bash
+git status                    # 1. 상태 확인
+git diff                      # 2. 변경사항 검토
+git add <files>              # 3. 선택적 스테이징
+git diff --staged            # 4. 스테이징 검토
+git commit -v                # 5. 상세 커밋 (에디터에서 diff 보며 작성)
+```
+
+### Writing Better Commits - Pro Tips
+
+#### 1. Use `git commit -v` (verbose)
+- Shows diff in your editor while writing the message
+- Helps you write more accurate commit messages
+- Prevents committing unintended changes
+
+#### 2. Configure Your Editor
+```bash
+# Set your preferred editor
+git config --global core.editor "vim"  # or "code --wait", "nano", etc.
+
+# Enable commit message template
+git config --global commit.template ~/.gitmessage
+```
+
+#### 3. Commit Message Template (~/.gitmessage)
+```
+# <type>(<scope>): <subject>
+
+# <body>
+# Explain what and why (not how)
+# - What was the problem?
+# - Why is this change necessary?
+# - What effect does this change have?
+
+# <footer>
+# Fixes #<issue>
+# BREAKING CHANGE: <description>
+```
+
+#### 4. Atomic Commits
+- One commit = One logical change
+- Don't mix refactoring with feature additions
+- Split large changes into smaller, logical commits
+```bash
+# Stage parts of a file
+git add -p
+
+# Split previous commit
+git reset HEAD~1
+git add <first-logical-change>
+git commit -m "First logical change"
+git add <second-logical-change>
+git commit -m "Second logical change"
+```
+
+## Recovery Commands
+
+```bash
+# Unstage files
+git reset HEAD <file>
+
+# Discard changes
+git checkout -- <file>
+
+# Amend last commit
+git commit --amend
+
+# Interactive rebase (local only)
+git rebase -i HEAD~n
+```
