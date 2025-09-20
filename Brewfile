@@ -1,5 +1,5 @@
-# Extendable version manager with support for Ruby, Node.js, Erlang & more
-brew "asdf"
+# Modern development version manager (faster asdf replacement)
+brew "mise"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Modern, maintained replacement for ls

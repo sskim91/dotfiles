@@ -80,7 +80,6 @@ plugins=(
   fzf
   docker
   docker-compose
-  asdf
   kubectl
   poetry
   you-should-use
@@ -124,8 +123,8 @@ eval $(/opt/homebrew/bin/brew shellenv)
 
 source ~/fzf-git.sh/fzf-git.sh
 
-source ~/.asdf/plugins/java/set-java-home.zsh
-source ~/.asdf/plugins/golang/set-env.zsh
+# mise (asdf replacement) - faster and more modern
+eval "$(mise activate zsh)"
 
 source <(cat $DOTFILES/zsh/*zsh)
 

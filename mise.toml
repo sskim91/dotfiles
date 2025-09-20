@@ -1,0 +1,28 @@
+# Mise configuration for dotfiles project
+# This file replaces .tool-versions with more features
+
+[tools]
+# Programming languages
+node = "22.15.1"
+python = "3.11.12"
+go = "1.24.3"
+java = "corretto-17.0.16.8.1"
+kotlin = "1.9.23"
+
+# You can also specify:
+# node = "lts"           # Latest LTS version
+# python = ["3.11", "3.12"]  # Multiple versions
+# go = "latest"          # Latest stable
+
+[env]
+# Project-specific environment variables
+# NODE_ENV = "development"
+# These will be automatically set when entering this directory
+
+# [tasks]
+# You can define project tasks here
+# dev = "npm run dev"
+# test = "npm test"
+# build = "npm run build"
+
+# Then run them with: mise run dev
