@@ -1,94 +1,42 @@
-#TLDR
+# TLDR - 명령어 간단 설명 도구
 export TLDR_AUTO_UPDATE_DISABLED="FALSE"
 
-# JENV
-#export PATH="$HOME/.jenv/bin:$PATH"
-#if which jenv > /dev/null; then eval "$(jenv init -)"; fi
+# Neovim - 기본 에디터 설정 (Apple Silicon 호환)
+export EDITOR="$(which nvim 2>/dev/null || echo 'nvim')"
 
-# NEOVIM
-export EDITOR="/usr/local/bin/nvim"
+# Python 버전 관리는 mise를 사용 (pyenv 제거됨)
 
-# Pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/shims:$PATH"
+# Maven - Java 빌드 도구
+# Apple Silicon과 Intel Mac 모두 지원
+if [ -d "/opt/homebrew/opt/maven/bin" ]; then
+  export PATH="/opt/homebrew/opt/maven/bin:$PATH"  # Apple Silicon
+elif [ -d "/usr/local/opt/maven/bin" ]; then
+  export PATH="/usr/local/opt/maven/bin:$PATH"     # Intel Mac
+fi
 
-# maven
-export PATH="/usr/local/opt/maven/bin:$PATH"
-
-# bat
+# Bat - 향상된 cat 명령어 (매뉴얼 페이지에도 사용)
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
-# oracle cloud
-#export ORACLE_HOME=~/Oracle/instantclient_19_8
-#export TNS_ADMIN=$ORACLE_HOME/network/admin
-#export NLS_LANG=English_America.UTF8
-#export PATH=$PATH:$ORACLE_HOME
-
-# asdf
-export ASDF_DATA_DIR="/Users/sskim/.asdf"
-export PATH="$ASDF_DATA_DIR/shims:$PATH"
-
-# rust
-export PATH="$HOME/.asdf/installs/rust/stable/bin:$PATH"
-
-#HOMEBREW
-export HOMEBREW_GITHUB_API_TOKEN="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"
-
-# node
-# export PATH="/usr/local/opt/icu4c/bin:$PATH"
-# export PATH="/usr/local/opt/icu4c/sbin:$PATH"
-# export PATH="/usr/local/sbin:$PATH"
-
-# NVM
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"                                       # This loads nvm
-# [ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm" # This loads nvm bash_completion
-
-#poetry
+# Poetry - Python 패키지 관리 도구
 export PATH="$HOME/.local/bin:$PATH"
 
-#fd fzf
-# export FZF_DEFAULT_COMMAND="fd --type file --color=always"
-# export FZF_DEFAULT_OPTS="--height 60% --layout=reverse --ansi"
+# FZF + FD - 향상된 파일 검색 도구
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git --exclude bower_components --exclude node_modules"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git --exclude bower_components --exclude node_modules"
 
-# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-_fzf_compgen_path() {
-  fd --hidden --exclude .git . "$1"
-}
-
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type=d --hidden --exclude .git . "$1"
-}
-
+# FZF 미리보기 옵션 설정
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
 
-# Advanced customization of fzf options via _fzf_comprun function
-# - The first argument to the function is the name of the command.
-# - You should make sure to pass the rest of the arguments to fzf.
-_fzf_comprun() {
-  local command=$1
-  shift
+# FZF 관련 함수들은 functions.zsh에 정의됨
 
-  case "$command" in
-  cd) fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
-  export | unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
-  ssh) fzf --preview 'dig {}' "$@" ;;
-  *) fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
-  esac
-}
-
-#ngrok
+# ngrok - 로컬 서버 터널링 도구
 if command -v ngrok &>/dev/null; then
   eval "$(ngrok completion)"
 fi
 
+# PostgreSQL 클라이언트 도구 (Apple Silicon 경로)
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # Claude Hooks Configuration

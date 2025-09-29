@@ -6,7 +6,7 @@
 node = "22.15.1"
 python = "3.11.12"
 go = "1.24.3"
-java = "corretto-17.0.16.8.1"
+java = "corretto-17"  # Default Java 17 LTS (can switch with: mise use java@corretto-8/11/21)
 kotlin = "1.9.23"
 
 # You can also specify:

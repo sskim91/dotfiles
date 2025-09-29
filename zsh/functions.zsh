@@ -192,6 +192,76 @@ function fzfv() {
                 (bat --style=plain --color=always {}) 2> /dev/null | head -500'
 }
 
+#-------------------------------------------------------------------------------
+# FZF 자동완성 헬퍼 함수
+#-------------------------------------------------------------------------------
+# FD를 사용한 경로 자동완성 (파일 및 디렉토리)
+_fzf_compgen_path() {
+  fd --hidden --exclude .git . "$1"
+}
+
+# FD를 사용한 디렉토리 자동완성
+_fzf_compgen_dir() {
+  fd --type=d --hidden --exclude .git . "$1"
+}
+
+# FZF 명령어별 미리보기 커스터마이징
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo \$'{}" "$@" ;;
+    ssh)          fzf --preview 'dig {}' "$@" ;;
+    *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
+  esac
+}
+
+#-------------------------------------------------------------------------------
+# 1Password GitHub 토큰 관리
+#-------------------------------------------------------------------------------
+# 내부용: GitHub 토큰 자동 로드 (조용히)
+_load_github_token() {
+  if command -v op &>/dev/null && [ -z "$HOMEBREW_GITHUB_API_TOKEN" ]; then
+    export HOMEBREW_GITHUB_API_TOKEN=$(op read "op://Personal/GitHub/add more/Personal Classic Access Token" 2>/dev/null)
+  fi
+}
+
+# GitHub 토큰을 수동으로 로드 (사용자 명령)
+function load-token() {
+  if command -v op &>/dev/null; then
+    echo "1Password에서 GitHub 토큰을 로드합니다..."
+    export HOMEBREW_GITHUB_API_TOKEN=$(op read "op://Personal/GitHub/add more/Personal Classic Access Token" 2>/dev/null)
+    if [ -n "$HOMEBREW_GITHUB_API_TOKEN" ]; then
+      echo -e "\033[0;32m✓ GitHub 토큰이 로드되었습니다\033[0m"
+    else
+      echo -e "\033[0;31m✗ 토큰 로드 실패\033[0m"
+    fi
+  else
+    echo "1Password CLI가 설치되어 있지 않습니다"
+  fi
+}
+
+# 토큰 상태 확인
+function token-status() {
+  if [ -n "$HOMEBREW_GITHUB_API_TOKEN" ]; then
+    echo -e "\033[0;32m✓ GitHub 토큰이 설정되어 있습니다\033[0m"
+  else
+    echo -e "\033[0;33m○ GitHub 토큰이 설정되지 않았습니다\033[0m"
+    echo "  'load-token' 명령으로 토큰을 로드할 수 있습니다"
+  fi
+}
+
+#-------------------------------------------------------------------------------
+# Homebrew 래퍼 - 지연 토큰 로딩
+#-------------------------------------------------------------------------------
+# brew 명령 실행 시 자동으로 GitHub 토큰 로드
+function brew() {
+  _load_github_token
+  command brew "$@"
+}
+
 # Claude
 ccv() {
   local env_vars=(
