@@ -85,8 +85,8 @@ get_max_context() {
     *"Opus 4"*|*"opus 4"*|*"Opus"*|*"opus"*)
       echo "200000"  # 200K for all Opus versions
       ;;
-    *"Sonnet 4"*|*"sonnet 4"*|*"Sonnet 3.5"*|*"sonnet 3.5"*|*"Sonnet"*|*"sonnet"*)
-      echo "200000"  # 200K for Sonnet 3.5+ and 4.x
+    *"Sonnet 4.5"*|*"sonnet 4.5"*|*"Sonnet 4"*|*"sonnet 4"*|*"Sonnet 3.5"*|*"sonnet 3.5"*|*"Sonnet"*|*"sonnet"*)
+      echo "200000"  # 200K for Sonnet 3.5+ and 4.x (including 4.5)
       ;;
     *"Haiku 3.5"*|*"haiku 3.5"*|*"Haiku 4"*|*"haiku 4"*|*"Haiku"*|*"haiku"*)
       echo "200000"  # 200K for modern Haiku
