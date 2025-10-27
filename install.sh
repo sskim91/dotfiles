@@ -98,6 +98,34 @@ vim +PluginInstall +qall 2>/dev/null || true
 #ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
 
 #-------------------------------------------------------------------------------
+# Install Node.js LTS (v22) using mise
+#-------------------------------------------------------------------------------
+if test ! $(which node); then
+    echo "Installing Node.js LTS 22 via mise..."
+    mise install node@22
+    mise use -g node@22
+    # Activate mise for current session to make node available immediately
+    eval "$(mise activate bash)"
+fi
+
+#-------------------------------------------------------------------------------
+# Install npm global packages (Claude Code CLI & Gemini CLI)
+#-------------------------------------------------------------------------------
+echo "Installing npm global packages..."
+npm install -g @anthropic-ai/claude-code 2>/dev/null || echo "⚠️  @anthropic-ai/claude-code installation failed"
+npm install -g @google/gemini-cli 2>/dev/null || echo "⚠️  @google/gemini-cli installation failed"
+
+#-------------------------------------------------------------------------------
+# Link Claude configuration directory
+#-------------------------------------------------------------------------------
+if [ -d "$DOTFILES/claude" ]; then
+    ln -nfs $DOTFILES/claude $HOME/.claude
+    echo "✅ Claude configuration linked to ~/.claude"
+else
+    echo "⚠️  Claude configuration directory not found at $DOTFILES/claude"
+fi
+
+#-------------------------------------------------------------------------------
 # Make ZSH the default shell environment
 #-------------------------------------------------------------------------------
 if [ "$SHELL" != "$(which zsh)" ]; then
