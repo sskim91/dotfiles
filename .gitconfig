@@ -1,8 +1,8 @@
 [core]
 	autocrlf = input                # macOS/Linux에서는 input 설정 권장 (CRLF → LF 자동 변환, 출력은 그대로)
 	quotepath = false              # 한글 파일명 등 인코딩된 경로를 깨지지 않게 그대로 출력
-	excludesfile = /Users/sskim/.gitignore_global
-	editor = nvim                  # 커밋 메시지 작성 등 Git 기본 에디터로 Neovim 설정
+	excludesfile = /Users/sskim/.dotfiles/.gitignore_global
+	editor = nvim
 	pager = delta                  # Git diff 등의 출력에 delta 툴을 pager로 사용 (가독성 향상)
 [user]
 	name = sskim91
