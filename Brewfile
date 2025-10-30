@@ -14,8 +14,6 @@ brew "mysql-client"
 brew "neovim"
 # Package compiler and linker metadata toolkit
 brew "pkgconf"
-# Pack repository contents into a single AI-friendly file
-brew "repomix"
 # Official tldr client written in Rust
 brew "tlrc"
 # Password manager that keeps all passwords secure behind one password

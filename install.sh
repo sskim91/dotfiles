@@ -86,16 +86,53 @@ ln -nfs $DOTFILES/.zshrc $HOME/.zshrc
 #-------------------------------------------------------------------------------
 # Vim setting
 #-------------------------------------------------------------------------------
+echo "Setting up Vim/Neovim..."
+
+# Install Vundle if not present
 [ ! -d "$HOME/.vim/bundle/Vundle.vim" ] && \
     git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
+# Detect Homebrew installation path (Apple Silicon vs Intel Mac)
+if [ -d "/opt/homebrew" ]; then
+    BREW_PREFIX="/opt/homebrew"
+elif [ -d "/usr/local/Homebrew" ]; then
+    BREW_PREFIX="/usr/local"
+else
+    BREW_PREFIX=$(brew --prefix 2>/dev/null || echo "/opt/homebrew")
+fi
+
+echo "Detected Homebrew prefix: $BREW_PREFIX"
+
+# Update fzf path in init.vim if needed
+if [ -f "$DOTFILES/init.vim" ]; then
+    FZF_PATH="$BREW_PREFIX/opt/fzf"
+    if [ -d "$FZF_PATH" ]; then
+        echo "Updating fzf path in init.vim to: $FZF_PATH"
+        # Use sed to update fzf path (macOS compatible)
+        sed -i.bak "s|set rtp+=.*/opt/fzf|set rtp+=$FZF_PATH|g" "$DOTFILES/init.vim"
+        rm -f "$DOTFILES/init.vim.bak"
+    fi
+fi
+
+# Link vim config
 ln -nfs $DOTFILES/.vimrc $HOME/.vimrc
+
+# Neovim configuration
+echo "Setting up Neovim configuration..."
+mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}/nvim
+ln -nfs $DOTFILES/init.vim $HOME/.config/nvim/init.vim
+
+# Install plugins for both vim and neovim
+echo "Installing Vim plugins..."
 vim +PluginInstall +qall 2>/dev/null || true
 
-# Neovim 관련
-#mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
-#ln -s ~/.vim $XDG_CONFIG_HOME/nvim
-#ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+# Install plugins for neovim (if available)
+if command -v nvim &> /dev/null; then
+    echo "Installing Neovim plugins..."
+    nvim +PluginInstall +qall 2>/dev/null || true
+fi
+
+echo "✓ Vim/Neovim setup complete"
 
 #-------------------------------------------------------------------------------
 # Install Node.js LTS (v22) using mise
