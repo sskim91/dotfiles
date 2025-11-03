@@ -1,0 +1,19 @@
+# Claude Code Runtime Data (Session-specific, not suitable for dotfiles)
+
+# Session and project data
+projects/
+session-env/
+
+# Debug and logging
+debug/
+history.jsonl
+
+# File tracking and history
+file-history/
+shell-snapshots/
+
+# Todo lists (session-specific)
+todos/
+
+# macOS system files
+.DS_Store
