@@ -153,14 +153,33 @@ npm install -g @anthropic-ai/claude-code 2>/dev/null || echo "⚠️  @anthropic
 npm install -g @google/gemini-cli 2>/dev/null || echo "⚠️  @google/gemini-cli installation failed"
 
 #-------------------------------------------------------------------------------
-# Link Claude configuration directory
+# Link Claude customizable directories and files individually
 #-------------------------------------------------------------------------------
-if [ -d "$DOTFILES/claude" ]; then
-    ln -nfs $DOTFILES/claude $HOME/.claude
-    echo "✅ Claude configuration linked to ~/.claude"
-else
-    echo "⚠️  Claude configuration directory not found at $DOTFILES/claude"
+echo "Setting up Claude Code configuration..."
+mkdir -p $HOME/.claude
+
+# Link customizable directories
+for dir in agents commands hooks output-styles skills; do
+    if [ -d "$DOTFILES/claude/$dir" ]; then
+        ln -nfs "$DOTFILES/claude/$dir" "$HOME/.claude/$dir"
+        echo "✓ Linked $dir"
+    else
+        echo "⚠️  $dir directory not found, skipping..."
+    fi
+done
+
+# Link customizable files
+if [ -f "$DOTFILES/claude/statusline.sh" ]; then
+    ln -nfs "$DOTFILES/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+    echo "✓ Linked statusline.sh"
 fi
+
+if [ -f "$DOTFILES/claude/settings.json" ]; then
+    ln -nfs "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+    echo "✓ Linked settings.json"
+fi
+
+echo "✅ Claude Code customizable directories and files linked"
 
 #-------------------------------------------------------------------------------
 # Make ZSH the default shell environment
