@@ -65,3 +65,6 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 # export ENABLE_CHECKSTYLE=0         # Checkstyle - 스타일 체커 (check - 필요시 활성화)
 # export ENABLE_SPOTBUGS=0           # SpotBugs - 버그 검출 (check - 필요시 활성화)
 # export ENABLE_PMD=0                 # PMD - 코드 분석 (check - 필요시 활성화)
+
+# Code Review (모든 언어 공통 - *-review.sh)
+export ENABLE_GEMINI_REVIEW=1      # Gemini AI 코드 리뷰 (review - 기본값 0, 활성화하려면 1로 설정)
