@@ -209,6 +209,21 @@ fi
 echo "✅ Claude Code customizable directories and files linked"
 
 #-------------------------------------------------------------------------------
+# Link Gemini configuration
+#-------------------------------------------------------------------------------
+echo "Setting up Gemini configuration..."
+mkdir -p $HOME/.gemini
+
+if [ -f "$DOTFILES/gemini/settings.json" ]; then
+    ln -nfs "$DOTFILES/gemini/settings.json" "$HOME/.gemini/settings.json"
+    echo "✓ Linked Gemini settings.json"
+else
+    echo "⚠️  Gemini settings.json not found, skipping..."
+fi
+
+echo "✅ Gemini configuration linked"
+
+#-------------------------------------------------------------------------------
 # Make ZSH the default shell environment
 #-------------------------------------------------------------------------------
 if [ "$SHELL" != "$(which zsh)" ]; then
