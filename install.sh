@@ -146,6 +146,33 @@ if test ! $(which node); then
 fi
 
 #-------------------------------------------------------------------------------
+# Install Python tools: uv and Poetry
+#-------------------------------------------------------------------------------
+echo "Setting up Python package managers..."
+
+# Install uv (fast Python package installer)
+if test ! $(which uv); then
+    echo "Installing uv..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    # Activate uv for current session
+    export PATH="$HOME/.local/bin:$PATH"
+    echo "✓ uv installed"
+else
+    echo "✓ uv already installed"
+fi
+
+# Install Poetry with symlinks=True for mise compatibility
+if test ! $(which poetry); then
+    echo "Installing Poetry..."
+    curl -sSL https://install.python-poetry.org | sed 's/symlinks=False/symlinks=True/' | python3 -
+    # Add Poetry to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+    echo "✓ Poetry installed"
+else
+    echo "✓ Poetry already installed"
+fi
+
+#-------------------------------------------------------------------------------
 # Install npm global packages (Claude Code CLI & Gemini CLI)
 #-------------------------------------------------------------------------------
 echo "Installing npm global packages..."
