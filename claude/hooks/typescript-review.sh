@@ -29,7 +29,8 @@ REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this TypeScript code for:
 8. Proper error boundaries and error handling
 9. Accessibility considerations for UI components
 10. Use of modern ECMAScript features appropriately
-Be concise, focus on modern best practices and important issues only." 2>&1)
+Be concise, focus on modern best practices and important issues only.
+**Please respond in Korean (한글로 답변해주세요).**" 2>&1)
 
 # Get project root (look for .git directory)
 PROJECT_ROOT=$(git -C "$(dirname "$FILE_PATH")" rev-parse --show-toplevel 2>/dev/null || dirname "$FILE_PATH")

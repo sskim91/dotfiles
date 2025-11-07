@@ -25,7 +25,8 @@ REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this Python code for:
 4. Security issues (input validation, etc.)
 5. Performance optimizations
 6. Proper use of Python idioms
-Be concise, only mention important issues." 2>&1)
+Be concise, only mention important issues.
+**Please respond in Korean (한글로 답변해주세요).**" 2>&1)
 
 # Get project root (look for .git directory)
 PROJECT_ROOT=$(git -C "$(dirname "$FILE_PATH")" rev-parse --show-toplevel 2>/dev/null || dirname "$FILE_PATH")

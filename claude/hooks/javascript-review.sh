@@ -30,7 +30,8 @@ REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this modern JavaScript code for:
 9. Memory leak prevention and cleanup
 10. Accessibility and semantic HTML (for frontend code)
 11. Modern bundler compatibility (Vite, ESBuild, SWC)
-Be concise, focus on modern JavaScript patterns and critical issues only." 2>&1)
+Be concise, focus on modern JavaScript patterns and critical issues only.
+**Please respond in Korean (한글로 답변해주세요).**" 2>&1)
 
 # Get project root (look for .git directory)
 PROJECT_ROOT=$(git -C "$(dirname "$FILE_PATH")" rev-parse --show-toplevel 2>/dev/null || dirname "$FILE_PATH")

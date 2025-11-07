@@ -26,7 +26,8 @@ REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this Java code for:
 5. Performance optimizations (memory leaks, inefficient algorithms)
 6. Proper use of Java idioms and modern Java features
 7. Code style and readability
-Be concise, only mention important issues." 2>&1)
+Be concise, only mention important issues.
+**Please respond in Korean (한글로 답변해주세요).**" 2>&1)
 
 # Get project root (look for .git directory)
 PROJECT_ROOT=$(git -C "$(dirname "$FILE_PATH")" rev-parse --show-toplevel 2>/dev/null || dirname "$FILE_PATH")
