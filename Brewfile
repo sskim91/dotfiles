@@ -1,13 +1,17 @@
-# Modern development version manager (faster asdf replacement)
-brew "mise"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Disk Usage/Free Utility - a better 'df' alternative
+brew "duf"
 # Modern, maintained replacement for ls
 brew "eza"
 # Command-line fuzzy finder written in Go
 brew "fzf"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Improved top (interactive process viewer)
+brew "htop"
+# Modern development version manager (faster asdf replacement)
+brew "mise"
 # Open source relational database management system
 brew "mysql-client"
 # Ambitious Vim-fork focused on extensibility and agility
@@ -18,6 +22,8 @@ brew "pkgconf"
 brew "tlrc"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Command-line interface for 1Password
+cask "1password-cli"
 # Application launcher and productivity software
 cask "alfred"
 # Allows connection to a computer remotely
@@ -41,6 +47,8 @@ cask "firefox@developer-edition"
 cask "font-fira-code"
 cask "font-fira-code-nerd-font"
 cask "font-google-sans-code"
+cask "font-hack"
+cask "font-hack-nerd-font"
 cask "font-jetbrains-mono-nerd-font"
 cask "font-ubuntu-mono-nerd-font"
 # Web browser
@@ -49,8 +57,6 @@ cask "google-chrome"
 cask "google-drive"
 # Dedicated scratchpad for developers
 cask "heynote"
-# Testing client for REST, GraphQL, and HTTP APIs
-cask "httpie-desktop"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # JetBrains tools manager
