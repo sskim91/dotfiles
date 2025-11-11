@@ -54,9 +54,7 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 # PRETTIER는 위에서 이미 선언 (TypeScript format에도 사용)
 
 # Python 개발 도구 (python-check.sh, python-format.sh)
-#export ENABLE_RUFF=1           # Ruff - Python 린터/포맷터 (format - 기본값 1, check에서는 0)
-#export ENABLE_BLACK=1          # Black - Python 포맷터 (format - 기본값 1)
-#export ENABLE_ISORT=1          # isort - import 정렬 (format - 기본값 1)
+export ENABLE_RUFF=1           # Ruff - Python 린터/포맷터 (올인원 도구)
 # export ENABLE_TY=0           # Typos - 오타 검사 (check - 필요시 활성화)
 # export ENABLE_PYREFLY=0      # Pyrefly - 정적 분석 (check - 필요시 활성화)
 

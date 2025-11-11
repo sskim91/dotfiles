@@ -1,8 +1,6 @@
 #!/bin/bash
 
 DISABLE_FORMAT=${DISABLE_FORMAT:-0}
-ENABLE_ISORT=${ENABLE_ISORT:-1}
-ENABLE_BLACK=${ENABLE_BLACK:-1}
 ENABLE_RUFF=${ENABLE_RUFF:-1}
 
 INPUT=$(cat)
@@ -22,22 +20,6 @@ echo "🔧 Running format for Python files..."
 
 # Run format
 FORMAT_SUCCESS=1
-
-if [[ "$ENABLE_ISORT" -eq 1 ]]; then
-	echo "🔧 Running isort..."
-	if ! uvx isort .; then
-		echo "❌ isort failed" >&2
-		FORMAT_SUCCESS=0
-	fi
-fi
-
-if [[ "$ENABLE_BLACK" -eq 1 ]]; then
-	echo "🔧 Running black..."
-	if ! uvx black .; then
-		echo "❌ black failed" >&2
-		FORMAT_SUCCESS=0
-	fi
-fi
 
 if [[ "$ENABLE_RUFF" -eq 1 ]]; then
 	echo "🔧 Running ruff format..."

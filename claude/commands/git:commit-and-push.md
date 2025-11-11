@@ -3,6 +3,80 @@
 ## Purpose
 커밋과 푸시를 안전하고 효율적으로 한 번에 수행하기 위한 통합 커맨드 가이드
 
+---
+
+## ⚠️ IMPORTANT: Bilingual Commit Message Format for Claude
+
+When you (Claude) create git commits while executing this command, you **MUST** write the ENTIRE commit message in BOTH English and Korean, with English coming FIRST.
+
+### Required Structure:
+
+```
+[English Subject Line]
+
+[English Body - explaining what and why]
+- [Details in English]
+- [Changes described in English]
+
+[한글 제목 - Same as English subject]
+
+[한글 본문 - Same content as English body]
+- [상세 내용 - Details in Korean]
+- [변경사항 설명 - Changes described in Korean]
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Critical Requirements:
+1. **English section comes FIRST** (subject + body)
+2. **Korean section comes SECOND** (제목 + 본문)
+3. **Blank line** between English and Korean sections
+4. **Same content** in both languages (translation, not different information)
+5. Follow all the Seven Rules for commit messages in BOTH languages
+6. Keep subject lines under 50 characters in both languages
+7. This format is **MANDATORY** for all commits created through this command
+
+### Example:
+```
+Add middleware system with PII detection and audit logging
+
+Implement production-ready middleware pattern for security and compliance:
+- Create BaseMiddleware abstract class with before_request/after_response/on_error hooks
+- Add PIIDetectionMiddleware for masking phone, email, SSN, card, account numbers
+- Add AuditLoggingMiddleware for JSON Lines format compliance logging
+- Integrate middleware support into ScheduleManagerAgent
+- Add comprehensive test suite (8 tests, all passing)
+
+Configure development tools:
+- Add Ruff linter and formatter (>=0.14.0)
+- Apply PEP 604 type hints (Optional[T] → T | None)
+- Fix pytest import issues by removing conflicting __init__.py files
+- Add build system configuration for editable install
+
+미들웨어 시스템 추가 및 PII 탐지, 감사 로깅 구현
+
+보안 및 규정 준수를 위한 프로덕션 수준의 미들웨어 패턴 구현:
+- BaseMiddleware 추상 클래스 생성 (before_request/after_response/on_error 훅 포함)
+- 전화번호, 이메일, SSN, 카드번호, 계좌번호 마스킹을 위한 PIIDetectionMiddleware 추가
+- JSON Lines 형식 준수 로깅을 위한 AuditLoggingMiddleware 추가
+- ScheduleManagerAgent에 미들웨어 지원 통합
+- 포괄적인 테스트 스위트 추가 (8개 테스트, 모두 통과)
+
+개발 도구 구성:
+- Ruff 린터 및 포매터 추가 (>=0.14.0)
+- PEP 604 타입 힌트 적용 (Optional[T] → T | None)
+- 충돌하는 __init__.py 파일 제거로 pytest 임포트 문제 수정
+- 편집 가능한 설치를 위한 빌드 시스템 구성 추가
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+---
+
 ## Core Philosophy
 > "Commit locally, push globally. 로컬에서 완벽하게 준비한 후, 세상과 공유하세요."
 

@@ -60,5 +60,5 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": true
 }

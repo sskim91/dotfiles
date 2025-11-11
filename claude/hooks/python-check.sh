@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # NOTE:
-# 기본적으로 모두 비활성화 상태
-ENABLE_RUFF=${ENABLE_RUFF:-0}
+# Ruff는 기본 활성화, 나머지는 필요시 활성화
+ENABLE_RUFF=${ENABLE_RUFF:-1}
 ENABLE_TY=${ENABLE_TY:-0}
 ENABLE_PYREFLY=${ENABLE_PYREFLY:-0}
 
