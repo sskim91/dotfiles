@@ -104,12 +104,14 @@ if [ -n "$session_id" ] && command -v jq >/dev/null 2>&1; then
   MAX_CONTEXT=$(get_max_context "$model_name")
   
   # Convert current dir to session file path
-  project_dir=$(echo "$current_dir" | sed "s|~|$HOME|g" | sed 's|/|-|g' | sed 's|^-||')
-  session_file="$HOME/.claude/projects/-${project_dir}/${session_id}.jsonl"
-  
+  # Replace /. with /- first to handle hidden directories like .dotfiles
+  project_dir=$(echo "$current_dir" | sed "s|~|$HOME|g" | sed 's|/\.|/-|g' | sed 's|/|-|g')
+  session_file="$HOME/.claude/projects/${project_dir}/${session_id}.jsonl"
+
   if [ -f "$session_file" ]; then
-    # Get the latest input token count from the session file
-    latest_tokens=$(tail -20 "$session_file" | jq -r 'select(.message.usage) | .message.usage | ((.input_tokens // 0) + (.cache_read_input_tokens // 0))' 2>/dev/null | tail -1)
+    # Get the latest input token count from the session file (last message with usage info)
+    # Includes: input_tokens + cache_creation_input_tokens + cache_read_input_tokens
+    latest_tokens=$(jq -r 'select(.message.usage) | .message.usage | ((.input_tokens // 0) + (.cache_creation_input_tokens // 0) + (.cache_read_input_tokens // 0))' "$session_file" 2>/dev/null | tail -1)
     
     if [ -n "$latest_tokens" ] && [ "$latest_tokens" -gt 0 ]; then
       context_used_pct=$(( latest_tokens * 100 / MAX_CONTEXT ))
@@ -193,19 +195,18 @@ fi
 
 # Line 2: Context and session time
 line2=""
+
+# Always show context (either with % or TBD)
 if [ -n "$context_pct" ]; then
   context_bar=$(progress_bar "$context_remaining_pct" 10)
   line2="🧠 $(context_color)Context Remaining: ${context_pct} [${context_bar}]$(rst)"
-fi
-if [ -n "$session_txt" ]; then
-  if [ -n "$line2" ]; then
-    line2="$line2  ⌛ $(session_color)${session_txt}$(rst) $(session_color)[${session_bar}]$(rst)"
-  else
-    line2="⌛ $(session_color)${session_txt}$(rst) $(session_color)[${session_bar}]$(rst)"
-  fi
-fi
-if [ -z "$line2" ] && [ -z "$context_pct" ]; then
+else
   line2="🧠 $(context_color)Context Remaining: TBD$(rst)"
+fi
+
+# Add session time if available
+if [ -n "$session_txt" ]; then
+  line2="$line2  ⌛ $(session_color)${session_txt}$(rst) $(session_color)[${session_bar}]$(rst)"
 fi
 
 # Function to add commas to numbers
