@@ -57,7 +57,10 @@ description: 새 세션으로 넘어가기 위한 상세한 대화 요약 생성
 
 요약 완료 후:
 
-1. **파일 저장**: Write tool을 사용하여 현재 작업 디렉토리에 `session-handoff-{timestamp}.md` 형식으로 저장
+1. **파일 저장**: Write tool을 사용하여 현재 작업 디렉토리에 저장
+   - 파일명 형식: `session-handoff-$(date +%Y%m%d-%H%M%S).md`
+   - 예시: `session-handoff-20251117-143022.md`
+   - Bash tool로 먼저 `date +%Y%m%d-%H%M%S` 실행하여 현재 timestamp 얻기
 2. **Clipboard 복사**: 다음 명령어로 clipboard에 복사
    ```bash
    cat session-handoff-*.md | pbcopy
