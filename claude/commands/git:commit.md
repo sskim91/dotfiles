@@ -5,11 +5,58 @@
 
 ---
 
-## ⚠️ IMPORTANT: Bilingual Commit Message Format for Claude
+## ⚠️ IMPORTANT: Commit Message Format for Claude
 
-When you (Claude) create git commits while executing this command, you **MUST** write the ENTIRE commit message in BOTH English and Korean, with English coming FIRST.
+### 🏢 Company Project Detection (HIGHEST PRIORITY)
 
-### Required Structure:
+**BEFORE writing any commit message, FIRST check if the current working directory is under `~/company-src/`:**
+
+```bash
+# Check current directory
+pwd
+# If path starts with /Users/sskim/company-src/, this is a COMPANY PROJECT
+```
+
+### Company Project Rules (`~/company-src/*`)
+
+When working in a **company project** (`~/company-src/` directory):
+
+1. **Korean ONLY** - Write commit message in Korean only (no English section)
+2. **NO Claude signature** - Do NOT add the following lines:
+   ```
+   🤖 Generated with [Claude Code](https://claude.com/claude-code)
+   Co-Authored-By: Claude <noreply@anthropic.com>
+   ```
+
+**Company Project Commit Structure:**
+```
+[한글 제목]
+
+[한글 본문 - 무엇을, 왜 변경했는지 설명]
+- [상세 내용]
+- [변경사항 설명]
+```
+
+**Company Project Example:**
+```
+사용자 인증 미들웨어 추가
+
+보안 강화를 위한 JWT 기반 인증 시스템 구현:
+- BaseMiddleware 추상 클래스 생성
+- JWT 토큰 검증 로직 추가
+- 권한 체크 미들웨어 구현
+- 테스트 코드 작성 완료
+```
+
+---
+
+### Personal/Open Source Project Rules (Default)
+
+When working in **personal or open source projects** (NOT under `~/company-src/`):
+
+You **MUST** write the ENTIRE commit message in BOTH English and Korean, with English coming FIRST.
+
+**Required Structure:**
 
 ```
 [English Subject Line]
@@ -29,14 +76,15 @@ When you (Claude) create git commits while executing this command, you **MUST** 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-### Critical Requirements:
+**Critical Requirements:**
 1. **English section comes FIRST** (subject + body)
 2. **Korean section comes SECOND** (제목 + 본문)
 3. **Blank line** between English and Korean sections
 4. **Same content** in both languages (translation, not different information)
 5. Follow all the Seven Rules for commit messages in BOTH languages
 6. Keep subject lines under 50 characters in both languages
-7. This format is **MANDATORY** for all commits created through this command
+7. **MUST include Claude Code signature** at the end
+8. This format is **MANDATORY** for all commits in personal/open source projects
 
 ### Example:
 ```
