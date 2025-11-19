@@ -29,6 +29,8 @@ brew bundle
 # Install global Git configuration
 #-------------------------------------------------------------------------------
 ln -nfs $DOTFILES/.gitconfig $HOME/.gitconfig
+ln -nfs $DOTFILES/.gitconfig_personal $HOME/.gitconfig_personal
+ln -nfs $DOTFILES/.gitconfig_company $HOME/.gitconfig_company
 git config --global core.excludesfile $DOTFILES/.gitignore_global
 git config --global core.editor "nvim"
 
