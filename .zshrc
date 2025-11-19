@@ -137,3 +137,6 @@ eval "$(uvx --generate-shell-completion zsh)"
 export PATH="$PATH:/Users/sskim/.lmstudio/bin"
 # End of LM Studio CLI section
 
+
+# Added by Antigravity
+export PATH="/Users/sskim/.antigravity/antigravity/bin:$PATH"
