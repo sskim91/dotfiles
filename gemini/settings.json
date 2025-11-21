@@ -40,5 +40,8 @@
       "run_shell_command(mvn)",
       "run_shell_command(gradle)"
     ]
+  },
+  "general": {
+    "previewFeatures": true
   }
 }

@@ -31,7 +31,8 @@ brew bundle
 ln -nfs $DOTFILES/.gitconfig $HOME/.gitconfig
 ln -nfs $DOTFILES/.gitconfig_personal $HOME/.gitconfig_personal
 ln -nfs $DOTFILES/.gitconfig_company $HOME/.gitconfig_company
-git config --global core.excludesfile $DOTFILES/.gitignore_global
+ln -nfs $DOTFILES/.gitignore_global $HOME/.gitignore_global
+git config --global core.excludesfile $HOME/.gitignore_global
 git config --global core.editor "nvim"
 
 #-------------------------------------------------------------------------------

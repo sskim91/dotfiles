@@ -1,0 +1,373 @@
+#-------------------------------------------------------------------------------
+# Operating System Files
+#-------------------------------------------------------------------------------
+
+# macOS
+.DS_Store
+.DS_Store?
+.AppleDouble
+.LSOverride
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+#-------------------------------------------------------------------------------
+# IDEs and Editors
+#-------------------------------------------------------------------------------
+
+# JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+*.swp
+*.swo
+*~
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+
+#-------------------------------------------------------------------------------
+# Compiled Source
+#-------------------------------------------------------------------------------
+
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.dylib
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.elc
+*.bin
+
+#-------------------------------------------------------------------------------
+# Packages & Archives
+#-------------------------------------------------------------------------------
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.war
+*.ear
+*.nar
+
+#-------------------------------------------------------------------------------
+# Logs and Databases
+#-------------------------------------------------------------------------------
+
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+#-------------------------------------------------------------------------------
+# Node.js
+#-------------------------------------------------------------------------------
+
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+.yarn-integrity
+
+#-------------------------------------------------------------------------------
+# Python
+#-------------------------------------------------------------------------------
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+.pytype/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pyright/
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.conda/
+.poetry/
+
+#-------------------------------------------------------------------------------
+# Ruby
+#-------------------------------------------------------------------------------
+
+*.gem
+*.rbc
+/.config
+/coverage/
+/InstalledFiles
+/pkg/
+/spec/reports/
+/spec/examples.txt
+/test/tmp/
+/test/version_tmp/
+/tmp/
+.bundle/
+vendor/bundle/
+
+#-------------------------------------------------------------------------------
+# Java
+#-------------------------------------------------------------------------------
+
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+target/
+.gradle/
+build/
+.classpath
+.project
+.settings/
+
+#-------------------------------------------------------------------------------
+# Go
+#-------------------------------------------------------------------------------
+
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+
+#-------------------------------------------------------------------------------
+# Rust
+#-------------------------------------------------------------------------------
+
+debug/
+target/
+Cargo.lock
+
+#-------------------------------------------------------------------------------
+# Environment Variables & Secrets
+#-------------------------------------------------------------------------------
+
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+*.pem
+*.key
+*.p12
+*.pfx
+credentials.json
+secrets.yaml
+secrets.yml
+
+#-------------------------------------------------------------------------------
+# Build Tools & Dependencies
+#-------------------------------------------------------------------------------
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# Make
+*.d
+*.dSYM/
+
+#-------------------------------------------------------------------------------
+# Cloud & Infrastructure
+#-------------------------------------------------------------------------------
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# Docker
+.docker/
+
+#-------------------------------------------------------------------------------
+# Temporary Files
+#-------------------------------------------------------------------------------
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+.#*
+\#*#
+
+#-------------------------------------------------------------------------------
+# Test Coverage & Reports
+#-------------------------------------------------------------------------------
+
+coverage/
+*.cover
+.coverage
+.coverage.*
+htmlcov/
+test-results/
+junit.xml
+
+#-------------------------------------------------------------------------------
+# Documentation
+#-------------------------------------------------------------------------------
+
+# Generated docs (usually should be excluded)
+docs/_build/
+site/
+.docusaurus/
+.cache/
+
+#-------------------------------------------------------------------------------
+# Miscellaneous
+#-------------------------------------------------------------------------------
+
+*.pid
+*.seed
+*.pid.lock
+.vagrant/
+.sass-cache/
+.npm/
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.next/
+.nuxt/
+.cache/
+.serverless/
+.fusebox/
+.dynamodb/
+.tern-port
+.vscode-test
+.watchmanconfig
