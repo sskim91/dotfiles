@@ -6,7 +6,7 @@ export DOTFILES=$HOME/.dotfiles
 # Update dotfiles itself
 #-------------------------------------------------------------------------------
 if [ -d "$DOTFILES/.git" ]; then
-  git --work-tree="$DOTFILES" --git-dir="$DOTFILES/.git" pull origin master
+  git --work-tree="$DOTFILES" --git-dir="$DOTFILES/.git" pull origin main
 fi
 
 #-------------------------------------------------------------------------------
