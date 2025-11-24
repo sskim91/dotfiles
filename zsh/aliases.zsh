@@ -14,6 +14,7 @@ alias dl="cd ~/Downloads"
 alias desk="cd ~/Desktop"
 alias dot="cd ~/.dotfiles"
 alias dev="cd ~/dev"
+alias til="cd ~/dev/TIL"
 
 # 향상된 도구로 대체
 alias vim="nvim"         # Neovim 사용
