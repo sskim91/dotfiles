@@ -18,7 +18,9 @@ fi
 echo "🔍 Running AI code review for modern JavaScript in $FILE_PATH..." >&2
 
 # JavaScript-specific modern review prompt
-REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this modern JavaScript code for:
+# NOTE: If you get ModelNotFoundError or workspace errors, try:
+#   cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "..."
+REVIEW_OUTPUT=$(gemini -y --sandbox false -m gemini-2.5-pro -p "@$FILE_PATH Review this modern JavaScript code for:
 1. ES2024+ feature usage (optional chaining, nullish coalescing, private fields)
 2. Modern async patterns (async/await, Promise.allSettled, AbortController)
 3. React/Vue/Svelte best practices (if applicable)

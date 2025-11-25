@@ -18,7 +18,9 @@ fi
 echo "🔍 Running Gemini code review for $FILE_PATH..." >&2
 
 # Python-specific review prompt
-REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this Python code for:
+# NOTE: If you get ModelNotFoundError or workspace errors, try:
+#   cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "..."
+REVIEW_OUTPUT=$(gemini -y --sandbox false -m gemini-2.5-pro -p "@$FILE_PATH Review this Python code for:
 1. Type hints usage and correctness
 2. Exception handling
 3. PEP 8 compliance

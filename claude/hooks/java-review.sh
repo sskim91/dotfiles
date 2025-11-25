@@ -18,7 +18,9 @@ fi
 echo "🔍 Running Gemini code review for $FILE_PATH..." >&2
 
 # Java-specific review prompt
-REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this Java code for:
+# NOTE: If you get ModelNotFoundError or workspace errors, try:
+#   cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "..."
+REVIEW_OUTPUT=$(gemini -y --sandbox false -m gemini-2.5-pro -p "@$FILE_PATH Review this Java code for:
 1. Design patterns and best practices
 2. Exception handling and error management
 3. Thread safety and concurrency issues

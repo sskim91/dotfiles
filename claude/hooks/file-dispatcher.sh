@@ -21,6 +21,8 @@ elif [[ "$FILE_PATH" =~ \.(rs)$ ]]; then
 	LANGUAGE="rust"
 elif [[ "$FILE_PATH" =~ \.(cpp|cc|cxx|h|hpp)$ ]]; then
 	LANGUAGE="cpp"
+elif [[ "$FILE_PATH" =~ \.md$ ]] && [[ "$FILE_PATH" =~ ^$HOME/dev/TIL ]]; then
+	LANGUAGE="til"
 else
 	# No specific handler for this file type
 	exit 0

@@ -18,7 +18,9 @@ fi
 echo "🔍 Running AI code review for modern TypeScript in $FILE_PATH..." >&2
 
 # TypeScript-specific modern review prompt
-REVIEW_OUTPUT=$(gemini -p "@$FILE_PATH Review this TypeScript code for:
+# NOTE: If you get ModelNotFoundError or workspace errors, try:
+#   cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "..."
+REVIEW_OUTPUT=$(gemini -y --sandbox false -m gemini-2.5-pro -p "@$FILE_PATH Review this TypeScript code for:
 1. Modern TypeScript features usage (strict types, const assertions, template literal types)
 2. Type safety and proper use of generics
 3. React hooks best practices (if applicable)
