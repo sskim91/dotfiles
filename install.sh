@@ -227,6 +227,33 @@ fi
 echo "✅ Gemini configuration linked"
 
 #-------------------------------------------------------------------------------
+# Install Serena MCP (AI semantic code analysis)
+#-------------------------------------------------------------------------------
+echo "Setting up Serena MCP..."
+
+# Create dev directory if not exists
+mkdir -p $HOME/dev
+
+# Clone Serena repository if not exists
+if [ ! -d "$HOME/dev/serena" ]; then
+    echo "Cloning Serena repository..."
+    git clone https://github.com/oraios/serena.git $HOME/dev/serena
+    echo "✓ Serena cloned"
+else
+    echo "✓ Serena already installed"
+fi
+
+# Setup Serena configuration
+mkdir -p $HOME/.serena
+if [ -f "$DOTFILES/serena/serena_config.yml" ]; then
+    ln -nfs "$DOTFILES/serena/serena_config.yml" "$HOME/.serena/serena_config.yml"
+    echo "✓ Linked serena_config.yml"
+fi
+
+echo "✅ Serena MCP setup complete"
+echo "   Run 'add-serena' in your project directory to add Serena MCP"
+
+#-------------------------------------------------------------------------------
 # Make ZSH the default shell environment
 #-------------------------------------------------------------------------------
 if [ "$SHELL" != "$(which zsh)" ]; then
