@@ -243,13 +243,7 @@ else
     echo "✓ Serena already installed"
 fi
 
-# Setup Serena configuration
-mkdir -p $HOME/.serena
-if [ -f "$DOTFILES/serena/serena_config.yml" ]; then
-    ln -nfs "$DOTFILES/serena/serena_config.yml" "$HOME/.serena/serena_config.yml"
-    echo "✓ Linked serena_config.yml"
-fi
-
+# Serena will create its own config at ~/.serena/serena_config.yml on first run
 echo "✅ Serena MCP setup complete"
 echo "   Run 'add-serena' in your project directory to add Serena MCP"
 
