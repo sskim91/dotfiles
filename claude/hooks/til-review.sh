@@ -30,7 +30,9 @@ echo "📝 Gemini가 TIL 문서를 리뷰 중..." >&2
 # TIL-specific review prompt
 # -m gemini-2.5-pro: best available model for thorough review
 # --sandbox false: disable sandbox to avoid workspace restrictions
-REVIEW_OUTPUT=$(cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다. 아래 TIL(Today I Learned) 문서를 리뷰해주세요.
+# /tmp에서 실행하여 Gemini가 TIL 디렉토리 파일 목록을 컨텍스트에 포함시키지 않도록 함
+# (파일 경로를 Java 어노테이션으로 오해하는 환각 방지)
+REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다. 아래 TIL(Today I Learned) 문서를 리뷰해주세요.
 
 ## TIL 문서의 특성 (반드시 이해하세요)
 - **학습 노트**입니다. 프로덕션 코드가 아닙니다.
@@ -48,6 +50,29 @@ REVIEW_OUTPUT=$(cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -
    - **허위 지적은 신뢰를 떨어뜨립니다.**
 2. **진짜 문제만 지적**: 사소한 스타일 선호도나 '더 나을 수도 있는' 제안은 하지 마세요.
 3. **간결하게**: 지적할 게 없으면 '없음'으로 깔끔하게 끝내세요.
+
+## ⚠️ 중요 경고: 파일 경로와 어노테이션 혼동 금지
+
+**절대로 파일 시스템 경로를 Java/Spring 어노테이션으로 오해하지 마세요.**
+
+- \`backend/xxx.md\`, \`python/xxx.md\`, \`spring/xxx.md\` 등은 **파일 경로**입니다.
+- \`@\`로 시작하는 것은 **Java/Spring 어노테이션**이며, 정상적인 코드입니다.
+
+**올바른 Java/Spring 어노테이션 예시:**
+- 빈 등록: \`@Component\`, \`@Service\`, \`@Repository\`, \`@Controller\`, \`@RestController\`, \`@Bean\`, \`@Configuration\`
+- 의존성 주입: \`@Autowired\`, \`@Inject\`, \`@Qualifier\`, \`@Value\`
+- 웹 요청: \`@RequestMapping\`, \`@GetMapping\`, \`@PostMapping\`, \`@PutMapping\`, \`@DeleteMapping\`, \`@PathVariable\`, \`@RequestBody\`, \`@RequestParam\`
+- 비동기/이벤트: \`@Async\`, \`@EventListener\`, \`@Scheduled\`, \`@EnableAsync\`
+- 트랜잭션: \`@Transactional\`
+- JPA: \`@Entity\`, \`@Table\`, \`@Column\`, \`@Id\`, \`@GeneratedValue\`, \`@OneToMany\`, \`@ManyToOne\`
+- 검증: \`@Valid\`, \`@NotNull\`, \`@NotBlank\`, \`@Size\`, \`@Pattern\`
+- 테스트: \`@Test\`, \`@BeforeEach\`, \`@AfterEach\`, \`@Mock\`, \`@InjectMocks\`, \`@SpringBootTest\`
+- Lombok: \`@Getter\`, \`@Setter\`, \`@Builder\`, \`@NoArgsConstructor\`, \`@AllArgsConstructor\`, \`@Data\`, \`@Slf4j\`
+
+**이런 실수를 하지 마세요:**
+- ❌ \`@Service\`를 \`@backend/BaaS-Backend-as-a-Service.md\`로 오해
+- ❌ \`@Async\`를 \`@python/Python-asyncio.md\`로 오해
+- ❌ 파일 경로가 코드 블록 안에 어노테이션처럼 있다고 환각
 
 ## 리뷰 항목
 
