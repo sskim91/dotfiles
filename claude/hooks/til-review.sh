@@ -70,8 +70,6 @@ REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemin
 - Lombok: \`@Getter\`, \`@Setter\`, \`@Builder\`, \`@NoArgsConstructor\`, \`@AllArgsConstructor\`, \`@Data\`, \`@Slf4j\`
 
 **이런 실수를 하지 마세요:**
-- ❌ \`@Service\`를 \`@backend/BaaS-Backend-as-a-Service.md\`로 오해
-- ❌ \`@Async\`를 \`@python/Python-asyncio.md\`로 오해
 - ❌ 파일 경로가 코드 블록 안에 어노테이션처럼 있다고 환각
 
 ## 리뷰 항목
