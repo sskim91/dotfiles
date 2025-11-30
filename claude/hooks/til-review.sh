@@ -32,7 +32,7 @@ echo "📝 Gemini가 TIL 문서를 리뷰 중..." >&2
 # --sandbox false: disable sandbox to avoid workspace restrictions
 # /tmp에서 실행하여 Gemini가 TIL 디렉토리 파일 목록을 컨텍스트에 포함시키지 않도록 함
 # (파일 경로를 Java 어노테이션으로 오해하는 환각 방지)
-REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다. 아래 TIL(Today I Learned) 문서를 리뷰해주세요.
+REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다. 아래 TIL(Today I Learned) 문서를 리뷰해주세요.
 
 ## TIL 문서의 특성 (반드시 이해하세요)
 - **학습 노트**입니다. 프로덕션 코드가 아닙니다.
@@ -51,27 +51,6 @@ REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemin
 2. **진짜 문제만 지적**: 사소한 스타일 선호도나 '더 나을 수도 있는' 제안은 하지 마세요.
 3. **간결하게**: 지적할 게 없으면 '없음'으로 깔끔하게 끝내세요.
 
-## ⚠️ 중요 경고: 파일 경로와 어노테이션 혼동 금지
-
-**절대로 파일 시스템 경로를 Java/Spring 어노테이션으로 오해하지 마세요.**
-
-- \`backend/xxx.md\`, \`python/xxx.md\`, \`spring/xxx.md\` 등은 **파일 경로**입니다.
-- \`@\`로 시작하는 것은 **Java/Spring 어노테이션**이며, 정상적인 코드입니다.
-
-**올바른 Java/Spring 어노테이션 예시:**
-- 빈 등록: \`@Component\`, \`@Service\`, \`@Repository\`, \`@Controller\`, \`@RestController\`, \`@Bean\`, \`@Configuration\`
-- 의존성 주입: \`@Autowired\`, \`@Inject\`, \`@Qualifier\`, \`@Value\`
-- 웹 요청: \`@RequestMapping\`, \`@GetMapping\`, \`@PostMapping\`, \`@PutMapping\`, \`@DeleteMapping\`, \`@PathVariable\`, \`@RequestBody\`, \`@RequestParam\`
-- 비동기/이벤트: \`@Async\`, \`@EventListener\`, \`@Scheduled\`, \`@EnableAsync\`
-- 트랜잭션: \`@Transactional\`
-- JPA: \`@Entity\`, \`@Table\`, \`@Column\`, \`@Id\`, \`@GeneratedValue\`, \`@OneToMany\`, \`@ManyToOne\`
-- 검증: \`@Valid\`, \`@NotNull\`, \`@NotBlank\`, \`@Size\`, \`@Pattern\`
-- 테스트: \`@Test\`, \`@BeforeEach\`, \`@AfterEach\`, \`@Mock\`, \`@InjectMocks\`, \`@SpringBootTest\`
-- Lombok: \`@Getter\`, \`@Setter\`, \`@Builder\`, \`@NoArgsConstructor\`, \`@AllArgsConstructor\`, \`@Data\`, \`@Slf4j\`
-
-**이런 실수를 하지 마세요:**
-- ❌ 파일 경로가 코드 블록 안에 어노테이션처럼 있다고 환각
-
 ## 리뷰 항목
 
 ### 1. 🚫 Blocker (즉시 수정 필요)
@@ -80,39 +59,15 @@ REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemin
 - 코드 문법 오류로 인해 **컴파일/실행이 불가능**한 경우
 - Deprecated API 사용 (대안 명시 필요)
 
-**Bold 처리 규칙 위반 (Blocker로 처리):**
-\`**\` 안에 괄호나 따옴표가 **포함**되어 있으면 문제입니다. 괄호/따옴표가 \`**\` **밖**에 있으면 정상입니다.
-
-**❌ 잘못된 패턴 (괄호/따옴표가 ** 안에 있음):**
-- \`**단어(괄호)**\` - 괄호가 ** 안에 있어서 Bad
-- \`**\"인용문\"**\` - 따옴표가 ** 안에 있어서 Bad
-- \`**Step 1: 설명 (보충)**\` - 콜론 뒤 내용까지 ** 안에 있어서 Bad
-
-**✅ 올바른 패턴 (괄호/따옴표가 ** 밖에 있음):**
-- \`**단어**(괄호)\` - 괄호가 ** 밖에 있어서 Good
-- \`\"**인용문**\"\` - 따옴표가 ** 밖에 있어서 Good
-- \`**Step 1:** 설명 (보충)\` - 콜론까지만 bold, 나머지는 밖에 있어서 Good
-
-**수학 표기법은 LaTeX로 작성 (Blocker로 처리):**
-Big-O 표기법 등 수학적 표현은 반드시 LaTeX 문법(\`\$...\$\`)을 사용하세요.
-
-- ❌ Bad: \`O(log n)\`, \`O(n^2)\` - 일반 텍스트
-- ✅ Good: \`\$O(\\log n)\$\`, \`\$O(n^2)\$\` - LaTeX 인라인
-
-**인라인 vs 블록 구분:**
-- 문장 중간: 인라인 \`\$...\$\` 사용 (예: B-Tree는 **항상** \$O(\\log n)\$을 보장한다)
-- 독립적 공식: 블록 \`\$\$...\$\$\` 사용
-
-**⚠️ 주의: 이미 올바른 형태를 잘못 지적하지 마세요!**
-- \`**Selectivity**(선택도)\`는 괄호가 ** 밖에 있으므로 **정상**입니다.
-- \`\"**핵심 내용**\"\`는 따옴표가 ** 밖에 있으므로 **정상**입니다.
-
-**mermaid 문법 검증 (Blocker로 처리):**
+**mermaid 문법 검증 (Blocker):**
 mermaid 코드 블록이 있다면 다음 흔한 오류 패턴을 체크하세요:
 - 대괄호 중첩: \`[\"[...]\"]\" 형태는 파싱 오류 발생
 - subgraph 레이블에서 대괄호와 내부 노드 충돌
 - 따옴표 이스케이프 누락
 - 화살표 문법 오류 (\`-->\`, \`-->\|label\|\` 등)
+- **줄바꿈 문법 오류**: \`\\n\`은 mermaid에서 텍스트로 출력됨. 줄바꿈은 HTML BR 태그 사용
+  - ❌ Bad: \`["첫째 줄\\n둘째 줄"]\` → "\\n"이 그대로 출력
+  - ✅ Good: \`["첫째 줄 + BR태그 + 둘째 줄"]\` → 정상 줄바꿈 (BR태그 = 꺾쇠br꺾쇠)
 이런 오류가 있으면 Blocker로 지적하세요.
 
 **Blocker가 아닌 것:**
