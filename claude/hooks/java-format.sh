@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DISABLE_FORMAT=${DISABLE_FORMAT:-0}
-ENABLE_GOOGLE_JAVA_FORMAT=${ENABLE_GOOGLE_JAVA_FORMAT:-1}
+ENABLE_GOOGLE_JAVA_FORMAT=${ENABLE_GOOGLE_JAVA_FORMAT:-0}
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
