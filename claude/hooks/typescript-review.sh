@@ -1,41 +1,86 @@
 #!/bin/bash
 
+# 기본 활성화 여부 확인
 ENABLE_GEMINI_REVIEW=${ENABLE_GEMINI_REVIEW:-0}
+
+# jq 존재 여부 확인
+if ! command -v jq &> /dev/null; then
+    exit 0
+fi
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
 
-# Only review TypeScript files
-if [[ ! "$FILE_PATH" =~ \.(ts|tsx)$ ]] || [[ ! -f "$FILE_PATH" ]]; then
+# 1. 파일 경로 체크 및 확장자 확인 (.ts, .tsx)
+if [[ -z "$FILE_PATH" ]] || [[ ! "$FILE_PATH" =~ \.(ts|tsx)$ ]] || [[ ! -f "$FILE_PATH" ]]; then
 	exit 0
 fi
 
-# Exit if review is disabled
+# 2. 리뷰 기능 활성화 체크
 if [[ "$ENABLE_GEMINI_REVIEW" -ne 1 ]]; then
 	exit 0
 fi
 
-echo "🔍 Running AI code review for modern TypeScript in $FILE_PATH..." >&2
+# gemini CLI 도구 확인
+if ! command -v gemini &> /dev/null; then
+    echo "⚠️ 'gemini' CLI tool not found. Skipping review." >&2
+    exit 0
+fi
 
-# TypeScript-specific modern review prompt
-# NOTE: If you get ModelNotFoundError or workspace errors, try:
-#   cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro -p "..."
-REVIEW_OUTPUT=$(gemini -y --sandbox false -m gemini-2.5-pro -p "@$FILE_PATH Review this TypeScript code for:
-1. Modern TypeScript features usage (strict types, const assertions, template literal types)
-2. Type safety and proper use of generics
-3. React hooks best practices (if applicable)
-4. Modern async patterns (async/await, Promise handling)
-5. Performance optimizations (useMemo, useCallback, lazy loading)
-6. Security issues (XSS prevention, input validation)
-7. Modern module patterns and tree-shaking compatibility
-8. Proper error boundaries and error handling
-9. Accessibility considerations for UI components
-10. Use of modern ECMAScript features appropriately
-Be concise, focus on modern best practices and important issues only.
-**Please respond in Korean (한글로 답변해주세요).**" 2>&1)
+echo "🔍 Running Gemini code review for $FILE_PATH..." >&2
 
-# Output review to stderr so Claude can see it
+# 3. 개선된 프롬프트 (TypeScript/React 전문)
+# - 스타일/포맷팅 무시 (Prettier/ESLint 영역)
+# - TS: any 사용, 불안정한 타입 단언(as), 널 체크 위주
+# - React: 불필요한 리렌더링, Hook 의존성 배열, Effect 남용 위주
+PROMPT="
+You are a Senior Frontend Engineer specialized in TypeScript and React.
+Target File: $FILE_PATH
+
+Review the code provided via input based on the following criteria:
+
+**Review Rules (Strict):**
+1. **Ignore formatting/style issues** (semicolons, indentation, import order) - Assume Prettier/ESLint handles them.
+2. **Focus on Type Safety & Logic**:
+   - Usage of \`any\` or unsafe type assertions (\`as\`).
+   - Potential null/undefined runtime errors.
+   - Incorrect generic constraints.
+3. **Focus on React Best Practices (if .tsx)**:
+   - Missing dependencies in \`useEffect\` / \`useCallback\`.
+   - Performance issues (creating objects/functions inside render without memoization *only when it matters*).
+   - Prop drilling or anti-patterns in state management.
+4. **Security**: XSS risks (e.g., \`dangerouslySetInnerHTML\`), leaking sensitive data.
+5. **Be Constructive**: If the code is solid, just say 'LGTM (Looks Good To Me)' and end.
+
+**Output Format (Markdown, Korean):**
+If there are issues, use this format:
+
+### 🚨 Critical (반드시 수정 필요)
+* [라인 번호]: 버그, 런타임 에러 위험, 심각한 타입 안전성 위반
+
+### 💡 Suggestion (권장 사항)
+* [라인 번호]: 더 모던한 문법, 성능 최적화, 가독성 개선 제안
+
+---
+**Language:** Korean (한글)
+"
+
+# 4. Gemini 실행
+FILE_CONTENT=$(cat "$FILE_PATH")
+REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-2.5-pro -p "$PROMPT" 2>&1)
+
+# 5. 결과 처리
+# LGTM이면 조용히 종료
+if [[ "$REVIEW_OUTPUT" == *"LGTM"* ]]; then
+    exit 0
+fi
+
+# Claude에게 보여줄 출력 포맷팅
+echo "---------------------------------------------------" >&2
+echo "🤖 **Gemini TypeScript Review**" >&2
+echo "" >&2
 echo "$REVIEW_OUTPUT" >&2
+echo "---------------------------------------------------" >&2
 
-# Exit with code 2 so Claude processes the stderr output
+# Exit code 2로 Claude가 stderr를 읽게 함
 exit 2
