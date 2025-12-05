@@ -209,6 +209,12 @@ if [ -f "$DOTFILES/claude/settings.json" ]; then
     echo "✓ Linked settings.json"
 fi
 
+# Link global CLAUDE.md
+if [ -f "$DOTFILES/claude/CLAUDE.md" ]; then
+    ln -nfs "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+    echo "✓ Linked global CLAUDE.md"
+fi
+
 echo "✅ Claude Code customizable directories and files linked"
 
 #-------------------------------------------------------------------------------

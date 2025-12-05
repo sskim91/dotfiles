@@ -1,6 +1,6 @@
 .idea
 .config.json
-CLAUDE.md
+/CLAUDE.md
 
 # Poetry installer error logs
 poetry-installer-error-*.log
