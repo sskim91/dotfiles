@@ -71,9 +71,12 @@ You **MUST** write the ENTIRE commit message in BOTH English and Korean, with En
 - [상세 내용 - Details in Korean]
 - [변경사항 설명 - Changes described in Korean]
 
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <MODEL_NAME> <noreply@anthropic.com>
 ```
 
-**Note**: Claude Code가 커밋 시 signature(🤖 Generated with... / Co-Authored-By)를 자동 추가함
+**Note**: `<MODEL_NAME>`은 현재 사용 중인 모델명으로 대체 (예: Opus 4.5, Sonnet 4)
 
 **Critical Requirements:**
 1. **English section comes FIRST** (subject + body)
@@ -82,7 +85,8 @@ You **MUST** write the ENTIRE commit message in BOTH English and Korean, with En
 4. **Same content** in both languages (translation, not different information)
 5. Follow all the Seven Rules for commit messages in BOTH languages
 6. Keep subject lines under 50 characters in both languages
-7. This format is **MANDATORY** for all commits in personal/open source projects
+7. **MUST include Claude Code signature** at the end
+8. This format is **MANDATORY** for all commits in personal/open source projects
 
 ### Example:
 ```
@@ -115,6 +119,10 @@ Configure development tools:
 - PEP 604 타입 힌트 적용 (Optional[T] → T | None)
 - 충돌하는 __init__.py 파일 제거로 pytest 임포트 문제 수정
 - 편집 가능한 설치를 위한 빌드 시스템 구성 추가
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 
 ---
