@@ -6,6 +6,8 @@ brew "duf"
 brew "eza"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# Google's Gemini CLI for AI assistance
+brew "gemini-cli"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
 # Improved top (interactive process viewer)
@@ -32,6 +34,8 @@ cask "anydesk"
 cask "chatgpt"
 # Anthropic's official Claude AI desktop app
 cask "claude"
+# Claude Code CLI - Anthropic's agentic coding tool
+cask "claude-code"
 # Write, edit, and chat about your code with AI
 cask "cursor"
 # AI-powered translator

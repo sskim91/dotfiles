@@ -176,13 +176,6 @@ else
 fi
 
 #-------------------------------------------------------------------------------
-# Install npm global packages (Claude Code CLI & Gemini CLI)
-#-------------------------------------------------------------------------------
-echo "Installing npm global packages..."
-npm install -g @anthropic-ai/claude-code 2>/dev/null || echo "⚠️  @anthropic-ai/claude-code installation failed"
-npm install -g @google/gemini-cli 2>/dev/null || echo "⚠️  @google/gemini-cli installation failed"
-
-#-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code configuration..."
