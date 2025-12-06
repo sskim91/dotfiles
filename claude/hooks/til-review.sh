@@ -14,6 +14,11 @@ if [[ ! "$FILE_PATH" =~ \.md$ ]] || [[ ! -f "$FILE_PATH" ]]; then
 	exit 0
 fi
 
+# Skip GEMINI.md (context file, not a TIL document)
+if [[ "$(basename "$FILE_PATH")" == "GEMINI.md" ]]; then
+	exit 0
+fi
+
 # Check if file is under ~/dev/TIL
 TIL_DIR="$HOME/dev/TIL"
 if [[ ! "$FILE_PATH" =~ ^$TIL_DIR ]]; then
@@ -23,6 +28,11 @@ fi
 # Exit if review is disabled
 if [[ "$ENABLE_GEMINI_REVIEW" -ne 1 ]]; then
 	exit 0
+fi
+
+# GEMINI.md 심볼릭 링크 생성 (TIL 디렉토리의 컨텍스트를 /tmp에서도 사용)
+if [[ -f "$TIL_DIR/GEMINI.md" ]]; then
+	ln -sf "$TIL_DIR/GEMINI.md" /tmp/GEMINI.md 2>/dev/null
 fi
 
 echo "📝 Gemini가 TIL 문서를 리뷰 중..." >&2
