@@ -30,7 +30,7 @@ When working in a **company project** (`~/company-src/` directory):
 
 **Company Project Commit Structure:**
 ```
-[한글 제목]
+<gitmoji> [한글 제목]
 
 [한글 본문 - 무엇을, 왜 변경했는지 설명]
 - [상세 내용]
@@ -39,7 +39,7 @@ When working in a **company project** (`~/company-src/` directory):
 
 **Company Project Example:**
 ```
-사용자 인증 미들웨어 추가
+✨ 사용자 인증 미들웨어 추가
 
 보안 강화를 위한 JWT 기반 인증 시스템 구현:
 - BaseMiddleware 추상 클래스 생성
@@ -59,13 +59,13 @@ You **MUST** write the ENTIRE commit message in BOTH English and Korean, with En
 **Required Structure:**
 
 ```
-[English Subject Line]
+<gitmoji> [English Subject Line]
 
 [English Body - explaining what and why]
 - [Details in English]
 - [Changes described in English]
 
-[한글 제목 - Same as English subject]
+<gitmoji> [한글 제목 - Same as English subject]
 
 [한글 본문 - Same content as English body]
 - [상세 내용 - Details in Korean]
@@ -90,7 +90,7 @@ Co-Authored-By: Claude <MODEL_NAME> <noreply@anthropic.com>
 
 ### Example:
 ```
-Add middleware system with PII detection and audit logging
+✨ Add middleware system with PII detection and audit logging
 
 Implement production-ready middleware pattern for security and compliance:
 - Create BaseMiddleware abstract class with before_request/after_response/on_error hooks
@@ -105,7 +105,7 @@ Configure development tools:
 - Fix pytest import issues by removing conflicting __init__.py files
 - Add build system configuration for editable install
 
-미들웨어 시스템 추가 및 PII 탐지, 감사 로깅 구현
+✨ 미들웨어 시스템 추가 및 PII 탐지, 감사 로깅 구현
 
 보안 및 규정 준수를 위한 프로덕션 수준의 미들웨어 패턴 구현:
 - BaseMiddleware 추상 클래스 생성 (before_request/after_response/on_error 훅 포함)

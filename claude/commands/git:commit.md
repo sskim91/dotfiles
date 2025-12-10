@@ -30,7 +30,7 @@ When working in a **company project** (`~/company-src/` directory):
 
 **Company Project Commit Structure:**
 ```
-[한글 제목]
+<gitmoji> [한글 제목]
 
 [한글 본문 - 무엇을, 왜 변경했는지 설명]
 - [상세 내용]
@@ -39,7 +39,7 @@ When working in a **company project** (`~/company-src/` directory):
 
 **Company Project Example:**
 ```
-사용자 인증 미들웨어 추가
+✨ 사용자 인증 미들웨어 추가
 
 보안 강화를 위한 JWT 기반 인증 시스템 구현:
 - BaseMiddleware 추상 클래스 생성
@@ -59,13 +59,13 @@ You **MUST** write the ENTIRE commit message in BOTH English and Korean, with En
 **Required Structure:**
 
 ```
-[English Subject Line]
+<gitmoji> [English Subject Line]
 
 [English Body - explaining what and why]
 - [Details in English]
 - [Changes described in English]
 
-[한글 제목 - Same as English subject]
+<gitmoji> [한글 제목 - Same as English subject]
 
 [한글 본문 - Same content as English body]
 - [상세 내용 - Details in Korean]
@@ -90,7 +90,7 @@ Co-Authored-By: Claude <MODEL_NAME> <noreply@anthropic.com>
 
 ### Example:
 ```
-Add middleware system with PII detection and audit logging
+✨ Add middleware system with PII detection and audit logging
 
 Implement production-ready middleware pattern for security and compliance:
 - Create BaseMiddleware abstract class with before_request/after_response/on_error hooks
@@ -105,7 +105,7 @@ Configure development tools:
 - Fix pytest import issues by removing conflicting __init__.py files
 - Add build system configuration for editable install
 
-미들웨어 시스템 추가 및 PII 탐지, 감사 로깅 구현
+✨ 미들웨어 시스템 추가 및 PII 탐지, 감사 로깅 구현
 
 보안 및 규정 준수를 위한 프로덕션 수준의 미들웨어 패턴 구현:
 - BaseMiddleware 추상 클래스 생성 (before_request/after_response/on_error 훅 포함)
@@ -216,11 +216,18 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 #### Message Structure
 ```
-<type>(<scope>): <subject>
+<gitmoji> <subject>
                              ← Blank line
 <body>
                              ← Blank line
 <footer>
+```
+
+**Examples:**
+```
+✨ Add user authentication
+🐛 Fix login page redirect issue
+📝 Update API documentation
 ```
 
 #### Subject Line Rules
@@ -230,29 +237,44 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
    - ❌ Bad: "Added user authentication"
    - ❌ Bad: "Adding user authentication"
 
-2. **Type Prefixes** (Optional but recommended)
-   - `feat`: 새로운 기능
-   - `fix`: 버그 수정
-   - `docs`: 문서 변경
-   - `style`: 코드 포맷팅 (로직 변경 없음)
-   - `refactor`: 리팩토링
-   - `test`: 테스트 추가/수정
-   - `chore`: 빌드, 설정 변경
-   - `perf`: 성능 개선
+2. **Gitmoji Prefixes** (Required - https://gitmoji.dev/)
+   - ✨ `:sparkles:` 새로운 기능 추가
+   - 🐛 `:bug:` 버그 수정
+   - 📝 `:memo:` 문서 추가/수정
+   - 🎨 `:art:` 코드 구조/포맷 개선
+   - ♻️ `:recycle:` 코드 리팩토링
+   - ✅ `:white_check_mark:` 테스트 추가/수정
+   - 🔧 `:wrench:` 설정 파일 변경
+   - ⚡️ `:zap:` 성능 개선
+   - 🔥 `:fire:` 코드/파일 삭제
+   - 🚀 `:rocket:` 배포
+   - 💄 `:lipstick:` UI/스타일 업데이트
+   - 🔒 `:lock:` 보안 이슈 수정
+   - ⬆️ `:arrow_up:` 의존성 업그레이드
+   - ⬇️ `:arrow_down:` 의존성 다운그레이드
+   - 🚨 `:rotating_light:` 컴파일러/린터 경고 수정
+   - 🚧 `:construction:` 작업 진행 중
+   - 💚 `:green_heart:` CI 빌드 수정
+   - 📦 `:package:` 패키지 추가/업데이트
+   - 🔀 `:twisted_rightwards_arrows:` 브랜치 병합
+   - 🗑️ `:wastebasket:` 사용하지 않는 코드 정리
+   - 💥 `:boom:` 주요 변경사항 (Breaking Change)
 
 3. **Subject Examples**
    ```
-   ✅ Good Examples:
-   - Fix memory leak in user session handler
-   - Add OAuth2 authentication for API endpoints
-   - Refactor database connection pooling
-   - Update README with installation instructions
-   
+   ✅ Good Examples (with Gitmoji):
+   - 🐛 Fix memory leak in user session handler
+   - ✨ Add OAuth2 authentication for API endpoints
+   - ♻️ Refactor database connection pooling
+   - 📝 Update README with installation instructions
+   - ⚡️ Improve query performance by adding index
+   - 🔧 Update ESLint configuration
+
    ❌ Bad Examples:
-   - fixed bug                    # Too vague
-   - Added new feature.           # Period at end, past tense
-   - changing api endpoints       # Not imperative, not capitalized
-   - Fix bug in the system that was causing issues when users tried to... # Too long
+   - fixed bug                    # No gitmoji, too vague
+   - Added new feature.           # No gitmoji, period at end, past tense
+   - 🐛 changing api endpoints    # Not imperative, not capitalized
+   - ✨ Fix bug in the system that was causing issues when users tried to... # Too long
    ```
 
 #### Body Writing Guidelines
@@ -272,15 +294,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 
 3. **Good Body Example**
    ```
-   Fix race condition in payment processing
-   
-   The payment processor was occasionally processing the same 
+   🐛 Fix race condition in payment processing
+
+   The payment processor was occasionally processing the same
    payment twice when users double-clicked the submit button.
-   
+
    This commit adds a mutex lock around the payment processing
    logic and implements idempotency keys to ensure each payment
    is processed exactly once.
-   
+
    Fixes #842
    ```
 
