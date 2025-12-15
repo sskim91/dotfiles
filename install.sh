@@ -182,7 +182,7 @@ echo "Setting up Claude Code configuration..."
 mkdir -p $HOME/.claude
 
 # Link customizable directories
-for dir in agents commands hooks output-styles skills; do
+for dir in agents commands hooks output-styles skills rules; do
     if [ -d "$DOTFILES/claude/$dir" ]; then
         ln -nfs "$DOTFILES/claude/$dir" "$HOME/.claude/$dir"
         echo "✓ Linked $dir"
