@@ -19,11 +19,17 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 ### AI/LLM Framework
 - LangGraph: `/langchain-ai/langgraph`
 - LangChain: `/langchain-ai/langchain`
+- LlamaIndex: `/run-llama/llama_index`
 - Langfuse: `/langfuse/langfuse-docs`
+- Langflow: `/langflow-ai/langflow`
 - FastMCP: `/jlowin/fastmcp`
 
 ### Python
 - FastAPI: `/fastapi/fastapi`
+- Django: `/django/django`
+- Flask: `/pallets/flask`
+- PyTorch: `/pytorch/pytorch`
+- Pandas: `/pandas-dev/pandas`
 - Python 3.11: `/websites/python_3_11`
 - Python 3.12: `/websites/python_3_12`
 - Python 3.13: `/websites/python_3_13`
@@ -33,16 +39,26 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 ### Java/Spring
 - Spring Framework: `/spring-projects/spring-framework`
 - Spring Boot: `/spring-projects/spring-boot`
+- Spring AI: `/spring-projects/spring-ai`
+- Spring Security: `/spring-projects/spring-security`
 - Spring Batch: `/spring-projects/spring-batch`
+- Spring Integration: `/spring-projects/spring-integration`
+- Spring Kafka: `/spring-projects/spring-kafka`
+- Spring Data JPA: `/spring-projects/spring-data-jpa`
+- Spring Data Redis: `/spring-projects/spring-data-redis`
+- Spring Data MongoDB: `/spring-projects/spring-data-mongodb`
 - Guava: `/google/guava`
 
 ### JavaScript/Node.js
 - Next.js: `/vercel/next.js`
 - Node.js: `/nodejs/node`
 - Deno: `/denoland/deno`
-- Lodash: `/lodash/lodash`
-- Jest: `/jestjs/jest`
 - NestJS: `/nestjs/nest`
+- Axios: `/axios/axios`
+- Lodash: `/lodash/lodash`
+- jQuery: `/jquery/jquery`
+- Day.js: `/iamkun/dayjs`
+- Jest: `/jestjs/jest`
 
 ### Frontend/Visualization
 - Bootstrap 5.3: `/websites/getbootstrap_5_3`
@@ -64,6 +80,14 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Nginx (website): `/websites/nginx_en`
 - Jenkins: `/jenkinsci/jenkins`
 - n8n: `/n8n-io/n8n-docs`
+
+### Monitoring/Observability
+- Sentry (JavaScript): `/getsentry/sentry-javascript`
+- Sentry (Java): `/getsentry/sentry-java`
+- Sentry (Python): `/getsentry/sentry-python`
+
+### GIS
+- GeoServer: `/geoserver/geoserver`
 
 ### Auth/Security
 - Keycloak: `/keycloak/keycloak`
