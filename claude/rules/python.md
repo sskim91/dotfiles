@@ -2,7 +2,7 @@
 
 When installing Python packages:
 
-1. Always check latest version first using `uv pip index versions <package>` or PyPI
+1. Always check latest version first using `pip index versions <package>` or PyPI
 2. Then install with the verified latest version
 
 This ensures:
