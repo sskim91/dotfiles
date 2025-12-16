@@ -56,6 +56,9 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - jOOQ: `/jooq/jooq`
 - Kotlin JDSL: `/line/kotlin-jdsl`
 - Flyway: `/flyway/flyway`
+- Spring REST Docs: `/spring-projects/spring-restdocs`
+- Netty: `/netty/netty`
+- Armeria: `/line/armeria`
 
 ### JavaScript/Node.js
 - Next.js: `/vercel/next.js`
