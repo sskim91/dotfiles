@@ -23,6 +23,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Langfuse: `/langfuse/langfuse-docs`
 - Langflow: `/langflow-ai/langflow`
 - FastMCP: `/jlowin/fastmcp`
+- OpenAI Platform: `/websites/platform_openai`
 
 ### Python
 - FastAPI: `/fastapi/fastapi`
@@ -30,6 +31,8 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Flask: `/pallets/flask`
 - PyTorch: `/pytorch/pytorch`
 - Pandas: `/pandas-dev/pandas`
+- SQLAlchemy: `/sqlalchemy/sqlalchemy`
+- Streamlit: `/streamlit/streamlit`
 - Python 3.11: `/websites/python_3_11`
 - Python 3.12: `/websites/python_3_12`
 - Python 3.13: `/websites/python_3_13`
@@ -48,6 +51,11 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Spring Data Redis: `/spring-projects/spring-data-redis`
 - Spring Data MongoDB: `/spring-projects/spring-data-mongodb`
 - Guava: `/google/guava`
+- Feign: `/openfeign/feign`
+- QueryDSL: `/openfeign/querydsl`
+- jOOQ: `/jooq/jooq`
+- Kotlin JDSL: `/line/kotlin-jdsl`
+- Flyway: `/flyway/flyway`
 
 ### JavaScript/Node.js
 - Next.js: `/vercel/next.js`
@@ -62,6 +70,8 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 
 ### Frontend/Visualization
 - Bootstrap 5.3: `/websites/getbootstrap_5_3`
+- Tailwind CSS: `/websites/tailwindcss`
+- Shadcn UI: `/websites/ui_shadcn`
 - D3.js: `/d3/d3`
 - Three.js: `/mrdoob/three.js`
 - Chart.js: `/chartjs/chart.js`
@@ -88,6 +98,10 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 
 ### GIS
 - GeoServer: `/geoserver/geoserver`
+
+### Data Engineering
+- Apache Airflow: `/apache/airflow`
+- Apache Spark: `/apache/spark`
 
 ### Auth/Security
 - Keycloak: `/keycloak/keycloak`
