@@ -37,6 +37,27 @@ The install script will:
 - Install Claude Code & Gemini CLI
 - Link all configuration files
 
+## Karabiner-Elements
+
+Caps Lock을 Modifier Key로 활용하는 커스텀 설정 (`my_custom_key.json`)
+
+**Caps Lock + 키 조합:**
+
+| 키 | 동작 |
+|---|------|
+| `i` | ↑ (위 화살표) |
+| `k` | ↓ (아래 화살표) |
+| `j` | ← (왼쪽 화살표) |
+| `l` | → (오른쪽 화살표) |
+| `e` | Page Up |
+| `d` | Page Down |
+| `r` | Home |
+| `f` | End |
+| `n` | Backspace |
+| `m` | Delete (Forward) |
+
+> Caps Lock만 단독으로 누르면 원래 Caps Lock 기능 동작
+
 ## Custom Functions
 
 The `zsh/functions.zsh` includes useful shell functions:

@@ -1,5 +1,6 @@
 .idea
 .config.json
+.DS_Store
 
 # Poetry installer error logs
 poetry-installer-error-*.log
