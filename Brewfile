@@ -1,5 +1,8 @@
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Safe rm that moves files to trash instead of permanent deletion
+tap "zdk/tools"
+brew "rm-safely"
 # Disk Usage/Free Utility - a better 'df' alternative
 brew "duf"
 # Modern, maintained replacement for ls
