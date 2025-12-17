@@ -241,6 +241,21 @@ fi
 echo "✅ Karabiner-Elements configuration linked"
 
 #-------------------------------------------------------------------------------
+# Link Ghostty configuration
+#-------------------------------------------------------------------------------
+echo "Setting up Ghostty configuration..."
+mkdir -p $HOME/.config/ghostty
+
+if [ -f "$DOTFILES/ghostty-config" ]; then
+    ln -nfs "$DOTFILES/ghostty-config" "$HOME/.config/ghostty/config"
+    echo "✓ Linked Ghostty config"
+else
+    echo "⚠️  ghostty-config not found, skipping..."
+fi
+
+echo "✅ Ghostty configuration linked"
+
+#-------------------------------------------------------------------------------
 # Install Serena MCP (AI semantic code analysis)
 #-------------------------------------------------------------------------------
 echo "Setting up Serena MCP..."

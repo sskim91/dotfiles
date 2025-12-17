@@ -66,6 +66,8 @@ cask "google-drive"
 cask "heynote"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# Fast, native, feature-rich terminal emulator
+cask "ghostty"
 # JetBrains tools manager
 cask "jetbrains-toolbox"
 # Keyboard customiser

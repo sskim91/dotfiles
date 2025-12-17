@@ -1,0 +1,459 @@
+# ============================================================
+# Ghostty Configuration - Full Reference (macOS)
+# 문서: https://ghostty.org/docs/config/reference
+# 테마 목록: ghostty +list-themes
+# 폰트 목록: ghostty +list-fonts
+# 액션 목록: ghostty +list-actions
+# ============================================================
+
+
+# ============================================================
+# FONT (폰트)
+# ============================================================
+
+# 기본 폰트 (ghostty +list-fonts 로 확인)
+font-family = "JetBrainsMono Nerd Font"
+
+# Bold/Italic/Bold-Italic 폰트 (미설정시 기본 폰트 사용)
+# font-family-bold =
+# font-family-italic =
+# font-family-bold-italic =
+
+# 폰트 크기 (포인트, 소수점 가능: 13.5)
+font-size = 14
+
+# 폰트 스타일 지정 (false로 해당 스타일 비활성화)
+# font-style =
+# font-style-bold =
+# font-style-italic =
+# font-style-bold-italic =
+
+# Bold/Italic 없을 때 합성 여부
+# font-synthetic-style = true
+
+# OpenType 폰트 기능 (-calt: 리거처 비활성화)
+# font-feature = -calt
+
+# Variable 폰트 축 설정 (wght=700)
+# font-variation =
+
+# 특정 유니코드를 특정 폰트로 매핑
+# font-codepoint-map =
+
+# macOS에서 폰트 두껍게 (서브픽셀 AA용)
+# font-thicken = false
+
+# 폰트 두께 강도 (0-255)
+# font-thicken-strength =
+
+# 폰트 셰이핑 경계 (cursor/word/line)
+# font-shaping-break = cursor
+
+
+# ============================================================
+# FONT ADJUSTMENT (폰트 미세 조정)
+# ============================================================
+
+# 셀 너비/높이 조정 (픽셀 또는 %)
+# adjust-cell-width = 0
+# adjust-cell-height = 0
+
+# 베이스라인 위치 조정
+# adjust-font-baseline = 0
+
+# 밑줄 위치/두께 조정
+# adjust-underline-position = 0
+# adjust-underline-thickness = 0
+
+# 취소선 위치/두께 조정
+# adjust-strikethrough-position = 0
+# adjust-strikethrough-thickness = 0
+
+# 윗줄 위치/두께 조정
+# adjust-overline-position = 0
+# adjust-overline-thickness = 0
+
+# 커서 두께/높이 조정
+# adjust-cursor-thickness = 0
+# adjust-cursor-height = 0
+
+# 박스 드로잉 문자 두께 조정
+# adjust-box-thickness = 0
+
+# Nerd Font 아이콘 높이 조정 (1.2.0+)
+# adjust-icon-height = 0
+
+
+# ============================================================
+# COLOR & THEME (색상 및 테마)
+# ============================================================
+
+# 테마 (ghostty +list-themes 로 확인)
+# light:테마명,dark:테마명 형식으로 라이트/다크 분리 가능
+theme = Dracula
+
+# 배경색/전경색 (#RRGGBB 또는 X11 색상명)
+# background =
+# foreground =
+
+# 배경 이미지 (PNG/JPEG 경로, 1.2.0+)
+# background-image =
+# background-image-opacity = 1.0
+# background-image-position = center
+# background-image-fit = contain
+# background-image-repeat = false
+
+# 256색 팔레트 커스터마이즈 (N=COLOR)
+# palette = 0=#000000
+
+# 커서 색상 (cell-foreground/cell-background 가능)
+# cursor-color =
+
+# 커서 아래 텍스트 색상
+# cursor-text =
+
+# 선택 영역 색상 (미설정시 반전)
+# selection-foreground =
+# selection-background =
+
+# WCAG 최소 명도 대비율 (1.0-21.0)
+# minimum-contrast = 1.0
+
+# 스플릿 구분선 색상 (1.1.0+)
+# split-divider-color =
+
+# 포커스 안된 스플릿 색상
+# unfocused-split-fill =
+
+
+# ============================================================
+# RENDERING (렌더링)
+# ============================================================
+
+# 배경 투명도 (0.0-1.0, macOS 재시작 필요)
+# background-opacity = 1.0
+
+# 셀 배경에도 투명도 적용 (1.2.0+)
+# background-opacity-cells = false
+
+# 배경 블러 효과 (macOS/KDE)
+# background-blur = false
+
+# 알파 블렌딩 색상 공간
+# alpha-blending = native
+
+# 문자 너비 계산 방식 (unicode/legacy)
+# grapheme-width-method = unicode
+
+
+# ============================================================
+# CURSOR (커서)
+# ============================================================
+
+# 커서 스타일 (block/bar/underline/block_hollow)
+cursor-style = block
+
+# 커서 깜박임 여부
+cursor-style-blink = false
+
+# 커서 투명도 (0.0-1.0)
+# cursor-opacity = 1.0
+
+# Alt+클릭으로 커서 이동 (Shell Integration 필요)
+# cursor-click-to-move = false
+
+
+# ============================================================
+# SELECTION & CLIPBOARD (선택 및 클립보드)
+# ============================================================
+
+# 타이핑 시 선택 해제
+# selection-clear-on-typing = true
+
+# 복사 후 선택 해제
+# selection-clear-on-copy = false
+
+# 선택시 자동 복사 (true/false/clipboard)
+copy-on-select = clipboard
+
+# 프로그램의 클립보드 읽기/쓰기 허용 (ask/allow/deny)
+# clipboard-read = ask
+# clipboard-write = allow
+
+# 복사 시 후행 공백 제거
+# clipboard-trim-trailing-spaces = false
+
+# 위험한 붙여넣기 확인 (개행, 명령어 등)
+# clipboard-paste-protection = true
+
+# 브래킷된 붙여넣기를 안전으로 간주
+# clipboard-paste-bracketed-safe = true
+
+
+# ============================================================
+# MOUSE (마우스)
+# ============================================================
+
+# 타이핑 중 마우스 커서 숨김
+mouse-hide-while-typing = true
+
+# Shift+클릭을 마우스 프로토콜로 전달
+# mouse-shift-capture = false
+
+# 마우스 스크롤 배율 (1.2.0+)
+# mouse-scroll-multiplier = 3
+
+# 우클릭 동작 (context-menu/paste/copy/copy-or-paste/ignore)
+# right-click-action = context-menu
+
+# 더블클릭 인식 시간 (밀리초)
+# click-repeat-interval =
+
+
+# ============================================================
+# SCROLLING (스크롤)
+# ============================================================
+
+# 자동 스크롤 조건 (keystroke/output)
+# scroll-to-bottom = keystroke
+
+# 스크롤백 버퍼 크기 (바이트, 기본 무제한)
+scrollback-limit = 10000
+
+# URL 자동 감지 및 열기
+# link-url = true
+
+# URL 미리보기 (true/false/osc8)
+# link-previews = true
+
+
+# ============================================================
+# WINDOW (윈도우)
+# ============================================================
+
+# 초기 윈도우 크기 (셀 단위)
+# window-width =
+# window-height =
+
+# 윈도우 시작 위치 (픽셀, macOS만)
+# window-position-x =
+# window-position-y =
+
+# 내부 여백 (포인트)
+window-padding-x = 8
+window-padding-y = 8
+
+# 여백 자동 균형
+# window-padding-balance = false
+
+# 여백 색상 (background/extend/extend-always)
+# window-padding-color = background
+
+# 윈도우 장식 (none/auto/client/server)
+# window-decoration = auto
+
+# 윈도우 테마 (auto/system/light/dark/ghostty)
+# window-theme = auto
+
+# 색상 공간 (srgb/display-p3, macOS만)
+window-colorspace = display-p3
+
+# 최대화 상태로 시작 (1.1.0+)
+# maximize = false
+
+# 전체화면으로 시작
+# fullscreen = false
+
+# 윈도우 제목 고정
+# title =
+
+# 새 탭 위치 (current/end)
+# window-new-tab-position = current
+
+# 탭바 표시 (always/auto/never, GTK)
+# window-show-tab-bar = auto
+
+# V-sync 활성화 (macOS)
+window-vsync = true
+
+# 셀 단위 크기 조정 (macOS)
+window-step-resize = true
+
+# 윈도우 상태 저장/복원 (default/never/always, macOS)
+window-save-state = never
+
+# 이전 윈도우의 작업 디렉토리 상속
+window-inherit-working-directory = false
+
+# 이전 윈도우의 폰트 크기 상속
+window-inherit-font-size = true
+
+
+# ============================================================
+# RESIZE OVERLAY (크기 조정 오버레이)
+# ============================================================
+
+# 오버레이 표시 (always/never/after-first)
+# resize-overlay = after-first
+
+# 오버레이 위치
+# resize-overlay-position = center
+
+# 오버레이 표시 시간
+# resize-overlay-duration = 750ms
+
+
+# ============================================================
+# macOS 전용
+# ============================================================
+
+# Option 키를 Alt로 사용 (vim 등에서 유용)
+macos-option-as-alt = true
+
+# 타이틀바 스타일 (native/hidden/transparent)
+macos-titlebar-style = native
+
+
+# ============================================================
+# QUICK TERMINAL (빠른 터미널, macOS)
+# 전역 단축키로 어디서든 터미널 호출
+# 주의: 손쉬운 사용 권한 필요
+# ============================================================
+
+# 빠른 터미널 위치 (top/bottom/left/right/center)
+# quick-terminal-position = top
+
+# 빠른 터미널 크기 (% 또는 px, 1.2.0+)
+# quick-terminal-size =
+
+# 애니메이션 시간 (초)
+# quick-terminal-animation-duration =
+
+# 포커스 변경 시 자동 숨김
+# quick-terminal-autohide = true
+
+# 표시 화면 (main/mouse/macos-menu-bar)
+# quick-terminal-screen = main
+
+# Space 전환 동작 (move/remain)
+# quick-terminal-space-behavior = move
+
+
+# ============================================================
+# COMMAND & SHELL (명령 및 셸)
+# ============================================================
+
+# 터미널 타입 (원격 서버 호환용)
+term = xterm-256color
+
+# 실행 명령 (기본: 시스템 셸)
+# command =
+
+# 초기 실행 명령 (첫 터미널만)
+# initial-command =
+
+# 환경 변수 설정 (KEY=VALUE, 1.2.0+)
+# env =
+
+# 시작시 입력 데이터 (1.2.0+)
+# input =
+
+# 작업 디렉토리 (inherit/home/절대경로)
+# working-directory = inherit
+
+# 명령 종료 후 터미널 유지
+# wait-after-command = false
+
+# 비정상 종료 판단 시간 (밀리초)
+# abnormal-command-exit-runtime =
+
+
+# ============================================================
+# SHELL INTEGRATION (셸 통합)
+# ============================================================
+
+# 셸 통합 (none/detect/bash/fish/zsh/elvish)
+shell-integration = zsh
+
+# 셸 통합 기능 (cursor/sudo/title/ssh-env/ssh-terminfo)
+shell-integration-features = cursor,sudo,title
+
+
+# ============================================================
+# APPLICATION BEHAVIOR (앱 동작)
+# ============================================================
+
+# 종료 확인 창 표시 (Cmd+Q)
+confirm-close-surface = false
+
+# 마지막 윈도우 닫기 후 앱 종료
+# quit-after-last-window-closed = false
+
+# 시작 시 초기 윈도우 생성
+# initial-window = true
+
+# 마우스 호버 시 포커스 변경
+# focus-follows-mouse = false
+
+# 실행 취소 가능 시간 (macOS, 1.2.0+)
+# undo-timeout = 5s
+
+
+# ============================================================
+# KEYBIND (키 바인딩)
+# 형식: keybind = [접두사:]키조합=액션
+# 접두사: global (전역), all (모든 터미널), unconsumed, performable
+# 수정자: shift, ctrl, alt, super (cmd)
+# 액션 목록: ghostty +list-actions
+# ============================================================
+
+# Shift+Enter (Claude Code 멀티라인 입력)
+keybind = shift+enter=text:\x1b\r
+
+# 설정 리로드 (Cmd+R)
+keybind = super+shift+r=reload_config
+
+# 빠른 터미널 토글 (전역 단축키, 손쉬운 사용 권한 필요)
+# keybind = global:ctrl+grave=toggle_quick_terminal
+
+# 새 창/탭
+# keybind = super+n=new_window
+# keybind = super+t=new_tab
+
+# 창 닫기
+# keybind = super+w=close_surface
+
+# 분할
+# keybind = super+d=new_split:right
+# keybind = super+shift+d=new_split:down
+
+# 스크롤
+# keybind = super+up=scroll_page_up
+# keybind = super+down=scroll_page_down
+
+# 폰트 크기
+# keybind = super+plus=increase_font_size:1
+# keybind = super+minus=decrease_font_size:1
+# keybind = super+zero=reset_font_size
+
+
+# ============================================================
+# TERMINAL API (터미널 API)
+# ============================================================
+
+# 제목 리포팅 활성화 (보안 위험)
+# title-report = false
+
+# 이미지 프로토콜 저장 한계
+# image-storage-limit = 320MB
+
+
+# ============================================================
+# CONFIGURATION (설정)
+# ============================================================
+
+# 추가 설정 파일 로드
+# config-file =
+
+# 기본 설정 파일 로드 (CLI만)
+# config-default-files = true
