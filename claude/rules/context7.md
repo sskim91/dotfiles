@@ -92,9 +92,25 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Nginx: `/nginx/nginx`
 - Nginx (website): `/websites/nginx_en`
 - Jenkins: `/jenkinsci/jenkins`
-- n8n: `/n8n-io/n8n-docs`
+- n8n: `/n8n-io/n8n`
+- n8n (docs): `/n8n-io/n8n-docs`
+- ArgoCD: `/argoproj/argo-cd`
+- Helm: `/helm/helm`
+- Helm (website): `/websites/helm_sh`
+- Istio: `/istio/istio`
+- Istio (website): `/websites/istio_io`
+- Envoy: `/envoyproxy/envoy`
+- Kong: `/kong/kong`
+- Harbor: `/goharbor/harbor`
+- Fluentd: `/fluent/fluentd`
+- containerd: `/containerd/containerd`
+- Cilium: `/cilium/cilium`
+- Cilium (website): `/websites/cilium_io-en-stable`
+- gRPC: `/grpc/grpc`
 
 ### Monitoring/Observability
+- Prometheus: `/prometheus/prometheus`
+- Prometheus (docs): `/prometheus/docs`
 - Sentry (JavaScript): `/getsentry/sentry-javascript`
 - Sentry (Java): `/getsentry/sentry-java`
 - Sentry (Python): `/getsentry/sentry-python`
