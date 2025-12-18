@@ -1,0 +1,647 @@
+# vim:fileencoding=utf-8:foldmethod=marker
+# ============================================================
+# Kitty Configuration - Full Reference (macOS)
+# 문서: https://sw.kovidgoyal.net/kitty/conf/
+# 테마 목록: kitten themes
+# 폰트 선택: kitten choose-fonts
+# 디버그: kitty --debug-config
+# ============================================================
+
+
+# ============================================================
+# FONT (폰트)
+# ============================================================
+
+# 기본 폰트 (kitten choose-fonts 로 선택)
+font_family      JetBrainsMono Nerd Font
+bold_font        auto
+italic_font      auto
+bold_italic_font auto
+
+# 폰트 크기 (pts)
+font_size 12.0
+
+# 리거처 비활성화 (never/cursor/always)
+# disable_ligatures never
+
+# 특정 유니코드를 특정 폰트로 매핑
+# symbol_map U+E0A0-U+E0A3,U+E0C0-U+E0C7 PowerlineSymbols
+
+# 폰트 수정 (underline, cell 크기 등)
+# modify_font underline_position -2
+# modify_font underline_thickness 150%
+# modify_font cell_width 100%
+# modify_font cell_height 100%
+# modify_font baseline 0
+
+# 박스 드로잉 문자 두께 (thin, normal, thick, very thick)
+# box_drawing_scale 0.001, 1, 1.5, 2
+
+# 텍스트 합성 전략 (platform/legacy_lcd/legacy_lcd_v2)
+# text_composition_strategy platform
+
+# macOS 폰트 스무딩 (0: 비활성, 1-3: 레벨)
+# macos_thicken_font 0
+
+
+# ============================================================
+# CURSOR (커서)
+# ============================================================
+
+# 커서 모양 (block/beam/underline)
+cursor_shape block
+
+# 커서 깜박임 간격 (초, 0=비활성, -1=시스템 기본)
+cursor_blink_interval 0
+
+# 커서 정지 후 깜박임 중지 시간 (초, 0=즉시 중지, 음수=깜박임 유지)
+# cursor_stop_blinking_after 15.0
+
+# 커서 색상 (none=반전)
+# cursor #cccccc
+# cursor_text_color #111111
+
+# 빔 커서 두께 (pts)
+# cursor_beam_thickness 1.5
+
+# 밑줄 커서 두께 (pts)
+# cursor_underline_thickness 2.0
+
+
+# ============================================================
+# SCROLLBACK (스크롤백)
+# ============================================================
+
+# 스크롤백 라인 수 (-1=무제한)
+scrollback_lines -1
+
+# 스크롤백 페이저 (less -RF)
+# scrollback_pager less --chop-long-lines --RAW-CONTROL-CHARS +INPUT_LINE_NUMBER
+
+# 스크롤백 페이저 히스토리 크기 (MB)
+# scrollback_pager_history_size 0
+
+# 스크롤백 채우기 크기 조정 (yes/no)
+# scrollback_fill_enlarged_window no
+
+# 마우스 휠 스크롤 배수
+# wheel_scroll_multiplier 5.0
+
+# 마우스 휠 최소 라인 (스크롤 너무 적을 때)
+# wheel_scroll_min_lines 1
+
+# 터치 스크롤 배수
+# touch_scroll_multiplier 1.0
+
+
+# ============================================================
+# MOUSE (마우스)
+# ============================================================
+
+# 타이핑 중 마우스 커서 숨김 (초, 0=비활성, 음수=즉시)
+mouse_hide_wait 3.0
+
+# URL 스타일 (none/straight/double/curly/dotted/dashed)
+url_style curly
+
+# URL 색상
+# url_color #0087bd
+
+# URL 감지 정규식 프리픽스
+# url_prefixes file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh
+
+# URL 감지 제외 문자
+# url_excluded_characters
+
+# 클릭 시 URL 열기 Modifier (ctrl/shift/alt/super)
+# open_url_with default
+
+# URL 열기 프로그램
+# open_url_with default
+
+# URL 감지 활성화
+# detect_urls yes
+
+# 하이퍼링크 밑줄 표시 (always/hover/never)
+# underline_hyperlinks hover
+
+# 클릭 시 커서 위치 복사
+# copy_on_select no
+
+# 선택 시 자동 복사 (clipboard/primary/no)
+copy_on_select clipboard
+
+# 선택 제거 지연 (초)
+# strip_trailing_spaces never
+
+# 선택 시 프로그램으로 파이프
+# select_by_word_characters @-./_~?&=%+#
+
+# 더블클릭 단어 문자 정의
+# select_by_word_characters_forward
+
+# 마우스 클릭 URL 열기 modifier
+# click_interval -1.0
+
+# 포커스 따라가기 (마우스 호버 시 창 포커스)
+# focus_follows_mouse no
+
+# 마우스 포인터 모양 (기본: beam/arrow/hand)
+# pointer_shape_when_grabbed arrow
+# default_pointer_shape beam
+# pointer_shape_when_dragging beam
+
+
+# ============================================================
+# PERFORMANCE (성능)
+# ============================================================
+
+# 다시 그리기 지연 (밀리초)
+# repaint_delay 10
+
+# 입력 지연 (밀리초)
+# input_delay 3
+
+# 동기 업데이트 (yes/no)
+# sync_to_monitor yes
+
+
+# ============================================================
+# BELL (벨)
+# ============================================================
+
+# 시스템 벨 활성화
+# enable_audio_bell yes
+
+# 시각적 벨 지속 시간 (초)
+# visual_bell_duration 0.0
+
+# 시각적 벨 색상
+# visual_bell_color none
+
+# 윈도우 벨 활성화
+# window_alert_on_bell yes
+
+# 벨 명령어
+# bell_on_tab "🔔 "
+
+# 벨 시 명령 실행
+# command_on_bell none
+
+# 벨 경로 (빈 값=시스템 기본)
+# bell_path none
+
+
+# ============================================================
+# WINDOW (윈도우)
+# ============================================================
+
+# 기억된 윈도우 크기 사용 (yes/no)
+remember_window_size no
+
+# 초기 윈도우 크기 (셀 단위)
+initial_window_width  140c
+initial_window_height 50c
+
+# 셀 단위 크기 조정 활성화
+# resize_in_steps no
+
+# 윈도우 크기 조정 debounce (초)
+# resize_debounce_time 0.1 0.5
+
+# 크기 조정 힌트 표시
+# resize_draw_strategy static
+
+# 윈도우 테두리 너비 (pts)
+# window_border_width 0.5pt
+
+# 창 사이 수직 여백 (pts)
+# draw_minimal_borders yes
+
+# 윈도우 여백 (pts: top right bottom left 또는 단일값)
+window_margin_width 0
+
+# 단일 윈도우 여백 (pts, -1=window_margin_width 사용)
+# single_window_margin_width -1
+
+# 윈도우 패딩 (pts)
+window_padding_width 8
+
+# 패딩 밸런스 (yes/no)
+# placement_strategy center
+
+# 활성 테두리 색상
+# active_border_color #00ff00
+
+# 비활성 테두리 색상
+# inactive_border_color #cccccc
+
+# 벨 테두리 색상
+# bell_border_color #ff5a00
+
+# 비활성 텍스트 알파 (0.0-1.0)
+# inactive_text_alpha 1.0
+
+# 창 숨김/최소화 시 불투명도
+# hide_window_decorations no
+
+# 윈도우 로고 경로
+# window_logo_path none
+
+# 윈도우 로고 위치
+# window_logo_position bottom-right
+
+# 윈도우 로고 알파
+# window_logo_alpha 0.5
+
+# 크기 조정 시 오버레이
+# resize_overlay_duration 0.5
+
+# 크기 조정 표시 형식
+# resize_overlay_format {rows}x{cols}
+
+# 크기 조정 오버레이 위치
+# resize_overlay_position center
+
+# 배경 불투명도 (0.0-1.0)
+# background_opacity 1.0
+
+# 배경 이미지
+# background_image none
+
+# 배경 이미지 레이아웃 (tiled/mirror-tiled/scaled/clamped/centered/cscaled)
+# background_image_layout tiled
+
+# 배경 이미지 선형 보간
+# background_image_linear no
+
+# 배경 블러 (macOS/KDE)
+# background_blur 0
+
+# 동적 배경 불투명도
+# dynamic_background_opacity no
+
+# 배경 틴트 (0.0-1.0)
+# background_tint 0.0
+
+# 배경 틴트 감마 조정
+# background_tint_gaps 1.0
+
+# 투명도 적용 범위 (전경/배경/둘 다)
+# dim_opacity 0.4
+
+
+# ============================================================
+# TAB BAR (탭바)
+# ============================================================
+
+# 탭바 위치 (top/bottom)
+tab_bar_edge bottom
+
+# 탭바 여백 (pts)
+# tab_bar_margin_width 0.0
+# tab_bar_margin_height 0.0 0.0
+
+# 탭바 스타일 (fade/slant/separator/powerline/custom/hidden)
+tab_bar_style powerline
+
+# 탭바 정렬 (left/center/right)
+# tab_bar_align left
+
+# 최소 탭 수
+# tab_bar_min_tabs 2
+
+# 탭 전환 대상 (previous/left/right/last)
+# tab_switch_strategy previous
+
+# 탭 페이드 영역 (0.0-1.0)
+# tab_fade 0.25 0.5 0.75 1
+
+# 탭 구분자
+# tab_separator " ┇"
+
+# 파워라인 스타일 (angled/slanted/round)
+tab_powerline_style slanted
+
+# 활성 탭 폰트 스타일 (bold-italic/bold/italic/normal)
+# tab_activity_symbol none
+
+# 탭 제목 템플릿
+# tab_title_template "{fmt.fg.red}{bell_symbol}{activity_symbol}{fmt.fg.tab}{title}"
+
+# 활성 탭 제목 템플릿
+# active_tab_title_template none
+
+# 탭 제목 최대 길이
+# tab_title_max_length 0
+
+# 활성 탭 폰트 스타일
+# active_tab_font_style bold-italic
+
+# 비활성 탭 폰트 스타일
+# inactive_tab_font_style normal
+
+# 탭바 배경색
+# tab_bar_background none
+
+# 탭바 여백 색상
+# tab_bar_margin_color none
+
+# 활성 탭 전경/배경색
+# active_tab_foreground   #000
+# active_tab_background   #eee
+
+# 비활성 탭 전경/배경색
+# inactive_tab_foreground #444
+# inactive_tab_background #999
+
+
+# ============================================================
+# COLOR SCHEME (색상)
+# ============================================================
+
+# 전경/배경색 (Dracula 테마)
+foreground #f8f8f2
+background #282a36
+
+# 선택 영역 색상
+selection_foreground #ffffff
+selection_background #44475a
+
+# 커서 색상
+cursor #f8f8f2
+
+# URL 색상
+url_color #8be9fd
+
+# 일반 색상
+# color0  (black)
+color0 #21222c
+# color1  (red)
+color1 #ff5555
+# color2  (green)
+color2 #50fa7b
+# color3  (yellow)
+color3 #f1fa8c
+# color4  (blue)
+color4 #bd93f9
+# color5  (magenta)
+color5 #ff79c6
+# color6  (cyan)
+color6 #8be9fd
+# color7  (white)
+color7 #f8f8f2
+
+# 밝은 색상
+# color8  (bright black)
+color8 #6272a4
+# color9  (bright red)
+color9 #ff6e6e
+# color10 (bright green)
+color10 #69ff94
+# color11 (bright yellow)
+color11 #ffffa5
+# color12 (bright blue)
+color12 #d6acff
+# color13 (bright magenta)
+color13 #ff92df
+# color14 (bright cyan)
+color14 #a4ffff
+# color15 (bright white)
+color15 #ffffff
+
+# 마크 색상 (마크1, 마크2, 마크3)
+# mark1_foreground black
+# mark1_background #98d3cb
+# mark2_foreground black
+# mark2_background #f2dcd3
+# mark3_foreground black
+# mark3_background #f274bc
+
+
+# ============================================================
+# ADVANCED (고급)
+# ============================================================
+
+# 셸 통합 (enabled/no-cursor/no-title/no-complete/no-cwd/disabled)
+shell_integration enabled
+
+# 터미널 타입 (TERM 환경변수)
+term xterm-kitty
+
+# 원격 제어 소켓 (none/경로)
+# allow_remote_control no
+
+# 원격 제어 암호
+# remote_control_password
+
+# 소켓 경로 (기본: /tmp/kitty-$USER-*-ctrl)
+# listen_on none
+
+# 환경 변수 설정
+# env
+
+# 필터 알림 (전역 정규식)
+# filter_notification
+
+# 와처 경로 (Python 스크립트)
+# watcher
+
+# 실행 명령 (미설정시 기본 셸)
+# exe_search_path
+
+# 업데이트 확인 간격 (시간, 0=비활성)
+# update_check_interval 24
+
+# 시작 세션
+# startup_session none
+
+# 클립보드 읽기/쓰기 제어
+# clipboard_control write-clipboard write-primary read-clipboard-ask read-primary-ask
+
+# 클립보드 최대 크기 (MB)
+# clipboard_max_size 512
+
+# 파일 전송 확인 모드 (ask/never/always)
+# file_transfer_confirmation_bypass
+
+# 붙여넣기 중 브래킷 붙여넣기 허용
+# allow_hyperlinks yes
+
+# 하이퍼링크 허용
+# shell_integration enabled
+
+# Kitty mod 키 (ctrl+shift)
+kitty_mod ctrl+shift
+
+# 클리어 후 스크롤백 초기화
+# clear_all_shortcuts no
+
+# 액션 별명 (자주 쓰는 명령 축약)
+# action_alias
+
+
+# ============================================================
+# macOS SPECIFIC (macOS 전용)
+# ============================================================
+
+# 타이틀바 색상 (system/background/색상값)
+macos_titlebar_color background
+
+# Option 키를 Alt로 사용 (no/left/right/both)
+macos_option_as_alt yes
+
+# 전통적인 전체화면 (스와이프/스페이스 없음)
+# macos_traditional_fullscreen no
+
+# 전체화면 전환 애니메이션 시간 (초)
+# macos_show_window_title_in all
+
+# 윈도우 제목 표시 위치 (all/menubar/window/none)
+# macos_show_window_title_in all
+
+# Cmd+H/Q 종료 확인
+# macos_quit_when_last_window_closed no
+
+# 마지막 윈도우 닫을 때 앱 종료
+macos_quit_when_last_window_closed yes
+
+# 윈도우 크기 조정 가능 여부
+# macos_window_resizable yes
+
+# 알림 센터에서 설정 열기
+# macos_thicken_font 0
+
+# 컬러스페이스 (srgb/displayp3)
+macos_colorspace displayp3
+
+# 커스텀 빔 커서
+# macos_custom_beam_cursor no
+
+# 메뉴바 제목 최대 길이
+# macos_menubar_title_max_length 0
+
+# 윈도우 인셋
+# macos_secure_keyboard_entry no
+
+# secure keyboard entry
+# macos_secure_keyboard_entry no
+
+
+# ============================================================
+# KEYBOARD SHORTCUTS (키 바인딩)
+# 형식: map [modifier+]key action
+# Modifier: ctrl, alt, shift, super (cmd), kitty_mod
+# 액션 목록: https://sw.kovidgoyal.net/kitty/actions/
+# ============================================================
+
+# ------------------------------------------------------------
+# Clipboard (클립보드)
+# ------------------------------------------------------------
+# map kitty_mod+c copy_to_clipboard
+# map kitty_mod+v paste_from_clipboard
+# map kitty_mod+s paste_from_selection
+# map shift+insert paste_from_selection
+# map kitty_mod+o pass_selection_to_program
+
+# ------------------------------------------------------------
+# Scrolling (스크롤)
+# ------------------------------------------------------------
+# map kitty_mod+up    scroll_line_up
+# map kitty_mod+down  scroll_line_down
+# map kitty_mod+k     scroll_line_up
+# map kitty_mod+j     scroll_line_down
+# map kitty_mod+page_up   scroll_page_up
+# map kitty_mod+page_down scroll_page_down
+# map kitty_mod+home  scroll_home
+# map kitty_mod+end   scroll_end
+# map kitty_mod+z     scroll_to_prompt -1
+# map kitty_mod+x     scroll_to_prompt 1
+# map kitty_mod+h     show_scrollback
+
+# ------------------------------------------------------------
+# Window Management (윈도우 관리)
+# ------------------------------------------------------------
+# map kitty_mod+enter new_window
+# map kitty_mod+n     new_os_window
+# map kitty_mod+w     close_window
+# map kitty_mod+]     next_window
+# map kitty_mod+[     previous_window
+# map kitty_mod+f     move_window_forward
+# map kitty_mod+b     move_window_backward
+# map kitty_mod+`     move_window_to_top
+# map kitty_mod+r     start_resizing_window
+# map kitty_mod+1     first_window
+# map kitty_mod+2     second_window
+# ... (1-9)
+
+# ------------------------------------------------------------
+# Tab Management (탭 관리)
+# ------------------------------------------------------------
+# map kitty_mod+right next_tab
+# map kitty_mod+left  previous_tab
+# map kitty_mod+t     new_tab
+# map kitty_mod+q     close_tab
+# map kitty_mod+.     move_tab_forward
+# map kitty_mod+,     move_tab_backward
+# map kitty_mod+alt+t set_tab_title
+
+# ------------------------------------------------------------
+# Layout Management (레이아웃 관리)
+# ------------------------------------------------------------
+# map kitty_mod+l     next_layout
+# map kitty_mod+space toggle_layout stack
+
+# ------------------------------------------------------------
+# Font Size (폰트 크기)
+# ------------------------------------------------------------
+# map kitty_mod+equal     change_font_size all +2.0
+# map kitty_mod+plus      change_font_size all +2.0
+# map kitty_mod+minus     change_font_size all -2.0
+# map kitty_mod+backspace change_font_size all 0
+
+# ------------------------------------------------------------
+# Custom Shortcuts (사용자 정의)
+# ------------------------------------------------------------
+
+# Shift+Enter (Claude Code 멀티라인 입력)
+map shift+enter send_text all \x1b\r
+
+# 설정 리로드
+map kitty_mod+f5 load_config_file
+
+# 설정 디버그
+map kitty_mod+f6 debug_config
+
+# 폰트 선택 UI
+# map kitty_mod+f7 kitten choose_fonts
+
+# 테마 선택 UI
+# map kitty_mod+f8 kitten themes
+
+# 스크롤백을 less로 보기
+map kitty_mod+g show_scrollback
+
+# URL 힌트 (클릭 가능한 URL 표시)
+map kitty_mod+e open_url_with_hints
+
+# 파일 경로 힌트
+# map kitty_mod+p>f kitten hints --type path --program -
+
+# 라인 힌트
+# map kitty_mod+p>l kitten hints --type line --program -
+
+# 해시 힌트 (git commit hash 등)
+# map kitty_mod+p>h kitten hints --type hash --program -
+
+
+# ============================================================
+# INCLUDES (추가 설정 파일)
+# ============================================================
+
+# 추가 설정 파일 로드 (테마 등)
+# include dracula.conf
+# include ${KITTY_OS}.conf
+
+# globinclude kitty.d/**/*.conf
+# envinclude KITTY_CONF_*
