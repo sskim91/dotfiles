@@ -30,19 +30,18 @@ if [[ "$ENABLE_GEMINI_REVIEW" -ne 1 ]]; then
 	exit 0
 fi
 
-# GEMINI.md 심볼릭 링크 생성 (TIL 디렉토리의 컨텍스트를 /tmp에서도 사용)
-if [[ -f "$TIL_DIR/GEMINI.md" ]]; then
-	ln -sf "$TIL_DIR/GEMINI.md" /tmp/GEMINI.md 2>/dev/null
-fi
-
 echo "📝 Gemini가 TIL 문서를 리뷰 중..." >&2
 
 # TIL-specific review prompt
-# -m gemini-2.5-pro: best available model for thorough review
+# -m gemini-3-flash-preview: Gemini 3 Flash (preview)
 # --sandbox false: disable sandbox to avoid workspace restrictions
-# /tmp에서 실행하여 Gemini가 TIL 디렉토리 파일 목록을 컨텍스트에 포함시키지 않도록 함
-# (파일 경로를 Java 어노테이션으로 오해하는 환각 방지)
-REVIEW_OUTPUT=$(cd /tmp && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-2.5-pro "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다. 아래 TIL(Today I Learned) 문서를 리뷰해주세요.
+# TIL 디렉토리에서 실행: GEMINI.md를 자동으로 컨텍스트로 읽음
+# grep -v로 CLI 시작 로그 및 에이전트 thinking 출력 필터링
+REVIEW_OUTPUT=$(cd "$TIL_DIR" && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-3-flash-preview "당신은 정확하고 효율적인 기술 문서 검토 전문가입니다.
+
+**중요: stdin으로 제공된 단일 문서만 리뷰하세요. 다른 파일을 탐색하거나 읽지 마세요.**
+
+아래 TIL(Today I Learned) 문서를 리뷰해주세요.
 
 ## TIL 문서의 특성 (반드시 이해하세요)
 - **학습 노트**입니다. 프로덕션 코드가 아닙니다.
@@ -105,7 +104,7 @@ mermaid 코드 블록이 있다면 다음 흔한 오류 패턴을 체크하세�
 1. 각 항목별로 피드백을 작성하세요. 해당 사항이 없으면 '없음'으로 표기.
 2. **Blocker가 '없음'이면, 마지막 줄에 반드시:** STATUS: PASS
 3. 한글로 답변하세요.
-4. **깔끔하게 끝내세요. 불필요한 칭찬이나 요약은 생략하세요.**" 2>&1)
+4. **깔끔하게 끝내세요. 불필요한 칭찬이나 요약은 생략하세요.**" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached|^I will |^Error executing tool")
 
 # Pass Gemini's review to Claude via stderr
 cat >&2 <<EOF
