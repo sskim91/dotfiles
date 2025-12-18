@@ -71,11 +71,10 @@ Review the code based on the following Strict Rules:
 "
 
 # 4. Gemini 실행
-# 모델은 최신 모델 사용 권장 (gemini-2.0-flash-thinking 등도 있다면 좋음)
-# 파일 내용을 직접 파이프로 넘기는 것이 @ 문법보다 호환성이 좋을 수 있습니다.
+# Gemini 3 Flash 모델 사용
 FILE_CONTENT=$(cat "$FILE_PATH")
 
-REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-2.5-pro -p "$PROMPT" 2>&1)
+REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-3-flash-preview "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
 
 # 5. 결과 처리
 # LGTM이 포함되어 있거나 출력이 너무 짧으면 굳이 에러로 띄우지 않고 넘어갈 수도 있음 (선택 사항)

@@ -67,7 +67,7 @@ If there are issues, use this format:
 
 # 4. Gemini 실행
 FILE_CONTENT=$(cat "$FILE_PATH")
-REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-2.5-pro -p "$PROMPT" 2>&1)
+REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-3-flash-preview "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
 
 # 5. 결과 처리
 # LGTM이면 조용히 종료
