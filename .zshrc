@@ -140,3 +140,7 @@ export PATH="$PATH:/Users/sskim/.lmstudio/bin"
 
 # Added by Antigravity
 export PATH="/Users/sskim/.antigravity/antigravity/bin:$PATH"
+
+# iTerm2 Shell Integration - 프롬프트 간 이동, 명령어 상태 표시, imgcat/it2dl 등 유틸리티 제공
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
