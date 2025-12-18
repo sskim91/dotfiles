@@ -4,7 +4,7 @@
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
-HOOK_TYPE="${1:-format}"  # format, check, or review
+HOOK_TYPE="${1:-check}"  # check or review
 
 # Determine file extension - TypeScript and JavaScript are now separate
 if [[ "$FILE_PATH" =~ \.py$ ]]; then

@@ -46,80 +46,38 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 # 📌 동작 원리
 # -------------
 # Hook은 Claude Code가 파일을 Write/Edit할 때 자동 실행됩니다:
-# - format hook: 코드 자동 포맷팅 (pre/post Write|Edit|MultiEdit)
 # - check hook:  린팅, 타입 체크 등 (pre/post Write|Edit|MultiEdit)
 # - review hook: AI 코드 리뷰 (post Write|Edit|MultiEdit only)
 #
-# 🔧 설정 우선순위
-# ----------------
-# 1순위: DISABLE_FORMAT=1 → 모든 format hook 강제 종료 (개별 설정 무시)
-# 2순위: ENABLE_XXX=0/1   → 개별 도구 활성화 여부
-#
-# ✅ 올바른 활성화 방법
-# ---------------------
-# 1. DISABLE_FORMAT=0 유지 (format hook 작동 허용)
-# 2. 원하는 도구만 ENABLE_XXX=1로 변경
-#
-# 예시:
-#   export DISABLE_FORMAT=0     # 0으로 유지! (hook 작동 허용)
-#   export ENABLE_PRETTIER=1    # Prettier 활성화
-#   export ENABLE_RUFF=1        # Ruff 활성화
-#
-# ❌ 잘못된 사용
-# --------------
-#   export DISABLE_FORMAT=1     # 1로 설정하면 아래 모든 설정 무시됨!
-#   export ENABLE_PRETTIER=1    # 무시됨 (DISABLE_FORMAT이 우선)
-#
-# 💡 일시적으로 모든 format hook 끄기
-# -----------------------------------
-#   export DISABLE_FORMAT=1     # 전체 끄기 (개별 설정 무시)
+# 🔧 설정 방법
+# ------------
+# ENABLE_XXX=0/1 → 개별 도구 활성화 여부
 #
 # 📝 현재 상태: 모든 도구 비활성화 (필요한 것만 선택적으로 1로 변경)
 # ============================================================================
 
 # ----------------------------------------------------------------------------
-# 전역 설정 (모든 format hook에 영향)
+# JavaScript 개발 도구 (javascript-check.sh)
 # ----------------------------------------------------------------------------
-export DISABLE_FORMAT=0              # 0=허용, 1=모든 format hook 강제 종료
-
-# ----------------------------------------------------------------------------
-# JavaScript 개발 도구 (javascript-check.sh, javascript-format.sh)
-# ----------------------------------------------------------------------------
-# Format 도구
-export ENABLE_PRETTIER=0             # Prettier - 코드 포맷터 (JS/TS 공통)
-export ENABLE_BIOME=0                # Biome - 올인원 린터/포맷터
-export ENABLE_DPRINT=0               # dprint - 빠른 포맷터
-
-# Check 도구
 export ENABLE_ESLINT=0               # ESLint - JavaScript 린팅
 export ENABLE_OXC=0                  # OXC - Rust 기반 고속 린터
 export ENABLE_STANDARD=0             # Standard JS - 제로 설정 스타일
 
 # ----------------------------------------------------------------------------
-# TypeScript 개발 도구 (typescript-check.sh, typescript-format.sh)
+# TypeScript 개발 도구 (typescript-check.sh)
 # ----------------------------------------------------------------------------
-# Format 도구 (PRETTIER, BIOME, DPRINT는 위에서 선언됨)
-
-# Check 도구
 export ENABLE_TSC=0                  # TypeScript Compiler - 타입 체크
 
 # ----------------------------------------------------------------------------
-# Python 개발 도구 (python-check.sh, python-format.sh)
+# Python 개발 도구 (python-check.sh)
 # ----------------------------------------------------------------------------
-# Format & Check 도구
-export ENABLE_RUFF=0                 # Ruff - 올인원 린터/포맷터
-
-# Check 도구
+export ENABLE_RUFF=0                 # Ruff - 린터
 export ENABLE_TY=0                   # Typos - 오타 검사
 export ENABLE_PYREFLY=0              # Pyrefly - 정적 분석
 
 # ----------------------------------------------------------------------------
-# Java 개발 도구 (java-check.sh, java-format.sh)
+# Java 개발 도구 (java-check.sh)
 # ----------------------------------------------------------------------------
-# Format 도구
-export ENABLE_GOOGLE_JAVA_FORMAT=0   # Google Java Format
-
-# Check 도구
 export ENABLE_CHECKSTYLE=0           # Checkstyle - 스타일 체커
 export ENABLE_SPOTBUGS=0             # SpotBugs - 버그 검출
 export ENABLE_PMD=0                  # PMD - 코드 분석
