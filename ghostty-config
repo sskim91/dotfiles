@@ -13,6 +13,7 @@
 
 # 기본 폰트 (ghostty +list-fonts 로 확인)
 font-family = "JetBrainsMono Nerd Font"
+font-style = Regular
 
 # Bold/Italic/Bold-Italic 폰트 (미설정시 기본 폰트 사용)
 # font-family-bold =
@@ -20,7 +21,7 @@ font-family = "JetBrainsMono Nerd Font"
 # font-family-bold-italic =
 
 # 폰트 크기 (포인트, 소수점 가능: 13.5)
-font-size = 14
+font-size = 12
 
 # 폰트 스타일 지정 (false로 해당 스타일 비활성화)
 # font-style =
@@ -232,8 +233,8 @@ scrollback-limit = 10000
 # ============================================================
 
 # 초기 윈도우 크기 (셀 단위)
-# window-width =
-# window-height =
+window-width = 140
+window-height = 50
 
 # 윈도우 시작 위치 (픽셀, macOS만)
 # window-position-x =
