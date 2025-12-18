@@ -218,8 +218,8 @@ mouse-hide-while-typing = true
 # 자동 스크롤 조건 (keystroke/output)
 # scroll-to-bottom = keystroke
 
-# 스크롤백 버퍼 크기 (바이트, 기본 무제한)
-scrollback-limit = 10000
+# 스크롤백 버퍼 크기 (바이트, lazy allocation)
+scrollback-limit = 1000000000
 
 # URL 자동 감지 및 열기
 # link-url = true
