@@ -30,14 +30,16 @@ if [[ "$ENABLE_GEMINI_REVIEW" -ne 1 ]]; then
 	exit 0
 fi
 
-echo "📝 Gemini가 TIL 문서를 리뷰 중..." >&2
+# Model configuration
+GEMINI_MODEL="gemini-3-flash-preview"
+
+echo "📝 Gemini($GEMINI_MODEL)가 TIL 문서를 리뷰 중..." >&2
 
 # TIL-specific review prompt
-# -m gemini-3-flash-preview: Gemini 3 Flash (preview)
 # --sandbox false: disable sandbox to avoid workspace restrictions
 # TIL 디렉토리에서 실행: GEMINI.md를 자동으로 컨텍스트로 읽음
 # grep -v로 CLI 시작 로그 및 에이전트 thinking 출력 필터링
-REVIEW_OUTPUT=$(cd "$TIL_DIR" && cat "$FILE_PATH" | gemini -y --sandbox false -m gemini-3-flash-preview "당신은 꼼꼼하고 건설적인 기술 문서 검토 전문가입니다.
+REVIEW_OUTPUT=$(cd "$TIL_DIR" && cat "$FILE_PATH" | gemini -y --sandbox false -m "$GEMINI_MODEL" "당신은 꼼꼼하고 건설적인 기술 문서 검토 전문가입니다.
 
 **오늘 날짜: $(date +%Y-%m-%d)** (Deprecated API 판단 기준)
 
@@ -112,7 +114,7 @@ REVIEW_OUTPUT=$(cd "$TIL_DIR" && cat "$FILE_PATH" | gemini -y --sandbox false -m
 cat >&2 <<EOF
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 Gemini TIL Review
+🤖 Gemini ($GEMINI_MODEL) TIL Review
 📄 File: $FILE_PATH
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

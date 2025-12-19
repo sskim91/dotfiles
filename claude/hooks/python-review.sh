@@ -27,7 +27,10 @@ if ! command -v gemini &> /dev/null; then
     exit 0
 fi
 
-echo "Running Gemini code review for $FILE_PATH..." >&2
+# Model configuration
+GEMINI_MODEL="gemini-3-flash-preview"
+
+echo "🔍 Running Gemini($GEMINI_MODEL) code review for $FILE_PATH..." >&2
 
 # 3. 개선된 프롬프트
 # - Role 부여: 시니어 파이썬 엔지니어
@@ -74,7 +77,7 @@ Review the code based on the following Strict Rules:
 # Gemini 3 Flash 모델 사용
 FILE_CONTENT=$(cat "$FILE_PATH")
 
-REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-3-flash-preview "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
+REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m "$GEMINI_MODEL" "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
 
 # 5. 결과 처리
 # LGTM이 포함되어 있거나 출력이 너무 짧으면 굳이 에러로 띄우지 않고 넘어갈 수도 있음 (선택 사항)
@@ -84,7 +87,7 @@ fi
 
 # Claude에게 보여줄 출력
 echo "---------------------------------------------------" >&2
-echo "🤖 **Gemini Code Review**" >&2
+echo "🤖 **Gemini ($GEMINI_MODEL) Python Review**" >&2
 echo "" >&2
 echo "$REVIEW_OUTPUT" >&2
 echo "---------------------------------------------------" >&2

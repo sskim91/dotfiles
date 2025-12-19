@@ -27,7 +27,10 @@ if ! command -v gemini &> /dev/null; then
     exit 0
 fi
 
-echo "🔍 Running Gemini code review for Modern JavaScript in $FILE_PATH..." >&2
+# Model configuration
+GEMINI_MODEL="gemini-3-flash-preview"
+
+echo "🔍 Running Gemini($GEMINI_MODEL) code review for Modern JavaScript in $FILE_PATH..." >&2
 
 # 3. 개선된 프롬프트 (Modern JavaScript 전문)
 # - 스타일/포맷팅 무시 (Prettier/ESLint 영역)
@@ -67,7 +70,7 @@ If there are issues, use this format:
 
 # 4. Gemini 실행
 FILE_CONTENT=$(cat "$FILE_PATH")
-REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m gemini-3-flash-preview "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
+REVIEW_OUTPUT=$(echo "$FILE_CONTENT" | gemini -y --sandbox false -m "$GEMINI_MODEL" "$PROMPT" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached")
 
 # 5. 결과 처리
 # LGTM이면 조용히 종료
@@ -77,7 +80,7 @@ fi
 
 # Claude에게 보여줄 출력 포맷팅
 echo "---------------------------------------------------" >&2
-echo "🤖 **Gemini JavaScript Review**" >&2
+echo "🤖 **Gemini ($GEMINI_MODEL) JavaScript Review**" >&2
 echo "" >&2
 echo "$REVIEW_OUTPUT" >&2
 echo "---------------------------------------------------" >&2
