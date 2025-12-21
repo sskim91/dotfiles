@@ -91,7 +91,7 @@ font-size = 12
 
 # 테마 (ghostty +list-themes 로 확인)
 # light:테마명,dark:테마명 형식으로 라이트/다크 분리 가능
-theme = Dracula
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
 
 # 배경색/전경색 (#RRGGBB 또는 X11 색상명)
 # background =
@@ -121,7 +121,7 @@ theme = Dracula
 # minimum-contrast = 1.0
 
 # 스플릿 구분선 색상 (1.1.0+)
-# split-divider-color =
+split-divider-color = #ff8700
 
 # 포커스 안된 스플릿 색상
 # unfocused-split-fill =
@@ -132,13 +132,14 @@ theme = Dracula
 # ============================================================
 
 # 배경 투명도 (0.0-1.0, macOS 재시작 필요)
-# background-opacity = 1.0
+background-opacity = 0.95
 
 # 셀 배경에도 투명도 적용 (1.2.0+)
 # background-opacity-cells = false
 
 # 배경 블러 효과 (macOS/KDE)
 # background-blur = false
+background-blur-radius = 10
 
 # 알파 블렌딩 색상 공간
 # alpha-blending = native
