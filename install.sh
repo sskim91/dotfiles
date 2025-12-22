@@ -217,11 +217,11 @@ echo "✅ Gemini configuration linked"
 echo "Setting up Karabiner-Elements configuration..."
 mkdir -p $HOME/.config/karabiner/assets/complex_modifications
 
-if [ -f "$DOTFILES/my_custom_key.json" ]; then
-    ln -nfs "$DOTFILES/my_custom_key.json" "$HOME/.config/karabiner/assets/complex_modifications/my_custom_key.json"
+if [ -f "$DOTFILES/config/karabiner/my_custom_key.json" ]; then
+    ln -nfs "$DOTFILES/config/karabiner/my_custom_key.json" "$HOME/.config/karabiner/assets/complex_modifications/my_custom_key.json"
     echo "✓ Linked Karabiner custom key configuration"
 else
-    echo "⚠️  my_custom_key.json not found, skipping..."
+    echo "⚠️  config/karabiner/my_custom_key.json not found, skipping..."
 fi
 
 echo "✅ Karabiner-Elements configuration linked"
