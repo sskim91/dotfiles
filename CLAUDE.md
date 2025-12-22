@@ -21,8 +21,8 @@ The install script performs:
 4. Sets up Git config with conditional includes
 5. Installs Oh-My-Zsh with Dracula theme
 6. Installs ZSH plugins (syntax highlighting, autosuggestions, completions, alias-tips, you-should-use)
-7. Links configuration files (.zshrc, .vimrc, init.vim)
-8. Installs Vim/Neovim plugins via Vundle
+7. Links configuration files (.zshrc, .vimrc, nvim/)
+8. Sets up Neovim with LazyVim (Lua-based modern configuration)
 9. Installs Node.js LTS (v22) via mise
 10. Links Claude configuration directory to ~/.claude
 11. Links Gemini CLI configuration directory to ~/.gemini
@@ -63,6 +63,46 @@ Uses **mise** (modern asdf replacement) for version management:
 - Faster and more modern than asdf
 - Activated via: `eval "$(mise activate zsh)"`
 - Node.js LTS 22 installed globally by default
+
+### Neovim Configuration (LazyVim)
+Modern Lua-based Neovim setup using LazyVim distribution:
+
+**Directory Structure**:
+```
+config/nvim/
+├── init.lua              # Bootstrap lazy.nvim and load config
+├── lazyvim.json          # LazyVim extras configuration
+└── lua/
+    ├── config/
+    │   ├── options.lua   # Editor options (migrated from .vimrc)
+    │   ├── keymaps.lua   # Custom key mappings
+    │   └── autocmds.lua  # Auto commands
+    └── plugins/
+        ├── colorscheme.lua  # Theme configuration (catppuccin)
+        └── editor.lua       # Editor enhancements
+```
+
+**Enabled Language Support** (via LazyVim extras):
+- Python (pyright, ruff)
+- TypeScript/JavaScript (tsserver, eslint)
+- Java (jdtls)
+- JSON, Markdown
+
+**Key Features**:
+- **lazy.nvim**: Fast plugin manager with lazy loading
+- **Catppuccin**: Default colorscheme (mocha flavor)
+- **Telescope**: Fuzzy finder (`<leader>ff`, `<leader>fg`)
+- **Neo-tree**: File explorer (`<leader>e`)
+- **LSP**: Built-in language server support
+- **Treesitter**: Advanced syntax highlighting
+
+**Common Commands**:
+```bash
+nvim                      # Start Neovim (auto-syncs plugins)
+:Lazy                     # Plugin manager UI
+:Mason                    # LSP/formatter installer
+:LazyExtras              # Enable/disable language extras
+```
 
 ## Claude Code Integration
 
@@ -212,9 +252,9 @@ source ~/.zshrc        # or use 'rr' alias
 # After editing .gitconfig
 # Changes apply automatically on next git command
 
-# After editing Vim/Neovim config
-vim +PluginInstall +qall    # Reinstall Vim plugins
-nvim +PluginInstall +qall   # Reinstall Neovim plugins
+# After editing Neovim config (config/nvim/lua/*)
+nvim                        # LazyVim auto-syncs plugins on startup
+# Or manually: nvim --headless "+Lazy! sync" +qa
 ```
 
 ### Hook System Development

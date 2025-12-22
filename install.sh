@@ -87,55 +87,41 @@ fi
 ln -nfs $DOTFILES/.zshrc $HOME/.zshrc
 
 #-------------------------------------------------------------------------------
-# Vim setting
+# Vim setting (basic vim with .vimrc)
 #-------------------------------------------------------------------------------
-echo "Setting up Vim/Neovim..."
-
-# Install Vundle if not present
-[ ! -d "$HOME/.vim/bundle/Vundle.vim" ] && \
-    git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-
-# Detect Homebrew installation path (Apple Silicon vs Intel Mac)
-if [ -d "/opt/homebrew" ]; then
-    BREW_PREFIX="/opt/homebrew"
-elif [ -d "/usr/local/Homebrew" ]; then
-    BREW_PREFIX="/usr/local"
-else
-    BREW_PREFIX=$(brew --prefix 2>/dev/null || echo "/opt/homebrew")
-fi
-
-echo "Detected Homebrew prefix: $BREW_PREFIX"
-
-# Update fzf path in init.vim if needed
-if [ -f "$DOTFILES/init.vim" ]; then
-    FZF_PATH="$BREW_PREFIX/opt/fzf"
-    if [ -d "$FZF_PATH" ]; then
-        echo "Updating fzf path in init.vim to: $FZF_PATH"
-        # Use sed to update fzf path (macOS compatible)
-        sed -i.bak "s|set rtp+=.*/opt/fzf|set rtp+=$FZF_PATH|g" "$DOTFILES/init.vim"
-        rm -f "$DOTFILES/init.vim.bak"
-    fi
-fi
-
-# Link vim config
+echo "Setting up Vim..."
 ln -nfs $DOTFILES/.vimrc $HOME/.vimrc
+echo "✓ Vim setup complete"
 
-# Neovim configuration
-echo "Setting up Neovim configuration..."
-mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}/nvim
-ln -nfs $DOTFILES/init.vim $HOME/.config/nvim/init.vim
+#-------------------------------------------------------------------------------
+# Neovim setting (LazyVim with Lua configuration)
+#-------------------------------------------------------------------------------
+echo "Setting up Neovim with LazyVim..."
 
-# Install plugins for both vim and neovim
-echo "Installing Vim plugins..."
-vim +PluginInstall +qall 2>/dev/null || true
-
-# Install plugins for neovim (if available)
-if command -v nvim &> /dev/null; then
-    echo "Installing Neovim plugins..."
-    nvim +PluginInstall +qall 2>/dev/null || true
+# Clean up old Neovim data for fresh LazyVim install
+if [ -d "$HOME/.local/share/nvim" ] && [ ! -f "$HOME/.local/share/nvim/.lazyvim-installed" ]; then
+    echo "Cleaning up old Neovim data..."
+    rm -rf "$HOME/.local/share/nvim"
+    rm -rf "$HOME/.local/state/nvim"
+    rm -rf "$HOME/.cache/nvim"
 fi
 
-echo "✓ Vim/Neovim setup complete"
+# Link Neovim configuration directory
+mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
+rm -rf $HOME/.config/nvim 2>/dev/null
+ln -nfs $DOTFILES/config/nvim $HOME/.config/nvim
+
+# Install LazyVim plugins (headless mode)
+if command -v nvim &> /dev/null; then
+    echo "Installing LazyVim plugins (this may take a moment)..."
+    nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
+    # Mark LazyVim as installed
+    mkdir -p "$HOME/.local/share/nvim"
+    touch "$HOME/.local/share/nvim/.lazyvim-installed"
+    echo "✓ LazyVim plugins installed"
+fi
+
+echo "✓ Neovim/LazyVim setup complete"
 
 #-------------------------------------------------------------------------------
 # Install Node.js LTS (v22) using mise
@@ -244,16 +230,32 @@ echo "✅ Karabiner-Elements configuration linked"
 # Link Ghostty configuration
 #-------------------------------------------------------------------------------
 echo "Setting up Ghostty configuration..."
-mkdir -p $HOME/.config/ghostty
+mkdir -p $HOME/.config
 
-if [ -f "$DOTFILES/ghostty-config" ]; then
-    ln -nfs "$DOTFILES/ghostty-config" "$HOME/.config/ghostty/config"
+if [ -d "$DOTFILES/config/ghostty" ]; then
+    rm -rf $HOME/.config/ghostty 2>/dev/null
+    ln -nfs "$DOTFILES/config/ghostty" "$HOME/.config/ghostty"
     echo "✓ Linked Ghostty config"
 else
-    echo "⚠️  ghostty-config not found, skipping..."
+    echo "⚠️  config/ghostty not found, skipping..."
 fi
 
 echo "✅ Ghostty configuration linked"
+
+#-------------------------------------------------------------------------------
+# Link Kitty configuration
+#-------------------------------------------------------------------------------
+echo "Setting up Kitty configuration..."
+
+if [ -d "$DOTFILES/config/kitty" ]; then
+    rm -rf $HOME/.config/kitty 2>/dev/null
+    ln -nfs "$DOTFILES/config/kitty" "$HOME/.config/kitty"
+    echo "✓ Linked Kitty config"
+else
+    echo "⚠️  config/kitty not found, skipping..."
+fi
+
+echo "✅ Kitty configuration linked"
 
 #-------------------------------------------------------------------------------
 # Install Serena MCP (AI semantic code analysis)
