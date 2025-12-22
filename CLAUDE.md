@@ -42,11 +42,41 @@ add-serena               # Runs add-serena-uvx.sh script
 
 ## Key Configuration Architecture
 
+### Directory Structure
+```
+~/.dotfiles/
+├── git/                  # Git configuration files
+│   ├── .gitconfig        # Main git config with conditional includes
+│   ├── .gitconfig_personal
+│   ├── .gitconfig_company
+│   └── .gitignore_global
+├── config/               # Application configurations
+│   ├── ghostty/          # Ghostty terminal config
+│   ├── iterm2/           # iTerm2 settings
+│   ├── karabiner/        # Keyboard customization
+│   ├── kitty/            # Kitty terminal config
+│   ├── nvim/             # Neovim (LazyVim) config
+│   └── obsidian/         # Obsidian style settings
+├── zsh/                  # Shell configuration modules
+├── claude/               # Claude Code settings & hooks
+│   ├── agents/           # Custom agent configurations
+│   ├── commands/         # Custom slash commands
+│   ├── hooks/            # File dispatcher & language hooks
+│   ├── output-styles/    # Output style configurations
+│   ├── rules/            # Global rules (context7, tavily, npm, python)
+│   ├── skills/           # Custom skills for patterns
+│   ├── settings.json     # Hook & statusline configuration
+│   └── CLAUDE.md         # Global Claude instructions
+├── gemini/               # Gemini CLI configuration
+│   └── settings.json
+└── install.sh            # Installation script
+```
+
 ### Git Conditional Configuration
-The repository uses Git's `includeIf` directive for automatic identity switching:
-- **Personal projects** (`~/dev/`): Uses `.gitconfig_personal`
-- **Company projects** (`~/company-src/`): Uses `.gitconfig_company`
-- **Base config**: `.gitconfig` with delta pager and Neovim editor
+Located in `git/` directory. Uses Git's `includeIf` directive for automatic identity switching:
+- **Personal projects** (`~/dev/`): Uses `git/.gitconfig_personal`
+- **Company projects** (`~/company-src/`): Uses `git/.gitconfig_company`
+- **Base config**: `git/.gitconfig` with delta pager and Neovim editor
 
 This ensures correct author information without manual switching.
 
@@ -125,11 +155,15 @@ Located in `claude/hooks/` with dispatcher pattern:
 
 3. **Configured timeouts**: 180s (3 minutes) for all hook types
 
-4. **Supported languages**:
-   - Python: ruff, black, isort
-   - JavaScript: prettier, eslint
-   - TypeScript: prettier, tsc
-   - Java: google-java-format
+4. **Supported languages and dispatching**:
+   - Python (`.py`): ruff, black, isort
+   - JavaScript (`.js`, `.jsx`, `.mjs`, `.cjs`): prettier, eslint
+   - TypeScript (`.ts`, `.tsx`): prettier, tsc
+   - Java (`.java`): google-java-format
+   - Go (`.go`): planned
+   - Rust (`.rs`): planned
+   - C++ (`.cpp`, `.cc`, `.h`, `.hpp`): planned
+   - TIL markdown (`~/dev/TIL/*.md`): Gemini review
 
 5. **TIL Review Hook** (`til-review.sh`):
    - Reviews markdown files in `~/dev/TIL` directory using Gemini
@@ -148,7 +182,32 @@ Located in `claude/commands/`:
 - **`git:commit-and-push`**: Combined workflow
 
 ### Custom Agents
-The `claude/agents/` directory contains custom agent configurations for specialized tasks.
+The `claude/agents/` directory contains custom agent configurations for specialized tasks:
+- Backend: backend-architect, backend-implementation-engineer, backend-code-reviewer, api-design-architect
+- Frontend: frontend-architect, nextjs-fullstack-expert, react-native-specialist
+- Data/ML: ml-engineer, ml-researcher, database-architect, sql-performance-optimizer
+- DevOps: container-orchestration-expert, kubernetes-platform-engineer, cicd-pipeline-engineer
+- Testing: test-strategy-engineer
+- Analysis: python-analysis-expert, javascript-typescript-analyzer, java-enterprise-analyzer, code-refactoring-expert
+- Strategy: business-planning-strategist, chief-strategy-officer, financial-analysis-expert, indie-monetization-strategist, marketing-strategy-expert
+- Documentation: technical-docs-writer, ux-design-specialist
+
+### Custom Skills
+Located in `claude/skills/`, skills provide specialized knowledge for common patterns:
+- **fastapi-templates**: Production-ready FastAPI project templates
+- **javascript-testing-patterns**: Jest, Vitest, Testing Library patterns
+- **microservices-patterns**: Service boundaries, event-driven architecture
+- **modern-javascript-patterns**: ES6+ features, async/await, functional patterns
+- **rag-implementation**: RAG systems with vector databases
+- **skill-writer**: Guide for creating new Agent Skills
+- **sql-optimization-patterns**: Query optimization, indexing strategies
+- **tech-blog-writer**: Technical blog writing with storytelling
+- **hook-development**: Claude Code hook development patterns
+- **mcp-integration**: MCP server integration patterns
+- **react-modernization**: React modernization strategies
+- **langchain-architecture**: LangChain application architecture
+- **langgraph-docs**: LangGraph documentation and patterns
+- **frontend-design**: Frontend design patterns
 
 ### Status Line
 Custom status line via `claude/statusline.sh` for enhanced CLI experience.
@@ -161,9 +220,15 @@ Custom status line via `claude/statusline.sh` for enhanced CLI experience.
 
 ### Environment Variables
 ```bash
-ENABLE_GEMINI_REVIEW=1      # Enable Gemini TIL review hook
-ENABLE_BACKGROUND_TASKS=1   # Enable background task execution
+ENABLE_GEMINI_REVIEW=1                          # Enable Gemini TIL review hook
+ENABLE_BACKGROUND_TASKS=true                    # Enable background task execution
+FORCE_AUTO_BACKGROUND_TASKS=true               # Force auto background tasks
+CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true  # Disable non-essential traffic
+CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true      # Enable unified read tool
+ENABLE_EXPERIMENTAL_MCP_CLI=true               # Enable experimental MCP CLI
 ```
+
+These are automatically set when using the `ccv` wrapper function.
 
 ## Development Environment
 
@@ -181,6 +246,8 @@ The dotfiles replace standard tools with modern alternatives:
 # Navigation
 dot         # cd ~/.dotfiles
 dev         # cd ~/dev
+til         # cd ~/dev/TIL
+comp        # cd ~/company-src
 desk        # cd ~/Desktop
 dl          # cd ~/Downloads
 
@@ -197,6 +264,11 @@ top         # htop
 # Homebrew
 update      # Update all brew packages
 services    # Manage brew services
+
+# Kitty Terminal Image Viewer
+img         # View image (centered)
+imgl        # View image (left aligned)
+imgclear    # Clear images from screen
 ```
 
 ### Useful Functions
@@ -211,16 +283,23 @@ battail <file>        # tail -f with bat syntax highlighting
 fh                    # Search command history with fzf
 fd                    # cd to directory with fzf
 fzfv                  # Preview files with fzf
+catcp <file>          # Copy file content to clipboard
+google <query>        # Search Google in Chrome
+javahome <version>    # Find Java home path for version
 
 # 1Password integration
 load-token            # Load GitHub token from 1Password
 token-status          # Check GitHub token status
 
 # Claude wrapper with optimization flags
-ccv                   # Claude with background tasks enabled
+ccv                   # Claude with all optimization env vars
 ccv -y                # Skip permissions prompts
 ccv -r                # Resume last session
 ccv -ry               # Resume with skip permissions
+
+# Codex CLI wrapper
+cdx <query>           # Run Codex with GPT-5.1-codex model
+cdx update            # Update Codex to latest version
 ```
 
 ### Oh-My-Zsh Plugins
@@ -249,7 +328,7 @@ Advanced fuzzy finding with fd integration:
 # After editing .zshrc or zsh/*.zsh
 source ~/.zshrc        # or use 'rr' alias
 
-# After editing .gitconfig
+# After editing git/.gitconfig
 # Changes apply automatically on next git command
 
 # After editing Neovim config (config/nvim/lua/*)
@@ -268,7 +347,7 @@ When modifying Claude hooks:
 ### Conditional Git Configuration Pattern
 When adding new directory-based Git configs:
 ```bash
-# In .gitconfig
+# In git/.gitconfig
 [includeIf "gitdir:~/path/to/dir/"]
     path = .gitconfig_custom_name
 ```
