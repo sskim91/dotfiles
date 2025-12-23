@@ -67,6 +67,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Deno: `/denoland/deno`
 - NestJS: `/nestjs/nest`
 - Axios: `/axios/axios`
+- TanStack Query: `/tanstack/query`
 - Lodash: `/lodash/lodash`
 - jQuery: `/jquery/jquery`
 - Day.js: `/iamkun/dayjs`
@@ -83,6 +84,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 ### Database/Search
 - Elasticsearch: `/elastic/elasticsearch`
 - OpenSearch: `/opensearch-project/opensearch`
+- Qdrant: `/qdrant/qdrant`
 - Redis (docs): `/redis/docs`
 - Redis (website): `/websites/redis_io`
 
