@@ -43,6 +43,15 @@ Target File: $FILE_PATH
 Review the code provided via input based on the following criteria:
 
 **Review Rules (Strict):**
+
+**0. ANTI-HALLUCINATION (CRITICAL - READ FIRST):**
+   - **NEVER report whitespace/spacing issues** in import paths, strings, type names, or module aliases (e.g., DO NOT say \"there's a space in '@/components'\" or \"' @testing-library/...'\" - this is hallucination).
+   - **NEVER claim there is a space** where there is none. This is a common hallucination.
+   - Before reporting ANY issue, **copy-paste the exact characters** from the code.
+   - If you are not 100% certain the issue exists, **DO NOT report it**.
+   - When quoting code, quote it **EXACTLY as written** - no modifications.
+   - **When in doubt, say LGTM** rather than risk hallucinating.
+
 1. **Ignore formatting/style issues** (semicolons, indentation, import order) - Assume Prettier/ESLint handles them.
 2. **Focus on Type Safety & Logic**:
    - Usage of \`any\` or unsafe type assertions (\`as\`).

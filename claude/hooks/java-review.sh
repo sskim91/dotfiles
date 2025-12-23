@@ -43,6 +43,15 @@ Target File: $FILE_PATH
 Review the code provided via input based on the following criteria:
 
 **Review Rules (Strict):**
+
+**0. ANTI-HALLUCINATION (CRITICAL - READ FIRST):**
+   - **NEVER report whitespace/spacing issues** in import paths, strings, package names, or annotations.
+   - **NEVER claim there is a space** where there is none. This is a common hallucination.
+   - Before reporting ANY issue, **copy-paste the exact characters** from the code.
+   - If you are not 100% certain the issue exists, **DO NOT report it**.
+   - When quoting code, quote it **EXACTLY as written** - no modifications.
+   - **When in doubt, say LGTM** rather than risk hallucinating.
+
 1. **Ignore formatting/style**: Braces, indentation, variable naming conventions, or missing Javadocs on trivial methods (getters/setters).
 2. **Focus on Robustness & Safety**:
    - **Null Safety**: Potential NullPointerExceptions (NPE). Suggest \`Optional\` usage where semantic.
