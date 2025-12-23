@@ -24,7 +24,7 @@ opt.wrapscan = false               -- 문서 끝에서 처음으로 돌아가지
 
 opt.cursorline = true              -- 현재 커서 행 표시
 opt.number = true                  -- 라인 넘버 표시
-opt.relativenumber = true          -- 상대 라인 넘버 (LazyVim 기본)
+opt.relativenumber = false         -- 상대 라인 넘버 끔
 
 opt.encoding = "utf-8"             -- 인코딩 utf-8
 opt.fileencodings = "utf-8,cp949"  -- 파일 저장 인코딩
