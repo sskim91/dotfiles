@@ -182,32 +182,17 @@ Located in `claude/commands/`:
 - **`git:commit-and-push`**: Combined workflow
 
 ### Custom Agents
-The `claude/agents/` directory contains custom agent configurations for specialized tasks:
-- Backend: backend-architect, backend-implementation-engineer, backend-code-reviewer, api-design-architect
-- Frontend: frontend-architect, nextjs-fullstack-expert, react-native-specialist
-- Data/ML: ml-engineer, ml-researcher, database-architect, sql-performance-optimizer
-- DevOps: container-orchestration-expert, kubernetes-platform-engineer, cicd-pipeline-engineer
-- Testing: test-strategy-engineer
-- Analysis: python-analysis-expert, javascript-typescript-analyzer, java-enterprise-analyzer, code-refactoring-expert
-- Strategy: business-planning-strategist, chief-strategy-officer, financial-analysis-expert, indie-monetization-strategist, marketing-strategy-expert
-- Documentation: technical-docs-writer, ux-design-specialist
+The `claude/agents/` directory contains custom agent configurations:
+- backend-architect, database-architect, sql-performance-optimizer
+- java-enterprise-analyzer, python-analysis-expert
+- ml-engineer
 
 ### Custom Skills
-Located in `claude/skills/`, skills provide specialized knowledge for common patterns:
-- **fastapi-templates**: Production-ready FastAPI project templates
-- **javascript-testing-patterns**: Jest, Vitest, Testing Library patterns
-- **microservices-patterns**: Service boundaries, event-driven architecture
-- **modern-javascript-patterns**: ES6+ features, async/await, functional patterns
-- **rag-implementation**: RAG systems with vector databases
-- **skill-writer**: Guide for creating new Agent Skills
+Located in `claude/skills/`:
+- **tech-blog-writer**: 한국어 기술 블로그 글쓰기
 - **sql-optimization-patterns**: Query optimization, indexing strategies
-- **tech-blog-writer**: Technical blog writing with storytelling
-- **hook-development**: Claude Code hook development patterns
+- **skill-writer**: Guide for creating new Agent Skills
 - **mcp-integration**: MCP server integration patterns
-- **react-modernization**: React modernization strategies
-- **langchain-architecture**: LangChain application architecture
-- **langgraph-docs**: LangGraph documentation and patterns
-- **frontend-design**: Frontend design patterns
 
 ### Status Line
 Custom status line via `claude/statusline.sh` for enhanced CLI experience.
