@@ -34,6 +34,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - SQLAlchemy: `/sqlalchemy/sqlalchemy`
 - Streamlit: `/streamlit/streamlit`
 - HTTPX: `/encode/httpx`
+- Tenacity: `/jd/tenacity`
 - Python 3.11: `/websites/python_3_11`
 - Python 3.12: `/websites/python_3_12`
 - Python 3.13: `/websites/python_3_13`
