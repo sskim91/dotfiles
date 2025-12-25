@@ -39,10 +39,10 @@ alias update="brew update && brew upgrade && brew cleanup"  # 패키지 업데�
 alias services="brew services"                              # 서비스 관리
 
 # eza를 사용한 향상된 파일 목록 표시
-alias ll="eza --color-scale all --icons --time-style long-iso -lhbg --git"   # 자세한 목록 + Git 상태
-alias la="eza --color-scale all --icons --time-style long-iso -lahbg --git"  # 숨김 파일 포함
-alias ls="eza"                                                                # 기본 목록
-alias lt="eza --tree --level=2"                                              # 트리 뷰 (2단계)
+alias ll="eza --color-scale all --icons --time-style long-iso -lhbg --git --group-directories-first --hyperlink"   # 자세한 목록 + Git 상태
+alias la="eza --color-scale all --icons --time-style long-iso -lahbg --git --group-directories-first --hyperlink"  # 숨김 파일 포함
+alias ls="eza --group-directories-first"                                                                            # 기본 목록
+alias lt="eza --tree --level=2 --group-directories-first"                                                          # 트리 뷰 (2단계)
 
 # 화면 정리
 alias c="clear"
