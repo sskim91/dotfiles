@@ -29,7 +29,6 @@ alias zshconfig="vim ~/.zshrc"    # zsh 설정 편집
 alias ohmyzsh="vim ~/.oh-my-zsh"  # Oh My Zsh 편집
 
 # 안전한 파일 조작 (확인 프롬프트 표시)
-alias rm="rm -i"
 alias cp='cp -i'
 alias ln='ln -i'
 alias mv='mv -i'
