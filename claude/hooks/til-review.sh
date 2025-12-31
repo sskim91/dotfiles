@@ -4,7 +4,7 @@
 # Only reviews .md files in ~/dev/TIL directory
 # Gemini reviews the document and passes feedback to Claude
 
-ENABLE_GEMINI_REVIEW=${ENABLE_GEMINI_REVIEW:-0}
+ENABLE_TIL_REVIEW=${ENABLE_TIL_REVIEW:-0}
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
@@ -26,7 +26,7 @@ if [[ ! "$FILE_PATH" =~ ^$TIL_DIR ]]; then
 fi
 
 # Exit if review is disabled
-if [[ "$ENABLE_GEMINI_REVIEW" -ne 1 ]]; then
+if [[ "$ENABLE_TIL_REVIEW" -ne 1 ]]; then
 	exit 0
 fi
 

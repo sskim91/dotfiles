@@ -85,4 +85,5 @@ export ENABLE_PMD=0                  # PMD - 코드 분석
 # ----------------------------------------------------------------------------
 # Code Review (모든 언어 공통 - *-review.sh)
 # ----------------------------------------------------------------------------
-export ENABLE_GEMINI_REVIEW=0        # Gemini AI 코드 리뷰 (TIL 문서 포함)
+export ENABLE_GEMINI_REVIEW=0        # Gemini AI 코드 리뷰 (.py, .java, .ts, .js)
+export ENABLE_TIL_REVIEW=1           # Gemini TIL 문서 리뷰 (~/dev/TIL/*.md)
