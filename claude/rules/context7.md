@@ -37,6 +37,9 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Tenacity: `/jd/tenacity`
 - structlog: `/hynek/structlog`
 - Boto3: `/boto/boto3`
+- aiomysql: `/aio-libs/aiomysql`
+- asynch: `/long2ice/asynch`
+- python-jose: `/mpdavis/python-jose`
 - Python 3.11: `/websites/python_3_11`
 - Python 3.12: `/websites/python_3_12`
 - Python 3.13: `/websites/python_3_13`
