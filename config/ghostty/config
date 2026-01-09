@@ -245,8 +245,8 @@ window-height = 50
 window-padding-x = 8
 window-padding-y = 8
 
-# 여백 자동 균형
-# window-padding-balance = false
+# 여백 자동 균형 (전체화면 시 중앙 정렬)
+window-padding-balance = true
 
 # 여백 색상 (background/extend/extend-always)
 # window-padding-color = background
@@ -278,8 +278,8 @@ window-colorspace = display-p3
 # V-sync 활성화 (macOS)
 window-vsync = true
 
-# 셀 단위 크기 조정 (macOS)
-window-step-resize = true
+# 셀 단위 크기 조정 (macOS) - false로 전체화면 꽉 참
+window-step-resize = false
 
 # 윈도우 상태 저장/복원 (default/never/always, macOS)
 window-save-state = never
