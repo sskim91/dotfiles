@@ -1,47 +1,49 @@
 {
-    "hooks": {
-        "SessionStart": [
-            {
-                "matcher": "startup",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "~/.claude/hooks/temporal-context.sh"
-                    }
-                ]
-            }
-        ],
-        "PostToolUse": [
-            {
-                "matcher": "Write|Edit|MultiEdit",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "~/.claude/hooks/file-dispatcher.sh check",
-                        "timeout": 180
-                    }
-                ]
-            },
-            {
-                "matcher": "Write|Edit|MultiEdit",
-                "hooks": [
-                    {
-                        "type": "command",
-                        "command": "~/.claude/hooks/file-dispatcher.sh review",
-                        "timeout": 180
-                    }
-                ]
-            }
+  "permissions": {
+    "defaultMode": "plan"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/temporal-context.sh"
+          }
         ]
-    },
-    "statusLine": {
-        "type": "command",
-        "command": "~/.claude/statusline.sh",
-        "padding": 0
-    },
-    "alwaysThinkingEnabled": true,
-    "permissions": {
-        "defaultMode": "plan"
-    },
-    "language": "korean"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh check",
+            "timeout": 180
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/file-dispatcher.sh review",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh",
+    "padding": 0
+  },
+  "language": "korean",
+  "alwaysThinkingEnabled": true,
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.3"
 }
