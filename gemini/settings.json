@@ -2,6 +2,9 @@
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
+    },
+    "folderTrust": {
+      "enabled": true
     }
   },
   "mcpServers": {},
@@ -39,7 +42,10 @@
       "run_shell_command(javac)",
       "run_shell_command(mvn)",
       "run_shell_command(gradle)"
-    ]
+    ],
+    "shell": {
+      "showColor": true
+    }
   },
   "general": {
     "previewFeatures": true
