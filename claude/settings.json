@@ -42,6 +42,9 @@
     "command": "~/.claude/statusline.sh",
     "padding": 0
   },
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true
+  },
   "language": "korean",
   "alwaysThinkingEnabled": true,
   "autoUpdatesChannel": "stable",
