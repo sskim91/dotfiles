@@ -1,6 +1,6 @@
 #!/bin/bash
 # Claude Code statusline - Enhanced version
-# Features: directory, git, model, context (from stdin), config counts, tool activity, agent status, todo progress
+# Features: directory, git, model, context (from stdin), config counts, agent status
 
 input=$(cat)
 
@@ -19,7 +19,6 @@ version_color() { C '38;5;180'; }  # soft yellow
 cc_version_color() { C '38;5;249'; } # light gray
 config_color() { C '38;5;245'; }   # gray
 agent_color() { C '38;5;213'; }    # pink
-todo_color() { C '38;5;156'; }     # light green
 rst() { RST; }
 
 # ---- context colors based on remaining % ----
@@ -130,9 +129,8 @@ if [ -n "$cwd" ] && [ -d "$cwd" ]; then
   fi
 fi
 
-# ---- transcript parsing for agents, todos ----
+# ---- transcript parsing for agents ----
 agent_status=""
-todo_status=""
 
 if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
   # Parse last 100 lines for recent activity
@@ -151,30 +149,6 @@ if [ -n "$transcript_path" ] && [ -f "$transcript_path" ]; then
       agent_status=$(echo "$running_agents" | while read desc; do
         [ -n "$desc" ] && printf "⚡%s " "$desc"
       done | sed 's/ $//')
-    fi
-
-    # TODO progress: find latest TodoWrite
-    todo_data=$(echo "$transcript_tail" | jq -s '
-      [.[] | select(.type == "assistant") |
-       .message.content[]? |
-       select(.type == "tool_use" and .name == "TodoWrite") |
-       .input.todos] | last // []
-    ' 2>/dev/null)
-
-    if [ -n "$todo_data" ] && [ "$todo_data" != "[]" ] && [ "$todo_data" != "null" ]; then
-      total=$(echo "$todo_data" | jq 'length' 2>/dev/null)
-      completed=$(echo "$todo_data" | jq '[.[] | select(.status == "completed")] | length' 2>/dev/null)
-      in_progress=$(echo "$todo_data" | jq -r '.[] | select(.status == "in_progress") | .content' 2>/dev/null | head -1)
-
-      if [ "$total" -gt 0 ]; then
-        if [ "$completed" -eq "$total" ]; then
-          todo_status="✓ All done ($completed/$total)"
-        elif [ -n "$in_progress" ]; then
-          todo_status="▶ ${in_progress:0:25}... ($completed/$total)"
-        else
-          todo_status="📋 $completed/$total"
-        fi
-      fi
     fi
   fi
 fi
@@ -252,11 +226,6 @@ printf '  🪝 %s%d hooks%s' "$(config_color)" "$hooks_count" "$(rst)"
 # Line 3: Agent status (if any)
 if [ -n "$agent_status" ]; then
   printf '\n🤖 %s%s%s' "$(agent_color)" "$agent_status" "$(rst)"
-fi
-
-# Line 5: TODO progress (if any)
-if [ -n "$todo_status" ]; then
-  printf '\n📝 %s%s%s' "$(todo_color)" "$todo_status" "$(rst)"
 fi
 
 printf '\n'
