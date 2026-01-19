@@ -29,13 +29,26 @@ WebFetch가 차단된 사이트(403, blocked, JavaScript 필요 등)에서 Gemin
 ```bash
 tmux new-session -d -s <session_name> -x 200 -y 50
 tmux send-keys -t <session_name> 'gemini' Enter
-sleep 3  # Gemini CLI 로딩 대기
+sleep 5  # Gemini CLI 로딩 대기 (3초는 부족할 수 있음)
 ```
 
 ### 2. 쿼리 전송 및 출력 캡처
 
+**중요: 텍스트와 Enter를 분리해서 전송**
+
 ```bash
-tmux send-keys -t <session_name> 'Fetch content from <URL>: <your query>' Enter
+# Step 1: 텍스트만 먼저 전송
+tmux send-keys -t <session_name> 'Fetch content from <URL>: <your query>'
+sleep 1  # 텍스트 버퍼링 대기
+
+# Step 2: Enter 별도 전송
+tmux send-keys -t <session_name> Enter
+sleep 3  # Enter 처리 대기
+
+# Step 3: 즉시 확인 - 쿼리가 박스 밖으로 나갔는지 체크
+tmux capture-pane -t <session_name> -p -S -50
+
+# Step 4: 응답 대기 후 전체 캡처
 sleep 30  # 응답 대기 (복잡한 검색은 최대 90초)
 tmux capture-pane -t <session_name> -p -S -500  # 출력 캡처
 ```
@@ -79,22 +92,28 @@ tmux kill-session -t <session_name>
 
 ```bash
 # Reddit
-tmux send-keys -t gemini_session 'Summarize the top posts from r/programming about Claude Code' Enter
+tmux send-keys -t gemini_session 'Summarize the top posts from r/programming about Claude Code'
+sleep 1 && tmux send-keys -t gemini_session Enter
 
 # LinkedIn
-tmux send-keys -t gemini_session 'What are the key points from this LinkedIn article: <url>' Enter
+tmux send-keys -t gemini_session 'What are the key points from this LinkedIn article: <url>'
+sleep 1 && tmux send-keys -t gemini_session Enter
 
 # X (구 Twitter)
-tmux send-keys -t gemini_session 'What is the discussion about in this X thread: <url>' Enter
+tmux send-keys -t gemini_session 'What is the discussion about in this X thread: <url>'
+sleep 1 && tmux send-keys -t gemini_session Enter
 
 # Medium
-tmux send-keys -t gemini_session 'Summarize this Medium article: <url>' Enter
+tmux send-keys -t gemini_session 'Summarize this Medium article: <url>'
+sleep 1 && tmux send-keys -t gemini_session Enter
 
 # Glassdoor
-tmux send-keys -t gemini_session 'What are the reviews saying about <company> on Glassdoor?' Enter
+tmux send-keys -t gemini_session 'What are the reviews saying about <company> on Glassdoor?'
+sleep 1 && tmux send-keys -t gemini_session Enter
 
 # 일반 차단 사이트
-tmux send-keys -t gemini_session 'Fetch and summarize the content from <blocked_url>' Enter
+tmux send-keys -t gemini_session 'Fetch and summarize the content from <blocked_url>'
+sleep 1 && tmux send-keys -t gemini_session Enter
 ```
 
 ## 트러블슈팅
@@ -102,6 +121,22 @@ tmux send-keys -t gemini_session 'Fetch and summarize the content from <blocked_
 | 문제 | 해결 |
 |------|------|
 | 응답 없음 | sleep 시간 늘리기 (최대 90초) |
-| Enter 미전송 | `tmux send-keys -t <session> Enter` 재실행 |
+| Enter 미전송 | 텍스트와 Enter 분리 전송 (sleep 1 사이에 두기) |
 | 세션 충돌 | 고유한 세션 이름 사용 |
 | 출력 잘림 | `-S -1000`으로 더 많은 라인 캡처 |
+| Gemini 미로딩 | 초기 sleep을 5초 이상으로 늘리기 |
+
+### Enter가 계속 무시되는 경우
+
+**원인**: `tmux send-keys 'text' Enter`에서 텍스트와 Enter를 동시에 보내면 타이밍 이슈 발생
+
+**해결**: 반드시 분리해서 전송
+```bash
+# ❌ 문제 있는 방식
+tmux send-keys -t session 'long query' Enter
+
+# ✅ 올바른 방식
+tmux send-keys -t session 'long query'
+sleep 1
+tmux send-keys -t session Enter
+```
