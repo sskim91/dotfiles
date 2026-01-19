@@ -73,9 +73,6 @@ alias ag="alias | grep "  # 특정 별칭 찾기
 # Serena MCP - AI 코드 분석 도구
 alias add-serena="bash ~/.dotfiles/add-serena-uvx.sh"
 
-# Gemini CLI - YOLO 모드 (자동 승인)
-alias gemi='gemini --yolo'
-
 # 터미널 이미지 뷰어 (Kitty 프로토콜)
 alias img='kitten icat'                      # 이미지 보기 (기본 중앙)
 alias imgl='kitten icat --align left'        # 왼쪽 정렬

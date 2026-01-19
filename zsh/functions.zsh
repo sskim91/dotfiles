@@ -226,12 +226,13 @@ ccv() {
     "FORCE_AUTO_BACKGROUND_TASKS=true"
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true"
     "CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true"
-    "ENABLE_EXPERIMENTAL_MCP_CLI=true"
+    "ENABLE_TOOL_SEARCH=1"
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS=55000"
+    "CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000"
   )
-  
+
   local claude_args=()
-  
+
   if [ "$1" = "-y" ]; then
     claude_args+=("--dangerously-skip-permissions")
   elif [ "$1" = "-r" ]; then
@@ -239,8 +240,26 @@ ccv() {
   elif [ "$1" = "-ry" ] || [ "$1" = "-yr" ]; then
     claude_args+=("--resume" "--dangerously-skip-permissions")
   fi
-  
-  env "${env_vars[@]}" claude "${claude_args[@]}"
+    env "${env_vars[@]}" claude "${claude_args[@]}"
+}
+
+# Gemini CLI
+gem() {
+  local gemini_args=()
+
+  case "$1" in
+    -y)
+      gemini_args+=("--yolo")
+      ;;
+    -r)
+      gemini_args+=("--resume")
+      ;;
+    -ry|-yr)
+      gemini_args+=("--resume" "--yolo")
+      ;;
+  esac
+
+  gemini "${gemini_args[@]}"
 }
 
 # Codex
