@@ -1,6 +1,6 @@
 ---
 name: zettelkasten
-description: Obsidian Zettelkasten 노트 작성. 원자적 노트 생성, 연결 관계 구축, mermaid 시각화 포함. 노트 작성, 개념 정리, 학습 기록, 메모 정리 요청 시 사용. "옵시디언 노트로 정리해줘", "옵시디언에 정리해줘" 요청 시 사용. Use when creating atomic notes, organizing concepts, or building knowledge graphs in Obsidian.
+description: Obsidian Zettelkasten 노트 작성. 원자적 노트 생성, 연결 관계 구축, mermaid 시각화 포함. **Proactively use this skill** when user mentions "옵시디언", "Obsidian", "제텔카스텐", "노트로 정리", "노트에 정리" without explicit /zettelkasten command.
 ---
 
 # Zettelkasten Note Writer
