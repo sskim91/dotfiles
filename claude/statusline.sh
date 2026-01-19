@@ -34,15 +34,30 @@ context_color_by_pct() {
   fi
 }
 
-# ---- progress bar ----
-progress_bar() {
-  local pct="${1:-0}" width="${2:-10}" char_fill="${3:-=}" char_empty="${4:--}"
-  [[ "$pct" =~ ^[0-9]+$ ]] || pct=0
-  ((pct<0)) && pct=0; ((pct>100)) && pct=100
-  local filled=$(( pct * width / 100 ))
-  local empty=$(( width - filled ))
-  printf '%*s' "$filled" '' | tr ' ' "$char_fill"
-  printf '%*s' "$empty" '' | tr ' ' "$char_empty"
+# ---- context bar (hackathon winner style) ----
+# Uses █ (full), ▄ (half), ░ (empty) blocks
+context_bar() {
+  local used_pct="${1:-0}" width="${2:-10}"
+  [[ "$used_pct" =~ ^[0-9]+$ ]] || used_pct=0
+  ((used_pct<0)) && used_pct=0; ((used_pct>100)) && used_pct=100
+
+  local bar=""
+  local progress_per_block=$((100 / width))  # 10% per block for width=10
+
+  for ((i=0; i<width; i++)); do
+    local block_threshold=$(( (i + 1) * progress_per_block ))
+    local half_threshold=$(( block_threshold - progress_per_block / 2 ))
+
+    if [[ $used_pct -ge $block_threshold ]]; then
+      bar+="█"  # full block
+    elif [[ $used_pct -ge $half_threshold ]]; then
+      bar+="▄"  # half block
+    else
+      bar+="░"  # empty block
+    fi
+  done
+
+  printf '%s' "$bar"
 }
 
 # ---- parse stdin JSON ----
@@ -74,15 +89,7 @@ if [ -n "$cwd" ] && [ -d "$cwd" ]; then
   git_branch=$(git -C "$cwd" branch --show-current 2>/dev/null || git -C "$cwd" rev-parse --short HEAD 2>/dev/null)
 fi
 
-# ---- context calculation ----
-context_pct=""
-context_remaining_pct=""
-if [ "$ctx_size" -gt 0 ]; then
-  total_tokens=$((ctx_input + ctx_cache_create + ctx_cache_read))
-  context_used_pct=$((total_tokens * 100 / ctx_size))
-  context_remaining_pct=$((100 - context_used_pct))
-  context_pct="${context_remaining_pct}%"
-fi
+# ---- context calculation moved to render section ----
 
 # ---- config counts ----
 claude_md_count=0
@@ -222,12 +229,17 @@ fi
 # Line 2: Context + Config counts
 printf '\n'
 
-# Context
-if [ -n "$context_pct" ]; then
-  ctx_bar=$(progress_bar "$context_remaining_pct" 10)
-  printf '🧠 %sCtx %s [%s]%s' "$(context_color_by_pct "$context_remaining_pct")" "$context_pct" "$ctx_bar" "$(rst)"
+# Context (hackathon winner style)
+if [ "$ctx_size" -gt 0 ]; then
+  total_tokens=$((ctx_input + ctx_cache_create + ctx_cache_read))
+  context_used_pct=$((total_tokens * 100 / ctx_size))
+  context_remaining_pct=$((100 - context_used_pct))
+  max_k=$((ctx_size / 1000))
+
+  ctx_bar=$(context_bar "$context_used_pct" 10)
+  printf '🧠 %s%s ~%d%% of %dk tokens%s' "$(context_color_by_pct "$context_remaining_pct")" "$ctx_bar" "$context_used_pct" "$max_k" "$(rst)"
 else
-  printf '🧠 %sCtx: ...%s' "$(config_color)" "$(rst)"
+  printf '🧠 %s░░░░░░░░░░ ~0%% of ?k tokens%s' "$(config_color)" "$(rst)"
 fi
 
 # Config counts
