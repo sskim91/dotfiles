@@ -243,6 +243,33 @@ ccv() {
     env "${env_vars[@]}" claude "${claude_args[@]}"
 }
 
+# Claude with Ollama (로컬 모델)
+cco() {
+  local env_vars=(
+    "ANTHROPIC_AUTH_TOKEN=ollama"
+    "ANTHROPIC_BASE_URL=http://localhost:11434"
+    "ENABLE_BACKGROUND_TASKS=true"
+    "FORCE_AUTO_BACKGROUND_TASKS=true"
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true"
+    "CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true"
+  )
+
+  local claude_args=()
+  local model="qwen3-coder:30b"  # 기본 모델
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y) claude_args+=("--dangerously-skip-permissions"); shift ;;
+      -r) claude_args+=("--resume"); shift ;;
+      -ry|-yr) claude_args+=("--resume" "--dangerously-skip-permissions"); shift ;;
+      -m) model="$2"; shift 2 ;;
+      *) break ;;
+    esac
+  done
+
+  env "${env_vars[@]}" claude --model "$model" "${claude_args[@]}"
+}
+
 # Gemini CLI
 gem() {
   local gemini_args=()
