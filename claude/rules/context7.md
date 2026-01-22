@@ -7,6 +7,7 @@ When working with code generation, setup/configuration, or library/API documenta
 3. Then use `get-library-docs` to fetch up-to-date documentation
 
 Use Context7 for:
+
 - Library/framework usage examples
 - API reference and documentation
 - Setup and configuration guides
@@ -17,15 +18,19 @@ Use Context7 for:
 For commonly used libraries, use these IDs directly with `get-library-docs`:
 
 ### AI/LLM Framework
+
 - LangGraph: `/langchain-ai/langgraph`
+- LangGraph Redis: `/redis-developer/langgraph-redis/v0.3.2`
 - LangChain: `/langchain-ai/langchain`
 - LlamaIndex: `/run-llama/llama_index`
 - Langfuse: `/langfuse/langfuse-docs`
 - Langflow: `/langflow-ai/langflow`
 - FastMCP: `/jlowin/fastmcp`
 - OpenAI Platform: `/websites/platform_openai`
+- OpenAI Python SDK: `/openai/openai-python`
 
 ### Python
+
 - FastAPI: `/fastapi/fastapi`
 - Django: `/django/django`
 - Flask: `/pallets/flask`
@@ -47,6 +52,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Python 3.15: `/websites/python_3_15`
 
 ### Java/Spring
+
 - Spring Framework: `/spring-projects/spring-framework`
 - Spring Boot: `/spring-projects/spring-boot`
 - Spring AI: `/spring-projects/spring-ai`
@@ -68,6 +74,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Armeria: `/line/armeria`
 
 ### JavaScript/Node.js
+
 - Next.js: `/vercel/next.js`
 - Node.js: `/nodejs/node`
 - Deno: `/denoland/deno`
@@ -80,6 +87,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Jest: `/jestjs/jest`
 
 ### Frontend/Visualization
+
 - Bootstrap 5.3: `/websites/getbootstrap_5_3`
 - Tailwind CSS: `/websites/tailwindcss`
 - Shadcn UI: `/websites/ui_shadcn`
@@ -88,6 +96,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Chart.js: `/chartjs/chart.js`
 
 ### Database/Search
+
 - Elasticsearch: `/elastic/elasticsearch`
 - OpenSearch: `/opensearch-project/opensearch`
 - Qdrant: `/qdrant/qdrant`
@@ -95,6 +104,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Redis (website): `/websites/redis_io`
 
 ### Infrastructure/DevOps
+
 - Kubernetes: `/kubernetes/kubernetes`
 - Kubernetes (website): `/websites/kubernetes_io`
 - Docker: `/docker/docs`
@@ -118,6 +128,7 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - gRPC: `/grpc/grpc`
 
 ### Monitoring/Observability
+
 - Prometheus: `/prometheus/prometheus`
 - Prometheus (docs): `/prometheus/docs`
 - Sentry (JavaScript): `/getsentry/sentry-javascript`
@@ -125,11 +136,14 @@ For commonly used libraries, use these IDs directly with `get-library-docs`:
 - Sentry (Python): `/getsentry/sentry-python`
 
 ### GIS
+
 - GeoServer: `/geoserver/geoserver`
 
 ### Data Engineering
+
 - Apache Airflow: `/apache/airflow`
 - Apache Spark: `/apache/spark`
 
 ### Auth/Security
+
 - Keycloak: `/keycloak/keycloak`

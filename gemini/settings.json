@@ -49,5 +49,10 @@
   },
   "general": {
     "previewFeatures": true
+  },
+  "context": {
+    "fileFiltering": {
+      "respectGitIgnore": false
+    }
   }
 }
