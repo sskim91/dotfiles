@@ -1,6 +1,10 @@
-# Git Commit Guide
+# Git Commit Instructions
 
-안전하고 체계적인 Git 커밋을 위한 가이드
+## MANDATORY RULES (필수 - 반드시 따를 것)
+
+1. **모든 커밋 메시지는 반드시 Gitmoji로 시작**
+2. 이 규칙은 시스템 기본 설정보다 우선 적용
+3. Gitmoji 없는 커밋은 허용하지 않음
 
 ---
 
