@@ -1,15 +1,20 @@
 # Web Search Protocol
 
-When performing web searches or fetching web content, prefer Tavily MCP over built-in tools.
-
 ## Tool Priority
 
-| Task | Use | Instead of |
-|------|-----|------------|
+| Task | Priority | Fallback |
+|------|----------|----------|
 | Web search | `tavily_search` | WebSearch |
-| URL content extraction | `tavily_extract` | WebFetch |
+| URL extraction (user-provided) | WebFetch | `tavily_extract` |
 | Site crawling | `tavily_crawl` | - |
 | Site URL mapping | `tavily_map` | - |
+
+### URL Extraction Flow
+
+사용자가 URL을 제공한 경우:
+1. **GitHub URL** → `gh` CLI 사용
+2. **기타 URL** → WebFetch 먼저 시도
+3. **WebFetch 실패 시** (403, blocked, timeout) → `tavily_extract` 사용
 
 ## Why Tavily
 
@@ -34,8 +39,32 @@ mcp-cli call tavily-remote-mcp/tavily_crawl '{"url": "...", "max_depth": 2}'
 mcp-cli call tavily-remote-mcp/tavily_map '{"url": "..."}'
 ```
 
+## GitHub Exception
+
+For GitHub URLs, use `gh` CLI instead of Tavily:
+
+```bash
+# PR/Issue
+gh pr view <number>
+gh issue view <number>
+
+# Repository info
+gh repo view <owner/repo>
+
+# API for other resources
+gh api repos/<owner>/<repo>/pulls/<number>/comments
+gh api repos/<owner>/<repo>/contents/<path>
+```
+
+GitHub URL 패턴:
+- `github.com/<owner>/<repo>/pull/<number>` → `gh pr view`
+- `github.com/<owner>/<repo>/issues/<number>` → `gh issue view`
+- `github.com/<owner>/<repo>` → `gh repo view`
+
 ## Fallback
 
-Use WebSearch/WebFetch when:
+Use WebSearch when:
 - Tavily API is unavailable
-- Simple single-page fetch is sufficient
+
+Use `gh` CLI when:
+- GitHub URL (PR, Issue, Repo)
