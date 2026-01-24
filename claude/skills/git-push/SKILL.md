@@ -1,3 +1,9 @@
+---
+name: git-push
+description: Git Push Guide
+disable-model-invocation: true
+---
+
 # Git Push Guide
 
 안전하고 체계적인 Git Push를 위한 가이드

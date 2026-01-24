@@ -1,3 +1,9 @@
+---
+name: git-commit
+description: Git Commit Instructions
+disable-model-invocation: true
+---
+
 # Git Commit Instructions
 
 ## MANDATORY RULES (필수 - 반드시 따를 것)

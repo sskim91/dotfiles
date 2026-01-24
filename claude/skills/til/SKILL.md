@@ -1,6 +1,6 @@
 ---
 name: til
-description: TIL(Today I Learned) 문서 작성. "왜(Why)" 중심 설명과 스토리텔링으로 기술 개념을 풀어가는 문서 생성. /til "주제" 또는 /til로 실행. **Proactively use this skill** when user mentions "TIL", "TIL로 작성", "TIL 문서", "학습 노트 작성" without explicit /til command.
+description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "TIL로 작성", "TIL 문서", "학습 노트 작성" without explicit /til command.
 ---
 
 # TIL Writer

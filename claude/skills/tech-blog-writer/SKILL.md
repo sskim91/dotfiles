@@ -1,6 +1,6 @@
 ---
 name: tech-blog-writer
-description: 기술 블로그 글 작성. "왜"를 중심으로 비유와 스토리텔링을 활용해 기술 개념을 설명하는 글 작성. 블로그 작성, 기술 문서 작성, 개념 설명, 글쓰기 요청 시 사용. Use when writing tech blogs, explaining technical concepts, or creating documentation with storytelling approach.
+description: Write tech blog posts with "Why" focused storytelling and analogies. 기술 블로그 글 작성, 비유와 스토리텔링 활용. Use when writing blogs, explaining technical concepts, or creating documentation.
 ---
 
 # Tech Blog Writer

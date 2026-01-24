@@ -1,5 +1,7 @@
 ---
-description: 새 세션으로 넘어가기 위한 상세한 대화 요약 생성
+name: session-handoff
+description: Generate comprehensive session summary for handoff to new LLM session. 새 세션 인계를 위한 상세 요약 생성.
+disable-model-invocation: true
 ---
 
 # Session Handoff - 대화 세션 인계 요약본 생성

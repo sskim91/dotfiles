@@ -1,3 +1,10 @@
+---
+name: devlog
+description: Record development work logs to _devlog/YYYY-MM-DD.md. 작업 로그 기록, 명령어/결정사항/다음 단계 포함.
+disable-model-invocation: true
+argument-hint: [title] or --summary
+---
+
 # /devlog - 작업 로그 기록
 
 개발 작업 내용을 devlog 파일에 기록합니다. Git 커밋 여부와 관계없이 작업 내용을 남길 수 있습니다.

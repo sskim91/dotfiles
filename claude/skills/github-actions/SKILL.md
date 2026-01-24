@@ -1,7 +1,10 @@
 ---
-description: GitHub Actions 실패 분석 및 root cause 파악
+name: github-actions
+description: Analyze GitHub Actions failures and identify root cause. 워크플로우 실패 분석, flakiness 체크, breaking commit 식별.
 argument-hint: <url>
 ---
+
+# GitHub Actions 실패 분석
 
 GitHub Actions URL을 분석합니다: $ARGUMENTS
 
