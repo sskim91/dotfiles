@@ -8,18 +8,18 @@ Personal dotfiles for macOS development environment.
 
 - **zsh/** - Zsh configuration (aliases, functions, path)
 - **git/** - Git configuration with conditional includes
-- **config/** - Application configurations
+- **.config/** - Application configurations
   - **nvim/** - Neovim with LazyVim
   - **ghostty/** - Ghostty terminal
   - **kitty/** - Kitty terminal
   - **karabiner/** - Keyboard customization
-- **claude/** - Claude Code configuration
+- **.claude/** - Claude Code configuration
   - **agents/** - 24+ custom agent configurations
   - **skills/** - 14 custom skills for common patterns
   - **hooks/** - File dispatcher & language-specific hooks
   - **commands/** - Custom slash commands (git:commit, git:push)
   - **rules/** - Global rules (Context7, Tavily, npm, python)
-- **gemini/** - Gemini CLI configuration
+- **.gemini/** - Gemini CLI configuration
 - **Brewfile** - Homebrew packages and applications
 
 ## Installation

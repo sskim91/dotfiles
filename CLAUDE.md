@@ -50,7 +50,7 @@ add-serena               # Runs add-serena-uvx.sh script
 │   ├── .gitconfig_personal
 │   ├── .gitconfig_company
 │   └── .gitignore_global
-├── config/               # Application configurations
+├── .config/              # Application configurations
 │   ├── ghostty/          # Ghostty terminal config
 │   ├── iterm2/           # iTerm2 settings
 │   ├── karabiner/        # Keyboard customization
@@ -58,7 +58,7 @@ add-serena               # Runs add-serena-uvx.sh script
 │   ├── nvim/             # Neovim (LazyVim) config
 │   └── obsidian/         # Obsidian style settings
 ├── zsh/                  # Shell configuration modules
-├── claude/               # Claude Code settings & hooks
+├── .claude/              # Claude Code settings & hooks
 │   ├── agents/           # Custom agent configurations
 │   ├── commands/         # Custom slash commands
 │   ├── hooks/            # File dispatcher & language hooks
@@ -67,7 +67,7 @@ add-serena               # Runs add-serena-uvx.sh script
 │   ├── skills/           # Custom skills for patterns
 │   ├── settings.json     # Hook & statusline configuration
 │   └── CLAUDE.md         # Global Claude instructions
-├── gemini/               # Gemini CLI configuration
+├── .gemini/              # Gemini CLI configuration
 │   └── settings.json
 └── install.sh            # Installation script
 ```
@@ -99,7 +99,7 @@ Modern Lua-based Neovim setup using LazyVim distribution:
 
 **Directory Structure**:
 ```
-config/nvim/
+.config/nvim/
 ├── init.lua              # Bootstrap lazy.nvim and load config
 ├── lazyvim.json          # LazyVim extras configuration
 └── lua/
@@ -142,7 +142,7 @@ nvim                      # Start Neovim (auto-syncs plugins)
   - Configured via `SessionStart` hook in settings.json
 
 ### Hook System Architecture
-Located in `claude/hooks/` with dispatcher pattern:
+Located in `.claude/hooks/` with dispatcher pattern:
 
 1. **file-dispatcher.sh**: Main entry point that routes to language-specific handlers
    - Routes by file extension: `.py`, `.java`, `.ts/.tsx`, `.js/.jsx`, `.go`, `.rs`, `.cpp`
@@ -172,33 +172,33 @@ Located in `claude/hooks/` with dispatcher pattern:
    - Provides feedback on technical accuracy, mermaid syntax, and content quality
 
 ### Output Styles
-Located in `claude/output-styles/`:
+Located in `.claude/output-styles/`:
 - **pragmatic-test-driven-developer.md**: TDD-focused output style
 
 ### Custom Slash Commands
-Located in `claude/commands/`:
+Located in `.claude/commands/`:
 - **`git:commit`**: Structured commit workflow with safety checks
 - **`git:push`**: Safe push with validation
 - **`git:commit-and-push`**: Combined workflow
 
 ### Custom Agents
-The `claude/agents/` directory contains custom agent configurations:
+The `.claude/agents/` directory contains custom agent configurations:
 - backend-architect, database-architect, sql-performance-optimizer
 - java-enterprise-analyzer, python-analysis-expert
 - ml-engineer
 
 ### Custom Skills
-Located in `claude/skills/`:
+Located in `.claude/skills/`:
 - **tech-blog-writer**: 한국어 기술 블로그 글쓰기
 - **sql-optimization-patterns**: Query optimization, indexing strategies
 - **skill-writer**: Guide for creating new Agent Skills
 - **mcp-integration**: MCP server integration patterns
 
 ### Status Line
-Custom status line via `claude/statusline.sh` for enhanced CLI experience.
+Custom status line via `.claude/statusline.sh` for enhanced CLI experience.
 
 ### Settings Configuration
-`claude/settings.json` controls:
+`.claude/settings.json` controls:
 - Hook configurations (SessionStart, PreToolUse, PostToolUse)
 - Status line command
 - `alwaysThinkingEnabled: true` for extended reasoning
@@ -316,7 +316,7 @@ source ~/.zshrc        # or use 'rr' alias
 # After editing git/.gitconfig
 # Changes apply automatically on next git command
 
-# After editing Neovim config (config/nvim/lua/*)
+# After editing Neovim config (.config/nvim/lua/*)
 nvim                        # LazyVim auto-syncs plugins on startup
 # Or manually: nvim --headless "+Lazy! sync" +qa
 ```
