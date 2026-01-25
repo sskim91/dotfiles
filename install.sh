@@ -109,7 +109,7 @@ fi
 # Link Neovim configuration directory
 mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
 rm -rf $HOME/.config/nvim 2>/dev/null
-ln -nfs $DOTFILES/config/nvim $HOME/.config/nvim
+ln -nfs $DOTFILES/.config/nvim $HOME/.config/nvim
 
 # Install LazyVim plugins (headless mode)
 if command -v nvim &> /dev/null; then
@@ -169,8 +169,8 @@ mkdir -p $HOME/.claude
 
 # Link customizable directories
 for dir in agents commands hooks output-styles skills rules; do
-    if [ -d "$DOTFILES/claude/$dir" ]; then
-        ln -nfs "$DOTFILES/claude/$dir" "$HOME/.claude/$dir"
+    if [ -d "$DOTFILES/.claude/$dir" ]; then
+        ln -nfs "$DOTFILES/.claude/$dir" "$HOME/.claude/$dir"
         echo "✓ Linked $dir"
     else
         echo "⚠️  $dir directory not found, skipping..."
@@ -178,19 +178,19 @@ for dir in agents commands hooks output-styles skills rules; do
 done
 
 # Link customizable files
-if [ -f "$DOTFILES/claude/statusline.sh" ]; then
-    ln -nfs "$DOTFILES/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+if [ -f "$DOTFILES/.claude/statusline.sh" ]; then
+    ln -nfs "$DOTFILES/.claude/statusline.sh" "$HOME/.claude/statusline.sh"
     echo "✓ Linked statusline.sh"
 fi
 
-if [ -f "$DOTFILES/claude/settings.json" ]; then
-    ln -nfs "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
+if [ -f "$DOTFILES/.claude/settings.json" ]; then
+    ln -nfs "$DOTFILES/.claude/settings.json" "$HOME/.claude/settings.json"
     echo "✓ Linked settings.json"
 fi
 
 # Link global CLAUDE.md
-if [ -f "$DOTFILES/claude/CLAUDE.md" ]; then
-    ln -nfs "$DOTFILES/claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+if [ -f "$DOTFILES/.claude/CLAUDE.md" ]; then
+    ln -nfs "$DOTFILES/.claude/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
     echo "✓ Linked global CLAUDE.md"
 fi
 
@@ -202,8 +202,8 @@ echo "✅ Claude Code customizable directories and files linked"
 echo "Setting up Gemini configuration..."
 mkdir -p $HOME/.gemini
 
-if [ -f "$DOTFILES/gemini/settings.json" ]; then
-    ln -nfs "$DOTFILES/gemini/settings.json" "$HOME/.gemini/settings.json"
+if [ -f "$DOTFILES/.gemini/settings.json" ]; then
+    ln -nfs "$DOTFILES/.gemini/settings.json" "$HOME/.gemini/settings.json"
     echo "✓ Linked Gemini settings.json"
 else
     echo "⚠️  Gemini settings.json not found, skipping..."
@@ -217,11 +217,11 @@ echo "✅ Gemini configuration linked"
 echo "Setting up Karabiner-Elements configuration..."
 mkdir -p $HOME/.config/karabiner/assets/complex_modifications
 
-if [ -f "$DOTFILES/config/karabiner/my_custom_key.json" ]; then
-    ln -nfs "$DOTFILES/config/karabiner/my_custom_key.json" "$HOME/.config/karabiner/assets/complex_modifications/my_custom_key.json"
+if [ -f "$DOTFILES/.config/karabiner/my_custom_key.json" ]; then
+    ln -nfs "$DOTFILES/.config/karabiner/my_custom_key.json" "$HOME/.config/karabiner/assets/complex_modifications/my_custom_key.json"
     echo "✓ Linked Karabiner custom key configuration"
 else
-    echo "⚠️  config/karabiner/my_custom_key.json not found, skipping..."
+    echo "⚠️  .config/karabiner/my_custom_key.json not found, skipping..."
 fi
 
 echo "✅ Karabiner-Elements configuration linked"
@@ -232,12 +232,12 @@ echo "✅ Karabiner-Elements configuration linked"
 echo "Setting up Ghostty configuration..."
 mkdir -p $HOME/.config
 
-if [ -d "$DOTFILES/config/ghostty" ]; then
+if [ -d "$DOTFILES/.config/ghostty" ]; then
     rm -rf $HOME/.config/ghostty 2>/dev/null
-    ln -nfs "$DOTFILES/config/ghostty" "$HOME/.config/ghostty"
+    ln -nfs "$DOTFILES/.config/ghostty" "$HOME/.config/ghostty"
     echo "✓ Linked Ghostty config"
 else
-    echo "⚠️  config/ghostty not found, skipping..."
+    echo "⚠️  .config/ghostty not found, skipping..."
 fi
 
 echo "✅ Ghostty configuration linked"
@@ -247,12 +247,12 @@ echo "✅ Ghostty configuration linked"
 #-------------------------------------------------------------------------------
 echo "Setting up Kitty configuration..."
 
-if [ -d "$DOTFILES/config/kitty" ]; then
+if [ -d "$DOTFILES/.config/kitty" ]; then
     rm -rf $HOME/.config/kitty 2>/dev/null
-    ln -nfs "$DOTFILES/config/kitty" "$HOME/.config/kitty"
+    ln -nfs "$DOTFILES/.config/kitty" "$HOME/.config/kitty"
     echo "✓ Linked Kitty config"
 else
-    echo "⚠️  config/kitty not found, skipping..."
+    echo "⚠️  .config/kitty not found, skipping..."
 fi
 
 echo "✅ Kitty configuration linked"
