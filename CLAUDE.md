@@ -4,348 +4,162 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Personal dotfiles repository managing macOS development environment. Centralized at `~/.dotfiles` with automated installation and configuration management.
+Personal dotfiles repository managing macOS development environment. Centralized at `~/.dotfiles` with automated installation and symlink management.
 
-## Installation and Setup
+## Quick Commands
 
-### Initial Setup
 ```bash
-# Clone and install everything
-./install.sh
+./install.sh              # Full installation (Homebrew, packages, symlinks)
+source ~/.zshrc           # Reload shell config (alias: rr)
 ```
 
-The install script performs:
-1. Updates dotfiles from Git repository
-2. Installs Homebrew (Apple Silicon/Intel auto-detection)
-3. Installs packages via `brew bundle` (from Brewfile) - includes Claude Code CLI and Gemini CLI
-4. Sets up Git config with conditional includes
-5. Installs Oh-My-Zsh with Dracula theme
-6. Installs ZSH plugins (syntax highlighting, autosuggestions, completions, alias-tips, you-should-use)
-7. Links configuration files (.zshrc, .vimrc, nvim/)
-8. Sets up Neovim with LazyVim (Lua-based modern configuration)
-9. Installs Node.js LTS (v22) via mise
-10. Links Claude configuration directory to ~/.claude
-11. Links Gemini CLI configuration directory to ~/.gemini
+## Symlink Architecture
 
-### Update Commands
+All configurations are managed via symlinks from home directory to dotfiles:
+
+| Home Location | Dotfiles Source |
+|---------------|-----------------|
+| `~/.zshrc` | `~/.dotfiles/.zshrc` |
+| `~/.gitconfig` | `~/.dotfiles/git/.gitconfig` |
+| `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
+| `~/.claude/*` | `~/.dotfiles/.claude/*` |
+| `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
+
+**Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
+
+## Shell Configuration
+
+Modular ZSH configuration loaded from `zsh/`:
+
+| File | Purpose |
+|------|---------|
+| `aliases.zsh` | Command shortcuts, tool aliases |
+| `functions.zsh` | Custom functions (mkd, killport, extract, ccv, etc.) |
+| `path.zsh` | PATH, environment variables, tool activation |
+
+All loaded via `.zshrc`: `source <(cat $DOTFILES/zsh/*zsh)`
+
+### Adding Aliases/Functions
+
 ```bash
-# Update all Homebrew packages
-update                    # Alias for: brew update && brew upgrade && brew cleanup
+# In zsh/aliases.zsh - group related aliases
+alias ll='eza -l --git'
 
-# Reload shell configuration after changes
-rr                        # Alias for: source ~/.zshrc
-source ~/.zshrc
-
-# Add Serena MCP to current project
-add-serena               # Runs add-serena-uvx.sh script
+# In zsh/functions.zsh - include usage help
+function myfunc() {
+    [[ -z "$1" ]] && { echo "Usage: myfunc <arg>"; return 1; }
+    # implementation
+}
 ```
 
-## Key Configuration Architecture
+## Git Configuration
 
-### Directory Structure
-```
-~/.dotfiles/
-├── git/                  # Git configuration files
-│   ├── .gitconfig        # Main git config with conditional includes
-│   ├── .gitconfig_personal
-│   ├── .gitconfig_company
-│   └── .gitignore_global
-├── .config/              # Application configurations
-│   ├── ghostty/          # Ghostty terminal config
-│   ├── iterm2/           # iTerm2 settings
-│   ├── karabiner/        # Keyboard customization
-│   ├── kitty/            # Kitty terminal config
-│   ├── nvim/             # Neovim (LazyVim) config
-│   └── obsidian/         # Obsidian style settings
-├── zsh/                  # Shell configuration modules
-├── .claude/              # Claude Code settings & hooks
-│   ├── agents/           # Custom agent configurations
-│   ├── commands/         # Custom slash commands
-│   ├── hooks/            # File dispatcher & language hooks
-│   ├── output-styles/    # Output style configurations
-│   ├── rules/            # Global rules (context7, tavily, npm, python)
-│   ├── skills/           # Custom skills for patterns
-│   ├── settings.json     # Hook & statusline configuration
-│   └── CLAUDE.md         # Global Claude instructions
-├── .gemini/              # Gemini CLI configuration
-│   └── settings.json
-└── install.sh            # Installation script
-```
+Uses `includeIf` for automatic identity switching:
 
-### Git Conditional Configuration
-Located in `git/` directory. Uses Git's `includeIf` directive for automatic identity switching:
-- **Personal projects** (`~/dev/`): Uses `git/.gitconfig_personal`
-- **Company projects** (`~/company-src/`): Uses `git/.gitconfig_company`
-- **Base config**: `git/.gitconfig` with delta pager and Neovim editor
+| Directory | Config File |
+|-----------|-------------|
+| `~/dev/` | `git/.gitconfig_personal` |
+| `~/company-src/` | `git/.gitconfig_company` |
 
-This ensures correct author information without manual switching.
-
-### Shell Configuration Structure
-Modular ZSH configuration loaded from `$DOTFILES/zsh/`:
-- **`aliases.zsh`**: Command shortcuts and enhanced tool aliases
-- **`functions.zsh`**: Custom functions (mkd, killport, findpid, extract, fzf integrations)
-- **`path.zsh`**: PATH configuration and tool environment variables
-
-All loaded via: `source <(cat $DOTFILES/zsh/*zsh)`
-
-### Tool Version Management
-Uses **mise** (modern asdf replacement) for version management:
-- Faster and more modern than asdf
-- Activated via: `eval "$(mise activate zsh)"`
-- Node.js LTS 22 installed globally by default
-
-### Neovim Configuration (LazyVim)
-Modern Lua-based Neovim setup using LazyVim distribution:
-
-**Directory Structure**:
-```
-.config/nvim/
-├── init.lua              # Bootstrap lazy.nvim and load config
-├── lazyvim.json          # LazyVim extras configuration
-└── lua/
-    ├── config/
-    │   ├── options.lua   # Editor options (migrated from .vimrc)
-    │   ├── keymaps.lua   # Custom key mappings
-    │   └── autocmds.lua  # Auto commands
-    └── plugins/
-        ├── colorscheme.lua  # Theme configuration (catppuccin)
-        └── editor.lua       # Editor enhancements
-```
-
-**Enabled Language Support** (via LazyVim extras):
-- Python (pyright, ruff)
-- TypeScript/JavaScript (tsserver, eslint)
-- Java (jdtls)
-- JSON, Markdown
-
-**Key Features**:
-- **lazy.nvim**: Fast plugin manager with lazy loading
-- **Catppuccin**: Default colorscheme (mocha flavor)
-- **Telescope**: Fuzzy finder (`<leader>ff`, `<leader>fg`)
-- **Neo-tree**: File explorer (`<leader>e`)
-- **LSP**: Built-in language server support
-- **Treesitter**: Advanced syntax highlighting
-
-**Common Commands**:
-```bash
-nvim                      # Start Neovim (auto-syncs plugins)
-:Lazy                     # Plugin manager UI
-:Mason                    # LSP/formatter installer
-:LazyExtras              # Enable/disable language extras
+To add new directory-based config:
+```gitconfig
+# In git/.gitconfig
+[includeIf "gitdir:~/new-path/"]
+    path = .gitconfig_newname
 ```
 
 ## Claude Code Integration
 
-### Session Hooks
-- **temporal-context.sh**: Injects current date/time at session start
-  - Provides context: `Current time and date: HH:MM:SS YYYY-MM-DD`
-  - Configured via `SessionStart` hook in settings.json
+### Hook System
 
-### Hook System Architecture
-Located in `.claude/hooks/` with dispatcher pattern:
+Settings in `.claude/settings.json`. Hooks execute on file operations:
 
-1. **file-dispatcher.sh**: Main entry point that routes to language-specific handlers
-   - Routes by file extension: `.py`, `.java`, `.ts/.tsx`, `.js/.jsx`, `.go`, `.rs`, `.cpp`
-   - Supports three hook types: `format`, `check`, `review`
-
-2. **Language-specific hooks**: `{language}-{type}.sh`
-   - **format**: Auto-format code (runs pre/post Write|Edit|MultiEdit)
-   - **check**: Validate code quality (runs pre/post Write|Edit|MultiEdit)
-   - **review**: Post-edit code review (runs post Write|Edit|MultiEdit only)
-
-3. **Configured timeouts**: 180s (3 minutes) for all hook types
-
-4. **Supported languages and dispatching**:
-   - Python (`.py`): ruff, black, isort
-   - JavaScript (`.js`, `.jsx`, `.mjs`, `.cjs`): prettier, eslint
-   - TypeScript (`.ts`, `.tsx`): prettier, tsc
-   - Java (`.java`): google-java-format
-   - Go (`.go`): planned
-   - Rust (`.rs`): planned
-   - C++ (`.cpp`, `.cc`, `.h`, `.hpp`): planned
-   - TIL markdown (`~/dev/TIL/*.md`): Gemini review
-
-5. **TIL Review Hook** (`til-review.sh`):
-   - Reviews markdown files in `~/dev/TIL` directory using Gemini
-   - Requires `ENABLE_GEMINI_REVIEW=1` environment variable
-   - Uses gemini-2.5-pro model for document review
-   - Provides feedback on technical accuracy, mermaid syntax, and content quality
-
-### Output Styles
-Located in `.claude/output-styles/`:
-- **pragmatic-test-driven-developer.md**: TDD-focused output style
-
-### Custom Slash Commands
-Located in `.claude/commands/`:
-- **`git:commit`**: Structured commit workflow with safety checks
-- **`git:push`**: Safe push with validation
-- **`git:commit-and-push`**: Combined workflow
-
-### Custom Agents
-The `.claude/agents/` directory contains custom agent configurations:
-- backend-architect, database-architect, sql-performance-optimizer
-- java-enterprise-analyzer, python-analysis-expert
-- ml-engineer
-
-### Custom Skills
-Located in `.claude/skills/`:
-- **tech-blog-writer**: 한국어 기술 블로그 글쓰기
-- **sql-optimization-patterns**: Query optimization, indexing strategies
-- **skill-writer**: Guide for creating new Agent Skills
-- **mcp-integration**: MCP server integration patterns
-
-### Status Line
-Custom status line via `.claude/statusline.sh` for enhanced CLI experience.
-
-### Settings Configuration
-`.claude/settings.json` controls:
-- Hook configurations (SessionStart, PreToolUse, PostToolUse)
-- Status line command
-- `alwaysThinkingEnabled: true` for extended reasoning
-
-### Environment Variables
-```bash
-ENABLE_GEMINI_REVIEW=1                          # Enable Gemini TIL review hook
-ENABLE_BACKGROUND_TASKS=true                    # Enable background task execution
-FORCE_AUTO_BACKGROUND_TASKS=true               # Force auto background tasks
-CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true  # Disable non-essential traffic
-CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true      # Enable unified read tool
-ENABLE_EXPERIMENTAL_MCP_CLI=true               # Enable experimental MCP CLI
+```
+SessionStart → temporal-context.sh (injects current date/time)
+PreToolUse(git commit) → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
+PostToolUse(Write|Edit) → file-dispatcher.sh check → file-dispatcher.sh review
 ```
 
-These are automatically set when using the `ccv` wrapper function.
+**File Dispatcher Pattern**: Routes to `{language}-{type}.sh` based on extension:
+- `.py` → `python-check.sh`, `python-review.sh`
+- `.java` → `java-check.sh`
+- `.ts/.tsx` → `typescript-check.sh`
+- `.js/.jsx` → `javascript-check.sh`
+- `~/dev/TIL/*.md` → `til-review.sh` (Gemini review, requires `ENABLE_GEMINI_REVIEW=1`)
 
-## Development Environment
+### Adding New Hooks
 
-### Enhanced CLI Tools
-The dotfiles replace standard tools with modern alternatives:
-- `cat` → `bat` (syntax highlighting)
-- `ls` → `eza` (icons, git status, tree view)
-- `top` → `htop` (better process monitor)
-- `vim` → `nvim` (Neovim)
-- `df` → `duf` (disk usage)
-- Git pager → `delta` (enhanced diffs with side-by-side view)
+1. Create script in `.claude/hooks/{language}-{type}.sh`
+2. Script receives JSON via stdin, extract path: `jq -r '.tool_input.file_path'`
+3. Exit 0 for success, non-zero to block operation
 
-### Key Aliases
+### Hook Debugging
+
 ```bash
-# Navigation
-dot         # cd ~/.dotfiles
-dev         # cd ~/dev
-til         # cd ~/dev/TIL
-comp        # cd ~/company-src
-desk        # cd ~/Desktop
-dl          # cd ~/Downloads
+# Test hook manually
+echo '{"tool_input":{"file_path":"test.py"}}' | ~/.claude/hooks/python-check.sh
 
-# Enhanced listings
-ll          # eza with detailed list + git status
-la          # eza with hidden files
-lt          # eza tree view (2 levels)
-
-# Tools
-vim         # Neovim
-cat         # bat with syntax highlighting
-top         # htop
-
-# Homebrew
-update      # Update all brew packages
-services    # Manage brew services
-
-# Kitty Terminal Image Viewer
-img         # View image (centered)
-imgl        # View image (left aligned)
-imgclear    # Clear images from screen
+# Check hook execution logs
+# Hooks output goes to Claude Code's stderr
 ```
 
-### Useful Functions
-```bash
-mkd <dir>             # Create directory and cd into it
-killport <port>       # Kill process on specified port
-findpid <port>        # Find PID using specified port
-extract <file>        # Extract various archive formats
-myip                  # Get public IP address
-tcp                   # List all TCP LISTEN ports
-battail <file>        # tail -f with bat syntax highlighting
-fh                    # Search command history with fzf
-fd                    # cd to directory with fzf
-fzfv                  # Preview files with fzf
-catcp <file>          # Copy file content to clipboard
-google <query>        # Search Google in Chrome
-javahome <version>    # Find Java home path for version
+### Skills
 
-# 1Password integration
-load-token            # Load GitHub token from 1Password
-token-status          # Check GitHub token status
+Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 
-# Claude wrapper with optimization flags
-ccv                   # Claude with all optimization env vars
-ccv -y                # Skip permissions prompts
-ccv -r                # Resume last session
-ccv -ry               # Resume with skip permissions
+| Skill | Trigger |
+|-------|---------|
+| `til` | TIL 문서 작성 |
+| `zettelkasten` | Obsidian 노트 작성 |
+| `tech-blog-writer` | 기술 블로그 글쓰기 |
+| `learning-tracker` | 세션 학습 내용 정리 |
+| `project-overview` | 프로젝트 온보딩 분석 |
+| `github-actions` | GitHub Actions 실패 분석 |
+| `gemini-fetch` | WebFetch 403 우회 |
 
-# Codex CLI wrapper
-cdx <query>           # Run Codex with GPT-5.1-codex model
-cdx update            # Update Codex to latest version
+### Adding New Skills
+
+1. Create directory `.claude/skills/{skill-name}/`
+2. Create `SKILL.md` with frontmatter:
+```markdown
+---
+description: Short description for Claude
+user_invocable: true  # if callable via /skill-name
+trigger_patterns:
+  - "pattern to auto-detect"
+---
+
+# Skill Instructions
+...
 ```
 
-### Oh-My-Zsh Plugins
-Carefully selected for development productivity:
-- `git`: Git aliases and status
-- `zsh-syntax-highlighting`: Command syntax highlighting
-- `zsh-autosuggestions`: Command suggestions from history
-- `zsh-completions`: Additional completions
-- `alias-tips`: Remind about existing aliases
-- `you-should-use`: Suggest aliases for commands
-- `fzf`: Fuzzy finder integration
-- `docker`, `docker-compose`, `kubectl`: Container tools
-- `poetry`: Python package management
+### Agents
 
-### FZF Configuration
-Advanced fuzzy finding with fd integration:
-- Default command excludes `.git`, `node_modules`, `bower_components`
-- File preview with bat
-- Directory preview with eza tree view
-- Custom completion for different commands (cd, ssh, export)
+Located in `.claude/agents/`. Custom agent configurations for Task tool:
+- TDD agents: `tdd-red-agent`, `tdd-green-agent`, `tdd-blue-agent`
+- Architecture: `backend-architect`, `database-architect`
+- Analysis: `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`
+- ML: `ml-engineer`
 
-## Working with This Repository
+## Neovim (LazyVim)
 
-### Testing Configuration Changes
+Config in `.config/nvim/`. Uses LazyVim distribution with lazy.nvim.
+
 ```bash
-# After editing .zshrc or zsh/*.zsh
-source ~/.zshrc        # or use 'rr' alias
-
-# After editing git/.gitconfig
-# Changes apply automatically on next git command
-
-# After editing Neovim config (.config/nvim/lua/*)
-nvim                        # LazyVim auto-syncs plugins on startup
-# Or manually: nvim --headless "+Lazy! sync" +qa
+nvim                  # Auto-syncs plugins on startup
+:Lazy                 # Plugin manager UI
+:Mason                # LSP/formatter installer
+:LazyExtras           # Enable/disable language support
 ```
 
-### Hook System Development
-When modifying Claude hooks:
-- Hooks receive JSON input via stdin
-- Extract file paths using jq: `jq -r '.tool_input.file_path'`
-- Exit 0 for success, non-zero for blocking
-- Timeout enforcement: format/check (30s), review (20s)
-- Language detection based on file extension in dispatcher
+Enabled extras: Python, TypeScript/JavaScript, Java, JSON, Markdown
 
-### Conditional Git Configuration Pattern
-When adding new directory-based Git configs:
-```bash
-# In git/.gitconfig
-[includeIf "gitdir:~/path/to/dir/"]
-    path = .gitconfig_custom_name
-```
+## Tool Replacements
 
-### Adding New Aliases
-Add to `zsh/aliases.zsh` following existing patterns:
-- Group related aliases together
-- Use descriptive comments in Korean or English
-- Prefer safety flags (rm -i, cp -i, mv -i)
-- Chain commands with && for dependent operations
+Standard tools aliased to modern alternatives:
+- `cat` → `bat`, `ls` → `eza`, `vim` → `nvim`, `top` → `htop`, `df` → `duf`
+- Git pager uses `delta` for enhanced diffs
 
-### Adding New Functions
-Add to `zsh/functions.zsh`:
-- Include usage help when parameters required
-- Use colored output for visibility: `echo -e "\033[0;33m${TEXT}\033[0m"`
-- Follow existing naming conventions
+## Version Management
+
+Uses **mise** (asdf replacement) for runtime versions. Activated in `path.zsh`.
