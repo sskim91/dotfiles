@@ -258,6 +258,21 @@ fi
 echo "✅ Kitty configuration linked"
 
 #-------------------------------------------------------------------------------
+# Link Zed configuration
+#-------------------------------------------------------------------------------
+echo "Setting up Zed configuration..."
+mkdir -p $HOME/.config/zed
+
+if [ -f "$DOTFILES/.config/zed/settings.json" ]; then
+    ln -nfs "$DOTFILES/.config/zed/settings.json" "$HOME/.config/zed/settings.json"
+    echo "✓ Linked Zed settings.json"
+else
+    echo "⚠️  .config/zed/settings.json not found, skipping..."
+fi
+
+echo "✅ Zed configuration linked"
+
+#-------------------------------------------------------------------------------
 # Install Serena MCP (AI semantic code analysis)
 #-------------------------------------------------------------------------------
 echo "Setting up Serena MCP..."
