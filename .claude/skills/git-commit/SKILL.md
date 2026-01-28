@@ -1,7 +1,6 @@
 ---
 name: git-commit
-description: Git Commit Instructions
-disable-model-invocation: true
+description: Git Commit Instructions with Gitmoji. Use when user wants to commit changes with proper commit message format.
 ---
 
 # Git Commit Instructions

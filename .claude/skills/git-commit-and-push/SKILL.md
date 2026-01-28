@@ -1,7 +1,6 @@
 ---
 name: git-commit-and-push
-description: Git Commit and Push
-disable-model-invocation: true
+description: Git Commit and Push. Use when user wants to commit and push changes together.
 ---
 
 # Git Commit and Push

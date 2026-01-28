@@ -1,7 +1,6 @@
 ---
 name: sql-optimization-patterns
 description: Master SQL query optimization, indexing strategies, and EXPLAIN analysis. Use when debugging slow queries, designing database schemas, or optimizing application performance.
-user-invocable: false
 ---
 
 # SQL Optimization Patterns

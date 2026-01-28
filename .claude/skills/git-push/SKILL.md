@@ -1,7 +1,6 @@
 ---
 name: git-push
-description: Git Push Guide
-disable-model-invocation: true
+description: Git Push Guide. Use when user wants to push changes to remote repository safely.
 ---
 
 # Git Push Guide

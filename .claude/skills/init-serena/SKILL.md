@@ -1,7 +1,6 @@
 ---
 name: init-serena
-description: Init Serena MCP
-disable-model-invocation: true
+description: Init Serena MCP for enhanced semantic analysis. Use when starting code analysis with Serena.
 ---
 
 # Init Serena MCP
