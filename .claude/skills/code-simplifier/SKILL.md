@@ -51,7 +51,7 @@ options:
 
 ### Step 3: 리뷰 수행
 
-Task 도구로 `code-simplifier` agent를 호출합니다. 언어에 따라 다른 프롬프트를 전달합니다.
+Task 도구로 `code-simplifier:code-simplifier` agent를 호출합니다. 언어에 따라 다른 프롬프트를 전달합니다.
 
 ---
 
@@ -209,17 +209,21 @@ logger.error(f"Failed to process {item}: {error}")
 
 ## Step 4: Agent 호출
 
-위 가이드라인을 포함하여 **Task 도구의 `code-simplifier` agent**를 호출합니다.
+**CRITICAL**: Task 도구 호출 시 `subagent_type` 파라미터에 반드시 `code-simplifier:code-simplifier`를 사용해야 합니다 (`code-simplifier`가 아님).
 
-프롬프트 예시:
 ```
-아래 가이드라인에 따라 [범위]의 [언어] 코드를 리뷰해주세요.
-
-[언어별 가이드라인 전체 내용]
-
-리뷰 후 발견된 문제를 심각도 순으로 정리하고,
-각 문제에 대한 수정 제안을 코드와 함께 제시해주세요.
+Task(
+  subagent_type: "code-simplifier:code-simplifier",  # 정확히 이 값을 사용
+  description: "[언어] 코드 리뷰",
+  prompt: "아래 가이드라인에 따라 [범위]의 [언어] 코드를 리뷰해주세요. ..."
+)
 ```
+
+프롬프트에 포함할 내용:
+- 선택된 언어 (Java 또는 Python)
+- 리뷰 범위 (파일 경로, git diff 결과 등)
+- 해당 언어의 가이드라인 전체 내용
+- "리뷰 후 발견된 문제를 심각도 순으로 정리하고, 각 문제에 대한 수정 제안을 코드와 함께 제시해주세요."
 
 ## 출력 형식
 
