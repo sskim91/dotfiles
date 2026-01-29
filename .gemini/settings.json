@@ -1,4 +1,47 @@
 {
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "name": "temporal-context",
+            "type": "command",
+            "command": "~/.gemini/hooks/temporal-context.sh",
+            "description": "Inject current date/time context"
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "write_file|replace|create_file",
+        "hooks": [
+          {
+            "name": "check-secrets",
+            "type": "command",
+            "command": "~/.gemini/hooks/check-secrets.sh",
+            "description": "Block hardcoded secrets in file writes",
+            "timeout": 5000
+          },
+          {
+            "name": "check-sensitive-files",
+            "type": "command",
+            "command": "~/.gemini/hooks/check-sensitive-files.sh",
+            "description": "Block sensitive file types (.pem, .key, etc.)",
+            "timeout": 5000
+          },
+          {
+            "name": "check-env-files",
+            "type": "command",
+            "command": "~/.gemini/hooks/check-env-files.sh",
+            "description": "Block .env and config files",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  },
   "security": {
     "auth": {
       "selectedType": "oauth-personal"
