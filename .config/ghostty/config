@@ -176,7 +176,7 @@ cursor-style-blink = false
 # selection-clear-on-copy = false
 
 # 선택시 자동 복사 (true/false/clipboard)
-copy-on-select = clipboard
+copy-on-select = false
 
 # 프로그램의 클립보드 읽기/쓰기 허용 (ask/allow/deny)
 # clipboard-read = ask
