@@ -31,8 +31,8 @@ fi
 
 # Biome - Fast, modern all-in-one toolchain
 if [[ "$ENABLE_BIOME" -eq 1 ]]; then
-	echo "🔧 Running Biome check (modern linting & formatting)..."
-	if ! npx @biomejs/biome check --apply .; then
+	echo "🔧 Running Biome check on $FILE_PATH..."
+	if ! npx @biomejs/biome check --apply "$FILE_PATH"; then
 		echo "❌ Biome check failed" >&2
 		CHECK_SUCCESS=0
 	fi
@@ -40,8 +40,8 @@ fi
 
 # OXC - Rust-based extremely fast linter
 if [[ "$ENABLE_OXC" -eq 1 ]]; then
-	echo "🔧 Running OXC linter (blazing fast checks)..."
-	if ! npx oxlint --fix .; then
+	echo "🔧 Running OXC linter on $FILE_PATH..."
+	if ! npx oxlint --fix "$FILE_PATH"; then
 		echo "❌ OXC lint failed" >&2
 		CHECK_SUCCESS=0
 	fi
@@ -49,8 +49,8 @@ fi
 
 # ESLint - Traditional but comprehensive linting
 if [[ "$ENABLE_ESLINT" -eq 1 ]]; then
-	echo "🔧 Running ESLint with modern rules..."
-	if ! npx eslint . --fix --ext .ts,.tsx; then
+	echo "🔧 Running ESLint on $FILE_PATH..."
+	if ! npx eslint "$FILE_PATH" --fix; then
 		echo "❌ ESLint check failed" >&2
 		CHECK_SUCCESS=0
 	fi

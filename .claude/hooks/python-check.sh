@@ -20,8 +20,8 @@ echo "🔧 Running check for Python files..."
 CHECK_SUCCESS=1
 
 if [[ "$ENABLE_RUFF" -eq 1 ]]; then
-	echo "🔧 Running ruff check..."
-	if ! uvx ruff check . --fix; then
+	echo "🔧 Running ruff check on $FILE_PATH..."
+	if ! uvx ruff check "$FILE_PATH" --fix; then
 		echo "❌ ruff check failed" >&2
 		CHECK_SUCCESS=0
 	fi

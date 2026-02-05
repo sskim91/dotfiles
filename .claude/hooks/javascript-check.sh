@@ -22,8 +22,8 @@ CHECK_SUCCESS=1
 
 # Biome - Fast, modern all-in-one toolchain
 if [[ "$ENABLE_BIOME" -eq 1 ]]; then
-	echo "🔧 Running Biome check (modern ES2024+ linting)..."
-	if ! npx @biomejs/biome check --apply .; then
+	echo "🔧 Running Biome check on $FILE_PATH..."
+	if ! npx @biomejs/biome check --apply "$FILE_PATH"; then
 		echo "❌ Biome check failed" >&2
 		CHECK_SUCCESS=0
 	fi
@@ -31,8 +31,8 @@ fi
 
 # OXC - Rust-based extremely fast linter
 if [[ "$ENABLE_OXC" -eq 1 ]]; then
-	echo "🔧 Running OXC linter (ultra-fast modern JS checks)..."
-	if ! npx oxlint --fix .; then
+	echo "🔧 Running OXC linter on $FILE_PATH..."
+	if ! npx oxlint --fix "$FILE_PATH"; then
 		echo "❌ OXC lint failed" >&2
 		CHECK_SUCCESS=0
 	fi
@@ -40,8 +40,8 @@ fi
 
 # ESLint - Traditional but comprehensive linting with modern configs
 if [[ "$ENABLE_ESLINT" -eq 1 ]]; then
-	echo "🔧 Running ESLint with modern ECMAScript rules..."
-	if ! npx eslint . --fix --ext .js,.jsx,.mjs,.cjs; then
+	echo "🔧 Running ESLint on $FILE_PATH..."
+	if ! npx eslint "$FILE_PATH" --fix; then
 		echo "❌ ESLint check failed" >&2
 		CHECK_SUCCESS=0
 	fi
@@ -49,8 +49,8 @@ fi
 
 # Standard JS - Zero-config modern JavaScript style
 if [[ "$ENABLE_STANDARD" -eq 1 ]]; then
-	echo "🔧 Running StandardJS (opinionated modern style)..."
-	if ! npx standard --fix; then
+	echo "🔧 Running StandardJS on $FILE_PATH..."
+	if ! npx standard --fix "$FILE_PATH"; then
 		echo "❌ StandardJS check failed" >&2
 		CHECK_SUCCESS=0
 	fi
