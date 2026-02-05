@@ -71,7 +71,7 @@ export ENABLE_TSC=0                  # TypeScript Compiler - 타입 체크
 # ----------------------------------------------------------------------------
 # Python 개발 도구 (python-check.sh)
 # ----------------------------------------------------------------------------
-export ENABLE_RUFF=0                 # Ruff - 린터
+export ENABLE_RUFF=1                 # Ruff - 린터
 export ENABLE_TY=0                   # Typos - 오타 검사
 export ENABLE_PYREFLY=0              # Pyrefly - 정적 분석
 
