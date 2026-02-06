@@ -9,7 +9,7 @@ Personal dotfiles repository managing macOS development environment. Centralized
 ## Quick Commands
 
 ```bash
-./install.sh              # Full installation (Homebrew, packages, symlinks)
+./install.sh              # Full installation (Homebrew, packages, symlinks via Brewfile)
 source ~/.zshrc           # Reload shell config (alias: rr)
 ```
 
@@ -24,6 +24,10 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
 | `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
+| `~/.config/karabiner/` | `~/.dotfiles/.config/karabiner/` |
+| `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
+| `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
+| `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
 
@@ -85,7 +89,15 @@ PostToolUse(Write|Edit) → file-dispatcher.sh check → file-dispatcher.sh revi
 - `.java` → `java-check.sh`
 - `.ts/.tsx` → `typescript-check.sh`
 - `.js/.jsx` → `javascript-check.sh`
-- `~/dev/TIL/*.md` → `til-review.sh` (Gemini review, requires `ENABLE_GEMINI_REVIEW=1`)
+- `~/dev/TIL/*.md` → `til-review.sh` (Gemini review, requires `ENABLE_TIL_REVIEW=1`)
+
+**Hook Environment Variables** (configured in `zsh/path.zsh`):
+
+Each hook tool is individually controlled via `ENABLE_*` environment variables:
+- `ENABLE_RUFF=1` - Python Ruff linter (default enabled)
+- `ENABLE_TIL_REVIEW=1` - TIL document Gemini review (default enabled)
+- `ENABLE_ESLINT=0`, `ENABLE_TSC=0`, `ENABLE_CHECKSTYLE=0` - Disabled by default
+- `ENABLE_GEMINI_REVIEW=0` - AI code review for all languages (disabled by default)
 
 ### Adding New Hooks
 
@@ -110,23 +122,32 @@ Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 | Skill | Trigger |
 |-------|---------|
 | `til` | TIL 문서 작성 |
-| `zettelkasten` | Obsidian 노트 작성 |
+| `obsidian-note` | Obsidian Zettelkasten 노트 작성 |
+| `obsidian-flashcard` | Obsidian Spaced Repetition 플래시카드 |
 | `tech-blog-writer` | 기술 블로그 글쓰기 |
 | `learning-tracker` | 세션 학습 내용 정리 |
 | `project-overview` | 프로젝트 온보딩 분석 |
 | `github-actions` | GitHub Actions 실패 분석 |
 | `gemini-fetch` | WebFetch 403 우회 |
+| `devlog` | 작업 로그 기록 |
+| `session-handoff` | 세션 인계 요약 생성 |
+| `git-commit` | Gitmoji 커밋 메시지 |
+| `git-commit-and-push` | 커밋 + 푸시 |
+| `git-push` | 안전한 푸시 |
+| `sql-optimization-patterns` | SQL 쿼리 최적화 패턴 |
+| `skill-writer` | 새 스킬 작성 가이드 |
+| `mcp-integration` | MCP 서버 통합 |
+| `init-serena` | Serena MCP 초기화 |
 
 ### Adding New Skills
 
 1. Create directory `.claude/skills/{skill-name}/`
 2. Create `SKILL.md` with frontmatter:
+- `description`: English, single-line. Include "Use when..." trigger hint.
 ```markdown
 ---
-description: Short description for Claude
-user_invocable: true  # if callable via /skill-name
-trigger_patterns:
-  - "pattern to auto-detect"
+name: my-skill
+description: Short description for Claude. Use when ...
 ---
 
 # Skill Instructions
@@ -159,6 +180,28 @@ Enabled extras: Python, TypeScript/JavaScript, Java, JSON, Markdown
 Standard tools aliased to modern alternatives:
 - `cat` → `bat`, `ls` → `eza`, `vim` → `nvim`, `top` → `htop`, `df` → `duf`
 - Git pager uses `delta` for enhanced diffs
+
+## AI CLI Wrappers
+
+Custom functions in `zsh/functions.zsh` for AI tool invocation:
+
+| Function | Tool | Options |
+|----------|------|---------|
+| `ccv` | Claude Code (optimized env vars) | `-y` (skip permissions), `-r` (resume), `-ry` (both) |
+| `cco` | Claude Code + Ollama (local model) | Same + `-m <model>` (default: qwen3-coder:30b) |
+| `gem` | Gemini CLI | `-y` (yolo), `-r` (resume), `-ry` (both) |
+| `cdx` | Codex CLI | `update` (install latest), default: full-auto mode |
+
+## Karabiner Key Mappings
+
+Caps Lock as modifier key (`.config/karabiner/`):
+
+| Shortcut | Action |
+|----------|--------|
+| Caps+i/k/j/l | Arrow keys (Up/Down/Left/Right) |
+| Caps+e/d | Page Up/Down |
+| Caps+r/f | Home/End |
+| Caps+n/m | Backspace/Delete |
 
 ## Version Management
 
