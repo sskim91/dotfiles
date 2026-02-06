@@ -1,9 +1,6 @@
 ---
 name: project-overview
-description: |
-  프로젝트 구조와 목적을 체계적으로 분석하여 온보딩 정보 제공.
-  새 프로젝트 파악, 코드베이스 이해, 팀원 온보딩 문서 생성에 활용.
-  "프로젝트 분석", "온보딩", "코드베이스 파악", "project overview" 등의 요청 시 자동 적용.
+description: Systematically analyze project structure and purpose to provide onboarding information. Use for understanding new projects, codebases, and generating team onboarding docs. Auto-activate on "project analysis", "onboarding", "codebase overview", "project overview" requests.
 ---
 
 # Project Overview Skill

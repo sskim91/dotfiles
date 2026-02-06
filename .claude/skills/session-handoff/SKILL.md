@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Generate comprehensive session summary for handoff to new LLM session. 새 세션 인계를 위한 상세 요약 생성. Use when ending session and need to handoff context.
+description: Generate comprehensive session summary for handoff to new LLM session. Use when ending session and need to handoff context.
 ---
 
 # Session Handoff - 대화 세션 인계 요약본 생성

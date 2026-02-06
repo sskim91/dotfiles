@@ -1,6 +1,6 @@
 ---
 name: til
-description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "TIL로 작성", "TIL 문서", "학습 노트 작성" without explicit /til command.
+description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "write TIL", "TIL document", "learning note" without explicit /til command.
 ---
 
 # TIL Writer

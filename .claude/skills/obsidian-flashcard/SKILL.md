@@ -1,9 +1,6 @@
 ---
 name: obsidian-flashcard
-description: |
-  Obsidian Spaced Repetition 플러그인용 플래시카드 생성.
-  세션 학습 내용 또는 특정 주제를 Q&A/Cloze 형식의 플래시카드로 변환.
-  "플래시카드", "flashcard", "암기 카드", "복습 카드" 등의 요청 시 자동 적용.
+description: Generate flashcards for Obsidian Spaced Repetition plugin. Convert session learnings or specific topics into Q&A/Cloze format flashcards. Auto-activate on "flashcard", "review card", "spaced repetition" requests.
 ---
 
 # Obsidian Flashcard Writer

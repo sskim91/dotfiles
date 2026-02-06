@@ -1,6 +1,6 @@
 ---
 name: obsidian-note
-description: Write Obsidian Zettelkasten notes. Create atomic notes, search existing notes and connect via [[wikilink]], write frontmatter metadata, visualize with mermaid diagrams. Save to Obsidian Vault 00.Inbox. **Proactively use this skill** when user mentions "옵시디언", "Obsidian", "노트로 정리", "노트에 정리" without explicit /obsidian-note command.
+description: Write Obsidian Zettelkasten notes. Create atomic notes, search existing notes and connect via [[wikilink]], write frontmatter metadata, visualize with mermaid diagrams. Save to Obsidian Vault 00.Inbox. **Proactively use this skill** when user mentions "Obsidian", "write as note", "save to notes" without explicit /obsidian-note command.
 ---
 
 # Zettelkasten Note Writer

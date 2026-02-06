@@ -1,9 +1,6 @@
 ---
 name: learning-tracker
-description: |
-  Claude Code 세션에서 새로운 기술/라이브러리/개념 학습 내용을 추출.
-  "학습 정리", "오늘 배운 것", "learning", "세션 요약" 등의 요청 시 자동 적용.
-  추출된 내용은 /til 또는 /obsidian-flashcard 스킬에 위임하여 저장.
+description: Extract new tech/library/concept learnings from Claude Code sessions. Auto-activate on "learning summary", "what I learned today", "session summary" requests. Delegate extracted content to /til or /obsidian-flashcard skills for storage.
 ---
 
 # Learning Tracker Skill

@@ -1,6 +1,6 @@
 ---
 name: github-actions
-description: Analyze GitHub Actions failures and identify root cause. 워크플로우 실패 분석, flakiness 체크, breaking commit 식별. Use with /github-actions <url>.
+description: Analyze GitHub Actions failures and identify root cause. Check workflow failures, flakiness, and breaking commits. Use with /github-actions <url>.
 ---
 
 # GitHub Actions 실패 분석

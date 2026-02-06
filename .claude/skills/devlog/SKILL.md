@@ -1,6 +1,6 @@
 ---
 name: devlog
-description: Record development work logs to _devlog/YYYY-MM-DD.md. 작업 로그 기록, 명령어/결정사항/다음 단계 포함. Use with /devlog, /devlog [title], or /devlog --summary.
+description: Record development work logs to _devlog/YYYY-MM-DD.md. Tracks commands, decisions, and next steps. Use with /devlog, /devlog [title], or /devlog --summary.
 ---
 
 # /devlog - 작업 로그 기록
