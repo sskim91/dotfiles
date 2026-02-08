@@ -1,7 +1,6 @@
 ---
 name: code-simplifier
 description: Code review and improvement suggestions. Select scope from recent commit, current session work, or staged files.
-user_invocable: true
 ---
 
 # Code Simplifier

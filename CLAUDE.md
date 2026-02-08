@@ -135,9 +135,11 @@ Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 | `git-commit-and-push` | 커밋 + 푸시 |
 | `git-push` | 안전한 푸시 |
 | `sql-optimization-patterns` | SQL 쿼리 최적화 패턴 |
+| `sns-writer` | X/Threads 초안을 단단한 글로 다듬기 |
 | `skill-writer` | 새 스킬 작성 가이드 |
 | `mcp-integration` | MCP 서버 통합 |
 | `init-serena` | Serena MCP 초기화 |
+| `cc-team-builder` | Agent Team 대화형 구성 위저드 |
 
 ### Adding New Skills
 
