@@ -1,0 +1,11 @@
+"$schema" = "https://yazi-rs.github.io/schemas/keymap.json"
+
+[[mgr.prepend_keymap]]
+on   = "z"
+run  = "plugin fzf"
+desc = "Jump to a file/directory via fzf"
+
+[[mgr.prepend_keymap]]
+on   = "Z"
+run  = "plugin zoxide"
+desc = "Jump to a directory via zoxide"
