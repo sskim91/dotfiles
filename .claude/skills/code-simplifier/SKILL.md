@@ -1,6 +1,6 @@
 ---
 name: code-simplifier
-description: Code review and improvement suggestions. Select scope from recent commit, current session work, or staged files.
+description: Code review and improvement suggestions. Select scope from recent commit, current session work, staged files, or unstaged changes.
 ---
 
 # Code Simplifier
@@ -26,12 +26,16 @@ Otherwise, use **AskUserQuestion** to determine review scope:
 header: "Scope"
 question: "Which code should I review?"
 options:
-  - label: "Recent commit"
-    description: "Analyze changes from the most recent commit"
-  - label: "Current session work"
-    description: "Files modified during this conversation"
+  - label: "Unstaged changes"
+    description: "Modified but not yet git-added files (git diff)"
   - label: "Staged files"
-    description: "Files staged in git status"
+    description: "Files added to staging area (git diff --cached)"
+  - label: "Recent commit"
+    description: "Changes from the most recent commit"
+  - label: "Branch diff"
+    description: "Current branch vs main — PR 전 전체 변경분 리뷰"
+  - label: "Current session work"
+    description: "Files modified during this conversation (git 없는 프로젝트에도 사용 가능)"
 ```
 
 **If user selects Other**, accept custom file/directory path input.
@@ -42,9 +46,11 @@ Collect code based on selected scope:
 
 | Scope | Collection Method |
 |-------|-------------------|
-| Recent commit | `git show --stat HEAD` + `git diff HEAD~1` |
-| Current session work | Files edited/written during conversation |
+| Unstaged changes | `git diff` |
 | Staged files | `git diff --cached` |
+| Recent commit | `git show --stat HEAD` + `git diff HEAD~1` |
+| Branch diff | `git diff main...HEAD` (main 브랜치 자동 감지: main/master/develop) |
+| Current session work | Files edited/written during conversation |
 | Custom path | Read files at specified path |
 
 ### Step 3: Agent Invocation
