@@ -1,0 +1,46 @@
+"$schema" = "https://yazi-rs.github.io/schemas/yazi.json"
+
+[mgr]
+ratio          = [ 2, 4, 3 ]
+sort_by        = "alphabetical"
+sort_sensitive = false
+sort_dir_first = true
+show_hidden    = true
+show_symlink   = true
+scrolloff      = 5
+
+[preview]
+max_width   = 1200
+max_height  = 1000
+image_filter = "triangle"
+image_quality = 75
+
+[opener]
+edit = [
+	{ run = '${EDITOR:-nvim} "$@"', desc = "$EDITOR", block = true, for = "unix" },
+]
+open = [
+	{ run = 'open "$@"', desc = "Open", for = "macos" },
+]
+reveal = [
+	{ run = 'open -R "$1"', desc = "Reveal in Finder", for = "macos" },
+]
+extract = [
+	{ run = 'ya pub extract --list "$@"', desc = "Extract here", for = "unix" },
+]
+
+[open]
+rules = [
+	{ name = "*/",                use = [ "edit", "open", "reveal" ] },
+	{ mime = "text/*",            use = [ "edit", "reveal" ] },
+	{ mime = "image/*",           use = [ "open", "reveal" ] },
+	{ mime = "{audio,video}/*",   use = [ "play", "reveal" ] },
+	{ mime = "application/{json,ndjson}", use = [ "edit", "reveal" ] },
+	{ mime = "*/javascript",      use = [ "edit", "reveal" ] },
+	{ mime = "inode/empty",       use = [ "edit", "reveal" ] },
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", use = [ "extract", "reveal" ] },
+	{ name = "*",                 use = [ "open", "reveal" ] },
+]
+
+[input]
+cursor_blink = false

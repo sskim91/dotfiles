@@ -1,6 +1,69 @@
-.idea
-.config.json
+# ======================
+# macOS system files
+# ======================
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
 
-# Poetry installer error logs
+# ======================
+# IDE / Editor
+# ======================
+.idea
+*.swp
+*.swo
+*~
+.vscode/
+
+# ======================
+# Claude runtime
+# ======================
+.claude/backups
+.claude/cache
+.claude/debug
+.claude/downloads
+.claude/file-history
+.claude/history.jsonl
+.claude/ide
+.claude/logs
+.claude/paste-cache
+.claude/plugins
+.claude/projects
+.claude/removed-mcp-servers.json
+.claude/shell-snapshots
+.claude/stats-cache.json
+.claude/bash-command-log.txt
+.claude/statsig
+.claude/tasks
+.claude/telemetry
+.claude/todos
+.claude/transcripts/
+.claude/claude_desktop_config.json
+
+# ======================
+# Config runtime
+# ======================
+.config/karabiner/automatic_backups
+.config/nvim/.gitignore
+.config/nvim/.neoconf.json
+.config/yazi/package.toml
+.config/yazi/flavors/
+
+# ======================
+# Logs / Temp
+# ======================
+*.log
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# ======================
+# Misc
+# ======================
+.config.json
+node_modules/
+__pycache__
 poetry-installer-error-*.log

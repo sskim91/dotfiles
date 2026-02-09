@@ -219,6 +219,18 @@ _fzf_comprun() {
 }
 
 
+#-------------------------------------------------------------------------------
+# yazi - 종료 시 현재 디렉토리를 셸에 동기화
+#-------------------------------------------------------------------------------
+function y() {
+    local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    yazi "$@" --cwd-file="$tmp"
+    if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+        builtin cd -- "$cwd"
+    fi
+    rm -f -- "$tmp"
+}
+
 # Claude
 ccv() {
   local env_vars=(
