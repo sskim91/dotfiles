@@ -4,8 +4,12 @@ brew "bat"
 brew "duf"
 # Modern, maintained replacement for ls
 brew "eza"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
 # Command-line fuzzy finder written in Go
 brew "fzf"
+# GitHub command-line tool
+brew "gh"
 # Google's Gemini CLI for AI assistance
 brew "gemini-cli"
 # Syntax-highlighting pager for git and diff output
@@ -22,6 +26,12 @@ brew "neovim"
 brew "pkgconf"
 # Official tldr client written in Rust
 brew "tlrc"
+# Terminal multiplexer
+brew "tmux"
+# Blazing fast terminal file manager written in Rust
+brew "yazi"
+# Shell extension to navigate your filesystem faster
+brew "zoxide"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Command-line interface for 1Password
@@ -36,8 +46,12 @@ cask "chatgpt"
 cask "claude"
 # Claude Code CLI - Anthropic's agentic coding tool
 cask "claude-code"
+# OpenAI Codex CLI
+cask "codex-app"
 # Write, edit, and chat about your code with AI
 cask "cursor"
+# Universal database tool and SQL client
+cask "dbeaver-community"
 # AI-powered translator
 cask "deepl"
 # Utilities designed to make common development tasks easier
@@ -69,6 +83,8 @@ cask "ghostty"
 cask "jetbrains-toolbox"
 # Keyboard customiser
 cask "karabiner-elements"
+# GPU-based terminal emulator
+cask "kitty"
 # Discover, download, and run local LLMs
 cask "lm-studio"
 # Software for Logitech devices
@@ -103,6 +119,8 @@ cask "postman"
 cask "ridibooks"
 # Team communication and collaboration software
 cask "slack"
+# System monitor for the menu bar
+cask "stats"
 # Graphical client for Git version control
 cask "sourcetree"
 # Messaging app with a focus on speed and security
@@ -113,5 +131,7 @@ cask "termius"
 cask "utm"
 # Open-source code editor
 cask "visual-studio-code"
+# Multiplayer code editor
+cask "zed"
 # Video communication and virtual meeting platform
 cask "zoom"
