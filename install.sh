@@ -135,6 +135,16 @@ if test ! $(which node); then
 fi
 
 #-------------------------------------------------------------------------------
+# Install Python 3.12 using mise
+#-------------------------------------------------------------------------------
+if test ! $(mise which python 2>/dev/null); then
+    echo "Installing Python 3.12 via mise..."
+    mise install python@3.12
+    mise use -g python@3.12
+    eval "$(mise activate bash)"
+fi
+
+#-------------------------------------------------------------------------------
 # Install Python tools: uv and Poetry
 #-------------------------------------------------------------------------------
 echo "Setting up Python package managers..."
@@ -160,6 +170,9 @@ if test ! $(which poetry); then
 else
     echo "✓ Poetry already installed"
 fi
+
+# Install Python packages for dotfiles scripts (using uv installed above)
+uv pip install --system youtube-transcript-api 2>/dev/null && echo "✓ youtube-transcript-api installed"
 
 #-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
@@ -256,6 +269,29 @@ else
 fi
 
 echo "✅ Kitty configuration linked"
+
+#-------------------------------------------------------------------------------
+# Link Yazi configuration & install runtime packages
+#-------------------------------------------------------------------------------
+echo "Setting up Yazi configuration..."
+
+if [ -d "$DOTFILES/.config/yazi" ]; then
+    rm -rf $HOME/.config/yazi 2>/dev/null
+    ln -nfs "$DOTFILES/.config/yazi" "$HOME/.config/yazi"
+    echo "✓ Linked Yazi config"
+else
+    echo "⚠️  .config/yazi not found, skipping..."
+fi
+
+# Install yazi plugins and flavors (not tracked in git)
+if command -v ya &> /dev/null; then
+    ya pkg add yazi-rs/plugins:fzf 2>/dev/null
+    ya pkg add yazi-rs/flavors:catppuccin-mocha 2>/dev/null
+    ya pkg add yazi-rs/flavors:catppuccin-latte 2>/dev/null
+    echo "✓ Yazi plugins and flavors installed"
+fi
+
+echo "✅ Yazi configuration linked"
 
 #-------------------------------------------------------------------------------
 # Link Zed configuration
