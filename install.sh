@@ -173,6 +173,7 @@ fi
 
 # Install Python packages for dotfiles scripts (using uv installed above)
 uv pip install --system youtube-transcript-api 2>/dev/null && echo "✓ youtube-transcript-api installed"
+uv pip install --system detect-secrets 2>/dev/null && echo "✓ detect-secrets installed"
 
 #-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
@@ -328,6 +329,17 @@ fi
 # Serena will create its own config at ~/.serena/serena_config.yml on first run
 echo "✅ Serena MCP setup complete"
 echo "   Run 'add-serena' in your project directory to add Serena MCP"
+
+#-------------------------------------------------------------------------------
+# Setup pre-commit hooks
+#-------------------------------------------------------------------------------
+echo "Setting up pre-commit hooks..."
+if command -v pre-commit &> /dev/null; then
+    (cd "$DOTFILES" && pre-commit install)
+    echo "✓ pre-commit hooks installed"
+else
+    echo "⚠️  pre-commit not found, skipping..."
+fi
 
 #-------------------------------------------------------------------------------
 # Make ZSH the default shell environment

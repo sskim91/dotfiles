@@ -24,6 +24,8 @@ brew "mysql-client"
 brew "neovim"
 # Package compiler and linker metadata toolkit
 brew "pkgconf"
+# Framework for managing multi-language pre-commit hooks
+brew "pre-commit"
 # Official tldr client written in Rust
 brew "tlrc"
 # Terminal multiplexer
