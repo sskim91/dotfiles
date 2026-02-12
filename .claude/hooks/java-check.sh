@@ -21,7 +21,7 @@ CHECK_SUCCESS=1
 
 if [[ "$ENABLE_CHECKSTYLE" -eq 1 ]]; then
 	echo "🔧 Running checkstyle..."
-	
+
 	# Check for checkstyle configuration
 	if [[ -f "checkstyle.xml" ]] || [[ -f ".checkstyle.xml" ]]; then
 		CONFIG_FILE=$(ls checkstyle.xml .checkstyle.xml 2>/dev/null | head -1)
@@ -29,7 +29,7 @@ if [[ "$ENABLE_CHECKSTYLE" -eq 1 ]]; then
 		# Use Google Java Style if no config exists
 		CONFIG_FILE="/google_checks.xml"
 	fi
-	
+
 	if command -v checkstyle &> /dev/null; then
 		if ! checkstyle -c "$CONFIG_FILE" "$FILE_PATH"; then
 			echo "❌ checkstyle check failed" >&2
@@ -42,7 +42,7 @@ fi
 
 if [[ "$ENABLE_SPOTBUGS" -eq 1 ]]; then
 	echo "🔧 Running SpotBugs..."
-	
+
 	# SpotBugs requires compiled .class files
 	if command -v spotbugs &> /dev/null; then
 		# Try to compile the file first if needed
@@ -50,7 +50,7 @@ if [[ "$ENABLE_SPOTBUGS" -eq 1 ]]; then
 		if [[ ! -f "$CLASS_FILE" ]] || [[ "$FILE_PATH" -nt "$CLASS_FILE" ]]; then
 			javac "$FILE_PATH" 2>/dev/null
 		fi
-		
+
 		if [[ -f "$CLASS_FILE" ]]; then
 			if ! spotbugs -textui "$CLASS_FILE"; then
 				echo "❌ SpotBugs check failed" >&2
@@ -66,7 +66,7 @@ fi
 
 if [[ "$ENABLE_PMD" -eq 1 ]]; then
 	echo "🔧 Running PMD..."
-	
+
 	if command -v pmd &> /dev/null; then
 		# Use default Java ruleset
 		if ! pmd check -d "$FILE_PATH" -R rulesets/java/quickstart.xml -f text; then

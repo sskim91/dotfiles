@@ -77,4 +77,3 @@ alias add-serena="bash ~/.dotfiles/add-serena-uvx.sh"
 alias img='kitten icat'                      # 이미지 보기 (기본 중앙)
 alias imgl='kitten icat --align left'        # 왼쪽 정렬
 alias imgclear='kitten icat --clear'         # 화면 이미지 지우기
-
