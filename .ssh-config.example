@@ -1,0 +1,8 @@
+# SSH Config Template
+# Copy to ~/.ssh/config and replace with actual values.
+
+# Oracle Cloud (example)
+Host ocl
+    HostName <YOUR_SERVER_IP>
+    User <YOUR_USERNAME>
+    IdentityFile ~/.ssh/<YOUR_KEY_FILE>
