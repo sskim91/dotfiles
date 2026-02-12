@@ -17,6 +17,13 @@ Icon
 .vscode/
 
 # ======================
+# Sensitive files
+# ======================
+.env.*
+!.env.*.example
+.ssh/config
+
+# ======================
 # Claude runtime
 # ======================
 .claude/backups
@@ -64,6 +71,7 @@ Icon
 # Misc
 # ======================
 .config.json
+.ruff_cache/
 node_modules/
 __pycache__
 poetry-installer-error-*.log
