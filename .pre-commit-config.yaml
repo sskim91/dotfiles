@@ -1,0 +1,41 @@
+repos:
+  # Pre-commit hooks for common issues
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-json
+        exclude: \.vscode/.*\.json$|\.config/zed/settings\.json$
+
+  # Detect Secrets
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+        exclude: .*\.lock$|package-lock\.json$|lazy-lock\.json$|\.pre-commit-config\.yaml$
+
+  # Local hooks (reuse existing Claude hooks)
+  - repo: local
+    hooks:
+      - id: check-sensitive-files
+        name: Check for sensitive file extensions
+        entry: .claude/hooks/check-sensitive-files.sh
+        language: script
+        pass_filenames: false
+
+      - id: check-env-files
+        name: Check for actual env files
+        entry: .claude/hooks/check-env-files.sh
+        language: script
+        pass_filenames: false
+
+      - id: check-hardcoded-secrets
+        name: Check for hardcoded secrets
+        entry: .claude/hooks/check-hardcoded-secrets.sh
+        language: script
+        pass_filenames: false
