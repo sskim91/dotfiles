@@ -10,7 +10,7 @@ function mkd() {
 # Open man page as PDF
 #-------------------------------------------------------------------------------
 function manpdf() {
-    man -t "${1}" | open -f -a /System/Applications/Preview.app
+    mandoc -T pdf "$(man -w "${1}")" | open -f -a /System/Applications/Preview.app
 }
 
 #-------------------------------------------------------------------------------
