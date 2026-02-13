@@ -176,6 +176,15 @@ uv pip install --system youtube-transcript-api 2>/dev/null && echo "✓ youtube-
 uv pip install --system detect-secrets 2>/dev/null && echo "✓ detect-secrets installed"
 
 #-------------------------------------------------------------------------------
+# Install LSP server binaries (npm-based)
+# brew-based LSP servers (jdtls, kotlin-language-server, lua-language-server)
+# are installed via Brewfile
+#-------------------------------------------------------------------------------
+echo "Setting up LSP servers..."
+npm install -g pyright 2>/dev/null && echo "✓ pyright installed"
+npm install -g typescript-language-server typescript 2>/dev/null && echo "✓ typescript-language-server installed"
+
+#-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code configuration..."
