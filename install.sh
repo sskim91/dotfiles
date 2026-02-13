@@ -226,6 +226,21 @@ fi
 echo "✅ Gemini configuration linked"
 
 #-------------------------------------------------------------------------------
+# Link Codex CLI configuration example
+#-------------------------------------------------------------------------------
+echo "Setting up Codex CLI configuration..."
+mkdir -p $HOME/.codex
+
+if [ -f "$DOTFILES/.codex/config.toml.example" ]; then
+    ln -nfs "$DOTFILES/.codex/config.toml.example" "$HOME/.codex/config.toml.example"
+    echo "✓ Linked Codex config.toml.example"
+else
+    echo "⚠️  Codex config.toml.example not found, skipping..."
+fi
+
+echo "✅ Codex CLI configuration linked"
+
+#-------------------------------------------------------------------------------
 # Link Karabiner-Elements configuration
 #-------------------------------------------------------------------------------
 echo "Setting up Karabiner-Elements configuration..."
