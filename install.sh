@@ -221,6 +221,11 @@ fi
 echo "✅ Claude Code customizable directories and files linked"
 
 #-------------------------------------------------------------------------------
+# Register Claude Code MCP servers (user scope)
+#-------------------------------------------------------------------------------
+"$DOTFILES/.claude/setup-mcp.sh"
+
+#-------------------------------------------------------------------------------
 # Link Gemini configuration
 #-------------------------------------------------------------------------------
 echo "Setting up Gemini configuration..."
