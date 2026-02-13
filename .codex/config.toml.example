@@ -1,0 +1,20 @@
+# Copy to ~/.codex/config.toml:
+#   cp ~/.dotfiles/.codex/config.toml.example ~/.codex/config.toml
+#
+# [projects] section is auto-managed by Codex (trust prompt on first use)
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.playwright]
+command = "npx"
+args = ["@playwright/mcp@latest"]
+
+[mcp_servers.desktop-commander]
+command = "npx"
+args = ["-y", "@wonderwhy-er/desktop-commander"]
+
+[mcp_servers.tavily-remote]
+command = "sh"
+args = ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]
