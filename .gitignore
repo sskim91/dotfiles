@@ -49,6 +49,11 @@ Icon
 .claude/claude_desktop_config.json
 
 # ======================
+# Override global gitignore (/.config)
+# ======================
+!.config/
+
+# ======================
 # Config runtime
 # ======================
 .config/karabiner/automatic_backups
