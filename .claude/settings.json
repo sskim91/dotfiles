@@ -2,6 +2,7 @@
   "permissions": {
     "defaultMode": "plan"
   },
+  "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
       {
@@ -65,11 +66,17 @@
     "context7@claude-plugins-official": true,
     "playwright@claude-plugins-official": true,
     "claude-hud@claude-hud": true,
-    "claude-md-management@claude-plugins-official": true
+    "claude-md-management@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true,
+    "kotlin-lsp@claude-plugins-official": true,
+    "lua-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true
   },
   "language": "korean",
   "alwaysThinkingEnabled": true,
   "autoUpdatesChannel": "stable",
   "minimumVersion": "2.1.3",
-  "enableAllProjectMcpServers": true
+  "skipDangerousModePermissionPrompt": true
 }
