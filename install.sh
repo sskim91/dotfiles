@@ -124,12 +124,12 @@ fi
 echo "✓ Neovim/LazyVim setup complete"
 
 #-------------------------------------------------------------------------------
-# Install Node.js LTS (v22) using mise
+# Install Node.js LTS using mise
 #-------------------------------------------------------------------------------
-if test ! $(which node); then
-    echo "Installing Node.js LTS 22 via mise..."
-    mise install node@22
-    mise use -g node@22
+if ! mise which node &>/dev/null; then
+    echo "Installing Node.js LTS via mise..."
+    mise install node@lts
+    mise use -g node@lts
     # Activate mise for current session to make node available immediately
     eval "$(mise activate bash)"
 fi
@@ -181,8 +181,9 @@ uv pip install --system detect-secrets 2>/dev/null && echo "✓ detect-secrets i
 # are installed via Brewfile
 #-------------------------------------------------------------------------------
 echo "Setting up LSP servers..."
-npm install -g pyright 2>/dev/null && echo "✓ pyright installed"
-npm install -g typescript-language-server typescript 2>/dev/null && echo "✓ typescript-language-server installed"
+MISE_NPM="$HOME/.local/share/mise/shims/npm"
+$MISE_NPM install -g pyright 2>/dev/null && echo "✓ pyright installed"
+$MISE_NPM install -g typescript-language-server typescript 2>/dev/null && echo "✓ typescript-language-server installed"
 
 #-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
