@@ -305,15 +305,29 @@ gem() {
   gemini "${gemini_args[@]}"
 }
 
-# Codex
+# Codex (workspace-write sandbox + on-request approval by default)
+#   cdx         → full-auto (workspace-write sandbox, 작업 디렉토리 내 수정 허용)
+#   cdx -y      → yolo (sandbox/승인 전부 해제, 위험)
+#   cdx -r      → 최근 세션 이어서 시작 (full-auto)
+#   cdx -ry     → 최근 세션 이어서 시작 (yolo)
+#   cdx -ro     → read-only (코드 탐색/리뷰 전용, 수정 불가)
 cdx() {
-  if [[ "$1" == "update" ]]; then
-    npm install -g @openai/codex@latest
+  local subcmd=""
+  local codex_args=("--full-auto")
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y)     codex_args=("--dangerously-bypass-approvals-and-sandbox"); shift ;;
+      -r)     subcmd="resume"; codex_args=("--last" "--full-auto"); shift ;;
+      -ry|-yr) subcmd="resume"; codex_args=("--last" "--dangerously-bypass-approvals-and-sandbox"); shift ;;
+      -ro)    codex_args=("--sandbox" "read-only"); shift ;;
+      *) break ;;
+    esac
+  done
+
+  if [[ -n "$subcmd" ]]; then
+    codex "$subcmd" "${codex_args[@]}" "$@"
   else
-    codex \
-      --model 'gpt-5.1-codex' \
-      --full-auto \
-      -c model_reasoning_summary_format=experimental \
-      --search "$@"
+    codex "${codex_args[@]}" "$@"
   fi
 }
