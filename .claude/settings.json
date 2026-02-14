@@ -1,6 +1,51 @@
 {
   "permissions": {
-    "defaultMode": "plan"
+    "defaultMode": "plan",
+    "allow": [
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git show*)",
+      "Bash(git stash*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git checkout -b*)",
+      "Bash(git switch*)",
+      "Bash(git merge*)",
+      "Bash(npm view*)",
+      "Bash(npm test*)",
+      "Bash(npm run*)",
+      "Bash(pip index*)",
+      "Bash(pytest*)",
+      "Bash(python -m pytest*)",
+      "Bash(mvn test*)",
+      "Bash(./gradlew *)",
+      "Bash(gh *)",
+      "Bash(mise *)",
+      "Bash(brew list*)",
+      "Bash(brew info*)",
+      "Bash(docker ps*)",
+      "Bash(docker compose ps*)",
+      "Bash(* --version)",
+      "Bash(* --help*)",
+      "Bash(date*)",
+      "Bash(jq*)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(ruff *)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(*credentials*)",
+      "Read(*.pem)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)"
+    ],
+    "ask": [
+      "Bash(git rebase*)"
+    ]
   },
   "enableAllProjectMcpServers": true,
   "hooks": {
