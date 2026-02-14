@@ -246,18 +246,23 @@ ccv() {
     "CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000"
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
     "ENABLE_LSP_TOOL=1"
+    "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1"
   )
 
   local claude_args=()
 
-  if [ "$1" = "-y" ]; then
-    claude_args+=("--dangerously-skip-permissions")
-  elif [ "$1" = "-r" ]; then
-    claude_args+=("--resume")
-  elif [ "$1" = "-ry" ] || [ "$1" = "-yr" ]; then
-    claude_args+=("--resume" "--dangerously-skip-permissions")
-  fi
-    env "${env_vars[@]}" claude "${claude_args[@]}"
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y)  claude_args+=("--dangerously-skip-permissions"); shift ;;
+      -d)  claude_args+=("--permission-mode" "dontAsk"); shift ;;
+      -r)  claude_args+=("--resume"); shift ;;
+      -ry|-yr) claude_args+=("--resume" "--dangerously-skip-permissions"); shift ;;
+      -rd|-dr) claude_args+=("--resume" "--permission-mode" "dontAsk"); shift ;;
+      *)   break ;;
+    esac
+  done
+
+  env "${env_vars[@]}" claude "${claude_args[@]}" "$@"
 }
 
 # Claude with Ollama (로컬 모델)

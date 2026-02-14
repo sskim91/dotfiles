@@ -37,13 +37,13 @@
       "Bash(ruff *)"
     ],
     "deny": [
-      "Read(.env*)",
-      "Read(*credentials*)",
-      "Read(*.pem)",
       "Bash(git push --force*)",
       "Bash(git reset --hard*)"
     ],
     "ask": [
+      "Read(.env*)",
+      "Read(*credentials*)",
+      "Read(*.pem)",
       "Bash(git rebase*)"
     ]
   },
