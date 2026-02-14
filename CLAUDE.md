@@ -189,7 +189,7 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 
 | Function | Tool | Options |
 |----------|------|---------|
-| `ccv` | Claude Code (optimized env vars) | `-y` (skip permissions), `-r` (resume), `-ry` (both) |
+| `ccv` | Claude Code (flag shortcuts) | `-y` (skip permissions), `-d` (dontAsk), `-r` (resume), `-ry` `-rd` (combo) |
 | `cco` | Claude Code + Ollama (local model) | Same + `-m <model>` (default: qwen3-coder:30b) |
 | `gem` | Gemini CLI | `-y` (yolo), `-r` (resume), `-ry` (both) |
 | `cdx` | Codex CLI | `update` (install latest), default: full-auto mode |

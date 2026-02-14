@@ -235,20 +235,6 @@ function y() {
 
 # Claude
 ccv() {
-  local env_vars=(
-    "ENABLE_BACKGROUND_TASKS=true"
-    "FORCE_AUTO_BACKGROUND_TASKS=true"
-    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=true"
-    "CLAUDE_CODE_ENABLE_UNIFIED_READ_TOOL=true"
-    "CLAUDE_CODE_ENABLE_TASKS=true"
-    "ENABLE_TOOL_SEARCH=1"
-    "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS=55000"
-    "CLAUDE_CODE_MAX_OUTPUT_TOKENS=64000"
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1"
-    "ENABLE_LSP_TOOL=1"
-    "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1"
-  )
-
   local claude_args=()
 
   while [[ $# -gt 0 ]]; do
@@ -262,7 +248,7 @@ ccv() {
     esac
   done
 
-  env "${env_vars[@]}" claude "${claude_args[@]}" "$@"
+  claude "${claude_args[@]}" "$@"
 }
 
 # Claude with Ollama (로컬 모델)
