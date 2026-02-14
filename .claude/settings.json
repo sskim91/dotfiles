@@ -14,7 +14,8 @@
       "NotebookEdit",
       "LSP",
       "Task",
-      "ToolSearch"
+      "ToolSearch",
+      "mcp__*"
     ],
     "deny": [
       "Bash(git push --force*)",

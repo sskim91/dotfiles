@@ -15,6 +15,7 @@ Icon
 *.swo
 *~
 .vscode/
+.luarc.json
 
 # ======================
 # Sensitive files
