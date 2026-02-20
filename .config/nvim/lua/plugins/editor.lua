@@ -126,6 +126,15 @@ return {
     },
   },
 
+  -- Replace vim.ui.select with Telescope UI
+  {
+    "nvim-telescope/telescope-ui-select.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = function()
+      require("telescope").load_extension("ui-select")
+    end,
+  },
+
   -- Smart file finding based on frequency + recency
   {
     "nvim-telescope/telescope-frecency.nvim",

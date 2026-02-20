@@ -33,6 +33,15 @@ return {
     },
   },
 
+  -- Gruvbox theme
+  {
+    "ellisonleao/gruvbox.nvim",
+    opts = {
+      contrast = "hard", -- hard, soft, or "" (empty for medium)
+      transparent_mode = false,
+    },
+  },
+
   -- Dracula theme (your previous theme)
   { "dracula/vim", name = "dracula" },
 
