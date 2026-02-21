@@ -53,7 +53,10 @@
   "mcpServers": {
     "context7": {
       "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"],
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ],
       "env": {
         "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
       },
@@ -61,7 +64,10 @@
     },
     "playwright": {
       "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"],
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
       "env": {
         "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
       },
@@ -69,7 +75,10 @@
     },
     "desktop-commander": {
       "command": "npx",
-      "args": ["-y", "@wonderwhy-er/desktop-commander"],
+      "args": [
+        "-y",
+        "@wonderwhy-er/desktop-commander"
+      ],
       "env": {
         "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
       },
@@ -77,7 +86,10 @@
     },
     "tavily": {
       "command": "bash",
-      "args": ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}\""],
+      "args": [
+        "-c",
+        "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}\""
+      ],
       "env": {
         "TAVILY_API_KEY": "$TAVILY_API_KEY",
         "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
