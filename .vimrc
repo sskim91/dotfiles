@@ -27,9 +27,9 @@ set wildmenu                            " 명령 라인 완성이 향상된 기�
 set wildmode=list:longest               " 매칭되는 단어 목록을 리스트 형식으로 보여줌
 set number                              " 라인 넘버 표시
 set undofile                            " 자동으로 실행 취소(undo) 기록을 실행 취소 파일에 저장함
+set undodir=~/.vim/undodir              " undo 파일을 한 곳에 모아서 관리
 set ignorecase                          " 검색 시 대소문자를 무시함
 set smartcase                           " 검색 문자열이 모두 소문자이면 대소문자를 구분하지 않고, 대문자가 하나라도 있으면 대소문자 구분
 set gdefault                            " '찾아바꾸기' 할때 subtitute 플래그 'g'가 기본설정됨
 set cursorline                          " 현재 커서가 위치한 행의 라인을 표시
 set nojoinspaces                        " J 명령어로 줄을 이어 붙일 때 마침표 뒤에 한칸만 띄워 씀
-set fileencodings=utf8
