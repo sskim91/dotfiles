@@ -26,13 +26,15 @@ SECRET_PATTERNS=(
     "glpat-[a-zA-Z0-9_-]{20,}"
 
     # OpenAI / Anthropic
-    "sk-[a-zA-Z0-9]{48}"      # OpenAI
+    "sk-proj-[a-zA-Z0-9_-]{80,}"  # OpenAI Project API Key
+    "sk-svcacct-[a-zA-Z0-9_-]{80,}"  # OpenAI Service Account Key
+    "sk-[a-zA-Z0-9]{48}"      # OpenAI (legacy)
     "sk-ant-[a-zA-Z0-9_-]{90,}"  # Anthropic
 
     # Slack
     "xoxb-[0-9]{11,13}-[0-9]{11,13}-[a-zA-Z0-9]{24}"  # Bot Token
     "xoxp-[0-9]{11,13}-[0-9]{11,13}-[a-zA-Z0-9]{24}"  # User Token
-    "xoxa-[0-9]{11,13}-[0-9]{11,13}-[a-zA-Z0-9]{24}"  # App Token
+    "xapp-[0-9]+-[a-zA-Z0-9]+-[0-9]+-[a-zA-Z0-9]+"    # App-level Token
 
     # Google
     "AIza[0-9A-Za-z_-]{35}"   # Google API Key
@@ -52,6 +54,22 @@ SECRET_PATTERNS=(
 
     # Discord
     "[MN][A-Za-z0-9]{23,}\\.[A-Za-z0-9_-]{6}\\.[A-Za-z0-9_-]{27}"
+
+    # Hugging Face
+    "hf_[a-zA-Z0-9]{30,}"    # API Token
+
+    # PyPI
+    "pypi-AgEIcHlwaS[a-zA-Z0-9_-]{50,}"  # Upload Token
+
+    # Telegram
+    "[0-9]{8,10}:[a-zA-Z0-9_-]{35}"  # Bot Token
+
+    # Hashicorp Vault
+    "hvs\\.[a-zA-Z0-9_-]{24,}"  # Service Token
+    "hvb\\.[a-zA-Z0-9_-]{24,}"  # Batch Token
+
+    # Sentry
+    "sntrys_[a-zA-Z0-9]{50,}"  # Auth Token
 
     # Private Keys
     "-----BEGIN (RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----"
