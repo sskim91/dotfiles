@@ -90,3 +90,4 @@ export ENABLE_PMD=0                  # PMD - 코드 분석
 # ----------------------------------------------------------------------------
 export ENABLE_GEMINI_REVIEW=0        # Gemini AI 코드 리뷰 (.py, .java, .ts, .js)
 export ENABLE_TIL_REVIEW=1           # Gemini TIL 문서 리뷰 (~/dev/TIL/*.md)
+export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 Gemini 리뷰 스킵

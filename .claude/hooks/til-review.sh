@@ -30,6 +30,13 @@ if [[ "$ENABLE_TIL_REVIEW" -ne 1 ]]; then
 	exit 0
 fi
 
+# Skip translated articles (translate-article skill output)
+SKIP_TRANSLATED_REVIEW=${SKIP_TRANSLATED_REVIEW:-0}
+if [[ "$SKIP_TRANSLATED_REVIEW" -eq 1 ]] && grep -q "한국어로 번역한 글입니다" "$FILE_PATH" 2>/dev/null; then
+	echo "⏭️ 번역 문서 리뷰 스킵: $(basename "$FILE_PATH")" >&2
+	exit 0
+fi
+
 # Model configuration
 GEMINI_MODEL="gemini-3-flash-preview"
 
