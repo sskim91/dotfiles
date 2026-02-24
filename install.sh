@@ -36,6 +36,14 @@ git config --global core.excludesfile $HOME/.gitignore_global
 git config --global core.editor "nvim"
 
 #-------------------------------------------------------------------------------
+# Tmux
+#-------------------------------------------------------------------------------
+ln -nfs $DOTFILES/.tmux.conf $HOME/.tmux.conf
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+fi
+
+#-------------------------------------------------------------------------------
 # Install Oh-my-zsh (non-interactive mode)
 #-------------------------------------------------------------------------------
 if [ ! -d "$HOME/.oh-my-zsh" ]; then

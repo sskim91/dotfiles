@@ -23,6 +23,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.gitconfig` | `~/.dotfiles/git/.gitconfig` |
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
+| `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
 | `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
 | `~/.config/karabiner/` | `~/.dotfiles/.config/karabiner/` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
