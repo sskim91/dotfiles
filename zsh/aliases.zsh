@@ -34,7 +34,6 @@ alias ln='ln -i'
 alias mv='mv -i'
 
 # Homebrew 관리
-alias update="brew update && brew upgrade && brew cleanup"  # 패키지 업데이트
 alias services="brew services"                              # 서비스 관리
 
 # eza를 사용한 향상된 파일 목록 표시

@@ -194,6 +194,18 @@ $MISE_NPM install -g pyright 2>/dev/null && echo "✓ pyright installed"
 $MISE_NPM install -g typescript-language-server typescript 2>/dev/null && echo "✓ typescript-language-server installed"
 
 #-------------------------------------------------------------------------------
+# Install Claude Code (native binary)
+#-------------------------------------------------------------------------------
+echo "Setting up Claude Code..."
+if ! command -v claude &> /dev/null; then
+    echo "Installing Claude Code..."
+    curl -fsSL https://claude.ai/install.sh | bash
+    echo "✓ Claude Code installed"
+else
+    echo "✓ Claude Code already installed ($(claude --version 2>/dev/null))"
+fi
+
+#-------------------------------------------------------------------------------
 # Link Claude customizable directories and files individually
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code configuration..."

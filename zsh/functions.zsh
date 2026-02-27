@@ -233,6 +233,15 @@ function y() {
     rm -f -- "$tmp"
 }
 
+#-------------------------------------------------------------------------------
+# Update all: Homebrew + Claude Code
+#-------------------------------------------------------------------------------
+function update() {
+    brew update && brew upgrade && brew cleanup
+    echo "==> Updating Claude Code..."
+    claude update
+}
+
 # Claude
 ccv() {
   local claude_args=()
