@@ -87,15 +87,16 @@ description: Generate comprehensive session summary for handoff to new LLM sessi
 
 요약 완료 후:
 
-1. **파일 저장**: Write tool을 사용하여 현재 작업 디렉토리에 저장
-   - 파일명 형식: `session-handoff-$(date +%Y%m%d-%H%M%S).md`
-   - 예시: `session-handoff-20251117-143022.md`
+1. **폴더 확인/생성**: 현재 작업 디렉토리에 `_session` 폴더가 있는지 확인
+   - 없으면 `mkdir -p _session` 으로 생성
+2. **파일 저장**: Write tool을 사용하여 `_session/` 폴더에 저장
+   - 파일명 형식: `_session/session-handoff-$(date +%Y%m%d-%H%M%S).md`
+   - 예시: `_session/session-handoff-20251117-143022.md`
    - Bash tool로 먼저 `date +%Y%m%d-%H%M%S` 실행하여 현재 timestamp 얻기
-2. **Clipboard 복사**: 다음 명령어로 clipboard에 복사
+3. **Clipboard 복사**: 저장된 파일의 정확한 경로로 clipboard에 복사
    ```bash
-   cat session-handoff-*.md | pbcopy
+   cat _session/session-handoff-*.md | pbcopy
    ```
-   또는 저장된 파일의 정확한 경로를 사용
 
 ### 3단계: 사용자 안내
 
