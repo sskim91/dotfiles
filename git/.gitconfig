@@ -11,6 +11,8 @@
     path = .gitconfig_personal     # ~/dev/ 이하에서는 개인 설정 파일(.gitconfig_personal)을 추가로 로드
 [includeIf "gitdir:~/company-src/"]
     path = .gitconfig_company      # ~/company-src/ 이하에서는 회사 설정 파일(.gitconfig_company)을 추가로 로드
+[includeIf "gitdir:~/work/"]
+    path = .gitconfig_company      # ~/work/ 이하에서는 회사 설정 파일(.gitconfig_company)을 추가로 로드
 [includeIf "gitdir:~/company-src/shinhanbank/"]
     path = .gitconfig_personal     # 위 프로젝트는 개인 GitHub으로 공유받아 개인 계정 사용
 [difftool "sourcetree"]

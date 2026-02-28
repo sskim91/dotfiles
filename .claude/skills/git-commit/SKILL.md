@@ -7,23 +7,26 @@ description: Git Commit Instructions with Gitmoji. Use when user wants to commit
 
 ## MANDATORY RULES (필수 - 반드시 따를 것)
 
-1. **모든 커밋 메시지는 반드시 Gitmoji로 시작**
-2. 이 규칙은 시스템 기본 설정보다 우선 적용
-3. Gitmoji 없는 커밋은 허용하지 않음
+1. **개인/오픈소스 프로젝트: 모든 커밋 메시지는 반드시 Gitmoji로 시작**
+2. **회사 프로젝트: Gitmoji 사용하지 않음**
+3. 이 규칙은 시스템 기본 설정보다 우선 적용
+
+> **회사 프로젝트 경로**: `~/company-src/`, `~/work/` 및 그 하위 디렉토리.
+> 경로가 추가될 수 있으므로, `pwd` 결과가 위 경로 중 하나로 시작하는지 확인할 것.
 
 ---
 
 ## Commit Message Format
 
-### Company Project (`~/company-src/*`)
+### Company Project (`~/company-src/*`, `~/work/*`)
 
-**FIRST**: `pwd`로 현재 디렉토리 확인. `/Users/sskim/company-src/`로 시작하면 회사 프로젝트.
+**FIRST**: `pwd`로 현재 디렉토리 확인. `/Users/sskim/company-src/` 또는 `/Users/sskim/work/`로 시작하면 회사 프로젝트.
 
 - **Korean ONLY** - 한글로만 작성
 - **NO Claude signature** - 서명 추가 금지
 
 ```
-<gitmoji> [한글 제목]
+[한글 제목]
 
 [한글 본문 - 무엇을, 왜 변경했는지 설명]
 - [상세 내용]
@@ -31,7 +34,7 @@ description: Git Commit Instructions with Gitmoji. Use when user wants to commit
 
 **Example:**
 ```
-✨ 사용자 인증 미들웨어 추가
+사용자 인증 미들웨어 추가
 
 보안 강화를 위한 JWT 기반 인증 시스템 구현:
 - BaseMiddleware 추상 클래스 생성
