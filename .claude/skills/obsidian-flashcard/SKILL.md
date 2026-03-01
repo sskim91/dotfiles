@@ -102,7 +102,6 @@ Step 5: 저장
 **변환 후:**
 ```markdown
 ---
-title: "Spring Framework 7.0 플래시카드"
 created: 2026-02-02
 tags:
   - flashcard
@@ -261,7 +260,6 @@ A: CompletableFuture가 표준이 되어서.
 
 ```markdown
 ---
-title: "{주제} 플래시카드"
 created: {YYYY-MM-DD}
 tags:
   - flashcard
@@ -327,7 +325,6 @@ Cloze 형식: ==핵심 키워드==를 가린다.
 
 ```markdown
 ---
-title: "Spring Security 플래시카드"
 created: 2024-01-15
 tags:
   - flashcard

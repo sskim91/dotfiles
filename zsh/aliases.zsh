@@ -16,6 +16,7 @@ alias dot="cd ~/.dotfiles"
 alias dev="cd ~/dev"
 alias til="cd ~/dev/TIL"
 alias comp="cd ~/company-src"
+alias note="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/Note"
 
 # 향상된 도구로 대체
 alias vim="nvim"         # Neovim 사용

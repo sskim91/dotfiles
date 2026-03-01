@@ -87,20 +87,12 @@ Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note
 
 ```markdown
 ---
-title: 영상 제목
-aliases:
-  - 영상 제목 한국어 번역 (영어 영상인 경우)
-source: YouTube URL
-author: 채널명
-topics:
-  - 주제1
-  - 주제2
+source:
+  - YouTube URL
 related_notes:
   - "[[실존하는_관련노트]]"
 tags:
-  - youtube
-  - 관련태그
-type: youtube-summary
+  - 도메인/하위주제
 created: YYYY-MM-DD
 ---
 
@@ -214,7 +206,7 @@ created: YYYY-MM-DD
 |------|-----|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
 | 저장 위치 | `00.Inbox` |
-| 파일명 | `영상제목-요약.md` (공백은 하이픈, 특수문자 제거) |
+| 파일명 | `{Title}.md` — 순수 제목, 접두사 없음 (예: `RAG 파이프라인 구축 가이드.md`) |
 
 ---
 
@@ -222,12 +214,9 @@ created: YYYY-MM-DD
 
 | 필드 | 설명 |
 |------|------|
-| `title` | 영상 제목 (자동 추출 또는 내용에서 추정) |
-| `aliases` | 영어 제목의 한국어 번역 (영어 영상인 경우) |
 | `source` | 원본 YouTube URL |
-| `author` | 채널명 (소문자, 공백은 하이픈) |
-| `topics` | 핵심 주제 |
-| `related_notes` | 실존하는 관련 Obsidian 노트 |
-| `tags` | `youtube` + 내용 관련 태그 |
-| `type` | `youtube-summary` 고정 |
+| `related_notes` | 실존하는 관련 Obsidian 노트 (wikilink) |
+| `tags` | 계층형 태그 (도메인/하위주제) |
 | `created` | 파일 생성 날짜 |
+
+필드 순서: `source` → `related_notes` → `tags` → `created`
