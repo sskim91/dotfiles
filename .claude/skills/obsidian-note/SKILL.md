@@ -77,18 +77,13 @@ Zettelkasten의 해결책:
 
 ```yaml
 ---
-title: 명확하고 구체적인 제목
-source: 출처 URL 또는 책 제목
-topics:
-  - 주제1
-  - 주제2
-related_notes:
+source:              # 출처 URL (있으면)
+related_notes:       # wikilink 연결 (있으면)
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
-tags:
-  - 태그1
-  - 태그2
-created: YYYY-MM-DD
+tags:                # 계층형 태그
+  - domain/topic
+created: YYYY-MM-DD  # 작성일
 ---
 ```
 
@@ -233,17 +228,13 @@ flowchart TD
 
 ```markdown
 ---
-title: CAP 정리
 source: https://example.com/cap-theorem
-topics:
-  - 분산시스템
-  - 데이터베이스
 related_notes:
   - "[[분산시스템의_트레이드오프]]"
   - "[[PACELC정리]]"
 tags:
-  - database
-  - distributed-system
+  - distributed-system/cap-theorem
+  - database/consistency
 created: 2024-01-15
 ---
 
