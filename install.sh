@@ -258,6 +258,13 @@ else
     echo "⚠️  Gemini settings.json not found, skipping..."
 fi
 
+if [ -d "$DOTFILES/.gemini/policies" ]; then
+    ln -nfs "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
+    echo "✓ Linked Gemini policies"
+else
+    echo "⚠️  Gemini policies not found, skipping..."
+fi
+
 echo "✅ Gemini configuration linked"
 
 #-------------------------------------------------------------------------------

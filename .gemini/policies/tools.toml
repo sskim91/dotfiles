@@ -1,0 +1,308 @@
+# Gemini CLI Policy Engine - Allowed Shell Commands
+# Migrated from tools.allowed in settings.json
+
+# --- File System ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "ls"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "cat"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "echo"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "mkdir"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "find"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "touch"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "cp"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "mv"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "pwd"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "cd"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "rm"
+decision = "allow"
+priority = 100
+
+# --- Text Processing ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "grep"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "sed"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "awk"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "head"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "tail"
+decision = "allow"
+priority = 100
+
+# --- Shell ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "sh"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "bash"
+decision = "allow"
+priority = 100
+
+# --- Python ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "python"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "pip"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "uv"
+decision = "allow"
+priority = 100
+
+# --- Node.js ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "npm"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "npx"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "yarn"
+decision = "allow"
+priority = 100
+
+# --- Git ---
+
+# Deny: destructive git operations (priority 300 > allow 100)
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git push --force"
+decision = "deny"
+priority = 300
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git push -f"
+decision = "deny"
+priority = 300
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git reset --hard"
+decision = "deny"
+priority = 300
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git commit --no-verify"
+decision = "deny"
+priority = 300
+
+# Ask: risky git operations (priority 200 > allow 100)
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git rebase"
+decision = "ask_user"
+priority = 200
+
+# Allow: general git (lowest priority, overridden by above)
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "git"
+decision = "allow"
+priority = 100
+
+# --- Build Tools ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "make"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "go"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "javac"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "mvn"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "gradle"
+decision = "allow"
+priority = 100
+
+# --- Network ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "curl"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = "wget"
+decision = "allow"
+priority = 100
+
+# --- Sensitive Files (ask before access) ---
+
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = "cat.*\\.env"
+decision = "ask_user"
+priority = 200
+
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = "cat.*credentials"
+decision = "ask_user"
+priority = 200
+
+[[rule]]
+toolName = "run_shell_command"
+commandRegex = "cat.*\\.pem"
+decision = "ask_user"
+priority = 200
+
+[[rule]]
+toolName = "read_file"
+argsPattern = ".*\\.env.*"
+decision = "ask_user"
+priority = 200
+
+[[rule]]
+toolName = "read_file"
+argsPattern = ".*credentials.*"
+decision = "ask_user"
+priority = 200
+
+[[rule]]
+toolName = "read_file"
+argsPattern = ".*\\.pem"
+decision = "ask_user"
+priority = 200
+
+# --- Built-in Tools ---
+
+[[rule]]
+toolName = "read_file"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "write_file"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "replace"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "list_directory"
+decision = "allow"
+priority = 100
+
+[[rule]]
+toolName = "search_files"
+decision = "allow"
+priority = 100
