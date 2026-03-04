@@ -28,6 +28,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.config/karabiner/` | `~/.dotfiles/.config/karabiner/` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
+| `~/.config/ruff/ruff.toml` | `~/.dotfiles/.config/ruff/ruff.toml` |
 | `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.

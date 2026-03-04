@@ -352,6 +352,21 @@ fi
 echo "✅ Yazi configuration linked"
 
 #-------------------------------------------------------------------------------
+# Link Ruff configuration (Python linter)
+#-------------------------------------------------------------------------------
+echo "Setting up Ruff configuration..."
+mkdir -p $HOME/.config/ruff
+
+if [ -f "$DOTFILES/.config/ruff/ruff.toml" ]; then
+    ln -nfs "$DOTFILES/.config/ruff/ruff.toml" "$HOME/.config/ruff/ruff.toml"
+    echo "✓ Linked Ruff config"
+else
+    echo "⚠️  .config/ruff/ruff.toml not found, skipping..."
+fi
+
+echo "✅ Ruff configuration linked"
+
+#-------------------------------------------------------------------------------
 # Link Zed configuration
 #-------------------------------------------------------------------------------
 echo "Setting up Zed configuration..."
