@@ -1,6 +1,6 @@
 ---
 name: devlog
-description: Record development work logs to _devlog/YYYY-MM-DD.md. Tracks commands, decisions, and next steps. Use with /devlog, /devlog [title], or /devlog --summary.
+description: Record development work logs to _devlog/YYYY-MM-DD-topic.md. Tracks commands, decisions, and next steps. Use with /devlog, /devlog [title], or /devlog --summary.
 ---
 
 # /devlog - 작업 로그 기록
@@ -14,16 +14,44 @@ description: Record development work logs to _devlog/YYYY-MM-DD.md. Tracks comma
    - Git 있으면: `git status --short` 결과 참고
    - Git 없으면: 수동 입력 모드
 
-2. **사용자에게 질문** (필요시)
-   - "어떤 작업을 하셨나요?" (자유 형식)
-   - 또는 이전 대화 컨텍스트에서 작업 내용 요약
+2. **주제(topic) 결정**
+   - `/devlog 제목` 으로 실행했으면 제목에서 주제 추출
+   - `/devlog` 만 실행했으면 사용자에게 "어떤 작업을 하셨나요?" 질문
+   - `/devlog --summary` 면 대화 컨텍스트에서 주제 자동 추출
+   - 주제는 영문 kebab-case로 변환 (예: "Docker 환경 구축" → `docker-setup`)
+   - 한글/영문 혼합 시 영문 키워드 중심으로 변환
 
 3. **devlog 파일 생성/업데이트**
    - 프로젝트 루트: Git repo면 `git rev-parse --show-toplevel`, 아니면 `$PWD`
-   - 경로: `{project-root}/_devlog/YYYY-MM-DD.md`
+   - 경로: `{project-root}/_devlog/YYYY-MM-DD-{topic}.md`
    - _devlog 폴더가 없으면 생성
-   - 같은 날짜 파일이 있으면 해당 파일에 append (하루 한 파일)
-   - 순번 결정: 파일 내 마지막 `## N.` 헤더를 찾아 N+1 사용
+   - 같은 날짜 + 같은 주제 파일이 있으면 해당 파일에 append
+   - 순번 결정: 파일 내 마지막 `## N.` 헤더를 찾아 N+1 사용 (새 파일이면 1)
+
+## 파일명 규칙
+
+```
+_devlog/
+├── 2026-03-05-redis-config.md
+├── 2026-03-05-intent-refactor.md
+├── 2026-03-04-session-pipeline.md
+└── 2026-03-03-docker-setup.md
+```
+
+- 형식: `YYYY-MM-DD-{topic}.md`
+- topic: 영문 kebab-case, 간결하게 (2~4 단어)
+- 같은 날 다른 주제면 별도 파일 생성
+- 같은 날 같은 주제면 기존 파일에 순번 증가하며 append
+
+### 주제 변환 예시
+
+| 사용자 입력 | topic | 파일명 |
+|-------------|-------|--------|
+| Docker 환경 구축 완료 | docker-setup | 2026-03-05-docker-setup.md |
+| Redis 설정 변경 | redis-config | 2026-03-05-redis-config.md |
+| intent 리팩토링 | intent-refactor | 2026-03-05-intent-refactor.md |
+| API 테스트 가이드 작성 | api-test-guide | 2026-03-05-api-test-guide.md |
+| 버그 수정 - 세션 타임아웃 | fix-session-timeout | 2026-03-05-fix-session-timeout.md |
 
 ## 로그 형식
 
@@ -76,13 +104,13 @@ curl -X POST ...
 ## 순번 규칙
 
 - 시간 대신 순번 사용: `## 1.`, `## 2.`, `## 3.` ...
-- 같은 날 여러 작업 시 순번 증가
-- 다음 날은 다시 1번부터
+- 같은 파일(같은 날 + 같은 주제) 내에서 순번 증가
+- 새 파일은 항상 1번부터
 
 ## 사용 예시
 
 ```bash
-# 대화형으로 로그 작성
+# 대화형으로 로그 작성 (주제 질문함)
 /devlog
 
 # 제목과 함께 바로 작성
@@ -100,6 +128,7 @@ curl -X POST ...
    - 대화에서 수행한 작업 식별
    - 파일 생성/수정 내역 수집
    - 주요 결정사항 추출
+   - 주제(topic) 자동 결정
 
 2. **실행한 명령어 수집**
    - Bash 도구로 실행한 명령어 목록화
@@ -111,5 +140,5 @@ curl -X POST ...
 
 4. **사용자 확인 후 저장**
    - 요약 내용 미리보기 제공
-   - 수정 요청 가능
+   - 파일명(주제) 확인/수정 요청 가능
    - 확인 후 파일에 저장
