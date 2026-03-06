@@ -160,7 +160,7 @@ echo "Setting up Python package managers..."
 
 if test ! $(which uv); then
     echo "Installing uv..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
+    UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
     echo "  ✓ uv installed"
 else
