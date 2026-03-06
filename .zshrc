@@ -3,7 +3,7 @@
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/$USER/.oh-my-zsh"
-export DOTFILES="$HOME/.dotfiles"
+export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -120,14 +120,10 @@ prompt_context() {
   fi
 }
 
-eval $(/opt/homebrew/bin/brew shellenv)
-
 source ~/fzf-git.sh/fzf-git.sh
 
-# mise (asdf replacement) - faster and more modern
-eval "$(mise activate zsh)"
-
-source <(cat $DOTFILES/zsh/*zsh)
+source "$DOTFILES/zsh/aliases.zsh"
+source "$DOTFILES/zsh/functions.zsh"
 
 # uv CLI autocomplete setup
 eval "$(uv generate-shell-completion zsh)"
@@ -135,13 +131,6 @@ eval "$(uvx --generate-shell-completion zsh)"
 
 # zoxide
 eval "$(zoxide init zsh)"
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/Users/sskim/.lmstudio/bin"
-# End of LM Studio CLI section
-
-# Added by Antigravity
-export PATH="/Users/sskim/.antigravity/antigravity/bin:$PATH"
 
 # iTerm2 Shell Integration - 프롬프트 간 이동, 명령어 상태 표시, imgcat/it2dl 등 유틸리티 제공
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
