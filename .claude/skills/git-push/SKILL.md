@@ -1,6 +1,6 @@
 ---
 name: git-push
-description: Git Push Guide. Use when user wants to push changes to remote repository safely.
+description: Safe git push workflow with pre-push checks, sync strategies, and protected branch awareness. Use when user says "push", "push to remote", "푸시해줘", "올려줘", or wants to send local commits to remote repository. Do NOT use for commit creation - use git-commit skill instead.
 ---
 
 # Git Push Guide

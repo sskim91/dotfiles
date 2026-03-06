@@ -1,6 +1,6 @@
 ---
 name: github-actions
-description: Analyze GitHub Actions failures and identify root cause. Check workflow failures, flakiness, and breaking commits. Use with /github-actions <url>.
+description: Analyze GitHub Actions failures and identify root cause using gh CLI. Checks workflow failures, flakiness patterns, and breaking commits. Use when user shares a GitHub Actions URL, mentions "CI failed", "빌드 실패", "workflow error", "Actions 실패", or wants to debug CI/CD pipeline issues.
 ---
 
 # GitHub Actions 실패 분석

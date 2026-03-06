@@ -316,3 +316,14 @@ venv/
 /project-overview --depth deep
 # 결과를 ONBOARDING.md로 저장
 ```
+
+---
+
+## Troubleshooting
+
+| 문제 | 원인 | 해결 |
+|------|------|------|
+| 기술 스택 미감지 | 비표준 프로젝트 구조 | `--depth deep`으로 재시도, 수동 힌트 제공 |
+| 디렉토리 탐색 느림 | node_modules 등 대용량 폴더 | 자동 제외 목록 확인, 필요시 `--focus` 사용 |
+| 아키텍처 패턴 오인식 | 디렉토리 구조만으로 판단 한계 | 코드 레벨 확인 후 수동 보정 |
+| 빌드 명령어 불확실 | README.md 없거나 불완전 | package.json scripts, Makefile 등 추가 확인 |

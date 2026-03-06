@@ -262,6 +262,34 @@ If Claude doesn't use the Skill:
    claude --debug
    ```
 
+## Skill Categories
+
+Understand which category your skill falls into:
+
+| Category | Description | Key Techniques |
+|----------|-------------|----------------|
+| **Document & Asset Creation** | Consistent, high-quality output (docs, code, designs) | Embedded style guides, templates, quality checklists |
+| **Workflow Automation** | Multi-step processes with consistent methodology | Step-by-step workflow with validation gates, iterative refinement |
+| **MCP Enhancement** | Workflow guidance on top of MCP tool access | Coordinates MCP calls, embeds domain expertise, error handling |
+
+## Workflow Patterns
+
+Choose the pattern that best fits the skill's purpose:
+
+1. **Sequential Workflow** - Multi-step processes in specific order (onboarding, setup)
+2. **Iterative Refinement** - Output quality improves with iteration (report generation, review)
+3. **Context-Aware Selection** - Different tools/approaches based on context (file routing)
+4. **Domain-Specific Intelligence** - Specialized knowledge beyond tool access (compliance, style)
+5. **Multi-MCP Coordination** - Workflows spanning multiple services (design-to-dev handoff)
+
+## Define Success Criteria
+
+Before building, define how you'll know the skill works:
+
+- **Triggering**: Skill loads on 90%+ of relevant queries, doesn't load on unrelated ones
+- **Workflow**: Completes in reasonable tool calls without user correction
+- **Consistency**: Same request produces structurally consistent results across sessions
+
 ## Common patterns
 
 ### Read-only Skill
@@ -322,13 +350,13 @@ Detailed reference: See [reference.md](reference.md)
 ## Best practices for Skill authors
 
 1. **One Skill, one purpose**: Don't create mega-Skills
-2. **Specific descriptions**: Include trigger words users will say
-3. **Clear instructions**: Write for Claude, not humans
+2. **Specific descriptions**: Include trigger words users will say. Add negative triggers ("Do NOT use for...") to prevent over-triggering
+3. **Clear instructions**: Write for Claude, not humans. Use CRITICAL headers for must-follow rules
 4. **Concrete examples**: Show real code, not pseudocode
-5. **List dependencies**: Mention required packages in description
-6. **Test with teammates**: Verify activation and clarity
-7. **Version your Skills**: Document changes in content
-8. **Use progressive disclosure**: Put advanced details in separate files
+5. **Progressive disclosure**: Keep SKILL.md under 5,000 words. Move detailed docs to `references/`
+6. **Include troubleshooting**: Add common issues and solutions table
+7. **Add error handling**: Scripts are deterministic; language instructions aren't. Use scripts for critical validations
+8. **Test triggering**: Ask Claude "When would you use the [skill] skill?" to verify description effectiveness
 
 ## Validation checklist
 

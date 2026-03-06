@@ -220,3 +220,15 @@ created: YYYY-MM-DD
 | `created` | 파일 생성 날짜 |
 
 필드 순서: `source` → `related_notes` → `tags` → `created`
+
+---
+
+## Troubleshooting
+
+| 문제 | 원인 | 해결 |
+|------|------|------|
+| 트랜스크립트 다운로드 실패 | 자막 비활성화 또는 비공개 영상 | 사용자에게 트랜스크립트 직접 붙여넣기 안내 |
+| 한국어 자막 없음 | 영어만 제공되는 영상 | 영어 자막 다운로드 후 한국어 번역 + 요약 |
+| yt-transcript.py 미설치 | 스크립트 또는 의존성 누락 | `pip install youtube-transcript-api` 확인 |
+| 타임스탬프 부정확 | 자동 생성 자막의 한계 | 약 5분 단위 논리적 섹션으로 재구성 |
+| 연결 노트 미존재 | Vault에 관련 노트 없음 | `[[wikilink]]` 대신 tags로 대체 |

@@ -1,6 +1,6 @@
 ---
 name: init-serena
-description: Init Serena MCP for enhanced semantic analysis. Use when starting code analysis with Serena.
+description: Initialize Serena MCP server for semantic code analysis. Loads instructions manual and activates the current project. Use when user says "init serena", "serena 초기화", "start serena", "세레나 시작", or wants to begin semantic code navigation and symbol analysis with Serena MCP.
 ---
 
 # Init Serena MCP
