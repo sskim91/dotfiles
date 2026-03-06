@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Root setup files: `install.sh`, `Brewfile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
+- Root setup files: `install.sh`, `Brewfile`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
 - Shell customizations live in `zsh/`:
   - `aliases.zsh` for aliases
   - `functions.zsh` for reusable functions

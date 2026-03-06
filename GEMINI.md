@@ -18,7 +18,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 
 | Feature | Dotfiles Source | Home Destination |
 |---------|-----------------|------------------|
-| ZSH | `.zshrc`, `zsh/` | `~/.zshrc` |
+| ZSH | `.zprofile`, `.zshrc`, `zsh/` | `~/.zprofile`, `~/.zshrc` |
 | Git | `git/.gitconfig` | `~/.gitconfig` |
 | Neovim | `.config/nvim/` | `~/.config/nvim/` |
 | Gemini | `.gemini/` | `~/.gemini/` |
