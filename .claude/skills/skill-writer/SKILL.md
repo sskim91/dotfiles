@@ -391,6 +391,10 @@ Before finalizing a Skill, verify:
 - Ensure scripts have execute permissions
 - List all dependencies
 
+## Anthropic 공식 가이드
+
+스킬 설계 원칙, 카테고리, 워크플로우 패턴, 테스트 전략, 트러블슈팅에 대한 Anthropic 공식 권장사항은 [references/anthropic-skill-guide.md](references/anthropic-skill-guide.md)를 참조.
+
 ## Examples
 
 See the documentation for complete examples:
