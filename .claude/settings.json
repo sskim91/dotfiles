@@ -119,7 +119,8 @@
     "skill-creator@claude-plugins-official": true,
     "github@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
-    "explanatory-output-style@claude-plugins-official": true
+    "explanatory-output-style@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true
   },
   "language": "korean",
   "alwaysThinkingEnabled": true,
