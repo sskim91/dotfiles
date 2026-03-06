@@ -10,11 +10,8 @@ export EDITOR="$(which nvim 2>/dev/null || echo 'nvim')"
 # Python 버전 관리는 mise를 사용 (pyenv 제거됨)
 
 # Maven - Java 빌드 도구
-# Apple Silicon과 Intel Mac 모두 지원
 if [ -d "/opt/homebrew/opt/maven/bin" ]; then
-  export PATH="/opt/homebrew/opt/maven/bin:$PATH"  # Apple Silicon
-elif [ -d "/usr/local/opt/maven/bin" ]; then
-  export PATH="/usr/local/opt/maven/bin:$PATH"     # Intel Mac
+  export PATH="/opt/homebrew/opt/maven/bin:$PATH"
 fi
 
 # Bat - 향상된 cat 명령어 (매뉴얼 페이지에도 사용)

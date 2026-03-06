@@ -28,12 +28,7 @@ link_file() {
 if test ! $(which brew); then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    # Add Homebrew to PATH for this session (Apple Silicon vs Intel)
-    if [[ $(uname -m) == 'arm64' ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    else
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
 brew bundle
@@ -188,6 +183,7 @@ uv pip install --system detect-secrets 2>/dev/null && echo "  ✓ detect-secrets
 # Install LSP server binaries (npm-based)
 #-------------------------------------------------------------------------------
 echo "Setting up LSP servers..."
+eval "$(mise activate bash)"
 npm install -g pyright 2>/dev/null && echo "  ✓ pyright"
 npm install -g typescript-language-server typescript 2>/dev/null && echo "  ✓ typescript-language-server"
 
