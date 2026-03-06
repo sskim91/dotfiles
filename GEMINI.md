@@ -49,12 +49,12 @@ The environment provides the following MCP servers for enhanced capabilities:
 Configuration is split into logical files in `zsh/`:
 - `aliases.zsh`: Command shortcuts (e.g., `vim` -> `nvim`, `ls` -> `eza`).
 - `functions.zsh`: Custom shell functions (e.g., `ccv`, `gem`, `mkd`).
-- `path.zsh`: PATH exports, tool activations (`mise`), and AI hook toggles (`ENABLE_XXX`).
+- `path.zsh`: PATH exports, env vars, Claude hook toggles (`ENABLE_XXX`). Sourced by `.zprofile`.
 
 ### Runtime Management
 Uses **mise** for managing language runtimes (Node.js, Python).
 - Configured in `install.sh`.
-- Shims are added to PATH in `zsh/path.zsh`.
+- Activated in `.zprofile` via `mise activate zsh`.
 
 ### AI Skills & Logic
 The `.claude/skills/` directory contains 17+ specialized "skills" (e.g., `git-commit`, `til`, `obsidian-note`).

@@ -5,7 +5,7 @@
 - Shell customizations live in `zsh/`:
   - `aliases.zsh` for aliases
   - `functions.zsh` for reusable functions
-  - `path.zsh` for PATH/runtime/env toggles
+  - `path.zsh` for PATH/env/hook toggles (sourced by `.zprofile`)
 - Tool/app configs live in `.config/` (notably `nvim/`, `ghostty/`, `kitty/`, `karabiner/`, `yazi/`, `zed/`).
 - Git identity and defaults live in `git/`.
 - Automation and checks live in `.claude/hooks/`.

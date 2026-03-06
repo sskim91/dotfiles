@@ -20,6 +20,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | Home Location | Dotfiles Source |
 |---------------|-----------------|
 | `~/.zshrc` | `~/.dotfiles/.zshrc` |
+| `~/.zprofile` | `~/.dotfiles/.zprofile` |
 | `~/.gitconfig` | `~/.dotfiles/git/.gitconfig` |
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
@@ -37,13 +38,13 @@ All configurations are managed via symlinks from home directory to dotfiles:
 
 Modular ZSH configuration loaded from `zsh/`:
 
-| File | Purpose |
-|------|---------|
-| `aliases.zsh` | Command shortcuts, tool aliases |
-| `functions.zsh` | Custom functions (mkd, killport, extract, ccv, etc.) |
-| `path.zsh` | PATH, environment variables, tool activation |
+| File | Purpose | Sourced By |
+|------|---------|------------|
+| `path.zsh` | PATH, env vars, Claude hooks ENABLE_* | `.zprofile` |
+| `aliases.zsh` | Command shortcuts, tool aliases | `.zshrc` |
+| `functions.zsh` | Custom functions (mkd, killport, ccv, etc.) | `.zshrc` |
 
-All loaded via `.zshrc`: `source <(cat $DOTFILES/zsh/*zsh)`
+`.zprofile` sources `path.zsh` (login-time, once). `.zshrc` sources `aliases.zsh` and `functions.zsh` explicitly.
 
 ### Adding Aliases/Functions
 
@@ -209,4 +210,4 @@ Caps Lock as modifier key (`.config/karabiner/`):
 
 ## Version Management
 
-Uses **mise** (asdf replacement) for runtime versions. Activated in `path.zsh`.
+Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
