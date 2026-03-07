@@ -1,10 +1,6 @@
 ---
 name: react-best-practices
 description: React and Next.js performance optimization (57 rules across 8 categories) from Vercel Engineering. Use when writing, reviewing, or refactoring React/Next.js components, implementing data fetching, optimizing bundle size, or improving render performance. Do NOT use for general JavaScript questions or non-React frameworks.
-license: MIT
-metadata:
-  author: vercel
-  version: "1.0.0"
 ---
 
 # Vercel React Best Practices

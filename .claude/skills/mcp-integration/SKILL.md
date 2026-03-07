@@ -1,6 +1,6 @@
 ---
 name: mcp-integration
-description: Integrate Model Context Protocol (MCP) servers into Claude Code plugins for external tool and service access. Covers stdio, SSE, HTTP, and WebSocket server types with authentication patterns. Use when user asks to "add MCP server", "integrate MCP", "configure MCP", "use .mcp.json", "set up MCP", or discusses MCP server types and plugin configuration.
+description: Integrate Model Context Protocol (MCP) servers into Claude Code plugins for external tool and service access. Covers stdio, SSE, HTTP, and WebSocket server types with authentication patterns. Use when user asks to "add MCP server", "integrate MCP", "configure MCP", "use .mcp.json", "set up MCP", "MCP 서버 추가", or discusses MCP server types and plugin configuration. Do NOT use for Serena initialization (use init-serena skill), general plugin development, or non-MCP tool integrations.
 ---
 
 # MCP Integration for Claude Code Plugins

@@ -1,6 +1,6 @@
 ---
 name: til
-description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "write TIL", "TIL document", "learning note" without explicit /til command.
+description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "write TIL", "TIL document", "learning note" without explicit /til command. Do NOT use for Obsidian vault notes (use obsidian-note skill), flashcards (use obsidian-flashcard skill), or blog posts (use tech-blog-writer skill).
 ---
 
 # TIL Writer

@@ -1,6 +1,6 @@
 ---
 name: obsidian-flashcard
-description: Generate flashcards for Obsidian Spaced Repetition plugin. Convert session learnings or specific topics into Q&A/Cloze format flashcards. Auto-activate on "flashcard", "review card", "spaced repetition" requests.
+description: Generate flashcards for Obsidian Spaced Repetition plugin. Convert session learnings or specific topics into Q&A/Cloze format flashcards. Auto-activate on "flashcard", "플래시카드", "review card", "spaced repetition", "암기 카드" requests. Do NOT use for regular Obsidian notes (use obsidian-note skill), TIL documents (use til skill), or session summaries (use session-handoff skill).
 ---
 
 # Obsidian Flashcard Writer

@@ -1,6 +1,6 @@
 ---
 name: sns-writer
-description: Polish drafts into compelling X/Threads posts. Use when user mentions tweet, thread, SNS post, polish my writing, or wants to refine social media writing.
+description: Polish drafts into compelling X/Threads posts. Use when user mentions tweet, thread, SNS post, "트윗", "스레드", polish my writing, or wants to refine social media writing into concise, engaging format. Do NOT use for long-form blog posts (use tech-blog-writer skill), TIL documents (use til skill), or development logs (use devlog skill).
 ---
 
 # SNS Writer

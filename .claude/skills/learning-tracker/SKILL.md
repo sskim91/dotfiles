@@ -1,6 +1,6 @@
 ---
 name: learning-tracker
-description: Extract new tech/library/concept learnings from Claude Code sessions. Auto-activate on "learning summary", "what I learned today", "session summary" requests. Delegate extracted content to /til or /obsidian-flashcard skills for storage.
+description: Extract new tech/library/concept learnings from Claude Code sessions. Auto-activate on "learning summary", "what I learned today", "오늘 뭐 배웠지", "session summary", "학습 정리" requests. Delegates extracted content to /til or /obsidian-flashcard skills for storage. Do NOT use for session handoff (use session-handoff skill), development work logs (use devlog skill), or direct TIL/note creation (use til or obsidian-note skill directly).
 ---
 
 # Learning Tracker Skill

@@ -1,6 +1,6 @@
 ---
 name: session-handoff
-description: Generate comprehensive session summary for handoff to new LLM session. Use when ending session and need to handoff context.
+description: Generate comprehensive session summary for handoff to new LLM session. Use when user says "session handoff", "세션 인계", "세션 정리", "handoff", "다음 세션에 넘겨줘", or when ending a session and needing to preserve full context for continuation. Do NOT use for learning summaries (use learning-tracker skill), TIL documents (use til skill), or development work logs (use devlog skill).
 ---
 
 # Session Handoff - 대화 세션 인계 요약본 생성

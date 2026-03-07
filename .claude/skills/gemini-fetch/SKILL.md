@@ -1,6 +1,6 @@
 ---
 name: gemini-fetch
-description: Bypass blocked sites via Gemini CLI. Use when WebFetch fails with 403/blocked errors on Reddit, LinkedIn, X, Medium, etc.
+description: Bypass blocked sites via Gemini CLI. Use when WebFetch fails with 403/blocked errors on Reddit, LinkedIn, X/Twitter, Medium, or other sites that block automated access. Also use when user says "gemini fetch", "Gemini로 가져와", or mentions needing content from a blocked URL. Do NOT use as primary web fetch tool — always try WebFetch first, fall back to this skill only on failure.
 ---
 
 # Gemini Fetch - WebFetch 차단 우회

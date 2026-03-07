@@ -1,6 +1,6 @@
 ---
 name: cc-team-builder
-description: Interactive wizard to design and spawn Claude Code Agent Teams. Use when user wants to create agent team, design team composition, plan multi-agent collaboration, or mentions "agent team", "team spawn", "create team".
+description: Interactive wizard to design and spawn Claude Code Agent Teams. Use when user wants to create agent team, design team composition, plan multi-agent collaboration, or mentions "agent team", "에이전트 팀", "team spawn", "create team", "팀 구성". Do NOT use for single subagent dispatch (use superpowers:dispatching-parallel-agents), skill creation (use skill-guide or skill-creator), or project analysis (use project-overview skill).
 ---
 
 # Create Agent Team

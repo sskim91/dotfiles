@@ -1,6 +1,6 @@
 ---
 name: git-commit
-description: Git Commit Instructions with Gitmoji. Use when user wants to commit changes with proper commit message format.
+description: Git Commit Instructions with Gitmoji. Use when user wants to commit changes, says "commit", "커밋", "커밋해줘", "변경사항 저장", or wants to create a git commit with proper Gitmoji-prefixed message format. Do NOT use for pushing to remote (use git-push skill) or for commit-and-push in one step (use git-commit-and-push skill).
 ---
 
 # Git Commit Instructions
