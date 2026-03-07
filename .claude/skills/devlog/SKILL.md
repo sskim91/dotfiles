@@ -1,6 +1,6 @@
 ---
 name: devlog
-description: Record development work logs to _devlog/YYYY-MM-DD-topic.md tracking commands, decisions, and next steps. Use when user says "devlog", "작업 로그", "work log", "오늘 작업 기록", or wants to document development progress. Supports /devlog, /devlog [title], and /devlog --summary.
+description: Record development work logs to _devlog/YYYY-MM-DD-topic.md tracking commands, decisions, and next steps. Use when user says "devlog", "작업 로그", "work log", "오늘 작업 기록", or wants to document development progress. Supports /devlog, /devlog [title], and /devlog --summary. Do NOT use for git commits (use git-commit skill), session handoff (use session-handoff skill), or TIL documents (use til skill).
 ---
 
 # /devlog - 작업 로그 기록
@@ -142,3 +142,46 @@ curl -X POST ...
    - 요약 내용 미리보기 제공
    - 파일명(주제) 확인/수정 요청 가능
    - 확인 후 파일에 저장
+
+### `--summary` 출력 예시
+
+```markdown
+## 1. prompts.chat MCP 서버 통합
+
+### 작업 내용
+- prompts.chat MCP 서버를 Claude Code에 remote HTTP 방식으로 등록
+- setup-mcp.sh에 자동 등록 스크립트 추가
+- 새 세션에서 MCP 도구 10개 정상 동작 확인
+
+### 실행한 명령어
+```bash
+claude mcp add -s user -t http prompts-chat https://prompts.chat/api/mcp
+```
+
+### 확인 결과
+| 항목 | 상태 |
+|------|------|
+| MCP 서버 등록 | ✅ |
+| search_prompts 동작 | ✅ |
+| search_skills 동작 | ✅ |
+
+### 주요 결정사항
+- Local(npx) 대신 Remote HTTP 선택: 설치 불필요, 항상 최신 프롬프트
+
+### 생성/변경된 파일
+- `.claude/setup-mcp.sh`
+
+### 다음 단계
+- [ ] 유용한 프롬프트 탐색 및 스킬 활용
+
+---
+```
+
+## Troubleshooting
+
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| `_devlog` 폴더 생성 실패 | 프로젝트 루트 감지 실패 | `git rev-parse --show-toplevel` 확인, Git 없으면 `$PWD` 사용 |
+| 같은 파일에 append 안 됨 | 날짜 또는 topic 불일치 | 기존 파일명의 topic과 정확히 동일한지 확인 |
+| 순번이 1로 리셋됨 | 새 파일로 생성됨 | 같은 날짜 + 같은 topic인지 파일명 확인 |
+| `--summary`가 빈 내용 생성 | 세션에서 작업이 거의 없음 | 수동 모드(`/devlog 제목`)로 전환 |

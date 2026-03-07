@@ -1,6 +1,6 @@
 ---
-name: skill-writer
-description: Guide users through creating Agent Skills for Claude Code. Use when the user wants to create, write, author, or design a new Skill, or needs help with SKILL.md files, frontmatter, or skill structure.
+name: skill-guide
+description: Quick skill creation guide with structure validation and Anthropic official best practices. Use when user wants to create a new Skill from scratch, validate SKILL.md structure/frontmatter, review skill quality against checklist, or reference Anthropic's official skill design guide. Do NOT use for eval-based iterative improvement, benchmark testing, description trigger optimization, or blind A/B comparison (use skill-creator plugin instead).
 ---
 
 # Skill Writer
