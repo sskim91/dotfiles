@@ -5,5 +5,4 @@ description: Initialize Serena MCP server for semantic code analysis. Loads inst
 
 # Init Serena MCP
 
-1. Execute `mcp__plugin_serena_serena__initial_instructions` to load the Serena Instructions Manual.
-2. Execute `mcp__plugin_serena_serena__activate_project` with the current working directory path to activate the project in Serena's web dashboard.
+1. Execute `mcp__plugin_serena_serena__activate_project` with the current working directory path to activate the project in Serena's web dashboard.

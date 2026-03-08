@@ -1,4 +1,5 @@
 {
+  "cleanupPeriodDays": 14,
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
     "ENABLE_TOOL_SEARCH": "1",
@@ -127,5 +128,12 @@
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
   "effortLevel": "high",
-  "cleanupPeriodDays": 14
+  "extraKnownMarketplaces": {
+    "pm-skills": {
+      "source": {
+        "source": "github",
+        "repo": "phuryn/pm-skills"
+      }
+    }
+  }
 }
