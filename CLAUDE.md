@@ -143,6 +143,10 @@ Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 | `python-patterns` | Python 개발 패턴, 타입 힌트, 코드 리뷰 |
 | `python-code-style` | Python 린터/포매터 설정, 네이밍, 독스트링 |
 | `python-testing` | pytest, TDD, fixtures, mocking |
+| `springboot-patterns` | Spring Boot 설정, DI, 예외처리, 캐싱, 비동기/이벤트, 관측성, HTTP 클라이언트 |
+| `springboot-security` | Spring Security 6+ 인증/인가, JWT, OAuth2, CORS, CSRF, 시크릿 |
+| `springboot-tdd` | Spring Boot TDD (MockMvc, Mockito, JaCoCo, 보안 테스트) |
+| `springboot-verification` | PR/배포 전 검증 (빌드→정적분석→테스트+커버리지→보안스캔→diff) |
 | `sql-optimization-patterns` | SQL 쿼리 최적화 패턴 |
 | `sns-writer` | X/Threads 초안을 단단한 글로 다듬기 |
 | `skill-guide` | 스킬 생성 가이드 + 구조 검증 |
