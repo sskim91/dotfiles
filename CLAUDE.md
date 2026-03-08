@@ -137,6 +137,10 @@ Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 | `git-commit` | Gitmoji 커밋 메시지 |
 | `git-commit-and-push` | 커밋 + 푸시 |
 | `git-push` | 안전한 푸시 |
+| `init-project-rules` | 프로젝트 언어 감지 → .claude/rules/ 가드레일 생성 |
+| `python-patterns` | Python 개발 패턴, 타입 힌트, 코드 리뷰 |
+| `python-code-style` | Python 린터/포매터 설정, 네이밍, 독스트링 |
+| `python-testing` | pytest, TDD, fixtures, mocking |
 | `sql-optimization-patterns` | SQL 쿼리 최적화 패턴 |
 | `sns-writer` | X/Threads 초안을 단단한 글로 다듬기 |
 | `skill-guide` | 스킬 생성 가이드 + 구조 검증 |
