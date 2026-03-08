@@ -358,3 +358,9 @@ pytest
 8. **Keep docs updated** - Treat documentation as code
 9. **Automate in CI** - Run linters on every commit
 10. **Target Python 3.10+** - For new projects, Python 3.12+ is recommended for modern language features
+
+## Further Reading
+
+For complete ruff rule categories, pre-commit setup, and advanced linting configuration, see:
+
+- [Ruff Rules & Pre-commit Guide](references/ruff-rules-guide.md)

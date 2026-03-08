@@ -62,71 +62,57 @@ some_module.setup()  # What does this do?
 
 ### 3. EAFP - Easier to Ask Forgiveness Than Permission
 
-Python prefers exception handling over checking conditions.
+Python prefers exception handling over checking conditions upfront.
 
 ```python
-# Good: EAFP style
-def get_value(dictionary: dict, key: str) -> Any:
+# Good: EAFP style - try first, handle failure
+def read_config(path: str) -> dict[str, Any]:
     try:
-        return dictionary[key]
-    except KeyError:
-        return default_value
+        with open(path) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
 
-# Bad: LBYL (Look Before You Leap) style
-def get_value(dictionary: dict, key: str) -> Any:
-    if key in dictionary:
-        return dictionary[key]
-    else:
-        return default_value
+# Bad: LBYL (Look Before You Leap) - check then act (race condition risk)
+def read_config(path: str) -> dict[str, Any]:
+    if os.path.exists(path):  # File could be deleted between check and open
+        with open(path) as f:
+            return json.load(f)
+    return {}
 ```
 
 ## Type Hints
 
-### Basic Type Annotations
+### Modern Type Hints (Python 3.10+, Recommended)
 
 ```python
-from typing import Optional, List, Dict, Any
-
+# Use built-in types and | union syntax (PEP 604)
 def process_user(
     user_id: str,
-    data: Dict[str, Any],
-    active: bool = True
-) -> Optional[User]:
+    data: dict[str, Any],
+    active: bool = True,
+) -> User | None:
     """Process a user and return the updated User or None."""
     if not active:
         return None
     return User(user_id, data)
-```
 
-### Modern Type Hints (Python 3.9+)
-
-```python
-# Python 3.9+ - Use built-in types
 def process_items(items: list[str]) -> dict[str, int]:
     return {item: len(item) for item in items}
-
-# Python 3.8 and earlier - Use typing module
-from typing import List, Dict
-
-def process_items(items: List[str]) -> Dict[str, int]:
-    return {item: len(item) for item in items}
 ```
 
-### Type Aliases and TypeVar
+### Type Aliases (Python 3.12+)
 
 ```python
-from typing import TypeVar, Union
-
-# Type alias for complex types
-JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
+# Python 3.12+ - type statement (PEP 695)
+type JSON = dict[str, Any] | list[Any] | str | int | float | bool | None
+type Vector[T] = list[T]
 
 def parse_json(data: str) -> JSON:
     return json.loads(data)
 
-# Generic types
-T = TypeVar('T')
-
-def first(items: list[T]) -> T | None:
+# Generic functions with new syntax (PEP 695)
+def first[T](items: list[T]) -> T | None:
     """Return the first item or None if list is empty."""
     return items[0] if items else None
 ```
@@ -143,6 +129,19 @@ class Renderable(Protocol):
 def render_all(items: list[Renderable]) -> str:
     """Render all items that implement the Renderable protocol."""
     return "\n".join(item.render() for item in items)
+```
+
+### Legacy Type Hints (Python 3.8-3.9)
+
+```python
+# Only use for projects targeting Python < 3.10
+from typing import Optional, List, Dict, Union, TypeVar
+
+T = TypeVar('T')
+JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
+
+def process_user(user_id: str, data: Dict[str, Any]) -> Optional[User]:
+    ...
 ```
 
 ## Error Handling Patterns
@@ -694,3 +693,10 @@ When reviewing Python code, structure output as:
 | `enumerate` | For index-element pairs in loops |
 
 __Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+
+## Further Reading
+
+For detailed coverage of Python 3.10~3.14 new features (match statement, ExceptionGroup, type statement, free-threaded mode, etc.) and advanced concurrency patterns, see:
+
+- [Modern Python Features (3.10~3.14)](references/modern-python-features.md)
+- [Concurrency Deep Dive](references/concurrency-deep-dive.md)

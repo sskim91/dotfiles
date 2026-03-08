@@ -757,3 +757,9 @@ pytest --pdb
 | `assert` | Simple and readable assertions |
 
 **Remember**: Tests are code too. Keep them clean, readable, and maintainable. Good tests catch bugs; great tests prevent them.
+
+## Further Reading
+
+For property-based testing, factory patterns, snapshot testing, and advanced pytest plugins, see:
+
+- [Advanced Testing Patterns](references/advanced-testing.md)
