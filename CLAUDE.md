@@ -138,6 +138,7 @@ Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
 | `git-commit-and-push` | 커밋 + 푸시 |
 | `git-push` | 안전한 푸시 |
 | `init-project-rules` | 프로젝트 언어 감지 → .claude/rules/ 가드레일 생성 |
+| `golang-patterns` | Go 이디엄, 동시성, 제네릭, iterators, slog, ServeMux, 테스트 |
 | `kotlin-patterns` | Kotlin 이디엄, coroutines, Flow, DSL, Spring Boot 통합 |
 | `python-patterns` | Python 개발 패턴, 타입 힌트, 코드 리뷰 |
 | `python-code-style` | Python 린터/포매터 설정, 네이밍, 독스트링 |
