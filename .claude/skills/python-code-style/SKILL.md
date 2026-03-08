@@ -3,109 +3,55 @@ name: python-code-style
 description: Python code style, linting, formatting, naming conventions, and documentation standards. Use when configuring ruff/mypy/pyright, setting up project formatting, writing docstrings, establishing coding standards, or reviewing style consistency. Do NOT use for general Python patterns (use python-patterns) or test writing (use python-testing).
 ---
 
-# Python Code Style & Documentation
+# Python Code Style & Tooling
 
-Consistent code style and clear documentation make codebases maintainable and collaborative. This skill covers modern Python tooling, naming conventions, and documentation standards.
-
-## When to Use This Skill
-
-- Setting up linting and formatting for a new project
-- Writing or reviewing docstrings
-- Establishing team coding standards
-- Configuring ruff, mypy, or pyright
-- Reviewing code for style consistency
-- Creating project documentation
-
-## Core Concepts
-
-### 1. Automated Formatting
-
-Let tools handle formatting debates. Configure once, enforce automatically.
-
-### 2. Consistent Naming
-
-Follow PEP 8 conventions with meaningful, descriptive names.
-
-### 3. Documentation as Code
-
-Docstrings should be maintained alongside the code they describe.
-
-### 4. Type Annotations
-
-Modern Python code should include type hints for all public APIs.
+판단 기준과 규칙 중심. ruff/mypy 설정과 네이밍 규칙의 **올바른 선택**을 안내.
 
 ## Quick Start
 
-```bash
-# Install modern tooling
-pip install ruff mypy
+- **린터/포매터 설정?** --> [Ruff Config](#ruff-configuration) below
+- **타입 체커 선택?** --> [Type Checker Decision](#type-checker-decision) below
+- **네이밍 규칙?** --> [Naming Rules](#naming-rules) below
+- **독스트링 작성?** --> [Docstring Rules](#docstring-rules) below
+- **Ruff 룰 카테고리 상세?** --> [references/ruff-rules-guide.md](references/ruff-rules-guide.md)
 
-# Configure in pyproject.toml
-[tool.ruff]
-line-length = 120
-target-version = "py312"  # Adjust based on your project's minimum Python version
+## CRITICAL Rules
 
-[tool.mypy]
-strict = true
+1. **ALWAYS** use `ruff` as single linter+formatter -- flake8+isort+black 조합 대체
+2. **ALWAYS** enable strict `mypy` or `pyright` for production code
+3. **ALWAYS** 120 char line length -- 현대 디스플레이 표준
+4. **ALWAYS** absolute imports -- `from mypackage.utils import x` (relative imports 금지)
+5. **NEVER** `from module import *` -- 명시적 import만
+6. **ALWAYS** Google-style docstrings -- public API에 필수
+7. **PREFER** `ruff check --fix` + `ruff format` -- 수동 포매팅 금지
+8. **ALWAYS** configure `per-file-ignores` for tests -- S101(assert), ARG 허용
+9. **PREFER** `pyproject.toml` 단일 설정 -- setup.cfg, .flake8 등 분산 금지
+
+## Type Checker Decision
+
+```
+Need type checking?
++-- New project, full control? --> pyright (strict mode, faster, LSP 내장)
++-- Existing project, gradual adoption? --> mypy (strict=true, overrides로 점진적)
++-- Both available? --> pyright (개발 시) + mypy (CI용)
++-- Django/SQLAlchemy project? --> mypy + django-stubs/sqlalchemy-stubs
 ```
 
-## Fundamental Patterns
-
-### Pattern 1: Modern Python Tooling
-
-Use `ruff` as an all-in-one linter and formatter. It replaces flake8, isort, and black with a single fast tool.
+### mypy Config
 
 ```toml
-# pyproject.toml
-[tool.ruff]
-line-length = 120
-target-version = "py312"  # Adjust based on your project's minimum Python version
-
-[tool.ruff.lint]
-select = [
-    "E",    # pycodestyle errors
-    "W",    # pycodestyle warnings
-    "F",    # pyflakes
-    "I",    # isort
-    "B",    # flake8-bugbear
-    "C4",   # flake8-comprehensions
-    "UP",   # pyupgrade
-    "SIM",  # flake8-simplify
-]
-ignore = ["E501"]  # Line length handled by formatter
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-```
-
-Run with:
-
-```bash
-ruff check --fix .  # Lint and auto-fix
-ruff format .       # Format code
-```
-
-### Pattern 2: Type Checking Configuration
-
-Configure strict type checking for production code.
-
-```toml
-# pyproject.toml
 [tool.mypy]
 python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_ignores = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
 ```
 
-Alternative: Use `pyright` for faster checking.
+### pyright Config
 
 ```toml
 [tool.pyright]
@@ -113,94 +59,84 @@ pythonVersion = "3.12"
 typeCheckingMode = "strict"
 ```
 
-### Pattern 3: Naming Conventions
+## Ruff Configuration
 
-Follow PEP 8 with emphasis on clarity over brevity.
+### Strictness Levels
 
-**Files and Modules:**
+| Level | select | Use Case |
+|-------|--------|----------|
+| Minimal | `E, W, F, I, B, UP` | 레거시 프로젝트, 빠른 도입 |
+| Standard | `+ C4, SIM, PT, RET, RUF, PERF` | 신규 프로젝트 권장 |
+| Strict | `ALL` (with ignores) | 최대 안전성, 라이브러리 개발 |
 
-```python
-# Good: Descriptive snake_case
-user_repository.py
-order_processing.py
-http_client.py
+### Standard Config (Recommended)
 
-# Avoid: Abbreviations
-usr_repo.py
-ord_proc.py
-http_cli.py
+```toml
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "B", "C4",
+    "UP", "SIM", "PT", "RET", "RUF", "PERF",
+]
+ignore = ["E501"]  # formatter handles line length
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "ARG", "PT004"]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["mypackage"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
 ```
 
-**Classes and Functions:**
+## Naming Rules
+
+| Element | Convention | Example |
+|---------|-----------|---------|
+| Module/file | `snake_case` | `user_repository.py` |
+| Class | `PascalCase` | `UserRepository` |
+| Function/variable | `snake_case` | `get_user_by_email` |
+| Constant | `SCREAMING_SNAKE_CASE` | `MAX_RETRY_ATTEMPTS` |
+| Type variable | `PascalCase` or single letter | `T`, `KeyType` |
+| Private | `_prefix` | `_internal_cache` |
+| Acronym in class | Uppercase | `HTTPClientFactory` |
+
+### Naming Anti-Patterns
 
 ```python
-# Classes: PascalCase
-class UserRepository:
-    pass
+# BAD: Abbreviations
+usr_repo.py, ord_proc.py, http_cli.py
 
-class HTTPClientFactory:  # Acronyms stay uppercase
-    pass
+# GOOD: Descriptive
+user_repository.py, order_processing.py, http_client.py
 
-# Functions and variables: snake_case
-def get_user_by_email(email: str) -> User | None:
-    retry_count = 3
-    max_connections = 100
+# BAD: Generic names
+data, info, result, temp, foo
+
+# GOOD: Intent-revealing names
+user_count, order_total, parsed_response
 ```
 
-**Constants:**
+## Docstring Rules
 
-```python
-# Module-level constants: SCREAMING_SNAKE_CASE
-MAX_RETRY_ATTEMPTS = 3
-DEFAULT_TIMEOUT_SECONDS = 30
-API_BASE_URL = "https://api.example.com"
-```
+### When to Write
 
-### Pattern 4: Import Organization
+| Target | Required? |
+|--------|-----------|
+| Public function/method | Yes -- 항상 |
+| Public class | Yes -- `__init__` 포함 |
+| Private with complex logic | Yes |
+| Trivial getter/setter | No -- 타입 힌트로 충분 |
+| Test function | No -- 함수명이 문서 |
 
-Group imports in a consistent order: standard library, third-party, local.
-
-```python
-# Standard library
-import os
-from collections.abc import Callable
-from typing import Any
-
-# Third-party packages
-import httpx
-from pydantic import BaseModel
-from sqlalchemy import Column
-
-# Local imports
-from myproject.models import User
-from myproject.services import UserService
-```
-
-Use absolute imports exclusively:
-
-```python
-# Preferred
-from myproject.utils import retry_decorator
-
-# Avoid relative imports
-from ..utils import retry_decorator
-```
-
-## Advanced Patterns
-
-### Pattern 5: Google-Style Docstrings
-
-Write docstrings for all public classes, methods, and functions.
-
-**Simple Function:**
-
-```python
-def get_user(user_id: str) -> User:
-    """Retrieve a user by their unique identifier."""
-    ...
-```
-
-**Complex Function:**
+### Format (Google Style)
 
 ```python
 def process_batch(
@@ -210,157 +146,78 @@ def process_batch(
 ) -> BatchResult:
     """Process items concurrently using a worker pool.
 
-    Processes each item in the batch using the configured number of
-    workers. Progress can be monitored via the optional callback.
-
     Args:
         items: The items to process. Must not be empty.
         max_workers: Maximum concurrent workers. Defaults to 4.
-        on_progress: Optional callback receiving (completed, total) counts.
+        on_progress: Optional callback receiving (completed, total).
 
     Returns:
-        BatchResult containing succeeded items and any failures with
-        their associated exceptions.
+        BatchResult with succeeded items and failures.
 
     Raises:
         ValueError: If items is empty.
-        ProcessingError: If the batch cannot be processed.
-
-    Example:
-        >>> result = process_batch(items, max_workers=8)
-        >>> print(f"Processed {len(result.succeeded)} items")
     """
-    ...
 ```
 
-**Class Docstring:**
+**Rules:**
+- 한 줄이면 `"""Retrieve a user by ID."""` (closing quotes 같은 줄)
+- 복잡하면 summary line + blank line + details
+- `Args`, `Returns`, `Raises` 순서 고정
+- `Example:` 섹션은 doctest로 실행 가능하게
+
+## Import Organization
 
 ```python
-class UserService:
-    """Service for managing user operations.
+# 1. Standard library
+import os
+from collections.abc import Callable
 
-    Provides methods for creating, retrieving, updating, and
-    deleting users with proper validation and error handling.
+# 2. Third-party
+import httpx
+from pydantic import BaseModel
 
-    Attributes:
-        repository: The data access layer for user persistence.
-        logger: Logger instance for operation tracking.
-
-    Example:
-        >>> service = UserService(repository, logger)
-        >>> user = service.create_user(CreateUserInput(...))
-    """
-
-    def __init__(self, repository: UserRepository, logger: Logger) -> None:
-        """Initialize the user service.
-
-        Args:
-            repository: Data access layer for users.
-            logger: Logger for tracking operations.
-        """
-        self.repository = repository
-        self.logger = logger
+# 3. Local (absolute imports only)
+from myproject.models import User
+from myproject.services import UserService
 ```
 
-### Pattern 6: Line Length and Formatting
+ruff의 `I` rule이 자동 정렬. `known-first-party` 설정 필수.
 
-Set line length to 120 characters for modern displays while maintaining readability.
+## Anti-Patterns
 
-```python
-# Good: Readable line breaks
-def create_user(
-    email: str,
-    name: str,
-    role: UserRole = UserRole.MEMBER,
-    notify: bool = True,
-) -> User:
-    ...
+| Anti-Pattern | Problem | Fix |
+|-------------|---------|-----|
+| `from module import *` | 네임스페이스 오염 | 명시적 import |
+| `from ..utils import x` | 리팩토링 시 깨짐 | 절대 import |
+| `print()` for debugging | 프로덕션에 남음 | `logging` 또는 ruff `T20` rule |
+| Manual formatting | 일관성 깨짐, 시간 낭비 | `ruff format` 자동화 |
+| setup.cfg + .flake8 + .isort.cfg | 설정 파일 분산 | `pyproject.toml` 단일 파일 |
+| `# type: ignore` without code | 어떤 에러인지 불명확 | `# type: ignore[specific-error]` |
+| `noqa` without code | 어떤 룰인지 불명확 | `# noqa: E501` 명시 |
 
-# Good: Chain method calls clearly
-result = (
-    db.query(User)
-    .filter(User.active == True)
-    .order_by(User.created_at.desc())
-    .limit(10)
-    .all()
-)
+## Troubleshooting
 
-# Good: Format long strings
-error_message = (
-    f"Failed to process user {user_id}: "
-    f"received status {response.status_code} "
-    f"with body {response.text[:100]}"
-)
-```
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| ruff format과 lint 충돌 | `COM812`, `ISC001` rule 활성 | ignore에 추가 |
+| mypy "missing stubs" | 서드파티 타입 스텁 없음 | `pip install types-xxx` 또는 `[[tool.mypy.overrides]]` |
+| CI에서만 lint 실패 | 로컬 ruff 버전 차이 | `pre-commit` 또는 CI에서 버전 고정 |
+| isort 정렬 안 맞음 | `known-first-party` 미설정 | ruff.lint.isort에 패키지명 추가 |
 
-### Pattern 7: Project Documentation
+## Cross-References
 
-**README Structure:**
+| Topic | Skill |
+|-------|-------|
+| Python 패턴, 타입 힌트, 동시성 | `python-patterns` |
+| pytest, TDD, fixtures, mocking | `python-testing` |
+| Ruff 룰 카테고리 전체, pre-commit 설정 | [references/ruff-rules-guide.md](references/ruff-rules-guide.md) |
 
-```markdown
-# Project Name
+## References
 
-Brief description of what the project does.
-
-## Installation
-
-\`\`\`bash
-pip install myproject
-\`\`\`
-
-## Quick Start
-
-\`\`\`python
-from myproject import Client
-
-client = Client(api_key="...")
-result = client.process(data)
-\`\`\`
-
-## Configuration
-
-Document environment variables and configuration options.
-
-## Development
-
-\`\`\`bash
-pip install -e ".[dev]"
-pytest
-\`\`\`
-```
-
-**CHANGELOG Format (Keep a Changelog):**
-
-```markdown
-# Changelog
-
-## [Unreleased]
-
-### Added
-- New feature X
-
-### Changed
-- Modified behavior of Y
-
-### Fixed
-- Bug in Z
-```
-
-## Best Practices Summary
-
-1. **Use ruff** - Single tool for linting and formatting
-2. **Enable strict mypy** - Catch type errors before runtime
-3. **120 character lines** - Modern standard for readability
-4. **Descriptive names** - Clarity over brevity
-5. **Absolute imports** - More maintainable than relative
-6. **Google-style docstrings** - Consistent, readable documentation
-7. **Document public APIs** - Every public function needs a docstring
-8. **Keep docs updated** - Treat documentation as code
-9. **Automate in CI** - Run linters on every commit
-10. **Target Python 3.10+** - For new projects, Python 3.12+ is recommended for modern language features
-
-## Further Reading
-
-For complete ruff rule categories, pre-commit setup, and advanced linting configuration, see:
-
-- [Ruff Rules & Pre-commit Guide](references/ruff-rules-guide.md)
+- [Ruff docs](https://docs.astral.sh/ruff/) -- Official documentation
+- [Ruff rules](https://docs.astral.sh/ruff/rules/) -- Complete rule listing
+- [mypy docs](https://mypy.readthedocs.io/) -- Type checker
+- [pyright docs](https://github.com/microsoft/pyright) -- Microsoft type checker
+- [PEP 8](https://peps.python.org/pep-0008/) -- Python style guide
+- [PEP 257](https://peps.python.org/pep-0257/) -- Docstring conventions
+- [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)

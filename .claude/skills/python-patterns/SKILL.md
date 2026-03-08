@@ -5,196 +5,163 @@ description: Pythonic idioms, design patterns, type hints, error handling, concu
 
 # Python Development Patterns
 
-Idiomatic Python patterns and best practices for building robust, efficient, and maintainable applications.
+판단 기준과 규칙 중심. 기본 문법이 아닌, Claude가 **올바른 선택**을 하도록 안내.
+
+## Quick Start
+
+- **타입 힌트 결정?** → [Type Hints](#type-hints) below
+- **데이터 컨테이너 선택?** → [Data Containers](#data-containers) below
+- **동시성 모델 선택?** → [Concurrency Decision](#concurrency-decision) below
+- **코드 리뷰?** → [Code Review](#code-review) below
+- **Python 3.10~3.14 신기능?** → [Modern Python Features](references/modern-python-features.md)
+- **asyncio/threading 심화?** → [Concurrency Deep Dive](references/concurrency-deep-dive.md)
 
 ## When to Activate
 
-- Writing new Python code
-- Reviewing Python code
-- Refactoring existing Python code
-- Designing Python packages/modules
-- Conducting code reviews
+- Python 코드 작성, 리뷰, 리팩토링
+- 데이터 모델링 (dataclass vs NamedTuple vs TypedDict)
+- 동시성 모델 선택
+- 타입 힌트 전략 결정
+- 코드 리뷰
 
-## Development Priority Order
+## CRITICAL Rules
 
-When writing or reviewing Python code, follow this priority:
-
-1. **Correctness** (CRITICAL) - Logic errors, edge cases, mutable defaults, bare excepts
-2. **Type Safety** (HIGH) - Complete type hints, return types, dataclasses
-3. **Performance** (HIGH) - Comprehensions, generators, context managers
-4. **Style** (MEDIUM) - PEP 8, naming, documentation
-
-## Core Principles
-
-### 1. Readability Counts
-
-Python prioritizes readability. Code should be obvious and easy to understand.
-
-```python
-# Good: Clear and readable
-def get_active_users(users: list[User]) -> list[User]:
-    """Return only active users from the provided list."""
-    return [user for user in users if user.is_active]
-
-
-# Bad: Clever but confusing
-def get_active_users(u):
-    return [x for x in u if x.a]
-```
-
-### 2. Explicit is Better Than Implicit
-
-Avoid magic; be clear about what your code does.
-
-```python
-# Good: Explicit configuration
-import logging
-
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
-# Bad: Hidden side effects
-import some_module
-some_module.setup()  # What does this do?
-```
-
-### 3. EAFP - Easier to Ask Forgiveness Than Permission
-
-Python prefers exception handling over checking conditions upfront.
-
-```python
-# Good: EAFP style - try first, handle failure
-def read_config(path: str) -> dict[str, Any]:
-    try:
-        with open(path) as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-
-# Bad: LBYL (Look Before You Leap) - check then act (race condition risk)
-def read_config(path: str) -> dict[str, Any]:
-    if os.path.exists(path):  # File could be deleted between check and open
-        with open(path) as f:
-            return json.load(f)
-    return {}
-```
+1. **NEVER** mutable default arguments — `def f(items=[])` 금지, `items=None` 사용
+2. **NEVER** bare `except:` — 항상 specific exception 명시
+3. **ALWAYS** chain exceptions — `raise NewError(...) from e`
+4. **ALWAYS** context managers for resources — `with` 문 필수
+5. **PREFER** EAFP over LBYL — `try/except` > `if exists` (race condition 방지)
+6. **PREFER** modern type hints (3.10+) — `str | None` > `Optional[str]`
+7. **NEVER** `from module import *` — 명시적 import만
+8. **ALWAYS** `is None` / `is not None` — `== None` 금지
+9. **PREFER** `isinstance()` over `type()` — 상속 체인 존중
 
 ## Type Hints
 
-### Modern Type Hints (Python 3.10+, Recommended)
+### Modern Syntax (Python 3.10+, Recommended)
 
 ```python
-# Use built-in types and | union syntax (PEP 604)
-def process_user(
-    user_id: str,
-    data: dict[str, Any],
-    active: bool = True,
-) -> User | None:
-    """Process a user and return the updated User or None."""
-    if not active:
-        return None
-    return User(user_id, data)
+# Built-in types + | union syntax (PEP 604)
+def process(user_id: str, data: dict[str, Any]) -> User | None:
+    ...
 
-def process_items(items: list[str]) -> dict[str, int]:
-    return {item: len(item) for item in items}
-```
+# Python 3.12+ — type statement, generic syntax (PEP 695)
+type JSON = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
 
-### Type Aliases (Python 3.12+)
-
-```python
-# Python 3.12+ - type statement (PEP 695)
-type JSON = dict[str, Any] | list[Any] | str | int | float | bool | None
-type Vector[T] = list[T]
-
-def parse_json(data: str) -> JSON:
-    return json.loads(data)
-
-# Generic functions with new syntax (PEP 695)
 def first[T](items: list[T]) -> T | None:
-    """Return the first item or None if list is empty."""
     return items[0] if items else None
 ```
 
-### Protocol-Based Duck Typing
+### Protocol (Structural Typing)
 
 ```python
 from typing import Protocol
 
 class Renderable(Protocol):
-    def render(self) -> str:
-        """Render the object to a string."""
+    def render(self) -> str: ...
 
+# Any class with render() satisfies Renderable — no inheritance needed
 def render_all(items: list[Renderable]) -> str:
-    """Render all items that implement the Renderable protocol."""
     return "\n".join(item.render() for item in items)
 ```
 
-### Legacy Type Hints (Python 3.8-3.9)
+### Type-Safe Decorator (ParamSpec)
 
 ```python
-# Only use for projects targeting Python < 3.10
-from typing import Optional, List, Dict, Union, TypeVar
+from typing import ParamSpec, TypeVar, Callable
 
-T = TypeVar('T')
-JSON = Union[dict[str, Any], list[Any], str, int, float, bool, None]
+P = ParamSpec('P')
+R = TypeVar('R')
 
-def process_user(user_id: str, data: Dict[str, Any]) -> Optional[User]:
-    ...
+def log_call(func: Callable[P, R]) -> Callable[P, R]:
+    @functools.wraps(func)
+    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        print(f"Calling {func.__name__}")
+        return func(*args, **kwargs)
+    return wrapper
 ```
 
-## Error Handling Patterns
+### When to Use What
 
-### Specific Exception Handling
+| Type Feature | Use When |
+|-------------|----------|
+| `X \| None` | Optional value (3.10+) |
+| `Protocol` | Duck typing interface (structural subtyping) |
+| `@override` | Overriding parent method (3.12+) |
+| `TypeIs` | Type narrowing in both branches (3.13+) |
+| `ParamSpec` | Preserving decorator type signature |
+| Legacy `Optional`, `Union` | Only for Python < 3.10 support |
 
-```python
-# Good: Catch specific exceptions
-def load_config(path: str) -> Config:
-    try:
-        with open(path) as f:
-            return Config.from_json(f.read())
-    except FileNotFoundError as e:
-        raise ConfigError(f"Config file not found: {path}") from e
-    except json.JSONDecodeError as e:
-        raise ConfigError(f"Invalid JSON in config: {path}") from e
+## Data Containers
 
-# Bad: Bare except
-def load_config(path: str) -> Config:
-    try:
-        with open(path) as f:
-            return Config.from_json(f.read())
-    except:
-        return None  # Silent failure!
+### Decision Tree
+
+```
+Need a data container?
+├── Immutable? → NamedTuple or @dataclass(frozen=True)
+│   ├── Lightweight, tuple-like? → NamedTuple
+│   └── Methods, validation needed? → @dataclass(frozen=True)
+├── Dict-like (JSON mapping)? → TypedDict
+├── Need __post_init__ validation? → @dataclass
+├── Memory-critical (millions)? → @dataclass(slots=True)
+└── Simple grouping, no behavior? → @dataclass
 ```
 
-### Exception Chaining
+### Comparison
+
+| Feature | `@dataclass` | `NamedTuple` | `TypedDict` |
+|---------|-------------|-------------|------------|
+| Mutable | Yes (default) | No | Yes |
+| Methods | Yes | Yes | No |
+| `__post_init__` | Yes | No | No |
+| `__slots__` | Yes (3.10+) | Automatic | N/A |
+| JSON compatible | No | No | Yes |
 
 ```python
-def process_data(data: str) -> Result:
-    try:
-        parsed = json.loads(data)
-    except json.JSONDecodeError as e:
-        # Chain exceptions to preserve the traceback
-        raise ValueError(f"Failed to parse data: {data}") from e
+# dataclass with validation
+@dataclass
+class User:
+    email: str
+    age: int
+
+    def __post_init__(self):
+        if "@" not in self.email:
+            raise ValueError(f"Invalid email: {self.email}")
+        if not 0 <= self.age <= 150:
+            raise ValueError(f"Invalid age: {self.age}")
+
+# NamedTuple — immutable, lightweight
+class Point(NamedTuple):
+    x: float
+    y: float
+
+# Memory-efficient for high-volume objects
+@dataclass(slots=True)
+class Coordinate:
+    x: float
+    y: float
+    z: float
+```
+
+## Error Handling
+
+### Rules
+
+```python
+# ALWAYS chain exceptions — preserve traceback
+try:
+    parsed = json.loads(data)
+except json.JSONDecodeError as e:
+    raise ValueError(f"Failed to parse: {data}") from e
 ```
 
 ### Custom Exception Hierarchy
 
 ```python
-class AppError(Exception):
-    """Base exception for all application errors."""
-    pass
+class AppError(Exception): ...
+class ValidationError(AppError): ...
+class NotFoundError(AppError): ...
 
-class ValidationError(AppError):
-    """Raised when input validation fails."""
-    pass
-
-class NotFoundError(AppError):
-    """Raised when a requested resource is not found."""
-    pass
-
-# Usage
 def get_user(user_id: str) -> User:
     user = db.find_user(user_id)
     if not user:
@@ -202,501 +169,166 @@ def get_user(user_id: str) -> User:
     return user
 ```
 
-## Context Managers
-
-### Resource Management
+### EAFP vs LBYL
 
 ```python
-# Good: Using context managers
-def process_file(path: str) -> str:
-    with open(path, 'r') as f:
-        return f.read()
-
-# Bad: Manual resource management
-def process_file(path: str) -> str:
-    f = open(path, 'r')
+# GOOD: EAFP — try first, handle failure
+def read_config(path: str) -> dict[str, Any]:
     try:
-        return f.read()
-    finally:
-        f.close()
+        with open(path) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+
+# BAD: LBYL — race condition between check and open
+def read_config(path: str) -> dict[str, Any]:
+    if os.path.exists(path):  # File could be deleted here!
+        with open(path) as f:
+            return json.load(f)
+    return {}
 ```
 
-### Custom Context Managers
+## Concurrency Decision
+
+```
+Need concurrent I/O?
+├── Many connections (100+)? → asyncio (TaskGroup)
+├── Few connections? → ThreadPoolExecutor
+└── Simplest option? → concurrent.futures.ThreadPoolExecutor
+
+Need parallel computation?
+├── Pure Python math? → ProcessPoolExecutor
+├── NumPy/pandas? → threading (already releases GIL)
+└── Python 3.13+ experimental? → Free-threaded mode
+
+Need both I/O + CPU?
+└── asyncio + ProcessPoolExecutor via run_in_executor
+```
+
+See [Concurrency Deep Dive](references/concurrency-deep-dive.md) for TaskGroup, Semaphore, producer-consumer pipeline.
+
+## Performance Tips
+
+| Pattern | Good | Bad |
+|---------|------|-----|
+| String join | `"".join(parts)` | `result += s` in loop |
+| Membership test | `x in set_data` O(1) | `x in list_data` O(n) |
+| Large data sum | `sum(x*x for x in data)` | `sum([x*x for x in data])` |
+| Memory efficiency | `@dataclass(slots=True)` | Regular class `__dict__` |
+| Dict default | `d.get(k, default)` | `if k in d: d[k]` |
+| Lazy iteration | `yield` / generator | Entire list in memory |
+
+## Anti-Patterns
 
 ```python
-from contextlib import contextmanager
-
-@contextmanager
-def timer(name: str):
-    """Context manager to time a block of code."""
-    start = time.perf_counter()
-    yield
-    elapsed = time.perf_counter() - start
-    print(f"{name} took {elapsed:.4f} seconds")
-
-# Usage
-with timer("data processing"):
-    process_large_dataset()
-```
-
-### Context Manager Classes
-
-```python
-class DatabaseTransaction:
-    def __init__(self, connection):
-        self.connection = connection
-
-    def __enter__(self):
-        self.connection.begin_transaction()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        if exc_type is None:
-            self.connection.commit()
-        else:
-            self.connection.rollback()
-        return False  # Don't suppress exceptions
-
-# Usage
-with DatabaseTransaction(conn):
-    user = conn.create_user(user_data)
-    conn.create_profile(user.id, profile_data)
-```
-
-## Comprehensions and Generators
-
-### List Comprehensions
-
-```python
-# Good: List comprehension for simple transformations
-names = [user.name for user in users if user.is_active]
-
-# Bad: Manual loop
-names = []
-for user in users:
-    if user.is_active:
-        names.append(user.name)
-
-# Complex comprehensions should be expanded
-# Bad: Too complex
-result = [x * 2 for x in items if x > 0 if x % 2 == 0]
-
-# Good: Use a generator function
-def filter_and_transform(items: Iterable[int]) -> list[int]:
-    result = []
-    for x in items:
-        if x > 0 and x % 2 == 0:
-            result.append(x * 2)
-    return result
-```
-
-### Generator Expressions
-
-```python
-# Good: Generator for lazy evaluation
-total = sum(x * x for x in range(1_000_000))
-
-# Bad: Creates large intermediate list
-total = sum([x * x for x in range(1_000_000)])
-```
-
-### Generator Functions
-
-```python
-def read_large_file(path: str) -> Iterator[str]:
-    """Read a large file line by line."""
-    with open(path) as f:
-        for line in f:
-            yield line.strip()
-
-# Usage
-for line in read_large_file("huge.txt"):
-    process(line)
-```
-
-## Data Classes and Named Tuples
-
-### Data Classes
-
-```python
-from dataclasses import dataclass, field
-from datetime import datetime
-
-@dataclass
-class User:
-    """User entity with automatic __init__, __repr__, and __eq__."""
-    id: str
-    name: str
-    email: str
-    created_at: datetime = field(default_factory=datetime.now)
-    is_active: bool = True
-
-# Usage
-user = User(
-    id="123",
-    name="Alice",
-    email="alice@example.com"
-)
-```
-
-### Data Classes with Validation
-
-```python
-@dataclass
-class User:
-    email: str
-    age: int
-
-    def __post_init__(self):
-        # Validate email format
-        if "@" not in self.email:
-            raise ValueError(f"Invalid email: {self.email}")
-        # Validate age range
-        if self.age < 0 or self.age > 150:
-            raise ValueError(f"Invalid age: {self.age}")
-```
-
-### Named Tuples
-
-```python
-from typing import NamedTuple
-
-class Point(NamedTuple):
-    """Immutable 2D point."""
-    x: float
-    y: float
-
-    def distance(self, other: 'Point') -> float:
-        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
-
-# Usage
-p1 = Point(0, 0)
-p2 = Point(3, 4)
-print(p1.distance(p2))  # 5.0
-```
-
-## Decorators
-
-### Function Decorators
-
-```python
-import functools
-import time
-
-def timer(func: Callable) -> Callable:
-    """Decorator to time function execution."""
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        start = time.perf_counter()
-        result = func(*args, **kwargs)
-        elapsed = time.perf_counter() - start
-        print(f"{func.__name__} took {elapsed:.4f}s")
-        return result
-    return wrapper
-
-@timer
-def slow_function():
-    time.sleep(1)
-
-# slow_function() prints: slow_function took 1.0012s
-```
-
-### Parameterized Decorators
-
-```python
-def repeat(times: int):
-    """Decorator to repeat a function multiple times."""
-    def decorator(func: Callable) -> Callable:
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            results = []
-            for _ in range(times):
-                results.append(func(*args, **kwargs))
-            return results
-        return wrapper
-    return decorator
-
-@repeat(times=3)
-def greet(name: str) -> str:
-    return f"Hello, {name}!"
-
-# greet("Alice") returns ["Hello, Alice!", "Hello, Alice!", "Hello, Alice!"]
-```
-
-### Class-Based Decorators
-
-```python
-class CountCalls:
-    """Decorator that counts how many times a function is called."""
-    def __init__(self, func: Callable):
-        functools.update_wrapper(self, func)
-        self.func = func
-        self.count = 0
-
-    def __call__(self, *args, **kwargs):
-        self.count += 1
-        print(f"{self.func.__name__} has been called {self.count} times")
-        return self.func(*args, **kwargs)
-
-@CountCalls
-def process():
-    pass
-
-# Each call to process() prints the call count
-```
-
-## Concurrency Patterns
-
-### Threading for I/O-Bound Tasks
-
-```python
-import concurrent.futures
-
-def fetch_url(url: str) -> str:
-    """Fetch a URL (I/O-bound operation)."""
-    import urllib.request
-    with urllib.request.urlopen(url) as response:
-        return response.read().decode()
-
-def fetch_all_urls(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently using threads."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(fetch_url, url): url for url in urls}
-        results = {}
-        for future in concurrent.futures.as_completed(future_to_url):
-            url = future_to_url[future]
-            try:
-                results[url] = future.result()
-            except Exception as e:
-                results[url] = f"Error: {e}"
-    return results
-```
-
-### Multiprocessing for CPU-Bound Tasks
-
-```python
-def process_data(data: list[int]) -> int:
-    """CPU-intensive computation."""
-    return sum(x ** 2 for x in data)
-
-def process_all(datasets: list[list[int]]) -> list[int]:
-    """Process multiple datasets using multiple processes."""
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        results = list(executor.map(process_data, datasets))
-    return results
-```
-
-### Async/Await for Concurrent I/O
-
-```python
-import asyncio
-
-async def fetch_async(url: str) -> str:
-    """Fetch a URL asynchronously."""
-    import aiohttp
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as response:
-            return await response.text()
-
-async def fetch_all(urls: list[str]) -> dict[str, str]:
-    """Fetch multiple URLs concurrently."""
-    tasks = [fetch_async(url) for url in urls]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    return dict(zip(urls, results))
-```
-
-## Package Organization
-
-### Standard Project Layout
-
-```
-myproject/
-├── src/
-│   └── mypackage/
-│       ├── __init__.py
-│       ├── main.py
-│       ├── api/
-│       │   ├── __init__.py
-│       │   └── routes.py
-│       ├── models/
-│       │   ├── __init__.py
-│       │   └── user.py
-│       └── utils/
-│           ├── __init__.py
-│           └── helpers.py
-├── tests/
-│   ├── __init__.py
-│   ├── conftest.py
-│   ├── test_api.py
-│   └── test_models.py
-├── pyproject.toml
-├── README.md
-└── .gitignore
-```
-
-### __init__.py for Package Exports
-
-```python
-# mypackage/__init__.py
-"""mypackage - A sample Python package."""
-
-__version__ = "1.0.0"
-
-# Export main classes/functions at package level
-from mypackage.models import User, Post
-from mypackage.utils import format_name
-
-__all__ = ["User", "Post", "format_name"]
-```
-
-## Memory and Performance
-
-### Using __slots__ for Memory Efficiency
-
-```python
-# Bad: Regular class uses __dict__ (more memory)
-class Point:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
-
-# Good: __slots__ reduces memory usage
-class Point:
-    __slots__ = ['x', 'y']
-
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
-```
-
-### Avoid String Concatenation in Loops
-
-```python
-# Bad: O(n^2) due to string immutability
-result = ""
-for item in items:
-    result += str(item)
-
-# Good: O(n) using join
-result = "".join(str(item) for item in items)
-```
-
-## Anti-Patterns to Avoid
-
-```python
-# Bad: Mutable default arguments
+# BAD: Mutable default — shared across all calls!
 def append_to(item, items=[]):
     items.append(item)
     return items
 
-# Good: Use None and create new list
+# GOOD:
 def append_to(item, items=None):
     if items is None:
         items = []
     items.append(item)
     return items
 
-# Bad: Checking type with type()
-if type(obj) == list:
-    process(obj)
-
-# Good: Use isinstance
-if isinstance(obj, list):
-    process(obj)
-
-# Bad: Comparing to None with ==
-if value == None:
-    process()
-
-# Good: Use is
-if value is None:
-    process()
-
-# Bad: from module import *
-from os.path import *
-
-# Good: Explicit imports
-from os.path import join, exists
-
-# Bad: Bare except
+# BAD: Bare except — silences all errors including KeyboardInterrupt
 try:
-    risky_operation()
+    risky()
 except:
     pass
 
-# Good: Specific exception
+# GOOD:
 try:
-    risky_operation()
+    risky()
 except SpecificError as e:
-    logger.error(f"Operation failed: {e}")
+    logger.error(f"Failed: {e}")
+
+# BAD: type() comparison — ignores inheritance
+if type(obj) == list: ...
+
+# GOOD: isinstance — respects inheritance chain
+if isinstance(obj, list): ...
+
+# BAD: == None
+if value == None: ...
+
+# GOOD: is None
+if value is None: ...
 ```
 
 ## Code Review
 
 ### Checklist
 
-**Correctness (CRITICAL - address first)**
+**Correctness (CRITICAL — address first)**
 - [ ] No mutable default arguments
 - [ ] Specific exception handling (no bare `except:`)
+- [ ] Exception chaining (`from e`)
 - [ ] Edge cases handled
-- [ ] Input validation present
 
 **Type Safety (HIGH)**
-- [ ] Type hints on all functions
-- [ ] Return types specified
-- [ ] Using dataclasses for data containers
-- [ ] Generic types where appropriate
+- [ ] Type hints on all function signatures
+- [ ] Modern syntax (3.10+: `X | None`, built-in generics)
+- [ ] `Protocol` for duck typing interfaces
 
 **Performance (HIGH)**
-- [ ] List comprehensions over loops where readable
+- [ ] Generators for large data (not list comprehensions)
 - [ ] Context managers for all resources
-- [ ] Generators for large data
-- [ ] Built-in functions leveraged
+- [ ] `__slots__` for high-volume dataclasses
 
 **Style (MEDIUM)**
 - [ ] PEP 8 compliant
-- [ ] Docstrings on public functions
 - [ ] Meaningful variable names
+- [ ] No `import *`
 
 ### Severity Levels
 
-| Level | Description | Examples | Action |
-|-------|-------------|----------|--------|
-| **CRITICAL** | Bugs, data corruption, security issues | Mutable defaults, bare except | Fix immediately |
-| **HIGH** | Correctness risks, maintainability issues | Missing types, resource leaks | Fix before merge |
-| **MEDIUM** | Code quality, readability | Style violations, missing docs | Fix or accept with TODO |
-| **LOW** | Minor improvements, preferences | Minor formatting | Optional |
+| Level | Examples | Action |
+|-------|----------|--------|
+| **CRITICAL** | Mutable defaults, bare except, resource leak | Fix immediately |
+| **HIGH** | Missing types, no exception chaining | Fix before merge |
+| **MEDIUM** | Style violations, missing docs | Fix or TODO |
+| **LOW** | Minor formatting | Optional |
 
 ### Review Output Format
 
-When reviewing Python code, structure output as:
-
-- **Summary**: Brief overview of the code and main issues found
-- **Critical Issues**: Each with File, Issue, Impact, Fix
-- **High Priority**: Same format
-- **Medium Priority**: Same format
+- **Summary**: Brief overview and main issues
+- **Critical Issues**: File, Issue, Impact, Fix
+- **High/Medium**: Same format
 - **Recommendations**: General improvement suggestions
 
-## Quick Reference: Python Idioms
+## Package Structure
 
-| Idiom | Description |
-|-------|-------------|
-| EAFP | Easier to Ask Forgiveness than Permission |
-| Context managers | Use `with` for resource management |
-| List comprehensions | For simple transformations |
-| Generators | For lazy evaluation and large datasets |
-| Type hints | Annotate function signatures |
-| Dataclasses | For data containers with auto-generated methods |
-| `__slots__` | For memory optimization |
-| f-strings | For string formatting (Python 3.6+) |
-| `pathlib.Path` | For path operations (Python 3.4+) |
-| `enumerate` | For index-element pairs in loops |
+```
+myproject/
+├── src/mypackage/
+│   ├── __init__.py      # Exports: __all__
+│   ├── main.py
+│   ├── api/
+│   ├── models/
+│   └── utils/
+├── tests/
+│   ├── conftest.py
+│   └── test_*.py
+├── pyproject.toml
+└── README.md
+```
 
-__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
+## Cross-References
 
-## Further Reading
+| Topic | Skill |
+|-------|-------|
+| Ruff, mypy, formatting, naming | `python-code-style` |
+| pytest, TDD, fixtures, mocking | `python-testing` |
+| Python 3.10~3.14 new features | [references/modern-python-features.md](references/modern-python-features.md) |
+| asyncio/threading/multiprocessing deep dive | [references/concurrency-deep-dive.md](references/concurrency-deep-dive.md) |
 
-For detailed coverage of Python 3.10~3.14 new features (match statement, ExceptionGroup, type statement, free-threaded mode, etc.) and advanced concurrency patterns, see:
+## References
 
-- [Modern Python Features (3.10~3.14)](references/modern-python-features.md)
-- [Concurrency Deep Dive](references/concurrency-deep-dive.md)
+- [Python Official Docs](https://docs.python.org/3/) — Standard library reference
+- [What's New in Python](https://docs.python.org/3/whatsnew/) — Release changelogs
+- [PEP Index](https://peps.python.org/) — Python Enhancement Proposals
+- [Real Python](https://realpython.com/) — Tutorials and best practices
+- [Effective Python (Brett Slatkin)](https://effectivepython.com/) — 90 ways to write better Python

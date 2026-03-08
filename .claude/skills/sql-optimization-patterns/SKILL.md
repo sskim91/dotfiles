@@ -5,386 +5,249 @@ description: SQL query optimization, indexing strategies, and EXPLAIN plan analy
 
 # SQL Optimization Patterns
 
-Transform slow database queries into lightning-fast operations through systematic optimization, proper indexing, and query plan analysis.
+판단 기준과 규칙 중심. SQL 문법이 아닌, **올바른 최적화 전략** 선택을 안내.
 
-## When to Use This Skill
+## Quick Start
 
-- Debugging slow-running queries
-- Designing performant database schemas
-- Optimizing application response times
-- Reducing database load and costs
-- Improving scalability for growing datasets
-- Analyzing EXPLAIN query plans
-- Implementing efficient indexes
-- Resolving N+1 query problems
+- **느린 쿼리 디버깅?** --> [Optimization Workflow](#optimization-workflow) below
+- **인덱스 설계?** --> [Index Type Decision](#index-type-decision) below
+- **페이지네이션 전략?** --> [Pagination Decision](#pagination-decision) below
+- **EXPLAIN 분석?** --> [references/query-plan-analysis.md](references/query-plan-analysis.md)
+- **PostgreSQL 심화?** --> [references/postgres-optimization-guide.md](references/postgres-optimization-guide.md)
+- **MySQL 심화?** --> [references/mysql-optimization-guide.md](references/mysql-optimization-guide.md)
 
-## Core Concepts
+## CRITICAL Rules
 
-### 1. Query Execution Plans (EXPLAIN)
+1. **ALWAYS** `EXPLAIN ANALYZE` before optimizing -- 추측 금지, 실측 기반
+2. **NEVER** `SELECT *` in production -- 필요한 컬럼만 명시
+3. **ALWAYS** index columns in WHERE, JOIN, ORDER BY -- 풀 테이블 스캔 방지
+4. **NEVER** function on indexed column in WHERE -- `WHERE LOWER(email) = x` 는 인덱스 무시 (functional index 필요)
+5. **ALWAYS** `ANALYZE` after bulk data changes -- 통계 갱신으로 옵티마이저 판단 정상화
+6. **NEVER** OFFSET for deep pagination -- 10만 행 이후 극심한 성능 저하
+7. **PREFER** batch operations -- 루프 내 개별 INSERT/UPDATE 금지
+8. **ALWAYS** covering index for hot queries -- Index Only Scan 유도
+9. **NEVER** over-index -- 인덱스마다 INSERT/UPDATE/DELETE 비용 증가
+10. **ALWAYS** monitor slow query log -- 문제는 코드가 아닌 운영에서 발견됨
 
-Understanding EXPLAIN output is fundamental to optimization.
+## Optimization Workflow
 
-**PostgreSQL EXPLAIN:**
+```
+Slow query reported
++-- 1. EXPLAIN ANALYZE 실행
+|    +-- Seq Scan on large table? --> 인덱스 필요 (Index Decision Tree)
+|    +-- Nested Loop on large sets? --> JOIN 전략 변경 또는 인덱스 추가
+|    +-- High cost but low rows? --> 통계 오래됨, ANALYZE 실행
+|    +-- Sort with high cost? --> ORDER BY 컬럼에 인덱스 추가
++-- 2. 쿼리 자체 최적화
+|    +-- SELECT * ? --> 필요한 컬럼만
+|    +-- Correlated subquery? --> JOIN으로 변환
+|    +-- N+1 pattern? --> JOIN 또는 IN clause batch
++-- 3. 인덱스 추가/조정
++-- 4. EXPLAIN ANALYZE 재실행으로 개선 확인
+```
+
+## Index Type Decision
+
+```
+What query pattern?
++-- Equality (=) + Range (<, >, BETWEEN)
+|    --> B-Tree (default, most common)
++-- Equality only, no range
+|    --> Hash (PostgreSQL, slightly faster for =)
++-- Full-text search (LIKE '%word%')
+|    --> GIN + to_tsvector
++-- JSONB containment (@>, ?)
+|    --> GIN
++-- Geometric/spatial data
+|    --> GiST
++-- Very large table, data correlates with physical order
+|    --> BRIN (10-100x smaller than B-Tree)
+```
+
+### Composite Index Rules
+
+```
+Index column order matters!
++-- WHERE a = ? AND b = ?      --> (a, b) or (b, a) - both work
++-- WHERE a = ? AND b > ?      --> (a, b) - equality first, range last
++-- WHERE a = ? ORDER BY b     --> (a, b) - covers both filter and sort
++-- WHERE a = ? AND b = ? AND c > ?  --> (a, b, c) - equalities first
+```
+
+**Leftmost prefix rule:** `INDEX(a, b, c)` 는 `(a)`, `(a, b)`, `(a, b, c)` 쿼리에 사용 가능. `(b, c)` 단독은 불가.
+
+### Index Selection Checklist
+
+| Index Type | When | Example |
+|-----------|------|---------|
+| Standard B-Tree | WHERE/JOIN/ORDER BY | `CREATE INDEX idx_email ON users(email)` |
+| Composite | Multi-column filter | `CREATE INDEX idx_user_status ON orders(user_id, status)` |
+| Partial | 특정 조건 행만 자주 조회 | `CREATE INDEX idx_active ON users(email) WHERE status = 'active'` |
+| Covering (INCLUDE) | Index Only Scan 유도 | `CREATE INDEX idx_email_cover ON users(email) INCLUDE (name, created_at)` |
+| Expression | 함수 결과로 필터링 | `CREATE INDEX idx_lower ON users(LOWER(email))` |
+
+## Pagination Decision
+
+```
+Need pagination?
++-- Small dataset (<10K rows)?
+|    --> Offset-based (simple, "jump to page N" 가능)
++-- Large dataset, infinite scroll?
+|    --> Cursor-based (consistent performance)
++-- Search results with page numbers?
+|    --> Offset + total count cache
++-- Real-time feed?
+|    --> Cursor (keyset) only
+```
+
+### Cursor-Based Pattern
+
 ```sql
--- Basic explain
-EXPLAIN SELECT * FROM users WHERE email = 'user@example.com';
-
--- With actual execution stats
-EXPLAIN ANALYZE
-SELECT * FROM users WHERE email = 'user@example.com';
-
--- Verbose output with more details
-EXPLAIN (ANALYZE, BUFFERS, VERBOSE)
-SELECT u.*, o.order_total
-FROM users u
-JOIN orders o ON u.id = o.user_id
-WHERE u.created_at > NOW() - INTERVAL '30 days';
-```
-
-**Key Metrics to Watch:**
-- **Seq Scan**: Full table scan (usually slow for large tables)
-- **Index Scan**: Using index (good)
-- **Index Only Scan**: Using index without touching table (best)
-- **Nested Loop**: Join method (okay for small datasets)
-- **Hash Join**: Join method (good for larger datasets)
-- **Merge Join**: Join method (good for sorted data)
-- **Cost**: Estimated query cost (lower is better)
-- **Rows**: Estimated rows returned
-- **Actual Time**: Real execution time
-
-### 2. Index Strategies
-
-Indexes are the most powerful optimization tool.
-
-**Index Types:**
-- **B-Tree**: Default, good for equality and range queries
-- **Hash**: Only for equality (=) comparisons
-- **GIN**: Full-text search, array queries, JSONB
-- **GiST**: Geometric data, full-text search
-- **BRIN**: Block Range INdex for very large tables with correlation
-
-```sql
--- Standard B-Tree index
-CREATE INDEX idx_users_email ON users(email);
-
--- Composite index (order matters!)
-CREATE INDEX idx_orders_user_status ON orders(user_id, status);
-
--- Partial index (index subset of rows)
-CREATE INDEX idx_active_users ON users(email)
-WHERE status = 'active';
-
--- Expression index
-CREATE INDEX idx_users_lower_email ON users(LOWER(email));
-
--- Covering index (include additional columns)
-CREATE INDEX idx_users_email_covering ON users(email)
-INCLUDE (name, created_at);
-
--- Full-text search index
-CREATE INDEX idx_posts_search ON posts
-USING GIN(to_tsvector('english', title || ' ' || body));
-
--- JSONB index
-CREATE INDEX idx_metadata ON events USING GIN(metadata);
-```
-
-### 3. Query Optimization Patterns
-
-**Avoid SELECT \*:**
-```sql
--- Bad: Fetches unnecessary columns
-SELECT * FROM users WHERE id = 123;
-
--- Good: Fetch only what you need
-SELECT id, email, name FROM users WHERE id = 123;
-```
-
-**Use WHERE Clause Efficiently:**
-```sql
--- Bad: Function prevents index usage
-SELECT * FROM users WHERE LOWER(email) = 'user@example.com';
-
--- Good: Create functional index or use exact match
-CREATE INDEX idx_users_email_lower ON users(LOWER(email));
--- Then:
-SELECT * FROM users WHERE LOWER(email) = 'user@example.com';
-
--- Or store normalized data
-SELECT * FROM users WHERE email = 'user@example.com';
-```
-
-**Optimize JOINs:**
-```sql
--- Bad: Cartesian product then filter
-SELECT u.name, o.total
-FROM users u, orders o
-WHERE u.id = o.user_id AND u.created_at > '2024-01-01';
-
--- Good: Filter before join
-SELECT u.name, o.total
-FROM users u
-JOIN orders o ON u.id = o.user_id
-WHERE u.created_at > '2024-01-01';
-
--- Better: Filter both tables
-SELECT u.name, o.total
-FROM (SELECT * FROM users WHERE created_at > '2024-01-01') u
-JOIN orders o ON u.id = o.user_id;
-```
-
-## Optimization Patterns
-
-### Pattern 1: Eliminate N+1 Queries
-
-**Problem: N+1 Query Anti-Pattern**
-```python
-# Bad: Executes N+1 queries
-users = db.query("SELECT * FROM users LIMIT 10")
-for user in users:
-    orders = db.query("SELECT * FROM orders WHERE user_id = ?", user.id)
-    # Process orders
-```
-
-**Solution: Use JOINs or Batch Loading**
-```sql
--- Solution 1: JOIN
-SELECT
-    u.id, u.name,
-    o.id as order_id, o.total
-FROM users u
-LEFT JOIN orders o ON u.id = o.user_id
-WHERE u.id IN (1, 2, 3, 4, 5);
-
--- Solution 2: Batch query
-SELECT * FROM orders
-WHERE user_id IN (1, 2, 3, 4, 5);
-```
-
-```python
-# Good: Single query with JOIN or batch load
-# Using JOIN
-results = db.query("""
-    SELECT u.id, u.name, o.id as order_id, o.total
-    FROM users u
-    LEFT JOIN orders o ON u.id = o.user_id
-    WHERE u.id IN (1, 2, 3, 4, 5)
-""")
-
-# Or batch load
-users = db.query("SELECT * FROM users LIMIT 10")
-user_ids = [u.id for u in users]
-orders = db.query(
-    "SELECT * FROM orders WHERE user_id IN (?)",
-    user_ids
-)
-# Group orders by user_id
-orders_by_user = {}
-for order in orders:
-    orders_by_user.setdefault(order.user_id, []).append(order)
-```
-
-### Pattern 2: Optimize Pagination
-
-**Bad: OFFSET on Large Tables**
-```sql
--- Slow for large offsets
-SELECT * FROM users
-ORDER BY created_at DESC
-LIMIT 20 OFFSET 100000;  -- Very slow!
-```
-
-**Good: Cursor-Based Pagination**
-```sql
--- Much faster: Use cursor (last seen ID)
-SELECT * FROM users
-WHERE created_at < '2024-01-15 10:30:00'  -- Last cursor
-ORDER BY created_at DESC
-LIMIT 20;
-
--- With composite sorting
-SELECT * FROM users
-WHERE (created_at, id) < ('2024-01-15 10:30:00', 12345)
+-- First page
+SELECT id, name, created_at FROM users
 ORDER BY created_at DESC, id DESC
-LIMIT 20;
+LIMIT 21;  -- +1 for has_next detection
 
--- Requires index
+-- Next page (after last item)
+SELECT id, name, created_at FROM users
+WHERE (created_at, id) < (:last_created_at, :last_id)
+ORDER BY created_at DESC, id DESC
+LIMIT 21;
+
+-- Required index
 CREATE INDEX idx_users_cursor ON users(created_at DESC, id DESC);
 ```
 
-### Pattern 3: Aggregate Efficiently
+## Core Optimization Patterns
 
-**Optimize COUNT Queries:**
+### N+1 Query
+
 ```sql
--- Bad: Counts all rows
-SELECT COUNT(*) FROM orders;  -- Slow on large tables
+-- BAD: N+1 (loop executes N queries)
+-- app code: for user in users: query("SELECT * FROM orders WHERE user_id = ?", user.id)
 
--- Good: Use estimates for approximate counts
-SELECT reltuples::bigint AS estimate
-FROM pg_class
-WHERE relname = 'orders';
+-- GOOD: JOIN
+SELECT u.id, u.name, o.id as order_id, o.total
+FROM users u LEFT JOIN orders o ON u.id = o.user_id
+WHERE u.id IN (1, 2, 3, 4, 5);
 
--- Good: Filter before counting
-SELECT COUNT(*) FROM orders
-WHERE created_at > NOW() - INTERVAL '7 days';
-
--- Better: Use index-only scan
-CREATE INDEX idx_orders_created ON orders(created_at);
-SELECT COUNT(*) FROM orders
-WHERE created_at > NOW() - INTERVAL '7 days';
+-- GOOD: Batch IN clause
+SELECT * FROM orders WHERE user_id IN (1, 2, 3, 4, 5);
 ```
 
-**Optimize GROUP BY:**
+### Correlated Subquery
+
 ```sql
--- Bad: Group by then filter
-SELECT user_id, COUNT(*) as order_count
-FROM orders
-GROUP BY user_id
-HAVING COUNT(*) > 10;
-
--- Better: Filter first, then group (if possible)
-SELECT user_id, COUNT(*) as order_count
-FROM orders
-WHERE status = 'completed'
-GROUP BY user_id
-HAVING COUNT(*) > 10;
-
--- Best: Use covering index
-CREATE INDEX idx_orders_user_status ON orders(user_id, status);
-```
-
-### Pattern 4: Subquery Optimization
-
-**Transform Correlated Subqueries:**
-```sql
--- Bad: Correlated subquery (runs for each row)
-SELECT u.name, u.email,
-    (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.id) as order_count
+-- BAD: Executes subquery per row
+SELECT u.name, (SELECT COUNT(*) FROM orders o WHERE o.user_id = u.id)
 FROM users u;
 
--- Good: JOIN with aggregation
-SELECT u.name, u.email, COUNT(o.id) as order_count
-FROM users u
-LEFT JOIN orders o ON o.user_id = u.id
-GROUP BY u.id, u.name, u.email;
-
--- Better: Use window functions
-SELECT DISTINCT ON (u.id)
-    u.name, u.email,
-    COUNT(o.id) OVER (PARTITION BY u.id) as order_count
-FROM users u
-LEFT JOIN orders o ON o.user_id = u.id;
+-- GOOD: JOIN + GROUP BY
+SELECT u.name, COUNT(o.id) as order_count
+FROM users u LEFT JOIN orders o ON o.user_id = u.id
+GROUP BY u.id, u.name;
 ```
 
-**Use CTEs for Clarity:**
+### Aggregate Optimization
+
 ```sql
--- Using Common Table Expressions
-WITH recent_users AS (
-    SELECT id, name, email
-    FROM users
-    WHERE created_at > NOW() - INTERVAL '30 days'
-),
-user_order_counts AS (
-    SELECT user_id, COUNT(*) as order_count
-    FROM orders
-    WHERE created_at > NOW() - INTERVAL '30 days'
-    GROUP BY user_id
-)
-SELECT ru.name, ru.email, COALESCE(uoc.order_count, 0) as orders
-FROM recent_users ru
-LEFT JOIN user_order_counts uoc ON ru.id = uoc.user_id;
+-- BAD: COUNT(*) on entire large table
+SELECT COUNT(*) FROM orders;
+
+-- GOOD: Approximate count (PostgreSQL)
+SELECT reltuples::bigint FROM pg_class WHERE relname = 'orders';
+
+-- GOOD: Filtered count with index
+CREATE INDEX idx_orders_created ON orders(created_at);
+SELECT COUNT(*) FROM orders WHERE created_at > NOW() - INTERVAL '7 days';
 ```
 
-### Pattern 5: Batch Operations
+### Batch Operations
 
-**Batch INSERT:**
 ```sql
--- Bad: Multiple individual inserts
-INSERT INTO users (name, email) VALUES ('Alice', 'alice@example.com');
-INSERT INTO users (name, email) VALUES ('Bob', 'bob@example.com');
-INSERT INTO users (name, email) VALUES ('Carol', 'carol@example.com');
+-- BAD: Individual inserts in loop
+INSERT INTO users (name) VALUES ('Alice');
+INSERT INTO users (name) VALUES ('Bob');
 
--- Good: Batch insert
-INSERT INTO users (name, email) VALUES
-    ('Alice', 'alice@example.com'),
-    ('Bob', 'bob@example.com'),
-    ('Carol', 'carol@example.com');
+-- GOOD: Batch insert
+INSERT INTO users (name) VALUES ('Alice'), ('Bob'), ('Carol');
 
--- Better: Use COPY for bulk inserts (PostgreSQL)
+-- BEST: COPY for bulk (PostgreSQL)
 COPY users (name, email) FROM '/tmp/users.csv' CSV HEADER;
 ```
 
-**Batch UPDATE:**
+## Anti-Patterns
+
+| Anti-Pattern | Why Bad | Fix |
+|-------------|---------|-----|
+| `SELECT *` | 불필요한 I/O, covering index 무효 | 필요한 컬럼만 명시 |
+| `WHERE LOWER(col) = ?` | 인덱스 사용 불가 | Expression index 또는 정규화 저장 |
+| `LIKE '%abc'` | 앞부분 와일드카드 = 풀 스캔 | GIN trigram index 또는 full-text search |
+| `OR` in WHERE | 인덱스 비효율 | `UNION ALL` 또는 별도 쿼리 |
+| Implicit type cast | `WHERE id = '123'` 인덱스 무시 가능 | 타입 일치시키기 |
+| CTE as optimization fence | PostgreSQL 12+에서 inline 되지만 주의 | `MATERIALIZED` / `NOT MATERIALIZED` 명시 |
+| Over-indexing | 쓰기 성능 저하, 디스크 낭비 | 사용되지 않는 인덱스 주기적 제거 |
+
+## Troubleshooting
+
+| Symptom | Cause | Solution |
+|---------|-------|----------|
+| Seq Scan on indexed column | 통계 오래됨 또는 선택도 낮음 | `ANALYZE table;` 실행 |
+| Index 있는데 안 쓰임 | 행 비율 높으면 옵티마이저가 Seq Scan 선택 | 정상 동작. Partial index 고려 |
+| Nested Loop 느림 | 큰 테이블 간 JOIN | 조인 컬럼 인덱스 확인 |
+| 페이지네이션 느려짐 | OFFSET 깊어짐 | Cursor-based pagination |
+| 벌크 INSERT 느림 | 인덱스 많음 | 인덱스 DROP -> INSERT -> 재생성 |
+| Lock contention | 장시간 트랜잭션 | 트랜잭션 짧게, batch 처리 |
+| Planner 잘못된 추정 | 통계 부정확 | `ALTER TABLE SET STATISTICS` 높이기 |
+
+## EXPLAIN Key Metrics
+
+| Metric | Good | Bad | Action |
+|--------|------|-----|--------|
+| Index Scan / Index Only Scan | O | | 유지 |
+| Seq Scan (small table) | O | | 무시 |
+| Seq Scan (large table) | | X | 인덱스 추가 |
+| Nested Loop (small inner) | O | | 유지 |
+| Nested Loop (large inner) | | X | 인덱스 추가 또는 Hash Join 유도 |
+| Sort (in-memory) | O | | 유지 |
+| Sort (on-disk) | | X | work_mem 증가 또는 인덱스 |
+| Rows estimate vs actual 10x+ 차이 | | X | ANALYZE 실행 |
+
+## Maintenance Commands
+
 ```sql
--- Bad: Update in loop
-UPDATE users SET status = 'active' WHERE id = 1;
-UPDATE users SET status = 'active' WHERE id = 2;
--- ... repeat for many IDs
-
--- Good: Single UPDATE with IN clause
-UPDATE users
-SET status = 'active'
-WHERE id IN (1, 2, 3, 4, 5, ...);
-
--- Better: Use temporary table for large batches
-CREATE TEMP TABLE temp_user_updates (id INT, new_status VARCHAR);
-INSERT INTO temp_user_updates VALUES (1, 'active'), (2, 'active'), ...;
-
-UPDATE users u
-SET status = t.new_status
-FROM temp_user_updates t
-WHERE u.id = t.id;
-```
-
-## Advanced Techniques
-
-For materialized views, partitioning, query hints, and monitoring queries, see [references/advanced-techniques.md](references/advanced-techniques.md).
-
-## Best Practices
-
-1. **Index Selectively**: Too many indexes slow down writes
-2. **Monitor Query Performance**: Use slow query logs
-3. **Keep Statistics Updated**: Run ANALYZE regularly
-4. **Use Appropriate Data Types**: Smaller types = better performance
-5. **Normalize Thoughtfully**: Balance normalization vs performance
-6. **Cache Frequently Accessed Data**: Use application-level caching
-7. **Connection Pooling**: Reuse database connections
-8. **Regular Maintenance**: VACUUM, ANALYZE, rebuild indexes
-
-```sql
--- Update statistics
+-- Update statistics (lightweight)
 ANALYZE users;
-ANALYZE VERBOSE orders;
 
--- Vacuum (PostgreSQL)
+-- Vacuum + analyze (reclaim dead rows)
 VACUUM ANALYZE users;
-VACUUM FULL users;  -- Reclaim space (locks table)
 
--- Reindex
-REINDEX INDEX idx_users_email;
-REINDEX TABLE users;
+-- Full vacuum (locks table, reclaims disk space)
+VACUUM FULL users;  -- use during maintenance window only
+
+-- Find unused indexes (PostgreSQL)
+SELECT indexrelname, idx_scan FROM pg_stat_user_indexes
+WHERE idx_scan = 0 ORDER BY pg_relation_size(indexrelid) DESC;
+
+-- Find slow queries (PostgreSQL)
+SELECT query, mean_exec_time, calls
+FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 20;
 ```
 
-## Common Pitfalls
+## Cross-References
 
-- **Over-Indexing**: Each index slows down INSERT/UPDATE/DELETE
-- **Unused Indexes**: Waste space and slow writes
-- **Missing Indexes**: Slow queries, full table scans
-- **Implicit Type Conversion**: Prevents index usage
-- **OR Conditions**: Can't use indexes efficiently
-- **LIKE with Leading Wildcard**: `LIKE '%abc'` can't use index
-- **Function in WHERE**: Prevents index usage unless functional index exists
+| Topic | Skill |
+|-------|-------|
+| JPA entity, repository, N+1 in Hibernate | `jpa-patterns` |
+| EXPLAIN 분석 심화 | [references/query-plan-analysis.md](references/query-plan-analysis.md) |
+| PostgreSQL 전용 최적화 | [references/postgres-optimization-guide.md](references/postgres-optimization-guide.md) |
+| MySQL 전용 최적화 | [references/mysql-optimization-guide.md](references/mysql-optimization-guide.md) |
+| 고급 기법 (파티셔닝, MV, 모니터링) | [references/advanced-techniques.md](references/advanced-techniques.md) |
 
-## Monitoring Queries
+## References
 
-For slow query detection, missing index analysis, and unused index cleanup, see [references/advanced-techniques.md](references/advanced-techniques.md).
-
-## Resources
-
-- **references/postgres-optimization-guide.md**: PostgreSQL-specific optimization
-- **references/mysql-optimization-guide.md**: MySQL/MariaDB optimization
-- **references/query-plan-analysis.md**: Deep dive into EXPLAIN plans
-- **assets/index-strategy-checklist.md**: When and how to create indexes
-- **assets/query-optimization-checklist.md**: Step-by-step optimization guide
-- **scripts/analyze-slow-queries.sql**: Identify slow queries in your database
-- **scripts/index-recommendations.sql**: Generate index recommendations
+- [PostgreSQL EXPLAIN docs](https://www.postgresql.org/docs/current/using-explain.html) -- Official guide
+- [Use The Index, Luke](https://use-the-index-luke.com/) -- SQL indexing bible
+- [pganalyze](https://pganalyze.com/docs) -- PostgreSQL performance monitoring
+- [Markus Winand: SQL Performance Explained](https://sql-performance-explained.com/)
+- [MySQL Query Optimization](https://dev.mysql.com/doc/refman/8.0/en/optimization.html)
