@@ -223,6 +223,7 @@ echo "Setting up Gemini configuration..."
 mkdir -p "$HOME/.gemini"
 link_file "$DOTFILES/.gemini/settings.json" "$HOME/.gemini/settings.json"
 link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
+link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/skills"
 
 #-------------------------------------------------------------------------------
 # Link Codex CLI configuration
@@ -230,6 +231,8 @@ link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
 echo "Setting up Codex CLI configuration..."
 mkdir -p "$HOME/.codex"
 link_file "$DOTFILES/.codex/config.toml.example" "$HOME/.codex/config.toml.example"
+mkdir -p "$HOME/.agents"
+link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
 
 #-------------------------------------------------------------------------------
 # Link Karabiner-Elements configuration

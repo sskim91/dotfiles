@@ -18,3 +18,6 @@ args = ["-y", "@wonderwhy-er/desktop-commander"]
 [mcp_servers.tavily-remote]
 command = "sh"
 args = ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]
+
+[features]
+multi_agent = true
