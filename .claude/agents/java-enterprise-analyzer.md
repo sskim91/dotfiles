@@ -105,3 +105,26 @@ Analyze in order, recording only discovered issues:
 ✅ Issues classified by severity with priorities
 ✅ Each issue has a specific improvement recommendation
 ❌ No code modified
+
+## Handoff Template
+
+```
+## Java Codebase Analysis Complete
+
+### Scope
+- Project: [name] (Java [version], Spring Boot [version])
+- Packages analyzed: [list]
+
+### Key Findings
+- Critical: [count], Major: [count], Minor: [count]
+- Top priority: [#1 issue summary]
+
+### Deliverables
+- Report: [location or inline]
+
+### Next Steps
+- If architecture redesign needed: delegate to **backend-architect**
+- If DB schema issues found: delegate to **database-architect**
+- If SQL performance issues found: delegate to **sql-performance-optimizer**
+- If fixes needed: implement based on prioritized recommendations
+```

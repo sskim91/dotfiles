@@ -112,3 +112,24 @@ For each alternative:
 ✅ Clear recommendation with rationale
 ✅ Implementation roadmap included
 ❌ No code written
+
+## Handoff Template
+
+```
+## Architecture Review Complete
+
+### Scope
+- Analyzed: [modules/services reviewed]
+
+### Key Findings
+- Critical issues: [count]
+- Recommended option: [Option X - name]
+
+### Deliverables
+- Report: [location or inline]
+
+### Next Steps
+- If implementation needed: delegate to appropriate implementation agent
+- If DB changes needed: delegate to **database-architect**
+- If further analysis needed: specify scope for follow-up
+```

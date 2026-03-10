@@ -109,3 +109,27 @@ After:
 ✅ Each option has SQL code + expected effect + side effects
 ✅ Clear recommendation with rationale
 ❌ Nothing executed directly
+
+## Handoff Template
+
+```
+## SQL Optimization Analysis Complete
+
+### Scope
+- Queries analyzed: [count]
+- DB: [type + version]
+
+### Key Findings
+- Bottlenecks: [count]
+- Recommended option: [Option X - summary]
+- Expected improvement: [estimate]
+
+### Deliverables
+- Report: [location or inline]
+- SQL scripts: [provided in report, not executed]
+
+### Next Steps
+- If schema changes needed: delegate to **database-architect**
+- If application-level changes needed: delegate to appropriate implementation agent
+- Apply recommended indexes/queries after review
+```

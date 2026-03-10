@@ -106,3 +106,26 @@ Analyze in order, recording only discovered issues:
 ✅ Issues classified by severity with priorities
 ✅ Each issue has a specific improvement recommendation
 ❌ No code modified
+
+## Handoff Template
+
+```
+## Python Codebase Analysis Complete
+
+### Scope
+- Project: [name] (Python [version], [framework])
+- Packages analyzed: [list]
+
+### Key Findings
+- Critical: [count], Major: [count], Minor: [count]
+- Top priority: [#1 issue summary]
+
+### Deliverables
+- Report: [location or inline]
+
+### Next Steps
+- If architecture redesign needed: delegate to **backend-architect**
+- If DB/ORM issues found: delegate to **database-architect**
+- If ML code needs review: delegate to **ml-engineer**
+- If fixes needed: implement based on prioritized recommendations
+```

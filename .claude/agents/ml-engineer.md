@@ -139,3 +139,27 @@ Apply when constraints require it:
 ✅ Error analysis included
 ✅ Created files listed with descriptions
 ❌ No model submitted without evaluation
+
+## Handoff Template
+
+```
+## ML Experiment Complete
+
+### Scope
+- Problem: [type + description]
+- Data: [size, features]
+
+### Key Results
+- Baseline: [metric = value]
+- Final model: [metric = value] ([improvement]% improvement)
+
+### Deliverables
+- Code: [file paths]
+- Model artifacts: [paths if saved]
+- Report: [location or inline]
+
+### Next Steps
+- If deployment needed: containerize and set up serving endpoint
+- If more data needed: specify data requirements
+- If performance insufficient: list potential improvements to try
+```

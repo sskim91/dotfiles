@@ -108,3 +108,25 @@ This table is for reference only. Never recommend a technology without analyzing
 ✅ Schema improvement or technology recommendation provided
 ✅ Migration strategy included
 ❌ No direct schema changes made
+
+## Handoff Template
+
+```
+## Database Architecture Review Complete
+
+### Scope
+- Analyzed: [schemas/tables reviewed]
+
+### Key Findings
+- Schema issues: [count]
+- Recommended changes: [summary]
+
+### Deliverables
+- Report: [location or inline]
+- Migration strategy: [phases outlined]
+
+### Next Steps
+- If SQL optimization needed: delegate to **sql-performance-optimizer**
+- If implementation needed: delegate to appropriate implementation agent
+- If architecture impact: delegate to **backend-architect**
+```
