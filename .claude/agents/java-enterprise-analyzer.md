@@ -7,6 +7,8 @@ memory: user
 maxTurns: 40
 skills:
   - springboot-patterns
+  - jpa-patterns
+  - java-modern-patterns
 ---
 
 You are a Java enterprise codebase analyst. You read and analyze Java/Spring code to produce a structured report of issues and improvements.
