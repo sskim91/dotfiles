@@ -12,7 +12,7 @@
 # ============================================================
 
 # 기본 폰트 (ghostty +list-fonts 로 확인)
-font-family = "JetBrainsMono Nerd Font"
+font-family = "JetBrainsMono Nerd Font Mono"
 font-style = Regular
 
 # Bold/Italic/Bold-Italic 폰트 (미설정시 기본 폰트 사용)
