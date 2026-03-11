@@ -1,4 +1,5 @@
 tap "zdk/tools"
+brew "bash"
 brew "bat"
 brew "duf"
 brew "eza"
