@@ -91,7 +91,8 @@ font-size = 12
 
 # 테마 (ghostty +list-themes 로 확인)
 # light:테마명,dark:테마명 형식으로 라이트/다크 분리 가능
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+# theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+theme = light:TokyoNight Day,dark:TokyoNight Night
 
 # 배경색/전경색 (#RRGGBB 또는 X11 색상명)
 # background =

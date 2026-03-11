@@ -45,11 +45,21 @@ return {
   -- Dracula theme (your previous theme)
   { "dracula/vim", name = "dracula" },
 
-  -- Tokyo Night theme (LazyVim default)
+  -- Tokyo Night theme (active)
   {
     "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
     opts = {
-      style = "night",
+      style = "night", -- night, storm, moon, day
+      transparent = false,
+      terminal_colors = true,
+      styles = {
+        comments = { italic = true },
+        keywords = { italic = true },
+        sidebars = "dark",
+        floats = "dark",
+      },
     },
   },
 
@@ -57,7 +67,7 @@ return {
   {
     "LazyVim/LazyVim",
     opts = {
-      colorscheme = "catppuccin",
+      colorscheme = "tokyonight", -- "catppuccin" | "tokyonight" | "gruvbox" | "dracula"
     },
   },
 }
