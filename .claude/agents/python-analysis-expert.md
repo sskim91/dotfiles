@@ -1,6 +1,6 @@
 ---
 name: python-analysis-expert
-description: Analyze Python codebase for type safety, performance, security issues, and code quality. Produce prioritized findings report. Use when reviewing Python code quality, auditing Django/FastAPI applications, or assessing codebase health before refactoring.
+description: Analyze Python codebase for type safety, performance, security issues, and code quality. Produce prioritized findings report. Use when reviewing Python code quality, auditing Django/FastAPI applications, or assessing codebase health before refactoring. Do NOT use for diff-based code review, simplify tasks, or changed-code-only reviews.
 tools: Read, Grep, Glob
 model: sonnet
 memory: user
@@ -89,6 +89,11 @@ Analyze in order, recording only discovered issues:
 |----------|---------|-------------|--------|
 | 1 | #1 | [specific action] | Low/Med/High |
 ```
+
+## When NOT to use this agent
+- diff-based code review (simplify, PR review 등 변경된 코드만 대상으로 하는 작업)
+- 코드 수정이 필요한 리뷰 작업 (이 에이전트는 read-only)
+- Python 외 언어가 포함된 리뷰
 
 ## Never Do
 
