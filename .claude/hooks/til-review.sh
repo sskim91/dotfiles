@@ -122,7 +122,7 @@ REVIEW_OUTPUT=$(cd "$TIL_DIR" && cat "$FILE_PATH" | gemini -y --sandbox false -m
 1. 각 항목별로 피드백을 작성하세요. 해당 사항이 없으면 '없음'으로 깔끔하게 마무리.
 2. **Blocker가 '없음'이면, 마지막 줄에 반드시:** STATUS: PASS
 3. 한글로 답변하세요.
-4. **깔끔하게 끝내세요. 불필요한 칭찬이나 요약은 생략하세요.**" 2>&1 | grep -v -E "^\[STARTUP\]|^YOLO mode|^Loaded cached|^I will |^Error executing tool")
+4. **깔끔하게 끝내세요. 불필요한 칭찬이나 요약은 생략하세요.**" 2>/dev/null)
 
 # Pass Gemini's review to Claude via stderr
 cat >&2 <<EOF

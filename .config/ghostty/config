@@ -157,7 +157,7 @@ background-blur-radius = 10
 cursor-style = block
 
 # 커서 깜박임 여부
-cursor-style-blink = false
+cursor-style-blink = true
 
 # 커서 투명도 (0.0-1.0)
 # cursor-opacity = 1.0
