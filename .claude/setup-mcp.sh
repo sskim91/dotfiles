@@ -18,4 +18,7 @@ CLAUDECODE= claude mcp add -s user tavily-remote -- sh -c "npx -y mcp-remote \"h
 CLAUDECODE= claude mcp add -s user -t http prompts-chat https://prompts.chat/api/mcp 2>/dev/null \
     && echo "✓ prompts-chat added" || echo "✓ prompts-chat already exists"
 
+CLAUDECODE= claude mcp add -s user -t http mermaid-mcp https://mcp.mermaid.ai/mcp 2>/dev/null \
+    && echo "✓ mermaid-mcp added" || echo "✓ mermaid-mcp already exists"
+
 echo "✅ Claude Code MCP servers registered"
