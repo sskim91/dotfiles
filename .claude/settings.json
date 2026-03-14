@@ -104,7 +104,7 @@
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
-    "context7@claude-plugins-official": true,
+    "context7@claude-plugins-official": false,
     "playwright@claude-plugins-official": true,
     "claude-hud@claude-hud": true,
     "claude-md-management@claude-plugins-official": true,
