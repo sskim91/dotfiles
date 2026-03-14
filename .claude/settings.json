@@ -8,7 +8,7 @@
     "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD": "1",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-4-6",
     "BASH_DEFAULT_TIMEOUT_MS": "180000",
-    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "true"
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
   },
   "permissions": {
     "allow": [
@@ -122,17 +122,30 @@
     "explanatory-output-style@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true
   },
-  "language": "korean",
-  "alwaysThinkingEnabled": true,
-  "autoUpdatesChannel": "latest",
-  "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "high",
   "extraKnownMarketplaces": {
     "pm-skills": {
       "source": {
         "source": "github",
         "repo": "phuryn/pm-skills"
       }
+    },
+    "supabase-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "supabase/agent-skills"
+      },
+      "autoUpdate": true
+    },
+    "claude-hud": {
+      "source": {
+        "source": "github",
+        "repo": "jarrodwatts/claude-hud"
+      }
     }
-  }
+  },
+  "language": "korean",
+  "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
+  "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": true
 }
