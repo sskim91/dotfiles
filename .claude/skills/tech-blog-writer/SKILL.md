@@ -221,6 +221,9 @@ sequenceDiagram
 | 적합한 상황 | ... | ... |
 ```
 
+### Mermaid 검증
+mermaid 다이어그램 작성 후 `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 검증한다. 문법 오류 시 수정 후 재검증.
+
 ### 코드 예시 규칙
 
 ```markdown

@@ -354,4 +354,5 @@ Daniel Abadi가 제안한 PACELC가 이걸 보완한다:
 □ 파일명이 순수 제목 (접두사 없음)
 □ created 날짜가 현재 날짜
 □ mermaid 사용 시 가독성 확인
+□ mermaid 사용 시 `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 검증
 ```

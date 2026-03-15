@@ -152,6 +152,7 @@ libuv는 Node.js의 비동기 I/O를 담당하는 C 라이브러리다. Ryan Dah
 - [ ] mermaid style에 color가 있는가?
 - [ ] sequenceDiagram에서 `rect rgba()` 사용했는가?
 - [ ] subgraph에 style을 지정하지 않았는가?
+- [ ] `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 검증했는가?
 
 #### 스타일 (CHECK)
 - [ ] Bold 닫는 `**` 다음에 띄어쓰기가 있는가?

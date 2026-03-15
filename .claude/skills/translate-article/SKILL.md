@@ -256,6 +256,7 @@ TIL 저장소의 적절한 카테고리에 자동 저장합니다.
 - [ ] 원문 이미지를 `![alt](url)` 형태로 가져왔는가? (가져올 수 없는 경우만 mermaid)
 - [ ] Bold 닫는 `**` 다음에 띄어쓰기가 있는가?
 - [ ] mermaid 사용 시: `\n` 대신 `<br>`, 어두운 배경 + `color:#fff`
+- [ ] mermaid 사용 시: `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 검증
 - [ ] ASCII 박스 대신 테이블/mermaid를 사용했는가?
 - [ ] 출처가 명시되었는가?
 - [ ] 파일명이 번역된 제목과 일치하는가?
