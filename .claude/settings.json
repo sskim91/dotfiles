@@ -129,7 +129,8 @@
       "source": {
         "source": "github",
         "repo": "phuryn/pm-skills"
-      }
+      },
+      "autoUpdate": true
     },
     "supabase-agent-skills": {
       "source": {
@@ -142,18 +143,21 @@
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
-      }
+      },
+      "autoUpdate": true
     },
     "obsidian-skills": {
       "source": {
         "source": "github",
         "repo": "kepano/obsidian-skills"
-      }
+      },
+      "autoUpdate": true
     }
   },
   "language": "korean",
   "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
+  "voiceEnabled": true,
   "skipDangerousModePermissionPrompt": true
 }
