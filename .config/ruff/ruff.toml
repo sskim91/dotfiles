@@ -1,3 +1,5 @@
+# $schema = "https://www.schemastore.org/ruff.json"
+
 [lint]
 # Allow warnings but prevent auto-fix for unused imports/variables.
 # Claude sees the warning and can clean up when work is done.
