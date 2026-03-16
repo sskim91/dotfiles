@@ -340,6 +340,12 @@ Daniel Abadi가 제안한 PACELC가 이걸 보완한다:
 
 ---
 
+## Obsidian 마크다운 문법
+
+Callout, embed, property 타입 등 Obsidian 고유 문법은 `obsidian:obsidian-markdown` 스킬 참조.
+
+---
+
 ## 작성 후 체크리스트
 
 ```markdown

@@ -31,6 +31,8 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
 | `~/.config/ruff/ruff.toml` | `~/.dotfiles/.config/ruff/ruff.toml` |
 | `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
+| `~/.config/yazi/` | `~/.dotfiles/.config/yazi/` |
+| `~/.config/obsidian/` | `~/.dotfiles/.config/obsidian/` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
 
@@ -120,39 +122,8 @@ echo '{"tool_input":{"file_path":"test.py"}}' | ~/.claude/hooks/python-check.sh
 
 ### Skills
 
-Located in `.claude/skills/`. Each skill is a directory with `SKILL.md`:
-
-| Skill | Trigger |
-|-------|---------|
-| `til` | TIL 문서 작성 |
-| `obsidian-note` | Obsidian Zettelkasten 노트 작성 |
-| `obsidian-flashcard` | Obsidian Spaced Repetition 플래시카드 |
-| `tech-blog-writer` | 기술 블로그 글쓰기 |
-| `learning-tracker` | 세션 학습 내용 정리 |
-| `project-overview` | 프로젝트 온보딩 분석 |
-| `github-actions` | GitHub Actions 실패 분석 |
-| `gemini-fetch` | WebFetch 403 우회 |
-| `devlog` | 작업 로그 기록 |
-| `session-handoff` | 세션 인계 요약 생성 |
-| `git-commit` | Gitmoji 커밋 메시지 |
-| `git-commit-and-push` | 커밋 + 푸시 |
-| `git-push` | 안전한 푸시 |
-| `init-harness` | 프로젝트 하네스 초기화 (CLAUDE.md, rules/, docs/, agents/) |
-| `golang-patterns` | Go 이디엄, 동시성, 제네릭, iterators, slog, ServeMux, 테스트 |
-| `kotlin-patterns` | Kotlin 이디엄, coroutines, Flow, DSL, Spring Boot 통합 |
-| `python-patterns` | Python 개발 패턴, 타입 힌트, 코드 리뷰 |
-| `python-code-style` | Python 린터/포매터 설정, 네이밍, 독스트링 |
-| `python-testing` | pytest, TDD, fixtures, mocking |
-| `springboot-patterns` | Spring Boot 설정, DI, 예외처리, 캐싱, 비동기/이벤트, 관측성, HTTP 클라이언트 |
-| `springboot-security` | Spring Security 6+ 인증/인가, JWT, OAuth2, CORS, CSRF, 시크릿 |
-| `springboot-tdd` | Spring Boot TDD (MockMvc, Mockito, JaCoCo, 보안 테스트) |
-| `springboot-verification` | PR/배포 전 검증 (빌드→정적분석→테스트+커버리지→보안스캔→diff) |
-| `sql-optimization-patterns` | SQL 쿼리 최적화 패턴 |
-| `sns-writer` | X/Threads 초안을 단단한 글로 다듬기 |
-| `skill-guide` | 스킬 생성 가이드 + 구조 검증 |
-| `mcp-integration` | MCP 서버 통합 |
-| `init-serena` | Serena MCP 초기화 |
-| `cc-team-builder` | Agent Team 대화형 구성 위저드 |
+Located in `.claude/skills/`. Each skill has `SKILL.md` with trigger description.
+Run `ls .claude/skills/` to list available skills.
 
 ### Adding New Skills
 
@@ -221,3 +192,11 @@ Caps Lock as modifier key (`.config/karabiner/`):
 ## Version Management
 
 Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
+
+## Gotchas
+
+- `.tmux.conf` 변경 후 반드시 `Prefix(Ctrl+a) + r`로 reload — tmux 재시작 불필요
+- tmux copy mode 진입: `Prefix + y` (기본 `[`는 window navigation으로 재바인딩됨)
+- Ghostty/kitty 둘 다 설정 존재 — 현재 주 터미널은 Ghostty
+- `.claude/hooks/` 스크립트는 `ENABLE_*` env var로 개별 제어 — 새 hook 추가 시 `path.zsh`에 변수 추가 필요
+- Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음

@@ -2,6 +2,8 @@
 
 ## Tool Priority
 
+**CRITICAL**: 웹 검색 시 반드시 `tavily_search`를 먼저 사용하라. WebSearch는 Tavily 실패 시 fallback으로만 사용.
+
 | Task | Priority | Fallback |
 |------|----------|----------|
 | Web search | `tavily_search` | WebSearch |
@@ -15,6 +17,8 @@
 1. **GitHub URL** → `gh` CLI 사용
 2. **기타 URL** → WebFetch 먼저 시도
 3. **WebFetch 실패 시** (403, blocked, timeout) → `tavily_extract` 사용
+
+> **Note**: `obsidian:defuddle` 스킬이 설치되어 있으나, WebFetch/tavily 우선순위를 따른다. defuddle은 토큰 절약이 중요한 긴 웹 페이지 추출 시 WebFetch 대안으로 사용 가능. (`npm install -g defuddle` 필요)
 
 ## Why Tavily
 
