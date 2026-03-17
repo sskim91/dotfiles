@@ -122,7 +122,8 @@
     "security-guidance@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
-    "obsidian@obsidian-skills": true
+    "obsidian@obsidian-skills": true,
+    "cloudflare@cloudflare": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
@@ -150,6 +151,13 @@
       "source": {
         "source": "github",
         "repo": "kepano/obsidian-skills"
+      },
+      "autoUpdate": true
+    },
+    "cloudflare": {
+      "source": {
+        "source": "github",
+        "repo": "cloudflare/skills"
       },
       "autoUpdate": true
     }
