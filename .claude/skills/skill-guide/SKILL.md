@@ -3,415 +3,119 @@ name: skill-guide
 description: Quick skill creation guide with structure validation and Anthropic official best practices. Use when user wants to create a new Skill from scratch, validate SKILL.md structure/frontmatter, review skill quality against checklist, or reference Anthropic's official skill design guide. Do NOT use for eval-based iterative improvement, benchmark testing, description trigger optimization, or blind A/B comparison (use skill-creator plugin instead).
 ---
 
-# Skill Writer
+# Skill Guide
 
-This Skill helps you create well-structured Agent Skills for Claude Code that follow best practices and validation requirements.
+## Frontmatter Spec
 
-## When to use this Skill
+Every skill needs a `SKILL.md` file (exact casing) in a kebab-case directory.
 
-Use this Skill when:
-- Creating a new Agent Skill
-- Writing or updating SKILL.md files
-- Designing skill structure and frontmatter
-- Troubleshooting skill discovery issues
-- Converting existing prompts or workflows into Skills
-
-## Instructions
-
-### Step 1: Determine Skill scope
-
-First, understand what the Skill should do:
-
-1. **Ask clarifying questions**:
-   - What specific capability should this Skill provide?
-   - When should Claude use this Skill?
-   - What tools or resources does it need?
-   - Is this for personal use or team sharing?
-
-2. **Keep it focused**: One Skill = one capability
-   - Good: "PDF form filling", "Excel data analysis"
-   - Too broad: "Document processing", "Data tools"
-
-### Step 2: Choose Skill location
-
-Determine where to create the Skill:
-
-**Personal Skills** (`~/.claude/skills/`):
-- Individual workflows and preferences
-- Experimental Skills
-- Personal productivity tools
-
-**Project Skills** (`.claude/skills/`):
-- Team workflows and conventions
-- Project-specific expertise
-- Shared utilities (committed to git)
-
-### Step 3: Create Skill structure
-
-Create the directory and files:
-
-```bash
-# Personal
-mkdir -p ~/.claude/skills/skill-name
-
-# Project
-mkdir -p .claude/skills/skill-name
+```yaml
+---
+name: skill-name          # kebab-case, max 64 chars, must match directory name
+description: What it does and when to use it.  # max 1024 chars, no XML tags (<>)
+---
 ```
 
-For multi-file Skills:
+**Naming rules**: lowercase, numbers, hyphens only. No "claude" or "anthropic" prefix.
+
+**Optional fields**:
+
+```yaml
+allowed-tools: "Read Grep Glob"          # Restrict tool access
+license: MIT
+compatibility: "Claude Code only"        # 1-500 chars
+metadata:
+  author: Name
+  version: 1.0.0
+  tags: [automation, workflow]
+```
+
+## Description Writing
+
+Description은 요약이 아니라 **트리거 판단 기준**이다. Claude가 세션 시작 시 모든 스킬의 description을 스캔해서 로드 여부를 결정한다.
+
+**Formula**: `[What it does] + [When to use it] + [Negative triggers]`
+
+```yaml
+# ✅ 구체적 트리거 + negative trigger
+description: Analyze Excel spreadsheets, create pivot tables, and generate charts.
+  Use when working with .xlsx files or analyzing tabular data.
+  Do NOT use for CSV-only operations (use data-processor skill).
+
+# ❌ 모호 — Claude가 언제 로드할지 판단 불가
+description: Helps with data analysis
+```
+
+## Skill Location
+
+| Location | Use for |
+|----------|---------|
+| `~/.claude/skills/` | Personal workflows, experiments |
+| `.claude/skills/` | Team/project, committed to git |
+
+## File Structure
+
+스킬은 **폴더**다. SKILL.md 하나가 아니다.
+
 ```
 skill-name/
-├── SKILL.md (required)
-├── reference.md (optional)
-├── examples.md (optional)
-├── scripts/
-│   └── helper.py (optional)
-└── templates/
-    └── template.txt (optional)
+├── SKILL.md              # Required — 핵심 지시사항 (5,000 words 이내)
+├── references/            # Claude가 필요할 때 읽는 상세 문서
+├── scripts/               # 결정적(deterministic) 검증/처리용 스크립트
+└── assets/                # Templates, data files
 ```
 
-### Step 4: Write SKILL.md frontmatter
+파일 시스템 자체가 progressive disclosure다. SKILL.md에서 어떤 파일이 있는지 알려주면, Claude가 적절한 시점에 읽는다. SKILL.md에 모든 내용을 넣지 말 것.
 
-Create YAML frontmatter with required fields:
+## Content Writing Principles
 
-```yaml
----
-name: skill-name
-description: Brief description of what this does and when to use it
----
-```
+### Don't State the Obvious
 
-**Field requirements**:
+Claude는 코딩, 마크다운 구조화, 에지 케이스 처리를 이미 안다. **Claude의 일반적 사고방식을 벗어나게 하는 정보**에 집중하라 — 조직의 컨벤션, 도메인 특화 gotchas, 비직관적 패턴.
 
-- **name**:
-  - Lowercase letters, numbers, hyphens only
-  - Max 64 characters
-  - Must match directory name
-  - Good: `pdf-processor`, `git-commit-helper`
-  - Bad: `PDF_Processor`, `Git Commits!`
+### Build a Gotchas Section
 
-- **description**:
-  - Max 1024 characters
-  - Include BOTH what it does AND when to use it
-  - Use specific trigger words users would say
-  - Mention file types, operations, and context
-
-**Optional frontmatter fields**:
-
-- **allowed-tools**: Restrict tool access (comma-separated list)
-  ```yaml
-  allowed-tools: Read, Grep, Glob
-  ```
-  Use for:
-  - Read-only Skills
-  - Security-sensitive workflows
-  - Limited-scope operations
-
-### Step 5: Write effective descriptions
-
-The description is critical for Claude to discover your Skill.
-
-**Formula**: `[What it does] + [When to use it] + [Key triggers]`
-
-**Examples**:
-
-✅ **Good**:
-```yaml
-description: Extract text and tables from PDF files, fill forms, merge documents. Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
-```
-
-✅ **Good**:
-```yaml
-description: Analyze Excel spreadsheets, create pivot tables, and generate charts. Use when working with Excel files, spreadsheets, or analyzing tabular data in .xlsx format.
-```
-
-❌ **Too vague**:
-```yaml
-description: Helps with documents
-description: For data analysis
-```
-
-**Tips**:
-- Include specific file extensions (.pdf, .xlsx, .json)
-- Mention common user phrases ("analyze", "extract", "generate")
-- List concrete operations (not generic verbs)
-- Add context clues ("Use when...", "For...")
-
-### Step 6: Structure the Skill content
-
-Use clear Markdown sections:
+스킬에서 가장 가치 있는 콘텐츠는 **Gotchas 섹션**이다. Claude가 실제로 틀리는 지점을 기록하고, 시간이 지나며 축적하라.
 
 ```markdown
-# Skill Name
-
-Brief overview of what this Skill does.
-
-## Quick start
-
-Provide a simple example to get started immediately.
-
-## Instructions
-
-Step-by-step guidance for Claude:
-1. First step with clear action
-2. Second step with expected outcome
-3. Handle edge cases
-
-## Examples
-
-Show concrete usage examples with code or commands.
-
-## Best practices
-
-- Key conventions to follow
-- Common pitfalls to avoid
-- When to use vs. not use
-
-## Requirements
-
-List any dependencies or prerequisites:
-```bash
-pip install package-name
+## Gotchas
+- API returns paginated results but doesn't indicate total count — always loop until empty
+- The `--dry-run` flag silently ignores invalid configs instead of erroring
+- Date fields use ISO 8601 but timezone is always UTC regardless of user locale
 ```
 
-## Advanced usage
+### Avoid Railroading
 
-For complex scenarios, see [reference.md](reference.md).
-```
+정보는 주되, Claude가 상황에 맞게 적응할 유연성을 남겨라. 모든 상황에 적용되는 rigid step sequence를 강제하지 말 것.
 
-### Step 7: Add supporting files (optional)
-
-Create additional files for progressive disclosure:
-
-**reference.md**: Detailed API docs, advanced options
-**examples.md**: Extended examples and use cases
-**scripts/**: Helper scripts and utilities
-**templates/**: File templates or boilerplate
-
-Reference them from SKILL.md:
 ```markdown
-For advanced usage, see [reference.md](reference.md).
+# ❌ 과도한 제약
+## Step 1: Always create the config file first
+## Step 2: Then validate the schema
+## Step 3: Then run the migration
 
-Run the helper script:
-\`\`\`bash
-python scripts/helper.py input.txt
-\`\`\`
+# ✅ 유연한 가이드
+## Setup
+Ensure config exists (see references/config-schema.md for required fields).
+Validate before running migrations — migration order matters,
+check references/migration-deps.md for dependency graph.
 ```
 
-### Step 8: Validate the Skill
+### Use Scripts for Determinism
 
-Check these requirements:
-
-✅ **File structure**:
-- [ ] SKILL.md exists in correct location
-- [ ] Directory name matches frontmatter `name`
-
-✅ **YAML frontmatter**:
-- [ ] Opening `---` on line 1
-- [ ] Closing `---` before content
-- [ ] Valid YAML (no tabs, correct indentation)
-- [ ] `name` follows naming rules
-- [ ] `description` is specific and < 1024 chars
-
-✅ **Content quality**:
-- [ ] Clear instructions for Claude
-- [ ] Concrete examples provided
-- [ ] Edge cases handled
-- [ ] Dependencies listed (if any)
-
-✅ **Testing**:
-- [ ] Description matches user questions
-- [ ] Skill activates on relevant queries
-- [ ] Instructions are clear and actionable
-
-### Step 9: Test the Skill
-
-1. **Restart Claude Code** (if running) to load the Skill
-
-2. **Ask relevant questions** that match the description:
-   ```
-   Can you help me extract text from this PDF?
-   ```
-
-3. **Verify activation**: Claude should use the Skill automatically
-
-4. **Check behavior**: Confirm Claude follows the instructions correctly
-
-### Step 10: Debug if needed
-
-If Claude doesn't use the Skill:
-
-1. **Make description more specific**:
-   - Add trigger words
-   - Include file types
-   - Mention common user phrases
-
-2. **Check file location**:
-   ```bash
-   ls ~/.claude/skills/skill-name/SKILL.md
-   ls .claude/skills/skill-name/SKILL.md
-   ```
-
-3. **Validate YAML**:
-   ```bash
-   cat SKILL.md | head -n 10
-   ```
-
-4. **Run debug mode**:
-   ```bash
-   claude --debug
-   ```
-
-## Skill Categories
-
-Understand which category your skill falls into:
-
-| Category | Description | Key Techniques |
-|----------|-------------|----------------|
-| **Document & Asset Creation** | Consistent, high-quality output (docs, code, designs) | Embedded style guides, templates, quality checklists |
-| **Workflow Automation** | Multi-step processes with consistent methodology | Step-by-step workflow with validation gates, iterative refinement |
-| **MCP Enhancement** | Workflow guidance on top of MCP tool access | Coordinates MCP calls, embeds domain expertise, error handling |
-
-## Workflow Patterns
-
-Choose the pattern that best fits the skill's purpose:
-
-1. **Sequential Workflow** - Multi-step processes in specific order (onboarding, setup)
-2. **Iterative Refinement** - Output quality improves with iteration (report generation, review)
-3. **Context-Aware Selection** - Different tools/approaches based on context (file routing)
-4. **Domain-Specific Intelligence** - Specialized knowledge beyond tool access (compliance, style)
-5. **Multi-MCP Coordination** - Workflows spanning multiple services (design-to-dev handoff)
-
-## Define Success Criteria
-
-Before building, define how you'll know the skill works:
-
-- **Triggering**: Skill loads on 90%+ of relevant queries, doesn't load on unrelated ones
-- **Workflow**: Completes in reasonable tool calls without user correction
-- **Consistency**: Same request produces structurally consistent results across sessions
-
-## Common patterns
-
-### Read-only Skill
-
-```yaml
----
-name: code-reader
-description: Read and analyze code without making changes. Use for code review, understanding codebases, or documentation.
-allowed-tools: Read, Grep, Glob
----
-```
-
-### Script-based Skill
-
-```yaml
----
-name: data-processor
-description: Process CSV and JSON data files with Python scripts. Use when analyzing data files or transforming datasets.
----
-
-# Data Processor
-
-## Instructions
-
-1. Use the processing script:
-\`\`\`bash
-python scripts/process.py input.csv --output results.json
-\`\`\`
-
-2. Validate output with:
-\`\`\`bash
-python scripts/validate.py results.json
-\`\`\`
-```
-
-### Multi-file Skill with progressive disclosure
-
-```yaml
----
-name: api-designer
-description: Design REST APIs following best practices. Use when creating API endpoints, designing routes, or planning API architecture.
----
-
-# API Designer
-
-Quick start: See [examples.md](examples.md)
-
-Detailed reference: See [reference.md](reference.md)
-
-## Instructions
-
-1. Gather requirements
-2. Design endpoints (see examples.md)
-3. Document with OpenAPI spec
-4. Review against best practices (see reference.md)
-```
-
-## Best practices for Skill authors
-
-1. **One Skill, one purpose**: Don't create mega-Skills
-2. **Specific descriptions**: Include trigger words users will say. Add negative triggers ("Do NOT use for...") to prevent over-triggering
-3. **Clear instructions**: Write for Claude, not humans. Use CRITICAL headers for must-follow rules
-4. **Concrete examples**: Show real code, not pseudocode
-5. **Progressive disclosure**: Keep SKILL.md under 5,000 words. Move detailed docs to `references/`
-6. **Include troubleshooting**: Add common issues and solutions table
-7. **Add error handling**: Scripts are deterministic; language instructions aren't. Use scripts for critical validations
-8. **Test triggering**: Ask Claude "When would you use the [skill] skill?" to verify description effectiveness
-
-## Validation checklist
-
-Before finalizing a Skill, verify:
-
-- [ ] Name is lowercase, hyphens only, max 64 chars
-- [ ] Description is specific and < 1024 chars
-- [ ] Description includes "what" and "when"
-- [ ] YAML frontmatter is valid
-- [ ] Instructions are step-by-step
-- [ ] Examples are concrete and realistic
-- [ ] Dependencies are documented
-- [ ] File paths use forward slashes
-- [ ] Skill activates on relevant queries
-- [ ] Claude follows instructions correctly
+스크립트는 결정적이고, 자연어 지시는 아니다. 중요한 검증이나 출력 포맷은 `scripts/`에 코드로 번들하라.
 
 ## Troubleshooting
 
-**Skill doesn't activate**:
-- Make description more specific with trigger words
-- Include file types and operations in description
-- Add "Use when..." clause with user phrases
+| 증상 | 원인 | 해결 |
+|------|------|------|
+| 스킬이 트리거 안됨 | description이 모호 | 트리거 문구, 파일 타입, "Use when..." 추가 |
+| 무관한 쿼리에서 트리거 | description이 넓음 | "Do NOT use for..." negative trigger 추가 |
+| 여러 스킬 충돌 | description 겹침 | 각 스킬의 범위를 구체적으로 좁힘 |
+| YAML 파싱 에러 | 포맷 오류 | `---` 구분자, 탭 대신 스페이스, 따옴표 닫기 확인 |
+| 원인 불명 | — | `claude --debug`로 스킬 로딩 과정 확인 |
 
-**Multiple Skills conflict**:
-- Make descriptions more distinct
-- Use different trigger words
-- Narrow the scope of each Skill
+## References
 
-**Skill has errors**:
-- Check YAML syntax (no tabs, proper indentation)
-- Verify file paths (use forward slashes)
-- Ensure scripts have execute permissions
-- List all dependencies
-
-## Anthropic 공식 가이드
-
-스킬 설계 원칙, 카테고리, 워크플로우 패턴, 테스트 전략, 트러블슈팅에 대한 Anthropic 공식 권장사항은 [references/anthropic-skill-guide.md](references/anthropic-skill-guide.md)를 참조.
-
-## Examples
-
-See the documentation for complete examples:
-- Simple single-file Skill (commit-helper)
-- Skill with tool permissions (code-reviewer)
-- Multi-file Skill (pdf-processing)
-
-## Output format
-
-When creating a Skill, I will:
-
-1. Ask clarifying questions about scope and requirements
-2. Suggest a Skill name and location
-3. Create the SKILL.md file with proper frontmatter
-4. Include clear instructions and examples
-5. Add supporting files if needed
-6. Provide testing instructions
-7. Validate against all requirements
-
-The result will be a complete, working Skill that follows all best practices and validation rules.
+- [Anthropic 공식 스킬 가이드](references/anthropic-skill-guide.md) — 설계 원칙, 워크플로우 패턴, 테스트 전략, 전체 frontmatter 참조
+- [실전 스킬 작성 팁](references/practical-tips.md) — 9가지 스킬 유형, 고급 패턴 (데이터 저장, On Demand Hooks, 스킬 조합, 배포 전략)
