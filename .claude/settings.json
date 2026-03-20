@@ -34,7 +34,11 @@
       "Bash(git push --force *)",
       "Bash(git push --force-with-lease*)",
       "Bash(git reset --hard*)",
-      "Bash(rm -rf /)"
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~*)",
+      "Bash(sudo rm -rf *)",
+      "Bash(git clean -fd*)"
     ],
     "ask": [
       "Read(.env*)",

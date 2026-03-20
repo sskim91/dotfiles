@@ -9,7 +9,7 @@ cat <<EOF
   "suppressOutput": true,
   "hookSpecificOutput": {
     "hookEventName": "SessionStart",
-    "additionalContext": "Current time and date: $(date '+%H:%M:%S %Y-%m-%d')"
+    "additionalContext": "Current time and date: $(date '+%H:%M:%S %Y-%m-%d'), Current branch: $(git branch --show-current 2>/dev/null || echo 'not a git repo')"
   }
 }
 EOF
