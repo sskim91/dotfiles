@@ -63,19 +63,11 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Bash(git commit*)",
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/check-sensitive-files.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/check-env-files.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/check-hardcoded-secrets.sh"
+            "command": "~/.claude/hooks/pre-commit-gate.sh"
           }
         ]
       }
