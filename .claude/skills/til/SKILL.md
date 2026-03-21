@@ -36,7 +36,11 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - 어떤 주제로 TIL을 작성할지 질문
 - 카테고리 선택 (python, java, spring, nodejs, security, computer-science, ai 등)
 
-### Step 2: 문서 구조 작성
+### Step 2: 리서치
+
+작성 전 `tavily_search` 또는 `WebSearch`로 주제를 검색하여 최신 정보와 공식 문서 URL을 확보한다. 할루시네이션 방지와 정확한 출처 확보를 위해 **항상 실행**한다.
+
+### Step 3: 문서 구조 작성
 
 [til-template.md](assets/til-template.md)의 템플릿을 기반으로 작성.
 
@@ -49,90 +53,49 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - `## 4. 정리`
 - `## 출처`
 
-### Step 3: 핵심 원칙 적용
+### Step 4: 핵심 원칙 적용
 
-자세한 가이드: [writing-style-guide.md](references/writing-style-guide.md)
+[writing-style-guide.md](references/writing-style-guide.md)를 읽고 아래 원칙을 적용:
 
-#### "왜(Why)"를 반드시 설명
+- **"왜(Why)"를 반드시 설명** — 정의 나열이 아닌 문제 상황에서 출발
+- **스토리텔링 패턴 사용** — 문제→의문→해답, 만약~라면?, 이상한 점 발견
+- **연결어로 흐름 만들기** — 단락 간 자연스러운 전환
+- **문단 단위로 설명** — 한 줄씩 끊지 말 것
 
-```markdown
-❌ Bad: "DI는 의존성을 외부에서 주입하는 패턴입니다."
-✅ Good: "만약 프레임워크 없이 웹 서버를 만든다면? 우리가 직접 해야 할 일들이 산더미처럼 쌓인다..."
-```
+### Step 5: 시각화 규칙
 
-#### 스토리텔링 패턴 사용
+[mermaid-style-guide.md](references/mermaid-style-guide.md)를 읽고 아래 규칙을 적용:
 
-| 패턴 | 예시 |
-|------|------|
-| 문제 -> 의문 -> 해답 | "싱글스레드인데 어떻게 동시에? -> libuv가 있기 때문" |
-| 만약 ~라면? | "만약 Spring 없이 웹 서버를 만든다면?" |
-| 이상한 점 발견 | "근데 이상하다. 싱글스레드라면서 왜 4개가 동시에?" |
-
-#### 연결어로 흐름 만들기
-
-```markdown
-✅ Good:
-"하지만 여기서 문제가 생겼다."
-"왜일까?"
-"그렇다면 이건 어떻게 설명할 수 있을까?"
-"이제 답이 보인다."
-```
-
-#### 문단 단위로 설명 (한 줄씩 끊지 말 것)
-
-```markdown
-❌ Bad:
-- libuv는 비동기 I/O 라이브러리다.
-- Thread Pool을 가진다.
-
-✅ Good:
-libuv는 Node.js의 비동기 I/O를 담당하는 C 라이브러리다. Ryan Dahl이 Node.js를 만들 때
-직접 개발했다. 왜 필요했을까? JavaScript 자체에는 파일을 읽거나 네트워크 통신을 하는
-기능이 없다.
-```
-
-### Step 4: 시각화 규칙
-
-자세한 가이드: [mermaid-style-guide.md](references/mermaid-style-guide.md)
-
-**필수 규칙:**
-- ASCII 박스 금지 -> 테이블 또는 mermaid 사용
+- ASCII 박스 금지 → 테이블 또는 mermaid 사용
 - 어두운 배경 + 흰 글씨: `style Node fill:#1565C0,color:#fff`
 - 줄바꿈은 `<br>` 사용 (`\n` 아님)
 - subgraph에는 style 지정하지 않음
 - sequenceDiagram은 `style` 대신 `rect rgba()` 사용
+- **다이어그램 작성 즉시** `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 검증
 
-### Step 5: 스타일 규칙
+### Step 6: 스타일 규칙
 
-자세한 가이드: [writing-style-guide.md](references/writing-style-guide.md)
+[writing-style-guide.md](references/writing-style-guide.md)의 스타일 규칙 섹션을 참조:
 
-#### Bold 처리
+- Bold 닫는 `**` 다음에 반드시 띄어쓰기
+- 수식은 LaTeX (`$...$`, `$$...$$`)
+- 출처는 `## 출처` 섹션에 공식 문서 최상단 배치
 
-**닫는 `**` 다음에 반드시 띄어쓰기:**
-```markdown
-❌ Bad: **정식 지원(Stable)**된다.
-✅ Good: **정식 지원(Stable)** 된다.
-```
+### Step 7: 파일 저장
 
-#### 수식은 LaTeX
-
-```markdown
-❌ Bad: S = 1 / ((1 - P) + P/N)
-✅ Good: $S = \frac{1}{(1-P) + \frac{P}{N}}$
-```
-
-### Step 6: 파일 저장
-
-**파일명 = 제목과 동일:**
+**파일명 = 제목에서 공백을 하이픈으로 변환:**
 
 | 제목 | 파일명 |
 |------|--------|
 | `# Python의 f-string` | `Python의-f-string.md` |
 | `# Node.js가 싱글스레드라는 미신` | `Node.js가-싱글스레드라는-미신.md` |
+| `# 왜 Spring은 CGLIB을 선택했을까?` | `왜-Spring은-CGLIB을-선택했을까.md` |
+
+**특수문자 처리:** `/`, `?`, `:`, `*` 등은 제거 후 하이픈 변환
 
 **저장 위치:** `/Users/sskim/dev/TIL/{category}/`
 
-### Step 7: Self-Check 실행
+### Step 8: Self-Check 실행
 
 문서 작성 완료 후 아래 항목 점검:
 
