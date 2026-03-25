@@ -1,7 +1,72 @@
+# Codex configuration (config.toml)
+#
 # Copy to ~/.codex/config.toml:
 #   cp ~/.dotfiles/.codex/config.toml.example ~/.codex/config.toml
 #
-# [projects] section is auto-managed by Codex (trust prompt on first use)
+# Reference: https://developers.openai.com/codex/config-sample
+# Notes
+# - Root keys must appear before tables in TOML.
+# - [projects] section is auto-managed by Codex (trust prompt on first use)
+# - [notice] section is auto-managed by Codex
+
+################################################################################
+# Core Model Selection
+################################################################################
+
+model = "gpt-5.4"
+
+# Communication style: none | friendly | pragmatic
+personality = "pragmatic"
+
+# Provider id selected from [model_providers]. Default: "openai".
+model_provider = "openai"
+
+################################################################################
+# Reasoning & Verbosity (Responses API capable models)
+################################################################################
+
+# Reasoning effort: minimal | low | medium | high | xhigh
+model_reasoning_effort = "high"
+
+################################################################################
+# Approval & Sandbox
+################################################################################
+
+# When to ask for command approval:
+# - untrusted: only known-safe read-only commands auto-run; others prompt
+# - on-request: model decides when to ask (default)
+# - never: never prompt (risky)
+approval_policy = "on-request"
+
+# Filesystem/network sandbox policy:
+# - read-only (default)
+# - workspace-write
+# - danger-full-access (no sandbox; extremely risky)
+sandbox_mode = "read-only"
+
+################################################################################
+# Project Documentation Controls
+################################################################################
+
+project_doc_max_bytes = 32768
+
+################################################################################
+# History & File Opener
+################################################################################
+
+# URI scheme: vscode | vscode-insiders | windsurf | cursor | none
+file_opener = "vscode"
+
+################################################################################
+# Web Search
+################################################################################
+
+# Web search mode: disabled | cached | live. Default: "cached"
+web_search = "cached"
+
+################################################################################
+# MCP Servers
+################################################################################
 
 [mcp_servers.context7]
 command = "npx"
@@ -19,5 +84,18 @@ args = ["-y", "@wonderwhy-er/desktop-commander"]
 command = "sh"
 args = ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]
 
+################################################################################
+# Feature Flags
+################################################################################
+
 [features]
 multi_agent = true
+
+################################################################################
+# UI
+################################################################################
+
+[tui]
+notifications = false
+animations = true
+show_tooltips = true

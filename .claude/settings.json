@@ -119,7 +119,8 @@
     "explanatory-output-style@claude-plugins-official": true,
     "ralph-loop@claude-plugins-official": true,
     "obsidian@obsidian-skills": true,
-    "cloudflare@cloudflare": true
+    "cloudflare@cloudflare": true,
+    "supabase@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
