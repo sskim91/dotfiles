@@ -168,5 +168,6 @@
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
   "voiceEnabled": true,
+  "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true
 }
