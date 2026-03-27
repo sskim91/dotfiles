@@ -38,51 +38,6 @@ description: Use when writing, reviewing, or refactoring Python code, designing 
 
 ## Type Hints
 
-### Modern Syntax (Python 3.10+, Recommended)
-
-```python
-# Built-in types + | union syntax (PEP 604)
-def process(user_id: str, data: dict[str, Any]) -> User | None:
-    ...
-
-# Python 3.12+ — type statement, generic syntax (PEP 695)
-type JSON = dict[str, "JSON"] | list["JSON"] | str | int | float | bool | None
-
-def first[T](items: list[T]) -> T | None:
-    return items[0] if items else None
-```
-
-### Protocol (Structural Typing)
-
-```python
-from typing import Protocol
-
-class Renderable(Protocol):
-    def render(self) -> str: ...
-
-# Any class with render() satisfies Renderable — no inheritance needed
-def render_all(items: list[Renderable]) -> str:
-    return "\n".join(item.render() for item in items)
-```
-
-### Type-Safe Decorator (ParamSpec)
-
-```python
-from typing import ParamSpec, TypeVar, Callable
-
-P = ParamSpec('P')
-R = TypeVar('R')
-
-def log_call(func: Callable[P, R]) -> Callable[P, R]:
-    @functools.wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        print(f"Calling {func.__name__}")
-        return func(*args, **kwargs)
-    return wrapper
-```
-
-### When to Use What
-
 | Type Feature | Use When |
 |-------------|----------|
 | `X \| None` | Optional value (3.10+) |
@@ -90,11 +45,10 @@ def log_call(func: Callable[P, R]) -> Callable[P, R]:
 | `@override` | Overriding parent method (3.12+) |
 | `TypeIs` | Type narrowing in both branches (3.13+) |
 | `ParamSpec` | Preserving decorator type signature |
+| `type` statement | Recursive/complex type aliases (3.12+, PEP 695) |
 | Legacy `Optional`, `Union` | Only for Python < 3.10 support |
 
 ## Data Containers
-
-### Decision Tree
 
 ```
 Need a data container?
@@ -107,86 +61,12 @@ Need a data container?
 └── Simple grouping, no behavior? → @dataclass
 ```
 
-### Comparison
-
-| Feature | `@dataclass` | `NamedTuple` | `TypedDict` |
-|---------|-------------|-------------|------------|
-| Mutable | Yes (default) | No | Yes |
-| Methods | Yes | Yes | No |
-| `__post_init__` | Yes | No | No |
-| `__slots__` | Yes (3.10+) | Automatic | N/A |
-| JSON compatible | No | No | Yes |
-
-```python
-# dataclass with validation
-@dataclass
-class User:
-    email: str
-    age: int
-
-    def __post_init__(self):
-        if "@" not in self.email:
-            raise ValueError(f"Invalid email: {self.email}")
-        if not 0 <= self.age <= 150:
-            raise ValueError(f"Invalid age: {self.age}")
-
-# NamedTuple — immutable, lightweight
-class Point(NamedTuple):
-    x: float
-    y: float
-
-# Memory-efficient for high-volume objects
-@dataclass(slots=True)
-class Coordinate:
-    x: float
-    y: float
-    z: float
-```
-
 ## Error Handling
 
-### Rules
-
-```python
-# ALWAYS chain exceptions — preserve traceback
-try:
-    parsed = json.loads(data)
-except json.JSONDecodeError as e:
-    raise ValueError(f"Failed to parse: {data}") from e
-```
-
-### Custom Exception Hierarchy
-
-```python
-class AppError(Exception): ...
-class ValidationError(AppError): ...
-class NotFoundError(AppError): ...
-
-def get_user(user_id: str) -> User:
-    user = db.find_user(user_id)
-    if not user:
-        raise NotFoundError(f"User not found: {user_id}")
-    return user
-```
-
-### EAFP vs LBYL
-
-```python
-# GOOD: EAFP — try first, handle failure
-def read_config(path: str) -> dict[str, Any]:
-    try:
-        with open(path) as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-
-# BAD: LBYL — race condition between check and open
-def read_config(path: str) -> dict[str, Any]:
-    if os.path.exists(path):  # File could be deleted here!
-        with open(path) as f:
-            return json.load(f)
-    return {}
-```
+- Exception chaining 필수: `raise NewError(...) from e`
+- Custom hierarchy: `AppError → ValidationError, NotFoundError`
+- EAFP > LBYL (race condition 방지)
+- CRITICAL Rules #2, #3, #5 참조
 
 ## Concurrency Decision
 
@@ -207,114 +87,13 @@ Need both I/O + CPU?
 
 See [Concurrency Deep Dive](references/concurrency-deep-dive.md) for TaskGroup, Semaphore, producer-consumer pipeline.
 
-## Performance Tips
-
-| Pattern | Good | Bad |
-|---------|------|-----|
-| String join | `"".join(parts)` | `result += s` in loop |
-| Membership test | `x in set_data` O(1) | `x in list_data` O(n) |
-| Large data sum | `sum(x*x for x in data)` | `sum([x*x for x in data])` |
-| Memory efficiency | `@dataclass(slots=True)` | Regular class `__dict__` |
-| Dict default | `d.get(k, default)` | `if k in d: d[k]` |
-| Lazy iteration | `yield` / generator | Entire list in memory |
-
-## Anti-Patterns
-
-```python
-# BAD: Mutable default — shared across all calls!
-def append_to(item, items=[]):
-    items.append(item)
-    return items
-
-# GOOD:
-def append_to(item, items=None):
-    if items is None:
-        items = []
-    items.append(item)
-    return items
-
-# BAD: Bare except — silences all errors including KeyboardInterrupt
-try:
-    risky()
-except:
-    pass
-
-# GOOD:
-try:
-    risky()
-except SpecificError as e:
-    logger.error(f"Failed: {e}")
-
-# BAD: type() comparison — ignores inheritance
-if type(obj) == list: ...
-
-# GOOD: isinstance — respects inheritance chain
-if isinstance(obj, list): ...
-
-# BAD: == None
-if value == None: ...
-
-# GOOD: is None
-if value is None: ...
-```
-
-## Code Review
-
-### Checklist
-
-**Correctness (CRITICAL — address first)**
-- [ ] No mutable default arguments
-- [ ] Specific exception handling (no bare `except:`)
-- [ ] Exception chaining (`from e`)
-- [ ] Edge cases handled
-
-**Type Safety (HIGH)**
-- [ ] Type hints on all function signatures
-- [ ] Modern syntax (3.10+: `X | None`, built-in generics)
-- [ ] `Protocol` for duck typing interfaces
-
-**Performance (HIGH)**
-- [ ] Generators for large data (not list comprehensions)
-- [ ] Context managers for all resources
-- [ ] `__slots__` for high-volume dataclasses
-
-**Style (MEDIUM)**
-- [ ] PEP 8 compliant
-- [ ] Meaningful variable names
-- [ ] No `import *`
-
-### Severity Levels
+## Code Review Priorities
 
 | Level | Examples | Action |
 |-------|----------|--------|
 | **CRITICAL** | Mutable defaults, bare except, resource leak | Fix immediately |
 | **HIGH** | Missing types, no exception chaining | Fix before merge |
 | **MEDIUM** | Style violations, missing docs | Fix or TODO |
-| **LOW** | Minor formatting | Optional |
-
-### Review Output Format
-
-- **Summary**: Brief overview and main issues
-- **Critical Issues**: File, Issue, Impact, Fix
-- **High/Medium**: Same format
-- **Recommendations**: General improvement suggestions
-
-## Package Structure
-
-```
-myproject/
-├── src/mypackage/
-│   ├── __init__.py      # Exports: __all__
-│   ├── main.py
-│   ├── api/
-│   ├── models/
-│   └── utils/
-├── tests/
-│   ├── conftest.py
-│   └── test_*.py
-├── pyproject.toml
-└── README.md
-```
 
 ## Gotchas
 
@@ -325,6 +104,16 @@ myproject/
 - ❌ `== None` 비교 → `is None` 사용
 - ❌ `CancellationError` 삼키기 (asyncio) → 반드시 re-raise
 
+## Verification
+
+코드 작성 후 반드시 실행:
+```bash
+ruff check .                     # 린트
+ruff format --check .            # 포맷 확인
+pytest -x -q                     # 테스트 (fail-fast)
+mypy --strict src/               # 타입 체크 (설정된 경우)
+```
+
 ## Cross-References
 
 | Topic | Skill |
@@ -333,11 +122,3 @@ myproject/
 | pytest, TDD, fixtures, mocking | `python-testing` |
 | Python 3.10~3.14 new features | [references/modern-python-features.md](references/modern-python-features.md) |
 | asyncio/threading/multiprocessing deep dive | [references/concurrency-deep-dive.md](references/concurrency-deep-dive.md) |
-
-## References
-
-- [Python Official Docs](https://docs.python.org/3/) — Standard library reference
-- [What's New in Python](https://docs.python.org/3/whatsnew/) — Release changelogs
-- [PEP Index](https://peps.python.org/) — Python Enhancement Proposals
-- [Real Python](https://realpython.com/) — Tutorials and best practices
-- [Effective Python (Brett Slatkin)](https://effectivepython.com/) — 90 ways to write better Python

@@ -55,28 +55,6 @@ src/main/java/com/example/
 - Service에 비즈니스 로직 집중
 - Entity ↔ DTO 변환은 DTO에 `static from()` 팩토리
 
-## Dependency Injection
-
-```java
-// GOOD: Constructor injection (implicit @Autowired with single constructor)
-@Service
-public class OrderService {
-    private final OrderRepository orderRepo;
-    private final PaymentClient paymentClient;
-
-    public OrderService(OrderRepository orderRepo, PaymentClient paymentClient) {
-        this.orderRepo = orderRepo;
-        this.paymentClient = paymentClient;
-    }
-}
-
-// BAD: Field injection
-@Service
-public class OrderService {
-    @Autowired private OrderRepository orderRepo; // untestable, hidden dependency
-}
-```
-
 ## Error Handling
 
 ### ProblemDetail (RFC 9457 / RFC 7807)
@@ -149,29 +127,6 @@ public record CreateOrderRequest(
     @NotEmpty List<@NotBlank String> items) {}
 ```
 
-## Filter Pattern
-
-```java
-@Component
-public class RequestLoggingFilter extends OncePerRequestFilter {
-    private static final Logger log = LoggerFactory.getLogger(RequestLoggingFilter.class);
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        long start = System.currentTimeMillis();
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            log.info("req method={} uri={} status={} ms={}",
-                request.getMethod(), request.getRequestURI(),
-                response.getStatus(), System.currentTimeMillis() - start);
-        }
-    }
-}
-```
-
 ## Production Defaults
 
 ```yaml
@@ -208,6 +163,14 @@ server:
 | Kotlin + Spring Boot | `kotlin-patterns` |
 | SQL query optimization | `sql-optimization-patterns` |
 
+## Verification
+
+코드 작성 후 반드시 실행:
+```bash
+./gradlew build                  # 컴파일 + 테스트
+./gradlew bootRun                # 로컬 실행 확인 (선택)
+```
+
 ## Gotchas
 
 <!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
@@ -215,10 +178,3 @@ server:
 - ❌ application.yml에 민감 정보 하드코딩 → 환경변수 또는 Vault
 - ❌ `@RestController`에서 엔티티 직접 반환 → DTO로 변환 필수
 - ❌ `@Configuration` 클래스에 비즈니스 로직 → 설정만 담을 것
-
-## References
-
-- [Spring Boot Reference Documentation](https://docs.spring.io/spring-boot/reference/) — Official guide
-- [Spring Boot Application Properties](https://docs.spring.io/spring-boot/appendix/application-properties/) — All configuration properties
-- [Baeldung Spring Boot](https://www.baeldung.com/spring-boot) — Tutorials and best practices
-- [Spring Boot GitHub Wiki](https://github.com/spring-projects/spring-boot/wiki) — Release notes and migration guides

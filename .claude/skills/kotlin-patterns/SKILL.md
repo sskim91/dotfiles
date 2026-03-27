@@ -56,58 +56,11 @@ Load detailed guidance based on context:
 | Spring Boot + Kotlin | [references/kotlin-springboot.md](references/kotlin-springboot.md) | Spring Boot Kotlin compiler plugins, constructor DI, Router DSL, coroutines in Spring |
 | DSL & Idioms | [references/dsl-idioms.md](references/dsl-idioms.md) | Type-safe builders, scope functions, extension functions, delegated properties, inline/reified |
 
-## Core Patterns
+## Pattern Hints
 
-### Sealed interface for state modeling
-
-```kotlin
-sealed interface UiState<out T> {
-    data object Loading : UiState<Nothing>
-    data class Success<T>(val data: T) : UiState<T>
-    data class Error(val message: String) : UiState<Nothing>
-}
-
-// Exhaustive when — compiler enforces all branches
-fun <T> render(state: UiState<T>) = when (state) {
-    is UiState.Loading -> showLoading()
-    is UiState.Success -> showData(state.data)
-    is UiState.Error -> showError(state.message)
-}
-```
-
-### StateFlow in ViewModel
-
-```kotlin
-class UserViewModel(private val repository: UserRepository) : ViewModel() {
-    private val _state = MutableStateFlow<UiState<User>>(UiState.Loading)
-    val state: StateFlow<UiState<User>> = _state.asStateFlow()
-
-    fun loadUser(id: String) {
-        viewModelScope.launch {
-            _state.value = UiState.Loading
-            try {
-                _state.value = UiState.Success(repository.getUser(id))
-            } catch (e: CancellationException) {
-                throw e  // Never swallow cancellation
-            } catch (e: Exception) {
-                _state.value = UiState.Error(e.message ?: "Unknown error")
-            }
-        }
-    }
-}
-```
-
-### Value class (zero-cost wrapper)
-
-```kotlin
-@JvmInline
-value class UserId(val value: String)
-
-@JvmInline
-value class Email(val value: String) {
-    init { require(value.contains("@")) { "Invalid email: $value" } }
-}
-```
+- **Value class 적극 활용**: UserId, Email 같은 primitive wrapper는 `@JvmInline value class`로 감싸서 타입 안전성 확보
+- **SharedFlow for one-shot events**: 토스트, 네비게이션 등 일회성 이벤트는 `MutableSharedFlow`로 (StateFlow는 상태 유지용)
+- **Multiple sealed interfaces**: UiState 외에 Result, Event 등 별도 sealed interface로 관심사 분리
 
 ## Decision Tree
 
@@ -130,44 +83,6 @@ Writing Kotlin code?
    ├─ Plain data holder             → data class
    ├─ Type-safe ID/wrapper          → value class (@JvmInline)
    └─ Platform-specific             → expect/actual (KMP)
-```
-
-## Anti-Patterns
-
-**GlobalScope**
-
-```kotlin
-// BAD: Leaks, no lifecycle management
-GlobalScope.launch { fetchData() }
-
-// GOOD: Cancelled with ViewModel
-viewModelScope.launch { fetchData() }
-```
-
-**Blocking in Flow**
-
-```kotlin
-// BAD: Blocks the collector thread
-flow.map { Thread.sleep(1000); process(it) }
-
-// GOOD: Suspend + offload to background
-flow.map { delay(1000); process(it) }.flowOn(Dispatchers.Default)
-```
-
-**Swallowing CancellationException**
-
-```kotlin
-// BAD: Prevents coroutine cancellation
-try { suspendWork() } catch (e: Exception) { log(e) }
-
-// GOOD: Rethrow CancellationException
-try {
-    suspendWork()
-} catch (e: CancellationException) {
-    throw e
-} catch (e: Exception) {
-    log(e)
-}
 ```
 
 ## Output Template

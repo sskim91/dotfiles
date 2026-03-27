@@ -101,6 +101,13 @@ created: YYYY-MM-DD  # 작성일
 □ mermaid 사용 시 렌더링 검증 완료
 ```
 
+## Verification
+
+노트 작성 완료 후:
+- mermaid 사용 시 → `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 확인
+- related_notes의 `[[wikilink]]` → Vault에 실존하는 노트인지 확인
+- frontmatter source → URL 유효성 확인
+
 ## Obsidian 마크다운 문법
 
 Callout, embed, property 타입 등 Obsidian 고유 문법은 `obsidian:obsidian-markdown` 스킬 참조.

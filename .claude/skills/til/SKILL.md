@@ -123,6 +123,11 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] 출처를 명시했는가?
 - [ ] 문단 단위로 설명했는가?
 
+## Verification
+
+- mermaid 작성 즉시 → `mcp__mermaid-mcp__validate_and_render_mermaid_diagram`으로 렌더링 검증
+- Self-Check 체크리스트 (Step 8) 통과 확인
+
 ## Gotchas
 
 <!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->

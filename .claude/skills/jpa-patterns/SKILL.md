@@ -315,6 +315,20 @@ spring.jpa.properties.hibernate.order_updates=true
 | Entity not updated after bulk op | Bulk @Query bypasses persistence context | Add `@Modifying(clearAutomatically = true)` |
 | `DataIntegrityViolationException` | Missing constraint | Add proper @Column constraints and indexes |
 
+## Verification
+
+코드 작성 후 반드시 실행:
+```bash
+./gradlew test --tests '*Repository*'   # Repository 테스트
+./gradlew test --tests '*Service*'      # Service 테스트 (트랜잭션 검증)
+```
+
+SQL 로깅으로 N+1 확인:
+```properties
+logging.level.org.hibernate.SQL=DEBUG
+logging.level.org.hibernate.orm.jdbc.bind=TRACE
+```
+
 ## Deep-Dive References
 
 - [Entity Design](references/entity-design.md) — ID strategies, equals/hashCode, inheritance, value objects, soft delete
