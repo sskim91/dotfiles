@@ -1,6 +1,6 @@
 ---
 name: github-actions
-description: Analyze GitHub Actions failures and identify root cause using gh CLI. Checks workflow failures, flakiness patterns, and breaking commits. Use when user shares a GitHub Actions URL, mentions "CI failed", "빌드 실패", "workflow error", "Actions 실패", "파이프라인 실패", or wants to debug CI/CD pipeline issues. Do NOT use for creating or editing workflow YAML files (general task), deploying applications, or non-GitHub CI systems (Jenkins, CircleCI).
+description: Use when user shares a GitHub Actions URL, mentions "CI failed", "빌드 실패", "workflow error", "Actions 실패", "파이프라인 실패", or wants to debug CI/CD issues. Do NOT use for creating workflow YAML, deploying, or non-GitHub CI.
 ---
 
 # GitHub Actions 실패 분석

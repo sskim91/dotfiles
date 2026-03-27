@@ -1,6 +1,6 @@
 ---
 name: translate-article
-description: Translate web articles into Korean markdown while faithfully preserving original structure. Save to ~/dev/TIL/{category}/. Use when user provides a URL and asks to "translate", "번역", "한국어로", "Korean translation", or wants to convert English tech articles into Korean documents. Do NOT use for YouTube videos (use youtube-summarizer skill), original content creation (use tech-blog-writer skill), or Obsidian notes (use obsidian-note skill).
+description: Use when user provides a URL and asks to "translate", "번역", "한국어로", "Korean translation". Do NOT use for YouTube videos (use youtube-summarizer), original content (use tech-blog-writer), or Obsidian notes (use obsidian-note).
 ---
 
 # Article Translator

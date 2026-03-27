@@ -1,6 +1,6 @@
 ---
 name: init-harness
-description: Initialize project harness for AI agent autonomy. Scans project structure, generates .claude/ configuration (CLAUDE.md, rules/, docs/, agents/). Use when saying "init harness", "하네스 초기화", "하네스 설정", "init rules", "프로젝트 룰 설정", "rules 초기화", "프로젝트 룰", "프로젝트 설정", or wanting to set up AI agent infrastructure. Do NOT use for global skill creation (use skill-guide) or Serena initialization (use init-serena).
+description: Use when user says "init harness", "하네스 초기화", "하네스 설정", "init rules", "프로젝트 룰 설정", "rules 초기화", "프로젝트 룰", "프로젝트 설정". Do NOT use for skill creation (use skill-guide) or Serena (use init-serena).
 ---
 
 # Init Harness

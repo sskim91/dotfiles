@@ -1,6 +1,6 @@
 ---
 name: skill-guide
-description: Quick skill creation guide with structure validation and Anthropic official best practices. Use when user wants to create a new Skill from scratch, validate SKILL.md structure/frontmatter, review skill quality against checklist, or reference Anthropic's official skill design guide. Do NOT use for eval-based iterative improvement, benchmark testing, description trigger optimization, or blind A/B comparison (use skill-creator plugin instead).
+description: Use when user wants to create a new Skill, validate SKILL.md structure, or reference Anthropic skill design guide. Do NOT use for eval-based improvement or benchmark testing (use skill-creator plugin).
 ---
 
 # Skill Guide

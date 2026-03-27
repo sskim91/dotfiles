@@ -1,6 +1,6 @@
 ---
 name: kotlin-patterns
-description: Kotlin idioms, coroutines, Flow API, DSL design, sealed classes, scope functions, and Spring Boot integration patterns. Use when writing, reviewing, or refactoring Kotlin code, implementing coroutines or Flow-based async operations, designing type-safe DSLs, choosing between sealed classes vs enums, or integrating Kotlin with Spring Boot. Do NOT use for JPA/Hibernate entity patterns (use jpa-patterns skill), raw SQL optimization (use sql-optimization-patterns skill), or general Java patterns (use java-modern-patterns skill).
+description: Use when writing or refactoring Kotlin code, implementing coroutines/Flow, designing DSLs, or integrating Kotlin with Spring Boot. Do NOT use for JPA (use jpa-patterns), SQL optimization (use sql-optimization-patterns), or Java patterns (use java-modern-patterns).
 ---
 
 # Kotlin Development Patterns

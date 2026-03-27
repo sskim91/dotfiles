@@ -1,6 +1,6 @@
 ---
 name: jpa-patterns
-description: JPA/Hibernate patterns for entity design, relationships, query optimization, transactions, auditing, indexing, pagination, and connection pooling in Spring Boot. Use when designing JPA entities, writing JPQL/Criteria queries, resolving N+1 problems, configuring HikariCP, implementing Spring Data repositories, or choosing ID generation strategies. Do NOT use for raw SQL optimization (use sql-optimization-patterns skill instead).
+description: Use when designing JPA entities, writing JPQL/Criteria queries, resolving N+1 problems, configuring HikariCP, or choosing ID generation strategies. Do NOT use for raw SQL optimization (use sql-optimization-patterns).
 ---
 
 # JPA/Hibernate Patterns
@@ -290,6 +290,15 @@ spring.jpa.properties.hibernate.order_updates=true
 1. Use `@DataJpaTest` + Testcontainers (not H2)
 2. Enable SQL logging for assertion
 3. For patterns: [references/testing-patterns.md](references/testing-patterns.md)
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ `@ManyToOne(fetch = FetchType.EAGER)` → LAZY 기본, 필요시 JOIN FETCH
+- ❌ `equals()/hashCode()`에 `@Id` 사용 → 비즈니스 키 또는 UUID 사용
+- ❌ `@Transactional` 누락하고 lazy loading 접근 → LazyInitializationException
+- ❌ N+1 해결에 `@EntityGraph` 남용 → JOIN FETCH 또는 DTO projection 우선
+- ❌ `@GeneratedValue(strategy = IDENTITY)` batch insert 시 → SEQUENCE 전략 사용
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 ---
 name: cc-team-builder
-description: Help user create Claude Code Agent Teams from natural language. Use when user mentions "agent team", "에이전트 팀", "team spawn", "create team", "팀 구성", "팀 만들어", "병렬로 검토/조사/개발", or describes work that would benefit from parallel multi-agent collaboration. Do NOT use for single subagent dispatch (use superpowers:dispatching-parallel-agents).
+description: Use when user mentions "agent team", "에이전트 팀", "team spawn", "create team", "팀 구성", "팀 만들어", "병렬로 검토/조사/개발". Do NOT use for single subagent dispatch (use superpowers:dispatching-parallel-agents).
 ---
 
 # Create Agent Team

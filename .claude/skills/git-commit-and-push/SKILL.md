@@ -1,6 +1,6 @@
 ---
 name: git-commit-and-push
-description: Commit and push changes in one workflow combining git-commit (Gitmoji) and git-push skills. Use when user says "commit and push", "커밋하고 푸시", "올려줘", "저장하고 올려", or wants to stage, commit, and push in one step. Do NOT use for commit only without push (use git-commit skill) or for push only without new commit (use git-push skill).
+description: Use when user says "commit and push", "커밋하고 푸시", "올려줘", "저장하고 올려". Do NOT use for commit-only (use git-commit) or push-only (use git-push).
 ---
 
 # Git Commit and Push

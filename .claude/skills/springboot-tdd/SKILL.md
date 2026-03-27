@@ -1,6 +1,6 @@
 ---
 name: springboot-tdd
-description: TDD workflow for Spring Boot with JUnit 5, Mockito, MockMvc, AssertJ, and JaCoCo. Covers service unit tests, controller tests (@WebMvcTest), integration tests (@SpringBootTest), and security layer tests (@WithMockUser). Use when adding features, fixing bugs, writing tests, or setting up test infrastructure for Spring Boot. Do NOT use for JPA repository/Testcontainers testing (use jpa-patterns), general TDD methodology (use test-driven-development superpowers skill), or verification pipelines (use springboot-verification).
+description: Use when writing tests, adding features TDD-style, or setting up test infrastructure for Spring Boot. Do NOT use for JPA/Testcontainers testing (use jpa-patterns), general TDD (use superpowers test-driven-development), or verification (use springboot-verification).
 ---
 
 # Spring Boot TDD Workflow
@@ -416,6 +416,14 @@ mvn jacoco:report                       # Generate HTML report
 | TDD methodology (Red-Green-Refactor general) | `test-driven-development` superpowers |
 | Build + lint + security verification | `springboot-verification` |
 | Security configuration being tested | `springboot-security` |
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ `@MockBean` 사용 (Spring Boot 3.4+ deprecated) → `@MockitoBean` 사용
+- ❌ `@SpringBootTest`에 `@Transactional` 추가 → 테스트 간 격리 문제 발생
+- ❌ MockMvc에서 한글 응답 깨짐 → `.accept(MediaType.APPLICATION_JSON)` 설정
+- ❌ 테스트마다 새 ApplicationContext 로딩 → Base 클래스로 context 재사용
 
 ## References
 

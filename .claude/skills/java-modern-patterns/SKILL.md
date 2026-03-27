@@ -1,6 +1,6 @@
 ---
 name: java-modern-patterns
-description: Modern Java 21+ implementation patterns for data-oriented programming with records/sealed types, pattern matching, virtual threads, structured concurrency, scoped values, and stream gatherers. Use when writing new Java 21+ code, refactoring legacy Java to modern idioms, modernizing Effective Java era patterns for Java 21+, choosing between records vs classes, implementing concurrent workflows with virtual threads, or applying pattern matching in switch/instanceof. Do NOT use for JPA/Hibernate patterns (use jpa-patterns skill) or raw SQL optimization (use sql-optimization-patterns skill).
+description: Use when writing Java 21+ code, refactoring to modern idioms, choosing records vs classes, using virtual threads, or applying pattern matching. Do NOT use for JPA (use jpa-patterns) or SQL optimization (use sql-optimization-patterns).
 ---
 
 # Modern Java 21+ Implementation Patterns
@@ -253,6 +253,14 @@ case Success(_, var amount) -> handleAmount(amount);
 3. Use `windowSliding(n)` for moving-window analysis
 4. Write custom `Gatherer` for complex stateful transforms
 5. For examples: [references/modern-api-patterns.md](references/modern-api-patterns.md)
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ sealed class의 permits 절에 모든 서브타입 나열 실패 → exhaustive matching 깨짐
+- ❌ record에 mutable 필드(List, Map) 직접 저장 → 방어적 복사 필수 (compact constructor)
+- ❌ virtual thread에서 `synchronized` 사용 → pinning 발생, ReentrantLock 사용
+- ❌ pattern matching에서 guard 조건 누락 → `case Foo f when f.bar() > 0` 형태로
 
 ## Troubleshooting
 

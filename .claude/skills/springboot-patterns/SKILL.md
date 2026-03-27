@@ -1,6 +1,6 @@
 ---
 name: springboot-patterns
-description: Spring Boot core patterns for configuration, DI, exception handling, caching, async/events, observability, and HTTP clients (Spring Boot 3.x). Use when building Spring Boot services, configuring profiles, implementing caching/async, setting up Actuator/Micrometer monitoring, or creating REST clients. Do NOT use for JPA/Hibernate (use jpa-patterns), REST API design principles (use api-design), security (use springboot-security), testing (use springboot-tdd), or Kotlin integration (use kotlin-patterns).
+description: Use when building Spring Boot services, configuring profiles, implementing caching/async, setting up Actuator/Micrometer, or creating REST clients. Do NOT use for JPA (use jpa-patterns), API design (use api-design), security (use springboot-security), testing (use springboot-tdd), or Kotlin (use kotlin-patterns).
 ---
 
 # Spring Boot Core Patterns
@@ -207,6 +207,14 @@ server:
 | PR/deploy verification | `springboot-verification` |
 | Kotlin + Spring Boot | `kotlin-patterns` |
 | SQL query optimization | `sql-optimization-patterns` |
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ `@Autowired` 필드 주입 사용 → 생성자 주입 필수
+- ❌ application.yml에 민감 정보 하드코딩 → 환경변수 또는 Vault
+- ❌ `@RestController`에서 엔티티 직접 반환 → DTO로 변환 필수
+- ❌ `@Configuration` 클래스에 비즈니스 로직 → 설정만 담을 것
 
 ## References
 

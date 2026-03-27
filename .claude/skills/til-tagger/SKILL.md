@@ -1,6 +1,6 @@
 ---
 name: til-tagger
-description: Classify new TIL files into domain/topic tags and update tag-mapping.json. Use when new TIL files need tag classification, user says "TIL 태그", "태그 업데이트", "tag TIL", "새 TIL 태그", or when 09.TIL has files missing from tag-mapping.json. Do NOT use for general Obsidian note tagging.
+description: Use when user says "TIL 태그", "태그 업데이트", "tag TIL", "새 TIL 태그", or when 09.TIL has untagged files. Do NOT use for general Obsidian note tagging.
 ---
 
 # TIL Tagger

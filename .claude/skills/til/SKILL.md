@@ -1,6 +1,6 @@
 ---
 name: til
-description: Write TIL(Today I Learned) documents to ~/dev/TIL/{category}/. "Why" focused storytelling, conclusion first, mermaid diagrams, code examples. Auto-categorize (python, java, spring, nodejs, ai, etc). **Proactively use this skill** when user mentions "TIL", "write TIL", "TIL document", "learning note" without explicit /til command. Do NOT use for Obsidian vault notes (use obsidian-note skill), flashcards (use obsidian-flashcard skill), or blog posts (use tech-blog-writer skill).
+description: Use when user mentions "TIL", "write TIL", "TIL 작성", "learning note", or /til command. Do NOT use for Obsidian notes (use obsidian-note), flashcards (use obsidian-flashcard), or blog posts (use tech-blog-writer).
 ---
 
 # TIL Writer
@@ -123,6 +123,18 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] 출처를 명시했는가?
 - [ ] 문단 단위로 설명했는가?
 
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ mermaid에서 `\n` 사용 → `<br>` 사용해야 함
+- ❌ subgraph에 style 지정 → subgraph는 style 미지원
+- ❌ sequenceDiagram에서 `style` 사용 → `rect rgba()` 사용
+- ❌ README.md 수정 시도 → GitHub Actions 자동 생성이므로 절대 금지
+- ❌ "~는 ~이다" 정의 나열 → Why 중심 스토리텔링으로
+- ❌ 리서치 없이 내부 지식만으로 작성 → 항상 tavily_search 먼저
+- ❌ 파일명에 `/`, `?`, `:` 특수문자 포함 → 제거 후 하이픈 변환
+- ❌ `git add/commit/push` 자동 실행 → 사용자가 명시적으로 요청할 때만
+
 ## Troubleshooting
 
 | 문제 | 원인 | 해결 |
@@ -132,8 +144,3 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 | sequenceDiagram 스타일 무시됨 | `style` 미지원 | `rect rgba()` 사용 |
 | 카테고리 미결정 | 주제가 여러 카테고리에 걸침 | 가장 핵심적인 기술 기준으로 선택 |
 | 파일명 특수문자 에러 | 제목에 `/`, `?`, `:` 등 포함 | 특수문자 제거 후 하이픈 변환 |
-
-## 주의사항
-
-- README.md는 GitHub Actions가 자동 생성하므로 **절대 수정하지 말 것**
-- `git add`, `git commit`, `git push`는 **사용자가 명시적으로 요청할 때만** 실행

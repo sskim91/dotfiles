@@ -1,6 +1,6 @@
 ---
 name: python-code-style
-description: Python code style, linting, formatting, naming conventions, and documentation standards. Use when configuring ruff/mypy/pyright, setting up project formatting, writing docstrings, establishing coding standards, or reviewing style consistency. Do NOT use for general Python patterns (use python-patterns) or test writing (use python-testing).
+description: Use when configuring ruff/mypy/pyright, setting up formatting, writing docstrings, or establishing coding standards. Do NOT use for general patterns (use python-patterns) or testing (use python-testing).
 ---
 
 # Python Code Style & Tooling
@@ -194,6 +194,13 @@ ruff의 `I` rule이 자동 정렬. `known-first-party` 설정 필수.
 | setup.cfg + .flake8 + .isort.cfg | 설정 파일 분산 | `pyproject.toml` 단일 파일 |
 | `# type: ignore` without code | 어떤 에러인지 불명확 | `# type: ignore[specific-error]` |
 | `noqa` without code | 어떤 룰인지 불명확 | `# noqa: E501` 명시 |
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ ruff에서 `select = ["ALL"]` → 너무 공격적, `["E", "F", "W", "I"]`부터 시작
+- ❌ mypy `strict` 모드 기존 프로젝트에 바로 적용 → 점진적 적용 필수
+- ❌ docstring에 파라미터 타입 중복 기술 → type hints가 있으면 docstring에서 타입 생략
 
 ## Troubleshooting
 

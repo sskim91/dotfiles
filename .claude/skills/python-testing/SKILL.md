@@ -1,6 +1,6 @@
 ---
 name: python-testing
-description: Python testing strategies using pytest, TDD methodology, fixtures, mocking, parametrization, and coverage. Use when writing tests, setting up pytest, implementing TDD, creating fixtures, mocking dependencies, or reviewing test coverage. Do NOT use for general Python patterns (use python-patterns) or style configuration (use python-code-style).
+description: Use when writing tests, setting up pytest, implementing TDD, creating fixtures, or mocking dependencies. Do NOT use for general patterns (use python-patterns) or style config (use python-code-style).
 ---
 
 # Python Testing Patterns
@@ -273,6 +273,14 @@ exclude_lines = [
 | 테스트에 조건문 | 테스트 자체가 버그 가능 | 각 경로를 별도 테스트 |
 | `print()` for debugging | 노이즈 | `pytest -s` 또는 `--pdb` |
 | 느린 테스트 미분리 | CI 피드백 지연 | `@pytest.mark.slow` |
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ `patch('module.Class')`  (정의 위치) → `patch('consumer_module.Class')`  (사용 위치)
+- ❌ `autospec=True` 누락 → 잘못된 시그니처 감지 불가
+- ❌ fixture scope 불일치 (session fixture가 function fixture 의존) → scope 계층 준수
+- ❌ `assert mock.called` → `mock.assert_called_once_with(expected)` 사용 (더 명시적)
 
 ## Troubleshooting
 

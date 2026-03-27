@@ -1,6 +1,6 @@
 ---
 name: sql-optimization-patterns
-description: SQL query optimization, indexing strategies, and EXPLAIN plan analysis for PostgreSQL and MySQL. Use when debugging slow queries, designing indexes, analyzing EXPLAIN output, resolving N+1 query problems, optimizing pagination, or tuning database performance. Do NOT use for basic SQL syntax, simple CRUD queries, or JPA entity design (use jpa-patterns skill instead).
+description: Use when debugging slow queries, designing indexes, analyzing EXPLAIN output, resolving N+1 problems, or tuning database performance. Do NOT use for basic SQL, simple CRUD, or JPA entity design (use jpa-patterns).
 ---
 
 # SQL Optimization Patterns

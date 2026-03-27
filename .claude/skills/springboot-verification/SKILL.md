@@ -1,6 +1,6 @@
 ---
 name: springboot-verification
-description: "Pre-PR/deploy verification loop for Spring Boot: build, static analysis (SpotBugs/PMD/Checkstyle), tests with coverage (JaCoCo 80%+), security scan (OWASP), and diff review. Use before opening PRs, after major refactoring, pre-deployment, or running full verification pipeline. Do NOT use for writing tests (use springboot-tdd), security implementation (use springboot-security), or general code patterns (use springboot-patterns)."
+description: Use before opening PRs, after major refactoring, or pre-deployment for Spring Boot verification. Do NOT use for writing tests (use springboot-tdd), security implementation (use springboot-security), or general patterns (use springboot-patterns).
 ---
 
 # Spring Boot Verification Loop

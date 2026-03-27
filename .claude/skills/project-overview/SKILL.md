@@ -1,6 +1,6 @@
 ---
 name: project-overview
-description: Systematically analyze project structure and purpose to provide onboarding information. Use for understanding new projects, codebases, generating team onboarding docs. Auto-activate on "project analysis", "프로젝트 분석", "onboarding", "codebase overview", "project overview", "이 프로젝트 뭐야" requests. Do NOT use for session handoff (use session-handoff skill), learning summaries (use learning-tracker skill), or code-level debugging (use standard tools directly).
+description: Use when user says "project analysis", "프로젝트 분석", "onboarding", "codebase overview", "project overview", "이 프로젝트 뭐야". Do NOT use for session handoff (use session-handoff), learning summaries (use learning-tracker), or debugging.
 ---
 
 # Project Overview Skill

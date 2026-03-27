@@ -1,6 +1,6 @@
 ---
 name: youtube-summarizer
-description: Summarize YouTube videos into Obsidian Zettelkasten notes. Accepts YouTube URL (auto-downloads transcript) or raw transcript text. Use when user provides YouTube URL/link, mentions "youtube summarize", "유튜브 요약", "video summary", "transcript to note", or wants to convert video content to Obsidian notes. Do NOT use for web article translation (use translate-article skill), regular Obsidian notes (use obsidian-note skill), or TIL documents without video source (use til skill).
+description: Use when user provides YouTube URL/link, mentions "youtube summarize", "유튜브 요약", "video summary", "transcript to note". Do NOT use for web article translation (use translate-article), regular Obsidian notes (use obsidian-note), or TIL (use til).
 ---
 
 # YouTube → Obsidian Note

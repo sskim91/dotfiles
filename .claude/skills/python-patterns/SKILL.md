@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: Pythonic idioms, design patterns, type hints, error handling, concurrency, and code review for Python. Use when writing, reviewing, or refactoring Python code, designing data classes, implementing decorators, choosing concurrency patterns, or conducting code reviews. Do NOT use for linter/formatter configuration (use python-code-style) or test writing (use python-testing).
+description: Use when writing, reviewing, or refactoring Python code, designing data classes, implementing decorators, or choosing concurrency patterns. Do NOT use for linter/formatter config (use python-code-style) or testing (use python-testing).
 ---
 
 # Python Development Patterns
@@ -315,6 +315,15 @@ myproject/
 ├── pyproject.toml
 └── README.md
 ```
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ mutable default argument (`def f(x=[])`) → `None` 기본값 + 내부 생성
+- ❌ `type()` 비교 → `isinstance()` 사용
+- ❌ bare `except:` → 최소 `except Exception:` 또는 구체적 예외
+- ❌ `== None` 비교 → `is None` 사용
+- ❌ `CancellationError` 삼키기 (asyncio) → 반드시 re-raise
 
 ## Cross-References
 

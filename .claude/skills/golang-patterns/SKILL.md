@@ -1,6 +1,6 @@
 ---
 name: golang-patterns
-description: Go idioms, error handling, concurrency, generics, iterators (Go 1.23), slog, enhanced ServeMux routing, and testing patterns following Effective Go, Uber/Google style guides. Use when writing, reviewing, or refactoring Go code, designing packages, implementing concurrency with goroutines/channels, using generics, writing tests or benchmarks, or building HTTP services. Do NOT use for database-specific optimization (use sql-optimization-patterns skill), REST API design theory (use api-design skill), or CI/CD pipeline setup (use github-actions skill).
+description: Use when writing or refactoring Go code, designing packages, implementing concurrency, using generics, or building HTTP services. Do NOT use for database optimization (use sql-optimization-patterns), API design (use api-design), or CI/CD (use github-actions).
 ---
 
 # Go Development Patterns
@@ -388,6 +388,16 @@ linters-settings:
 | Return early | Handle errors first, keep happy path unindented |
 | gofmt is everyone's friend | Always format with gofmt/goimports |
 | Define interfaces at consumer | Not at the package that implements them |
+
+## Verification
+
+코드 작성 후 반드시 실행:
+```bash
+go build ./...                    # 컴파일 확인
+go test ./... -v                  # 테스트 실행
+go vet ./...                      # 정적 분석
+golangci-lint run                 # 린터 (설치된 경우)
+```
 
 ## Output Template
 

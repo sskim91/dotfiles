@@ -1,6 +1,6 @@
 ---
 name: tech-blog-writer
-description: Write tech blog posts with "Why" focused storytelling, analogies, and narrative structure. Use when user asks to write a blog post, tech article, tutorial, or "블로그 글 써줘". Do NOT use for TIL documents (use til skill), Obsidian notes (use obsidian-note skill), or simple code documentation.
+description: Use when user asks to write a blog post, tech article, tutorial, or "블로그 글 써줘". Do NOT use for TIL (use til), Obsidian notes (use obsidian-note), or code documentation.
 ---
 
 # Tech Blog Writer

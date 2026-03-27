@@ -1,6 +1,6 @@
 ---
 name: springboot-security
-description: Spring Security 6+ patterns for authentication (JWT, OAuth2), authorization (@PreAuthorize), SecurityFilterChain, CORS, CSRF, security headers, password encoding, and secrets management. Use when configuring Spring Security, implementing JWT/OAuth2 auth, adding role-based access control, or hardening Spring Boot APIs. Do NOT use for general Spring Boot patterns (use springboot-patterns), JPA/data access (use jpa-patterns), or testing (use springboot-tdd).
+description: Use when configuring Spring Security, implementing JWT/OAuth2 auth, adding role-based access control, or hardening Spring Boot APIs. Do NOT use for general patterns (use springboot-patterns), JPA (use jpa-patterns), or testing (use springboot-tdd).
 ---
 
 # Spring Boot Security Patterns
@@ -394,6 +394,14 @@ http.requiresChannel(channel ->
 - [ ] Dependencies scanned for CVEs (OWASP/Snyk)
 - [ ] No secrets, tokens, PII in logs
 - [ ] HTTPS enforced in production
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ `permitAll()`을 `requestMatchers()` 전에 선언 → 순서 중요, 구체적 매칭 먼저
+- ❌ `@PreAuthorize`에서 하드코딩된 role 문자열 → 상수 또는 enum 사용
+- ❌ JWT 비밀키를 application.yml에 직접 작성 → 환경변수 필수
+- ❌ CORS 설정에서 `allowedOrigins("*")` → 명시적 도메인 지정
 
 ## References
 
