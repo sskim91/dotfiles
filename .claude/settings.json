@@ -121,7 +121,6 @@
     "github@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
-    "ralph-loop@claude-plugins-official": false,
     "obsidian@obsidian-skills": true,
     "cloudflare@cloudflare": true,
     "supabase@claude-plugins-official": true

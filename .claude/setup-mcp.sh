@@ -15,9 +15,6 @@ CLAUDECODE= claude mcp add -s user desktop-commander -- npx -y @wonderwhy-er/des
 CLAUDECODE= claude mcp add -s user tavily-remote -- sh -c "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=\$TAVILY_API_KEY\"" 2>/dev/null \
     && echo "✓ tavily-remote added" || echo "✓ tavily-remote already exists"
 
-CLAUDECODE= claude mcp add -s user -t http prompts-chat https://prompts.chat/api/mcp 2>/dev/null \
-    && echo "✓ prompts-chat added" || echo "✓ prompts-chat already exists"
-
 CLAUDECODE= claude mcp add -s user -t http mermaid-mcp https://mcp.mermaid.ai/mcp 2>/dev/null \
     && echo "✓ mermaid-mcp added" || echo "✓ mermaid-mcp already exists"
 
