@@ -123,7 +123,8 @@
     "explanatory-output-style@claude-plugins-official": true,
     "obsidian@obsidian-skills": true,
     "cloudflare@cloudflare": true,
-    "supabase@claude-plugins-official": true
+    "supabase@claude-plugins-official": true,
+    "last30days@last30days-skill": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
@@ -158,6 +159,13 @@
       "source": {
         "source": "github",
         "repo": "cloudflare/skills"
+      },
+      "autoUpdate": true
+    },
+    "last30days-skill": {
+      "source": {
+        "source": "github",
+        "repo": "mvanhorn/last30days-skill"
       },
       "autoUpdate": true
     }
