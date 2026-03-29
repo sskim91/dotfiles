@@ -250,6 +250,36 @@ See `references/element-templates.md` for copy-paste JSON templates.
 
 ---
 
+## Component Libraries
+
+Pre-made icon/shape libraries are available in `references/libraries/`. Each `.excalidrawlib` file contains reusable components as standard Excalidraw element arrays.
+
+### Available Libraries
+
+| Library | Components | Use For |
+|---------|-----------|---------|
+| `aws-serverless` | Lambda, API Gateway, DynamoDB, S3, SQS, SNS, CloudFront, Cognito, EventBridge, Step Functions, etc. (24 items) | AWS architecture diagrams |
+| `system-design` | Server, Load Balancer, Relational DB, Graph DB, CDN, DNS, Message Queue, Pipeline, Cloud, Mobile, Web App, etc. (24 items) | System design diagrams |
+| `infra` | VPC, Public/Private Subnet, Docker, GitHub, Slack, Server, User, Device, Email (11 items) | Infrastructure & networking diagrams |
+| `dev-icons` | File types (PDF, SQL, XLS), languages (Python, Java, Go, Rust, TypeScript, React, Swift), tools (Webpack, Vite, Jest) (65 items) | File/language/tool icons |
+| `data-viz` | Bar, Line, Area, Scatter, Bubble, Heatmap, Treemap, Pie, Donut, Box & Whisker, Violin, etc. (32 items) | Chart type visualization |
+| `data-platform` | Kafka, Spark, Databricks, dbt, Airflow, Flink, Trino, Iceberg, Delta Lake, Elasticsearch, MinIO, etc. (33 items) | Data engineering architecture |
+
+### How to Use Library Components
+
+1. **Read** the `.excalidrawlib` file from `references/libraries/`
+2. **Find** the matching `libraryItems[]` (v2) or `library[]` (v1) entry by text label
+3. **Copy** its elements array into your diagram's `elements[]`
+4. **Adjust**: Offset all `x`/`y` coordinates to position the component, assign new unique `id` and `seed` values
+5. **Re-color** (optional): Update `strokeColor`/`backgroundColor` to match `color-palette.md` if you want Tokyo Night consistency
+
+### Format Notes
+- **v2 format** (`libraryItems`): Each item has `{ "elements": [...] }` wrapper
+- **v1 format** (`library`): Each item is a bare element array `[...]`
+- Components use `groupIds` to keep their sub-elements together — preserve these relationships
+
+---
+
 ## Render & Validate (MANDATORY)
 
 ### How to Render
