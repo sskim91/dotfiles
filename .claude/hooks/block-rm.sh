@@ -15,11 +15,11 @@ fi
 
 # Block: rm as standalone command (rm file, rm -rf dir, etc.)
 if echo "$COMMAND" | grep -qE '(^|[;&|] *)rm '; then
-    echo "BLOCKED: 'rm' is not allowed. Use 'trash' instead."
-    echo "  trash <file>       # move to macOS Trash"
-    echo "  trash -v <file>    # verbose mode"
-    echo "If you truly need permanent delete, use '\\rm' or 'command rm'."
-    exit 1
+    echo "BLOCKED: 'rm' is not allowed. Use 'trash' instead." >&2
+    echo "  trash <file>       # move to macOS Trash" >&2
+    echo "  trash -v <file>    # verbose mode" >&2
+    echo "If you truly need permanent delete, use '\\rm' or 'command rm'." >&2
+    exit 2
 fi
 
 exit 0

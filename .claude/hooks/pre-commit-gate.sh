@@ -11,9 +11,12 @@ for check in check-sensitive-files.sh check-env-files.sh check-hardcoded-secrets
     OUTPUT=$("$HOOK_DIR/$check" 2>&1)
     STATUS=$?
     if [ $STATUS -ne 0 ]; then
-        echo "$OUTPUT"
+        echo "$OUTPUT" >&2
         FAILED=1
     fi
 done
 
-exit $FAILED
+if [ $FAILED -ne 0 ]; then
+    exit 2
+fi
+exit 0
