@@ -67,10 +67,12 @@
         "hooks": [
           {
             "type": "command",
+            "if": "Bash(git commit*)",
             "command": "~/.claude/hooks/pre-commit-gate.sh"
           },
           {
             "type": "command",
+            "if": "Bash(*rm *)",
             "command": "~/.claude/hooks/block-rm.sh"
           }
         ]
@@ -94,15 +96,11 @@
             "type": "command",
             "command": "~/.claude/hooks/file-dispatcher.sh check",
             "timeout": 180
-          }
-        ]
-      },
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
+          },
           {
             "type": "command",
-            "command": "~/.claude/hooks/file-dispatcher.sh review",
+            "if": "Write(*/dev/TIL/*.md)|Edit(*/dev/TIL/*.md)",
+            "command": "~/.claude/hooks/til-review.sh",
             "timeout": 180
           }
         ]

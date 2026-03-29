@@ -85,24 +85,24 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 
 ```
 SessionStart → temporal-context.sh (injects current date/time)
-PreToolUse(git commit) → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
-PostToolUse(Write|Edit) → file-dispatcher.sh check → file-dispatcher.sh review
+UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
+PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
+PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
+PostToolUse(Write|Edit) → file-dispatcher.sh check
+PostToolUse: if Write|Edit(*/dev/TIL/*.md) → til-review.sh (Gemini fact-check, requires ENABLE_TIL_REVIEW=1)
 ```
 
-**File Dispatcher Pattern**: Routes to `{language}-{type}.sh` based on extension:
-- `.py` → `python-check.sh`, `python-review.sh`
+**File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension:
+- `.py` → `python-check.sh` (Ruff lint + fix)
 - `.java` → `java-check.sh`
 - `.ts/.tsx` → `typescript-check.sh`
 - `.js/.jsx` → `javascript-check.sh`
-- `~/dev/TIL/*.md` → `til-review.sh` (Gemini review, requires `ENABLE_TIL_REVIEW=1`)
 
 **Hook Environment Variables** (configured in `zsh/path.zsh`):
 
 Each hook tool is individually controlled via `ENABLE_*` environment variables:
 - `ENABLE_RUFF=1` - Python Ruff linter (default enabled)
-- `ENABLE_TIL_REVIEW=1` - TIL document Gemini review (default enabled)
 - `ENABLE_ESLINT=0`, `ENABLE_TSC=0`, `ENABLE_CHECKSTYLE=0` - Disabled by default
-- `ENABLE_GEMINI_REVIEW=0` - AI code review for all languages (disabled by default)
 
 ### Adding New Hooks
 

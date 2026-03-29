@@ -123,8 +123,7 @@ if [ -n "$FOUND_SECRETS" ]; then
     echo "⚠️  This is a WARNING, not blocking the commit."
     echo "    Please review the detected patterns carefully."
     echo ""
-    # Warning only, don't block (exit 0)
-    # To make it blocking, change to: exit 1
+    exit 1
 fi
 
 exit 0
