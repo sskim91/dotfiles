@@ -18,4 +18,7 @@ CLAUDECODE= claude mcp add -s user tavily-remote -- sh -c "npx -y mcp-remote \"h
 CLAUDECODE= claude mcp add -s user -t http mermaid-mcp https://mcp.mermaid.ai/mcp 2>/dev/null \
     && echo "✓ mermaid-mcp added" || echo "✓ mermaid-mcp already exists"
 
+CLAUDECODE= claude mcp add -s user brave-search -e BRAVE_API_KEY="$BRAVE_API_KEY" -- npx -y @brave/brave-search-mcp-server 2>/dev/null \
+    && echo "✓ brave-search added" || echo "✓ brave-search already exists"
+
 echo "✅ Claude Code MCP servers registered"
