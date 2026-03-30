@@ -67,13 +67,13 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git commit*)",
-            "command": "~/.claude/hooks/pre-commit-gate.sh"
+            "command": "~/.claude/hooks/pre-commit-gate.sh",
+            "if": "Bash(git commit*)"
           },
           {
             "type": "command",
-            "if": "Bash(*rm *)",
-            "command": "~/.claude/hooks/block-rm.sh"
+            "command": "~/.claude/hooks/block-rm.sh",
+            "if": "Bash(*rm *)"
           }
         ]
       }
@@ -99,8 +99,8 @@
           },
           {
             "type": "command",
-            "if": "Write(*/dev/TIL/*.md)|Edit(*/dev/TIL/*.md)",
             "command": "~/.claude/hooks/til-review.sh",
+            "if": "Write(*/dev/TIL/*.md)|Edit(*/dev/TIL/*.md)",
             "timeout": 180
           }
         ]
@@ -132,7 +132,8 @@
     "obsidian@obsidian-skills": true,
     "cloudflare@cloudflare": true,
     "supabase@claude-plugins-official": true,
-    "last30days@last30days-skill": true
+    "last30days@last30days-skill": true,
+    "elastic-elasticsearch@elastic-agent-skills": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
@@ -174,6 +175,13 @@
       "source": {
         "source": "github",
         "repo": "mvanhorn/last30days-skill"
+      },
+      "autoUpdate": true
+    },
+    "elastic-agent-skills": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/elastic/agent-skills.git"
       },
       "autoUpdate": true
     }
