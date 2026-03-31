@@ -11,28 +11,28 @@
     "BASH_DEFAULT_TIMEOUT_MS": "180000",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
   },
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "permissions": {
     "allow": [
       "Bash(*)",
       "Edit",
       "Write",
-      "MultiEdit",
-      "Read",
-      "Glob",
-      "Grep",
+      "NotebookEdit",
       "WebFetch",
       "WebSearch",
-      "NotebookEdit",
-      "LSP",
-      "Task",
-      "Agent",
-      "ToolSearch",
+      "Skill",
+      "ExitPlanMode",
       "mcp__*"
     ],
     "deny": [
       "Bash(git push --force)",
       "Bash(git push --force *)",
       "Bash(git push --force-with-lease*)",
+      "Bash(git push -f)",
+      "Bash(git push -f *)",
       "Bash(git reset --hard*)",
       "Bash(rm -rf /)",
       "Bash(rm -rf /*)",
@@ -41,9 +41,20 @@
       "Bash(git clean -fd*)"
     ],
     "ask": [
-      "Read(.env*)",
-      "Read(*credentials*)",
-      "Read(*.pem)",
+      "Read(**/.env*)",
+      "Read(**/*credentials*)",
+      "Read(**/*password*)",
+      "Read(**/*secret*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(**/id_ecdsa*)",
+      "Read(~/.ssh/*)",
+      "Read(~/.aws/*)",
+      "Read(~/.kube/*)",
       "Bash(git rebase*)"
     ],
     "defaultMode": "plan"
@@ -145,7 +156,8 @@
     "pm-product-strategy@pm-skills": true,
     "aws-serverless@agent-plugins-for-aws": true,
     "deploy-on-aws@agent-plugins-for-aws": true,
-    "postgres-best-practices@supabase-agent-skills": true
+    "postgres-best-practices@supabase-agent-skills": true,
+    "codex@openai-codex": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
@@ -203,11 +215,14 @@
         "repo": "awslabs/agent-plugins"
       },
       "autoUpdate": true
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      },
+      "autoUpdate": true
     }
-  },
-  "attribution": {
-    "commit": "",
-    "pr": ""
   },
   "language": "korean",
   "alwaysThinkingEnabled": true,
