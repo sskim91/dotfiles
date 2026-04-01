@@ -1,6 +1,7 @@
 ---
 name: react-best-practices
 description: Use when writing or refactoring React/Next.js components, implementing data fetching, optimizing bundle size, or improving render performance. Do NOT use for general JavaScript or non-React frameworks.
+paths: "**/*.jsx, **/*.tsx, **/next.config.*"
 ---
 
 # Vercel React Best Practices

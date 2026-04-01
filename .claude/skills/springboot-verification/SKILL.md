@@ -1,6 +1,7 @@
 ---
 name: springboot-verification
 description: Use before opening PRs, after major refactoring, or pre-deployment for Spring Boot verification. Do NOT use for writing tests (use springboot-tdd), security implementation (use springboot-security), or general patterns (use springboot-patterns).
+paths: "**/*.java, **/build.gradle*, **/pom.xml"
 ---
 
 # Spring Boot Verification Loop

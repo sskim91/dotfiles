@@ -1,6 +1,7 @@
 ---
 name: sql-optimization-patterns
 description: Use when debugging slow queries, designing indexes, analyzing EXPLAIN output, resolving N+1 problems, or tuning database performance. Do NOT use for basic SQL, simple CRUD, or JPA entity design (use jpa-patterns).
+paths: "**/*.sql, **/migrations/**, **/flyway/**, **/liquibase/**"
 ---
 
 # SQL Optimization Patterns

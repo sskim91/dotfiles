@@ -1,6 +1,7 @@
 ---
 name: python-patterns
 description: Use when writing, reviewing, or refactoring Python code, designing data classes, implementing decorators, or choosing concurrency patterns. Do NOT use for linter/formatter config (use python-code-style) or testing (use python-testing).
+paths: "**/*.py, **/pyproject.toml"
 ---
 
 # Python Development Patterns

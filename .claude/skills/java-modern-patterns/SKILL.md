@@ -1,6 +1,7 @@
 ---
 name: java-modern-patterns
 description: Use when writing Java 21+ code, refactoring to modern idioms, choosing records vs classes, using virtual threads, or applying pattern matching. Do NOT use for JPA (use jpa-patterns) or SQL optimization (use sql-optimization-patterns).
+paths: "**/*.java, **/build.gradle*, **/pom.xml"
 ---
 
 # Modern Java 21+ Implementation Patterns

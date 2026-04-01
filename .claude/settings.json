@@ -38,10 +38,15 @@
       "Bash(rm -rf /*)",
       "Bash(rm -rf ~*)",
       "Bash(sudo rm -rf *)",
-      "Bash(git clean -fd*)"
+      "Bash(git clean -fd*)",
+      "Bash(chmod 777 *)",
+      "Bash(npm publish*)",
+      "Bash(pip install --user*)",
+      "Edit(**/*credentials*)",
+      "Edit(**/*secret*)",
+      "Edit(**/*password*)"
     ],
     "ask": [
-      "Read(**/.env*)",
       "Read(**/*credentials*)",
       "Read(**/*password*)",
       "Read(**/*secret*)",
@@ -418,6 +423,40 @@
       "치킨 시키는 중",
       "수사하는 중",
       "퍼즐 맞추는 중"
+    ]
+  },
+  "spinnerTipsOverride": {
+    "excludeDefault": false,
+    "tips": [
+      "Ctrl+W 단어 삭제 · Ctrl+U 줄 처음까지 삭제 · Ctrl+Y 되살리기",
+      "Option+B/F로 단어 단위 커서 이동 (iTerm2: Option키를 Esc+로 설정)",
+      "Ctrl+A 줄 맨 앞 · Ctrl+E 줄 맨 끝으로 커서 이동",
+      "Ctrl+O로 도구 호출 상세 로그 토글 — 사고 과정이 회색 이탤릭으로 표시됨",
+      "Ctrl+B로 오래 걸리는 명령을 백그라운드로 보낼 수 있습니다",
+      "Ctrl+G로 $EDITOR에서 프롬프트 작성 가능 (긴 프롬프트에 유용)",
+      "Option+Enter로 멀티라인 입력 · \\+Enter도 어디서든 동작",
+      "Option+P 모델 전환 · Option+T 확장사고 토글 · Option+O 빠른 모드 토글",
+      "Ctrl+V로 스크린샷/이미지 붙여넣기 (Cmd+V 아님 주의!)",
+      "! 접두사로 셸 명령 직접 실행 — ! npm test (출력이 컨텍스트에 추가됨)",
+      "@파일경로로 파일 내용을 프롬프트에 인라인 삽입 — @src/index.ts",
+      "/btw로 대화 기록에 남지 않는 사이드 질문 (응답 중에도 사용 가능)",
+      "/compact 뒤에 포커스 지시 가능 — /compact auth 변경사항에 집중",
+      "/diff로 턴별 변경사항을 인터랙티브하게 확인 (좌우 화살표로 전환)",
+      "/cost로 현재 세션의 토큰 사용량과 비용 확인",
+      "/copy로 코드 블록 선택 복사 · w키로 파일에 직접 저장",
+      "/context로 컨텍스트 윈도우 사용량 시각화 + 최적화 제안",
+      "/branch로 현재 지점에서 대화를 분기할 수 있습니다",
+      "/export로 대화 내용을 텍스트 파일로 내보내기",
+      "/pr-comments로 현재 브랜치의 PR 코멘트를 바로 확인",
+      "/security-review로 커밋 전 보안 취약점 스캔",
+      "/doctor로 설치 상태, 설정, 키바인딩 문제 진단",
+      "/vim으로 vim 편집 모드 토글 (/config에서 영구 설정 가능)",
+      "ultrathink을 프롬프트에 포함하면 해당 턴만 깊은 사고 모드 발동",
+      "claude -p로 비대화형 실행 — cat error.log | claude -p '원인 분석'",
+      "claude -n '이름'으로 세션에 이름 지정 → claude -r '이름'으로 재개",
+      "claude --from-pr 123으로 PR에 연결된 세션을 바로 재개",
+      "/resume에서 P(미리보기) · /(검색) · B(현재 브랜치 필터)",
+      ".worktreeinclude에 .env를 추가하면 worktree에 자동 복사"
     ]
   },
   "alwaysThinkingEnabled": true,

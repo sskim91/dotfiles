@@ -1,6 +1,7 @@
 ---
 name: springboot-security
 description: Use when configuring Spring Security, implementing JWT/OAuth2 auth, adding role-based access control, or hardening Spring Boot APIs. Do NOT use for general patterns (use springboot-patterns), JPA (use jpa-patterns), or testing (use springboot-tdd).
+paths: "**/*.java, **/build.gradle*, **/pom.xml, **/application*.yml, **/application*.properties"
 ---
 
 # Spring Boot Security Patterns

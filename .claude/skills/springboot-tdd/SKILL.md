@@ -1,6 +1,7 @@
 ---
 name: springboot-tdd
 description: Use when writing tests, adding features TDD-style, or setting up test infrastructure for Spring Boot. Do NOT use for JPA/Testcontainers testing (use jpa-patterns), general TDD (use superpowers test-driven-development), or verification (use springboot-verification).
+paths: "**/*.java, **/build.gradle*, **/pom.xml"
 ---
 
 # Spring Boot TDD Workflow

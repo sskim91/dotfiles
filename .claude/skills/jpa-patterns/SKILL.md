@@ -1,6 +1,7 @@
 ---
 name: jpa-patterns
 description: Use when designing JPA entities, writing JPQL/Criteria queries, resolving N+1 problems, configuring HikariCP, or choosing ID generation strategies. Do NOT use for raw SQL optimization (use sql-optimization-patterns).
+paths: "**/*.java, **/build.gradle*, **/pom.xml"
 ---
 
 # JPA/Hibernate Patterns

@@ -1,6 +1,7 @@
 ---
 name: python-testing
 description: Use when writing tests, setting up pytest, implementing TDD, creating fixtures, or mocking dependencies. Do NOT use for general patterns (use python-patterns) or style config (use python-code-style).
+paths: "**/*.py, **/pyproject.toml, **/pytest.ini, **/conftest.py"
 ---
 
 # Python Testing Patterns

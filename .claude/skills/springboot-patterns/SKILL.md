@@ -1,6 +1,7 @@
 ---
 name: springboot-patterns
 description: Use when building Spring Boot services, configuring profiles, implementing caching/async, setting up Actuator/Micrometer, or creating REST clients. Do NOT use for JPA (use jpa-patterns), API design (use api-design), security (use springboot-security), testing (use springboot-tdd), or Kotlin (use kotlin-patterns).
+paths: "**/*.java, **/build.gradle*, **/pom.xml, **/application*.yml, **/application*.properties"
 ---
 
 # Spring Boot Core Patterns

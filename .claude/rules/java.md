@@ -1,3 +1,7 @@
+---
+paths: "**/*.java, **/build.gradle*, **/pom.xml, **/settings.gradle*"
+---
+
 # Java Dependency Installation
 
 Always check the latest version on Maven Central before adding dependencies:

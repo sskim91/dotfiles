@@ -1,6 +1,7 @@
 ---
 name: kotlin-patterns
 description: Use when writing or refactoring Kotlin code, implementing coroutines/Flow, designing DSLs, or integrating Kotlin with Spring Boot. Do NOT use for JPA (use jpa-patterns), SQL optimization (use sql-optimization-patterns), or Java patterns (use java-modern-patterns).
+paths: "**/*.kt, **/*.kts, **/build.gradle*"
 ---
 
 # Kotlin Development Patterns

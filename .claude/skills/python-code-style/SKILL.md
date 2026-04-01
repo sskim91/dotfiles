@@ -1,6 +1,7 @@
 ---
 name: python-code-style
 description: Use when configuring ruff/mypy/pyright, setting up formatting, writing docstrings, or establishing coding standards. Do NOT use for general patterns (use python-patterns) or testing (use python-testing).
+paths: "**/*.py, **/pyproject.toml, **/setup.cfg, **/.flake8, **/mypy.ini"
 ---
 
 # Python Code Style & Tooling

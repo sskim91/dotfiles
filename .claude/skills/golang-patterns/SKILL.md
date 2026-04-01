@@ -1,6 +1,7 @@
 ---
 name: golang-patterns
 description: Use when writing or refactoring Go code, designing packages, implementing concurrency, using generics, or building HTTP services. Do NOT use for database optimization (use sql-optimization-patterns), API design (use api-design), or CI/CD (use github-actions).
+paths: "**/*.go, **/go.mod, **/go.sum"
 ---
 
 # Go Development Patterns
