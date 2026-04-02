@@ -15,10 +15,16 @@ fi
 
 # Block: rm as standalone command (rm file, rm -rf dir, etc.)
 if echo "$COMMAND" | grep -qE '(^|[;&|] *)rm '; then
-    echo "BLOCKED: 'rm' is not allowed. Use 'trash' instead." >&2
-    echo "  trash <file>       # move to macOS Trash" >&2
-    echo "  trash -v <file>    # verbose mode" >&2
-    echo "If you truly need permanent delete, use '\\rm' or 'command rm'." >&2
+    cat <<'HOOK_JSON'
+{
+  "decision": "block",
+  "reason": "rm은 허용되지 않습니다. trash를 사용하세요.",
+  "hookSpecificOutput": {
+    "hookEventName": "PreToolUse",
+    "additionalContext": "rm 명령이 차단되었습니다. macOS에서는 'trash <file>'로 휴지통으로 이동하세요. 영구 삭제가 필요하면 '\\rm' 또는 'command rm'을 사용하세요."
+  }
+}
+HOOK_JSON
     exit 2
 fi
 

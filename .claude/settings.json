@@ -9,7 +9,9 @@
     "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD": "1",
     "ANTHROPIC_DEFAULT_HAIKU_MODEL": "claude-sonnet-4-6",
     "BASH_DEFAULT_TIMEOUT_MS": "180000",
-    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1"
+    "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
+    "MCP_SERVER_CONNECTION_BATCH_SIZE": "10",
+    "MCP_TOOL_TIMEOUT": "60000"
   },
   "attribution": {
     "commit": "",
@@ -111,7 +113,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/file-dispatcher.sh check",
-            "timeout": 180
+            "timeout": 180,
+            "asyncRewake": true
           },
           {
             "type": "command",
