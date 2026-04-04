@@ -14,7 +14,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 |------|-----|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
 | 리포트 저장 위치 | `00.Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` |
-| 검사 제외 | `99.Template/`, `10.Flashcards/FC-*.md`, `.obsidian/` |
+| 검사 제외 | `99.Template/`, `.obsidian/` |
 
 ## 사용법
 
@@ -144,7 +144,7 @@ created: {YYYY-MM-DD}
 ## Self-Check
 
 ```markdown
-□ 제외 대상(Template, Flashcards, .obsidian)을 빼고 스캔했는가
+□ 제외 대상(Template, .obsidian)을 빼고 스캔했는가
 □ 깨진 링크에서 Obsidian alias([[이름|별칭]])를 올바르게 처리했는가
 □ 리포트를 00.Inbox에 저장했는가
 □ 고아 노트에 구체적 연결 후보를 제안했는가

@@ -30,7 +30,6 @@ fi
 
 # 제외 경로
 if [[ "$FILE_PATH" =~ /99\.Template/ ]] || \
-   [[ "$FILE_PATH" =~ /10\.Flashcards/ ]] || \
    [[ "$FILE_PATH" =~ /\.obsidian/ ]] || \
    [[ "$FILE_PATH" =~ Vault-Lint-Report ]]; then
     exit 0
@@ -42,11 +41,10 @@ NEW_FILENAME=$(basename "$FILE_PATH" .md)
 NOTE_SUMMARY=$(head -30 "$FILE_PATH" 2>/dev/null)
 
 # vault의 모든 노트 목록 수집 (파일명 = 노트 제목)
-# 제외: Template, Flashcards, .obsidian, 자기 자신
+# 제외: Template, .obsidian, 자기 자신
 NOTE_LIST=$(find "$VAULT" -name "*.md" \
     -not -path "*/99.Template/*" \
     -not -path "*/.obsidian/*" \
-    -not -name "FC-*" \
     -not -name "Vault-Lint-Report*" \
     2>/dev/null | while read -r f; do
         basename "$f" .md

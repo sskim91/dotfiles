@@ -31,13 +31,12 @@ EOF
     exit 1
 }
 
-# 제외 대상 필터 (Template, Flashcards, .obsidian)
+# 제외 대상 필터 (Template, .obsidian)
 # iCloud 경로에 공백("Mobile Documents")이 포함되므로 -print0 버전도 제공
 find_notes() {
     find "$VAULT" -name "*.md" \
         -not -path "*/99.Template/*" \
         -not -path "*/.obsidian/*" \
-        -not -name "FC-*" \
         -not -name "Vault-Lint-Report*" \
         2>/dev/null
 }
@@ -46,7 +45,6 @@ find_notes0() {
     find "$VAULT" -name "*.md" \
         -not -path "*/99.Template/*" \
         -not -path "*/.obsidian/*" \
-        -not -name "FC-*" \
         -not -name "Vault-Lint-Report*" \
         -print0 \
         2>/dev/null
@@ -63,9 +61,10 @@ build_note_index() {
     from_find=$(find_notes | while read -r f; do basename "$f" .md; done | nfc)
     from_mdfind=$(mdfind -onlyin "$VAULT" 'kMDItemFSName == "*.md"' 2>/dev/null \
         | grep -v '/.obsidian/' | grep -v '/99.Template/' \
-        | grep -v 'FC-' | grep -v 'Vault-Lint-Report' \
+        | grep -v 'Vault-Lint-Report' \
         | while read -r f; do basename "$f" .md; done | nfc)
-    _NOTE_INDEX=$(printf '%s\n%s' "$from_find" "$from_mdfind" | sort -u)
+    # LC_ALL=C: macOS default locale sort -u merges distinct Korean names via ICU collation
+    _NOTE_INDEX=$(printf '%s\n%s' "$from_find" "$from_mdfind" | LC_ALL=C sort -u)
     echo "$_NOTE_INDEX"
 }
 
@@ -77,9 +76,10 @@ cmd_extract_links() {
     local file="$1"
     # 코드블록(```)을 제거한 후 [[링크]] 추출 (false positive 방지)
     # [[링크|별칭]] 에서 링크 부분만 추출
+    # strip trailing \ (markdown table pipe escape: [[link\|alias]])
     sed '/^```/,/^```/d' "$file" 2>/dev/null \
         | grep -oE '\[\[[^]|]+' \
-        | sed 's/\[\[//' | nfc | sort -u
+        | sed 's/\[\[//; s/\\$//' | nfc | LC_ALL=C sort -u
 }
 
 cmd_check_links() {
@@ -90,7 +90,7 @@ cmd_check_links() {
 
     while IFS= read -r link; do
         # 인덱스에서 인메모리 매칭 (find 호출 제거)
-        if ! echo "$index" | grep -qxF "$link"; then
+        if ! echo "$index" | LC_ALL=C grep -qxF "$link"; then
             echo "$link"
             broken=$((broken + 1))
         fi
@@ -103,7 +103,7 @@ cmd_find_orphans() {
     # 전체 vault의 wikilink를 한 번에 수집 (공백 경로 안전)
     local all_links
     # orphan 탐지에서는 코드블록 제거 불필요 (false positive가 참조를 늘려 정밀도 향상)
-    all_links=$(find_notes0 | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null | sed 's/\[\[//' | nfc | sort -u)
+    all_links=$(find_notes0 | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null | sed 's/\[\[//; s/\\$//' | nfc | LC_ALL=C sort -u)
 
     local index
     index=$(build_note_index)
