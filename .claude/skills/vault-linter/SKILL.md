@@ -24,6 +24,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 /vault-linter --links            # 깨진 링크만
 /vault-linter --stale            # 오래된 노트만
 /vault-linter --suggestions      # 새 노트 후보만
+/vault-linter --semantic         # 의미 기반 유사 노트 연결
 ```
 
 ## Scripts
@@ -35,6 +36,8 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | `scripts/vault-scan.sh check-links <file>` | 깨진 링크만 출력 |
 | `scripts/vault-scan.sh find-orphans` | 어디서도 참조되지 않은 노트 목록 |
 | `scripts/vault-scan.sh tag-list` | 태그별 사용 횟수 |
+| `scripts/semantic-linker.py` | bge-m3 임베딩 + 코사인 유사도 후보 추출 |
+| `scripts/semantic-linker.py --cache-only` | 임베딩 캐시만 빌드 (유사도 계산 생략) |
 
 스크립트가 결정적 검증을 수행하고, Claude는 결과를 해석하고 제안한다.
 
@@ -141,6 +144,72 @@ created: {YYYY-MM-DD}
 | RAG vs Long Context | 3 | [[A]], [[B]], [[C]] |
 ```
 
+### Step 8: 의미 기반 연결 (Semantic Linking) — `--semantic`
+
+#### 8-1: 사전 조건 확인
+
+```bash
+ollama list | grep bge-m3
+```
+
+bge-m3가 없으면:
+```bash
+ollama pull bge-m3
+```
+
+#### 8-2: 후보 추출
+
+```bash
+python3 scripts/semantic-linker.py
+```
+
+JSON 출력의 `candidate_pairs`를 파싱한다.
+
+#### 8-3: LLM 검증
+
+각 후보 쌍에 대해:
+1. 두 노트의 내용을 Read로 읽는다
+2. 연결 가치를 판단한다:
+   - **연결**: 의미적으로 유의미한 관계 (보충, 선행지식, 대안 관점, 사례)
+   - **거절**: 우연한 키워드 겹침, 의미 없는 유사도
+3. 연결이면 양쪽 노트의 `related_notes`에 `[[상대노트]]` 추가
+4. 10-20쌍 단위로 배치 처리하여 컨텍스트 관리
+
+#### 8-4: 리포트 생성
+
+`00.Inbox/Vault-Semantic-Report-{YYYY-MM-DD}.md`에 저장:
+
+```markdown
+---
+tags:
+  - vault/maintenance
+created: {YYYY-MM-DD}
+---
+
+## Vault Semantic Link Report — {YYYY-MM-DD}
+
+### 요약
+
+| 항목 | 건수 |
+|------|------|
+| 분석 노트 | N개 |
+| 후보 쌍 | N개 |
+| 연결 완료 | N개 |
+| 거절 | N개 |
+
+### 새 연결
+
+| Note A | Note B | 유사도 | 관계 유형 |
+|--------|--------|--------|----------|
+| [[A]] | [[B]] | 0.82 | 보충 |
+
+### 거절된 쌍
+
+| Note A | Note B | 유사도 | 거절 사유 |
+|--------|--------|--------|----------|
+| [[C]] | [[D]] | 0.76 | 키워드 우연 겹침 |
+```
+
 ## Self-Check
 
 ```markdown
@@ -150,6 +219,8 @@ created: {YYYY-MM-DD}
 □ 고아 노트에 구체적 연결 후보를 제안했는가
 □ 새 노트 후보의 출처 노트를 명시했는가
 □ 각 플래그(--orphans, --links 등) 단독 실행이 가능한 구조인가
+□ --semantic 실행 전 ollama + bge-m3 설치를 확인했는가
+□ 이미 연결된 노트 쌍을 중복 제안하지 않았는가
 ```
 
 ## Gotchas
@@ -159,3 +230,6 @@ created: {YYYY-MM-DD}
 - vault 경로에 공백이 포함됨 (iCloud path) — 항상 따옴표로 감싸기
 - `--stale`의 tavily_search는 시간이 오래 걸릴 수 있음 — 노트 수가 많으면 상위 5개만 점검
 - `--orphans`도 대형 vault(300+)에서 느릴 수 있음 — vault-scan.sh가 xargs로 일괄 처리하므로 개별 grep보다 빠름
+- `--semantic` 첫 실행 시 877개 임베딩 생성에 수 분 소요 — 이후 캐시로 신규/변경 노트만 처리
+- ollama가 실행 중이어야 함 — `ollama serve`로 데몬 시작 필요할 수 있음
+- embeddings-cache.json은 gitignore됨 — 머신 간 동기화 안 됨 (의도적)
