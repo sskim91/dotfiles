@@ -165,7 +165,14 @@ python3 scripts/semantic-linker.py
 
 JSON 출력의 `candidate_pairs`를 파싱한다.
 
-#### 8-3: LLM 검증
+#### 8-3: LLM 검증 (이어가기 지원)
+
+리뷰 큐 파일이 있으면 이어서 진행:
+```bash
+ls scripts/semantic-review-queue.json 2>/dev/null && echo "리뷰 큐 있음 — 이어가기 모드"
+```
+
+리뷰 큐가 있으면 `next_batch_start`부터 `batch_size`(50)만큼 읽어서 처리하고, `llm_reviewed: true`로 업데이트. 없으면 새로 시작.
 
 각 후보 쌍에 대해:
 1. 두 노트의 내용을 Read로 읽는다
