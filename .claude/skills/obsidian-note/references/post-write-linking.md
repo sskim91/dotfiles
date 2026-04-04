@@ -47,6 +47,14 @@ grep -rli "키워드" "$VAULT" --include="*.md" | head -10
 └── 역링크 제안: [[노트A]]에 역링크 추가? (y/n)
 ```
 
+## vault-linker hook과의 관계
+
+`ENABLE_VAULT_LINKER=1`이면 PostToolUse hook이 Write/Edit 시 vault 전체 노트 목록을 자동으로 Claude에게 전달한다.
+이 경우 **Step 2의 grep 검색을 건너뛰고** hook이 제공한 노트 목록에서 의미적으로 관련된 노트를 직접 선택할 수 있다.
+
+- hook 활성화 시: 노트 목록이 이미 컨텍스트에 있으므로 grep 없이 바로 Step 3으로
+- hook 비활성화 시 (기본): Step 2의 grep 검색으로 관련 노트를 찾는 기존 절차 수행
+
 ## 스킵 조건
 
 - 관련 노트가 0건이면 "관련 노트를 찾지 못했습니다" 한 줄로 끝낸다

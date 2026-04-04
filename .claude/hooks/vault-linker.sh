@@ -50,7 +50,7 @@ NOTE_LIST=$(find "$VAULT" -name "*.md" \
     -not -name "Vault-Lint-Report*" \
     2>/dev/null | while read -r f; do
         basename "$f" .md
-    done | grep -v "^${NEW_FILENAME}$" | sort)
+    done | grep -v "^${NEW_FILENAME}$" | sort | head -200)
 
 # 노트가 없으면 스킵
 if [[ -z "$NOTE_LIST" ]]; then

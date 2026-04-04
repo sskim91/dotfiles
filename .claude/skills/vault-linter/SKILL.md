@@ -26,38 +26,44 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 /vault-linter --suggestions      # 새 노트 후보만
 ```
 
+## Scripts
+
+| 스크립트 | 용도 |
+|----------|------|
+| `scripts/vault-scan.sh list-notes` | 제외 대상 빼고 전체 노트 목록 출력 |
+| `scripts/vault-scan.sh extract-links <file>` | 파일에서 `[[wikilink]]` 추출 (alias 처리 포함) |
+| `scripts/vault-scan.sh check-links <file>` | 깨진 링크만 출력 |
+| `scripts/vault-scan.sh find-orphans` | 어디서도 참조되지 않은 노트 목록 |
+| `scripts/vault-scan.sh tag-list` | 태그별 사용 횟수 |
+
+스크립트가 결정적 검증을 수행하고, Claude는 결과를 해석하고 제안한다.
+
 ## Instructions
 
 ### Step 1: Vault 스캔
 
-Vault의 모든 .md 파일을 수집한다 (제외 대상 제외).
-
 ```bash
-VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
-find "$VAULT" -name "*.md" -not -path "*/99.Template/*" -not -path "*/.obsidian/*" -not -name "FC-*"
+bash scripts/vault-scan.sh list-notes
 ```
+
+결과로 전체 노트 목록을 확보. 이후 단계에서 스크립트를 활용한다.
 
 ### Step 2: 고아 노트 점검 (Orphan Notes)
 
-다른 노트의 `related_notes`나 본문 `[[wikilink]]`에서 한 번도 참조되지 않은 노트를 찾는다.
-
-각 노트에 대해:
 ```bash
-NOTENAME=$(basename "$NOTE" .md)
-grep -rli "\[\[${NOTENAME}\]\]" "$VAULT" --include="*.md" | grep -v "$NOTE"
+bash scripts/vault-scan.sh find-orphans
 ```
 
-결과가 0건이면 고아 노트. 각 고아 노트에 대해 tags와 키워드 기반으로 연결 후보를 제안한다.
+결과로 나온 고아 노트에 대해 tags와 키워드 기반으로 연결 후보를 제안한다.
 
 ### Step 3: 깨진 위키링크 점검 (Broken Links)
 
-모든 노트에서 `[[wikilink]]` 패턴을 추출하고, 링크 대상 파일이 실제로 존재하는지 확인한다.
-
+각 노트에 대해:
 ```bash
-grep -oP '\[\[([^\]|]+)' "$NOTE" | sed 's/\[\[//'
+bash scripts/vault-scan.sh check-links "$NOTE"
 ```
 
-각 링크 대상에 대해 vault에서 파일 존재 확인. 없으면 "새 노트를 만들까요?" 또는 "링크를 제거할까요?" 제안.
+깨진 링크가 발견되면 "새 노트를 만들까요?" 또는 "링크를 제거할까요?" 제안.
 
 ### Step 4: 오래된 노트 점검 (Stale Notes)
 
@@ -148,7 +154,8 @@ created: {YYYY-MM-DD}
 
 ## Gotchas
 
-- Obsidian alias 문법 `[[파일명|표시명]]`에서 파일명만 추출해야 함
-- 파일명에 특수문자가 포함될 수 있음 — grep 시 이스케이프 필요
+- Obsidian alias 문법 `[[파일명|표시명]]`에서 파일명만 추출해야 함 — vault-scan.sh가 처리
+- 파일명에 특수문자가 포함될 수 있음 — vault-scan.sh가 grep 이스케이프 처리
 - vault 경로에 공백이 포함됨 (iCloud path) — 항상 따옴표로 감싸기
 - `--stale`의 tavily_search는 시간이 오래 걸릴 수 있음 — 노트 수가 많으면 상위 5개만 점검
+- `--orphans`도 대형 vault(300+)에서 느릴 수 있음 — vault-scan.sh가 xargs로 일괄 처리하므로 개별 grep보다 빠름
