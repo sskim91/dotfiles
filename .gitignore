@@ -84,6 +84,12 @@ docs/
 _session/
 
 # ======================
+# Vault linter runtime
+# ======================
+.claude/skills/vault-linter/scripts/embeddings-cache.json
+.claude/skills/vault-linter/scripts/semantic-review-queue.json
+
+# ======================
 # Misc
 # ======================
 .config.json
