@@ -75,8 +75,11 @@ cmd_list_notes() {
 
 cmd_extract_links() {
     local file="$1"
-    # [[링크]] 또는 [[링크|별칭]] 에서 링크 부분만 추출 (macOS grep 호환)
-    grep -oE '\[\[[^]|]+' "$file" 2>/dev/null | sed 's/\[\[//' | nfc | sort -u
+    # 코드블록(```)을 제거한 후 [[링크]] 추출 (false positive 방지)
+    # [[링크|별칭]] 에서 링크 부분만 추출
+    sed '/^```/,/^```/d' "$file" 2>/dev/null \
+        | grep -oE '\[\[[^]|]+' \
+        | sed 's/\[\[//' | nfc | sort -u
 }
 
 cmd_check_links() {
@@ -99,6 +102,7 @@ cmd_check_links() {
 cmd_find_orphans() {
     # 전체 vault의 wikilink를 한 번에 수집 (공백 경로 안전)
     local all_links
+    # orphan 탐지에서는 코드블록 제거 불필요 (false positive가 참조를 늘려 정밀도 향상)
     all_links=$(find_notes0 | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null | sed 's/\[\[//' | nfc | sort -u)
 
     local index
