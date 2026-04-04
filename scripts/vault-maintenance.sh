@@ -19,11 +19,10 @@ echo "=== Vault Maintenance Start: $(date) ===" >> "$LOG_FILE"
 
 # Claude Code 비대화형 실행 (Max 구독)
 # --permission-mode bypassPermissions: plan mode 승인 대기 방지
-# --allowedTools: 읽기/쓰기만 허용 (Bash 등 차단)
 /Users/sskim/.local/bin/claude -p \
-  "Obsidian vault를 점검해줘. vault-linter 스킬의 절차를 따라 전체 점검을 실행하고, 리포트를 00.Inbox에 저장해줘. Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note" \
+  "/vault-linter" \
   --permission-mode bypassPermissions \
-  --allowedTools "Read,Grep,Glob,Write,Bash" \
+  --allowedTools "Read,Grep,Glob,Write,Bash,Skill" \
   >> "$LOG_FILE" 2>&1
 
 EXIT_CODE=$?

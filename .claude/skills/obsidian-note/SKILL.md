@@ -1,6 +1,6 @@
 ---
 name: obsidian-note
-description: Use when user mentions "Obsidian", "옵시디언", "write as note", "save to notes", "노트로 저장", or /obsidian-note command. Do NOT use for TIL (use til), flashcards (use obsidian-flashcard), or YouTube notes (use youtube-summarizer).
+description: Use when user mentions "Obsidian", "옵시디언", "write as note", "save to notes", "노트로 저장", or /obsidian-note command. Do NOT use for TIL (use til) or YouTube notes (use youtube-summarizer).
 ---
 
 # Zettelkasten Note Writer

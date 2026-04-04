@@ -1,6 +1,6 @@
 ---
 name: til
-description: Use when user mentions "TIL", "write TIL", "TIL 작성", "learning note", or /til command. Do NOT use for Obsidian notes (use obsidian-note), flashcards (use obsidian-flashcard), or blog posts (use tech-blog-writer).
+description: Use when user mentions "TIL", "write TIL", "TIL 작성", "learning note", or /til command. Do NOT use for Obsidian notes (use obsidian-note) or blog posts (use tech-blog-writer).
 ---
 
 # TIL Writer

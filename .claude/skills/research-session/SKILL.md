@@ -158,7 +158,7 @@ Research-RAG-트레이드오프.md
 | `wiki-compiler` | 리서치 결과가 다음 컴파일 시 raw로 편입될 수 있음 |
 | `vault-linter` | 리서치 결과의 후속 질문 → 새 노트 후보로 감지됨 |
 | `obsidian-note` | 리서치 결과를 더 깊이 다듬고 싶으면 /obsidian-note로 정식 노트 작성 |
-| `obsidian-flashcard` | 리서치 결과에서 핵심 개념을 플래시카드로 변환 |
+
 
 ## Self-Check
 
