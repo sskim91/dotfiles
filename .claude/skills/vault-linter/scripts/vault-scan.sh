@@ -9,6 +9,11 @@ VAULT="${VAULT:-$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note
 # 노트 인덱스 캐시 (세션 내 1회만 빌드)
 _NOTE_INDEX=""
 
+# macOS 파일시스템은 NFD, 노트 본문은 NFC → 비교 전 통일 필요
+nfc() {
+    python3 -c "import sys,unicodedata; [print(unicodedata.normalize('NFC',l),end='') for l in sys.stdin]"
+}
+
 usage() {
     cat <<'EOF'
 Usage: vault-scan.sh <command> [args]
@@ -55,11 +60,11 @@ build_note_index() {
         return
     fi
     local from_find from_mdfind
-    from_find=$(find_notes | while read -r f; do basename "$f" .md; done)
+    from_find=$(find_notes | while read -r f; do basename "$f" .md; done | nfc)
     from_mdfind=$(mdfind -onlyin "$VAULT" 'kMDItemFSName == "*.md"' 2>/dev/null \
         | grep -v '/.obsidian/' | grep -v '/99.Template/' \
         | grep -v 'FC-' | grep -v 'Vault-Lint-Report' \
-        | while read -r f; do basename "$f" .md; done)
+        | while read -r f; do basename "$f" .md; done | nfc)
     _NOTE_INDEX=$(printf '%s\n%s' "$from_find" "$from_mdfind" | sort -u)
     echo "$_NOTE_INDEX"
 }
@@ -71,7 +76,7 @@ cmd_list_notes() {
 cmd_extract_links() {
     local file="$1"
     # [[링크]] 또는 [[링크|별칭]] 에서 링크 부분만 추출 (macOS grep 호환)
-    grep -oE '\[\[[^]|]+' "$file" 2>/dev/null | sed 's/\[\[//' | sort -u
+    grep -oE '\[\[[^]|]+' "$file" 2>/dev/null | sed 's/\[\[//' | nfc | sort -u
 }
 
 cmd_check_links() {
@@ -94,7 +99,7 @@ cmd_check_links() {
 cmd_find_orphans() {
     # 전체 vault의 wikilink를 한 번에 수집 (공백 경로 안전)
     local all_links
-    all_links=$(find_notes0 | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null | sed 's/\[\[//' | sort -u)
+    all_links=$(find_notes0 | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null | sed 's/\[\[//' | nfc | sort -u)
 
     local index
     index=$(build_note_index)
