@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # vault-linker.sh — PostToolUse hook
-# Obsidian vault에 .md 파일 생성/수정 시 관련 노트를 검색하여 피드백 제공
+# Obsidian vault에 .md 파일 생성/수정 시 vault 노트 목록과 새 노트 요약을
+# Claude에게 전달하여 의미적 링킹을 유도한다.
 # ENABLE_VAULT_LINKER=1 로 활성화
 
 ENABLE_VAULT_LINKER=${ENABLE_VAULT_LINKER:-0}
@@ -35,48 +36,47 @@ if [[ "$FILE_PATH" =~ /99\.Template/ ]] || \
     exit 0
 fi
 
-# 새 파일에서 키워드 추출 (tags에서)
-KEYWORDS=$(sed -n '/^tags:/,/^[^ ]/p' "$FILE_PATH" 2>/dev/null | grep "  - " | sed 's/  - //' | sed 's|/| |g' | tr '\n' '|' | sed 's/|$//')
+NEW_FILENAME=$(basename "$FILE_PATH" .md)
 
-# 키워드가 없으면 핵심 아이디어 섹션에서 추출
-if [[ -z "$KEYWORDS" ]]; then
-    KEYWORDS=$(sed -n '/## 핵심/,/^---$/p' "$FILE_PATH" 2>/dev/null | head -5 | tr -d '>#*_[]()' | tr ' ' '\n' | sort -u | awk 'length > 3' | head -5 | tr '\n' '|' | sed 's/|$//')
-fi
+# 새 노트의 frontmatter + 핵심 아이디어 추출 (첫 30줄)
+NOTE_SUMMARY=$(head -30 "$FILE_PATH" 2>/dev/null)
 
-if [[ -z "$KEYWORDS" ]]; then
+# vault의 모든 노트 목록 수집 (파일명 = 노트 제목)
+# 제외: Template, Flashcards, .obsidian, 자기 자신
+NOTE_LIST=$(find "$VAULT" -name "*.md" \
+    -not -path "*/99.Template/*" \
+    -not -path "*/.obsidian/*" \
+    -not -name "FC-*" \
+    -not -name "Vault-Lint-Report*" \
+    2>/dev/null | while read -r f; do
+        basename "$f" .md
+    done | grep -v "^${NEW_FILENAME}$" | sort)
+
+# 노트가 없으면 스킵
+if [[ -z "$NOTE_LIST" ]]; then
     exit 0
 fi
 
-# vault에서 관련 노트 검색 (자기 자신 제외)
-RELATED=$(grep -rli -E "$KEYWORDS" "$VAULT" --include="*.md" 2>/dev/null | \
-    grep -v "$FILE_PATH" | \
-    grep -v "/99.Template/" | \
-    grep -v "/10.Flashcards/" | \
-    grep -v "/.obsidian/" | \
-    head -5)
-
-# 결과가 없으면 스킵
-if [[ -z "$RELATED" ]]; then
-    exit 0
-fi
-
-COUNT=$(echo "$RELATED" | wc -l | tr -d ' ')
+NOTE_COUNT=$(echo "$NOTE_LIST" | wc -l | tr -d ' ')
 
 cat >&2 <<EOF
 
-📎 Vault Linker: 관련 노트 ${COUNT}건 발견
-─────────────────────────────
-EOF
+📎 Vault Linker — 의미적 링킹 컨텍스트
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-echo "$RELATED" | while read -r NOTE; do
-    NOTE_NAME=$(basename "$NOTE" .md)
-    echo "  → [[${NOTE_NAME}]]" >&2
-done
+새 노트: [[${NEW_FILENAME}]]
+요약:
+${NOTE_SUMMARY}
 
-cat >&2 <<EOF
-─────────────────────────────
-💡 이 노트들과 양방향 [[wikilink]] 연결을 고려하세요.
-   related_notes에 추가하려면 사용자에게 확인하세요.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Vault 노트 목록 (${NOTE_COUNT}개):
+${NOTE_LIST}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+위 vault 노트 목록에서 [[${NEW_FILENAME}]]과 의미적으로 관련된 노트를 찾아주세요.
+단순 키워드 매칭이 아니라, 주제/개념의 연관성을 기반으로 판단하세요.
+관련 노트가 있으면 사용자에게 related_notes 양방향 연결을 제안하세요.
+관련 노트가 없으면 이 메시지를 무시하세요.
 
 EOF
 
