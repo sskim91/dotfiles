@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# vault-maintenance.sh — Cron으로 실행되는 Obsidian vault 자동 유지보수
+# 매주 일요일 새벽 2시 실행 권장: 0 2 * * 0 ~/.claude/scripts/vault-maintenance.sh
+#
+# 동작:
+# 1. vault-linter 실행 (고아 노트, 깨진 링크, 태그 비일관성 점검)
+# 2. 결과를 00.Inbox/Vault-Lint-Report-{date}.md에 저장
+#
+# 비용: claude -p 1회 실행 비용 (보통 $0.05~0.20)
+
+LOG_DIR="$HOME/.local/log/vault-maintenance"
+mkdir -p "$LOG_DIR"
+
+DATE=$(date +%Y-%m-%d)
+LOG_FILE="$LOG_DIR/vault-maintenance-${DATE}.log"
+
+echo "=== Vault Maintenance Start: $(date) ===" >> "$LOG_FILE"
+
+# Claude Code 비대화형 실행
+# --max-budget-usd 0.5: 안전 한도 설정
+# --allowedTools: 필요한 도구만 허용
+/Users/sskim/.local/bin/claude -p \
+  "Obsidian vault를 점검해줘. vault-linter 스킬의 절차를 따라 전체 점검을 실행하고, 리포트를 00.Inbox에 저장해줘. Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note" \
+  --allowedTools "Read,Grep,Glob,Write" \
+  --max-budget-usd 0.5 \
+  >> "$LOG_FILE" 2>&1
+
+EXIT_CODE=$?
+echo "=== Vault Maintenance End: $(date), Exit: $EXIT_CODE ===" >> "$LOG_FILE"
+
+# 실패 시 알림 (macOS notification)
+if [[ $EXIT_CODE -ne 0 ]]; then
+  osascript -e "display notification \"Vault maintenance failed (exit $EXIT_CODE). Check $LOG_FILE\" with title \"Vault Maintenance\""
+fi
