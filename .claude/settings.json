@@ -121,6 +121,12 @@
             "command": "~/.claude/hooks/til-review.sh",
             "if": "Write(*/dev/TIL/*.md)|Edit(*/dev/TIL/*.md)",
             "timeout": 180
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/vault-linker.sh",
+            "if": "Write(*iCloud~md~obsidian*.md)|Edit(*iCloud~md~obsidian*.md)",
+            "timeout": 10
           }
         ]
       }
@@ -166,7 +172,8 @@
     "deploy-on-aws@agent-plugins-for-aws": true,
     "postgres-best-practices@supabase-agent-skills": true,
     "codex@openai-codex": true,
-    "postman@claude-plugins-official": true
+    "postman@claude-plugins-official": true,
+    "learning-output-style@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {

@@ -261,6 +261,21 @@ TIL 저장소의 적절한 카테고리에 자동 저장합니다.
 - [ ] 출처가 명시되었는가?
 - [ ] 파일명이 번역된 제목과 일치하는가?
 
+### Step 9: Post-write linking (선택적)
+
+번역 문서 저장 후, Obsidian Vault에서 같은 주제의 관련 노트를 검색한다.
+
+```bash
+VAULT="~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
+grep -rli "키워드" "$VAULT" --include="*.md" | head -5
+```
+
+관련 노트가 발견되면:
+- 관련 노트의 `related_notes`에 TIL 문서 경로를 제안 (사용자 확인 후)
+- 관련 노트 목록을 완료 리포트에 포함
+
+이 단계는 Obsidian vault를 사용하지 않는 경우 스킵한다.
+
 ## Troubleshooting
 
 | 문제 | 원인 | 해결 |

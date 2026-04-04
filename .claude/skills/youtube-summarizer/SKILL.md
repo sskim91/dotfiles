@@ -81,6 +81,10 @@ Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note
 □ 검증 완료 후 경로 안내
 ```
 
+### 5단계: Post-write linking
+노트 저장 후, obsidian-note 스킬의 [post-write-linking.md](../obsidian-note/references/post-write-linking.md) 절차를 실행한다.
+vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한다.
+
 ---
 
 ## 문서 템플릿

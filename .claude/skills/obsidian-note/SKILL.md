@@ -64,6 +64,10 @@ created: YYYY-MM-DD  # 작성일
 ### 4단계: 시각화 (필요시)
 복잡한 개념은 mermaid/ASCII 다이어그램. 비교표(table)로 trade-off를 한눈에.
 
+### 5단계: Post-write linking
+노트 저장 완료 후 [post-write-linking.md](references/post-write-linking.md)의 절차를 실행한다.
+vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한다.
+
 ## Mermaid 핵심 규칙
 
 - 밝은 배경에는 반드시 `color:#000` 지정 (미지정 시 흰 글씨로 안 보임)
@@ -78,6 +82,7 @@ created: YYYY-MM-DD  # 작성일
 |------|------|
 | `references/writing-style.md` | 페르소나, 5원칙, 금지 패턴, Before/After, 톤 체크, 노트 유형, 품질 기준 |
 | `references/complete-example.md` | CAP 정리 완성 노트 예시 |
+| `references/post-write-linking.md` | Post-write linking 절차 (양방향 링킹, 후속 탐구 큐) |
 
 ## Gotchas
 
@@ -101,6 +106,7 @@ created: YYYY-MM-DD  # 작성일
 □ 대화의 모든 번호 항목이 동일 깊이로 포함되었는가 (축약/생략 없음)
 □ 파일명이 순수 제목 (접두사 없음), created 날짜 현재
 □ mermaid 사용 시 렌더링 검증 완료
+□ Post-write linking 실행 완료 (관련 노트 검색 + related_notes 업데이트)
 ```
 
 ## Verification
