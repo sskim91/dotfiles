@@ -7,7 +7,7 @@
 # 1. vault-linter 실행 (고아 노트, 깨진 링크, 태그 비일관성 점검)
 # 2. 결과를 00.Inbox/Vault-Lint-Report-{date}.md에 저장
 #
-# 비용: claude -p 1회 실행 비용 (보통 $0.05~0.20)
+# Max 구독 모델 — 추가 비용 없음
 
 LOG_DIR="$HOME/.local/log/vault-maintenance"
 mkdir -p "$LOG_DIR"
@@ -17,13 +17,10 @@ LOG_FILE="$LOG_DIR/vault-maintenance-${DATE}.log"
 
 echo "=== Vault Maintenance Start: $(date) ===" >> "$LOG_FILE"
 
-# Claude Code 비대화형 실행
-# --max-budget-usd 0.5: 안전 한도 설정
-# --allowedTools: 필요한 도구만 허용
+# Claude Code 비대화형 실행 (Max 구독)
 /Users/sskim/.local/bin/claude -p \
   "Obsidian vault를 점검해줘. vault-linter 스킬의 절차를 따라 전체 점검을 실행하고, 리포트를 00.Inbox에 저장해줘. Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note" \
   --allowedTools "Read,Grep,Glob,Write" \
-  --max-budget-usd 0.5 \
   >> "$LOG_FILE" 2>&1
 
 EXIT_CODE=$?
