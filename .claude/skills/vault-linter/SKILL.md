@@ -25,6 +25,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 /vault-linter --stale            # 오래된 노트만
 /vault-linter --suggestions      # 새 노트 후보만
 /vault-linter --semantic         # 의미 기반 유사 노트 연결
+/vault-linter --index            # Vault 인덱스 + 유지보수 로그 갱신
 ```
 
 ## Scripts
@@ -38,6 +39,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | `scripts/vault-scan.sh tag-list` | 태그별 사용 횟수 |
 | `scripts/semantic-linker.py` | bge-m3 임베딩 + 코사인 유사도 후보 추출 |
 | `scripts/semantic-linker.py --cache-only` | 임베딩 캐시만 빌드 (유사도 계산 생략) |
+| `scripts/vault-index.py` | 폴더별 노트 카탈로그 생성 + 유지보수 로그 초기화 |
 
 스크립트가 결정적 검증을 수행하고, Claude는 결과를 해석하고 제안한다.
 
@@ -217,6 +219,39 @@ created: {YYYY-MM-DD}
 | [[C]] | [[D]] | 0.76 | 키워드 우연 겹침 |
 ```
 
+### Step 9: Vault 인덱스 + 유지보수 로그 — `--index`
+
+카파시의 "LLM Wiki" 패턴에서 **index.md + log.md**는 LLM이 vault 탐색 시 가장 먼저 읽는 메타 레이어다. 매번 877개 노트를 Glob 하지 않고, 카탈로그에서 관련 폴더를 좁히고 진입.
+
+#### 9-1: 인덱스 생성 (결정적)
+
+```bash
+python3 scripts/vault-index.py
+```
+
+동작:
+- `00.Inbox/vault-index.md` 전체 덮어쓰기 (폴더별 노트 + 본문 첫 줄 요약)
+- `00.Inbox/vault-log.md` 없으면 초기화 (있으면 건드리지 않음)
+
+#### 9-2: 유지보수 로그 추가 (LLM)
+
+최신 리포트를 읽고 `00.Inbox/vault-log.md` 끝에 한 entry를 append한다.
+
+1. `00.Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` (최신) 읽기 → 요약 테이블에서 건수 추출
+2. `00.Inbox/Vault-Semantic-Report-{YYYY-MM-DD}.md` (있으면) 읽기 → 연결/거절 건수 추출
+3. 아래 포맷으로 log 맨 아래에 append (기존 entry는 절대 수정 금지):
+
+```markdown
+## [YYYY-MM-DD] Weekly lint + semantic
+
+- Notes: N개 (지난 주 대비 ±M)
+- Lint: X orphans, Y broken, Z stale, T tag 비일관성
+- Semantic: C 연결, R 거절
+- Note: (특이사항 있으면 한 줄)
+```
+
+이전 entry가 없으면 "Notes: N개 (첫 실행)"로 기록.
+
 ## Self-Check
 
 ```markdown
@@ -228,6 +263,8 @@ created: {YYYY-MM-DD}
 □ 각 플래그(--orphans, --links 등) 단독 실행이 가능한 구조인가
 □ --semantic 실행 전 ollama + bge-m3 설치를 확인했는가
 □ 이미 연결된 노트 쌍을 중복 제안하지 않았는가
+□ --index는 vault-index.md 덮어쓰기 + vault-log.md append 구조를 지켰는가
+□ vault-log.md 기존 entry는 수정하지 않고 append만 했는가
 ```
 
 ## Gotchas
@@ -240,3 +277,4 @@ created: {YYYY-MM-DD}
 - `--semantic` 첫 실행 시 877개 임베딩 생성에 수 분 소요 — 이후 캐시로 신규/변경 노트만 처리
 - ollama가 실행 중이어야 함 — `ollama serve`로 데몬 시작 필요할 수 있음
 - embeddings-cache.json은 gitignore됨 — 머신 간 동기화 안 됨 (의도적)
+- `--index`의 요약은 본문 첫 줄(heading/frontmatter/table row 제외)을 100자로 자름 — 프론트매터에 `description:` 필드가 있으면 나중에 그걸 우선 쓰도록 확장 가능
