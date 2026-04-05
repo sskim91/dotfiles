@@ -230,12 +230,12 @@ python3 scripts/vault-index.py
 ```
 
 동작:
-- `00.Inbox/vault-index.md` 전체 덮어쓰기 (폴더별 노트 + 본문 첫 줄 요약)
-- `00.Inbox/vault-log.md` 없으면 초기화 (있으면 건드리지 않음)
+- `00.Inbox/Vault-Index.md` 전체 덮어쓰기 (폴더별 노트 + 본문 첫 줄 요약)
+- `00.Inbox/Vault-Log.md` 없으면 초기화 (있으면 건드리지 않음)
 
 #### 9-2: 유지보수 로그 추가 (LLM)
 
-최신 리포트를 읽고 `00.Inbox/vault-log.md` 끝에 한 entry를 append한다.
+최신 리포트를 읽고 `00.Inbox/Vault-Log.md` 끝에 한 entry를 append한다.
 
 1. `00.Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` (최신) 읽기 → 요약 테이블에서 건수 추출
 2. `00.Inbox/Vault-Semantic-Report-{YYYY-MM-DD}.md` (있으면) 읽기 → 연결/거절 건수 추출
@@ -263,8 +263,8 @@ python3 scripts/vault-index.py
 □ 각 플래그(--orphans, --links 등) 단독 실행이 가능한 구조인가
 □ --semantic 실행 전 ollama + bge-m3 설치를 확인했는가
 □ 이미 연결된 노트 쌍을 중복 제안하지 않았는가
-□ --index는 vault-index.md 덮어쓰기 + vault-log.md append 구조를 지켰는가
-□ vault-log.md 기존 entry는 수정하지 않고 append만 했는가
+□ --index는 Vault-Index.md 덮어쓰기 + Vault-Log.md append 구조를 지켰는가
+□ Vault-Log.md 기존 entry는 수정하지 않고 append만 했는가
 ```
 
 ## Gotchas

@@ -6,8 +6,8 @@
 # 동작:
 # Phase 1: vault-linter 기본 (고아 노트, 깨진 링크, 태그 비일관성 점검)
 # Phase 2: vault-linter --semantic (임베딩 기반 유사도 → 관련 노트 자동 연결)
-# Phase 3: vault-linter --index (카탈로그 vault-index.md + 유지보수 로그 vault-log.md)
-# 결과를 00.Inbox/Vault-Lint-Report-{date}.md / vault-index.md / vault-log.md에 저장
+# Phase 3: vault-linter --index (카탈로그 Vault-Index.md + 유지보수 로그 Vault-Log.md)
+# 결과를 00.Inbox/Vault-Lint-Report-{date}.md / Vault-Index.md / Vault-Log.md에 저장
 #
 # Max 구독 모델 — 추가 비용 없음
 
