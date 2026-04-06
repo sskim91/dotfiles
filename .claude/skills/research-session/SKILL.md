@@ -53,8 +53,11 @@ VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
 2. INDEX에서 관련 개념 아티클 식별 → 해당 아티클 읽기
 3. INDEX가 없으면 vault 전체에서 키워드/태그로 관련 노트 검색
 4. 관련 노트를 찾으면 본문을 읽고 질문에 답변할 수 있는 정보 수집
+5. **웹 검색으로 보완** — `tavily_search`로 질문 키워드를 검색하여 vault에 없는 최신 정보, 추가 관점, 근거를 수집한다. 검색 결과는 답변의 "웹 출처" 섹션에 URL과 함께 명시한다.
 
-**핵심: Claude의 Read/Grep 도구를 활용.** 벡터 DB나 RAG 불필요 — 1M 컨텍스트로 관련 노트를 직접 읽는다.
+**핵심: vault 우선 + 웹 보완.** vault의 기존 지식을 뼈대로 하고, 웹 검색으로 최신성과 깊이를 더한다. vault에 관련 노트가 충분하더라도 웹 검색은 항상 실행하여 놓친 관점이 없는지 확인한다.
+
+> `--no-web` 플래그를 지정하면 웹 검색을 스킵하고 vault만 탐색한다.
 
 ### Step 3: 답변 생성
 
@@ -62,7 +65,8 @@ VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
 
 **답변 원칙:**
 - vault에 있는 정보를 우선 사용, 출처 노트를 명시
-- vault에 없는 정보는 `tavily_search`로 보완 (사용자가 요청한 경우)
+- 웹 검색 결과로 보완 (항상 실행, `--no-web` 시 스킵)
+- vault 출처와 웹 출처를 구분하여 표기
 - 불확실한 부분은 명시적으로 표시
 - 단순 텍스트가 아닌, 구조화된 .md 형태로 작성
 
