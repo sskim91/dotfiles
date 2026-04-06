@@ -35,7 +35,7 @@ EOF
 # iCloud 경로에 공백("Mobile Documents")이 포함되므로 -print0 버전도 제공
 find_notes() {
     find "$VAULT" -name "*.md" \
-        -not -path "*/99.Template/*" \
+        -not -path "*/Templates/*" \
         -not -path "*/.obsidian/*" \
         -not -name "Vault-Lint-Report*" \
         2>/dev/null
@@ -43,7 +43,7 @@ find_notes() {
 
 find_notes0() {
     find "$VAULT" -name "*.md" \
-        -not -path "*/99.Template/*" \
+        -not -path "*/Templates/*" \
         -not -path "*/.obsidian/*" \
         -not -name "Vault-Lint-Report*" \
         -print0 \
@@ -60,7 +60,7 @@ build_note_index() {
     local from_find from_mdfind
     from_find=$(find_notes | while read -r f; do basename "$f" .md; done | nfc)
     from_mdfind=$(mdfind -onlyin "$VAULT" 'kMDItemFSName == "*.md"' 2>/dev/null \
-        | grep -v '/.obsidian/' | grep -v '/99.Template/' \
+        | grep -v '/.obsidian/' | grep -v '/Templates/' \
         | grep -v 'Vault-Lint-Report' \
         | while read -r f; do basename "$f" .md; done | nfc)
     # LC_ALL=C: macOS default locale sort -u merges distinct Korean names via ICU collation

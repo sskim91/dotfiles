@@ -15,7 +15,7 @@ Karpathy의 "Q&A → filing back → compound interest" 패턴.
 | 항목 | 값 |
 |------|-----|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
-| 출력 위치 | 프로젝트 wiki가 있으면 `{project}/output/`, 없으면 `00.Inbox/` |
+| 출력 위치 | 프로젝트 wiki가 있으면 `{project}/output/`, 없으면 `Inbox/` |
 | 파일명 규칙 | `Research-{질문요약}.md` |
 
 ## 사용법
@@ -109,7 +109,7 @@ query: "{원래 질문}"
 
 **저장 위치 결정:**
 - 프로젝트 wiki가 있으면: `{Vault}/{Topic}/output/Research-{질문요약}.md`
-- 없으면: `{Vault}/00.Inbox/Research-{질문요약}.md`
+- 없으면: `{Vault}/Inbox/Research-{질문요약}.md`
 
 여기서 `{Topic}`은 사용자가 `--topic`으로 지정하거나, 질문 컨텍스트에서 vault 내 토픽 디렉토리를 자동 감지한 것.
 

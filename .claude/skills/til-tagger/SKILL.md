@@ -1,6 +1,6 @@
 ---
 name: til-tagger
-description: Use when user says "TIL 태그", "태그 업데이트", "tag TIL", "새 TIL 태그", or when 09.TIL has untagged files. Do NOT use for general Obsidian note tagging.
+description: Use when user says "TIL 태그", "태그 업데이트", "tag TIL", "새 TIL 태그", or when Wiki has untagged files. Do NOT use for general Obsidian note tagging.
 ---
 
 # TIL Tagger
@@ -24,7 +24,7 @@ Classify new TIL files into `domain/topic` tags and update `tag-mapping.json`.
 
 - **TIL repo:** `~/dev/TIL/`
 - **Tag mapping:** `~/dev/TIL/tag-mapping.json`
-- **Obsidian TIL:** `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note/09.TIL/`
+- **Obsidian TIL:** `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note/Wiki/`
 - **Sync script:** `~/dev/TIL/.githooks/sync-to-obsidian.py`
 
 ## Process

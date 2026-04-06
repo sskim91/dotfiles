@@ -18,7 +18,7 @@ grep -rli "키워드" "$VAULT" --include="*.md" | head -10
 
 **검색 제외 대상:**
 - 방금 작성한 노트 자신
-- `99.Template/` 하위 파일
+- `Templates/` 하위 파일
 
 ### 3. 양방향 related_notes 업데이트
 

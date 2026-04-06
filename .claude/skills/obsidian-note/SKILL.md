@@ -12,8 +12,8 @@ description: Use when user mentions "Obsidian", "옵시디언", "write as note",
 | 항목 | 경로/규칙 |
 |------|-----------|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
-| 템플릿 위치 | `99.Template/Zettelkasten` |
-| 저장 위치 | `00.Inbox` |
+| 템플릿 위치 | `Templates/Zettelkasten` |
+| 저장 위치 | `Inbox` |
 | 파일명 규칙 | `{Title}.md` — 순수 제목, 접두사 없음 (예: `RAG 시스템 아키텍처.md`) |
 
 ## 노트 구조

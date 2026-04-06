@@ -29,7 +29,7 @@ if [[ "$ENABLE_VAULT_LINKER" -ne 1 ]]; then
 fi
 
 # 제외 경로
-if [[ "$FILE_PATH" =~ /99\.Template/ ]] || \
+if [[ "$FILE_PATH" =~ /Templates/ ]] || \
    [[ "$FILE_PATH" =~ /\.obsidian/ ]] || \
    [[ "$FILE_PATH" =~ Vault-Lint-Report ]]; then
     exit 0
@@ -43,7 +43,7 @@ NOTE_SUMMARY=$(head -30 "$FILE_PATH" 2>/dev/null)
 # vault의 모든 노트 목록 수집 (파일명 = 노트 제목)
 # 제외: Template, .obsidian, 자기 자신
 NOTE_LIST=$(find "$VAULT" -name "*.md" \
-    -not -path "*/99.Template/*" \
+    -not -path "*/Templates/*" \
     -not -path "*/.obsidian/*" \
     -not -name "Vault-Lint-Report*" \
     2>/dev/null | while read -r f; do

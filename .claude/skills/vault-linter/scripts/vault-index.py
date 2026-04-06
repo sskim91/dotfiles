@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """vault-index.py — Generate vault index markdown file.
 
-Writes $VAULT/00.Inbox/Vault-Index.md (full overwrite each run).
-Initializes $VAULT/00.Inbox/Vault-Log.md if missing (Claude appends entries).
+Writes $VAULT/Inbox/Vault-Index.md (full overwrite each run).
+Initializes $VAULT/Inbox/Vault-Log.md if missing (Claude appends entries).
 """
 import os
 import sys
@@ -15,11 +15,11 @@ VAULT = Path(os.environ.get(
     'VAULT',
     os.path.expanduser('~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note')
 ))
-INDEX_FILE = VAULT / '00.Inbox' / 'Vault-Index.md'
-LOG_FILE = VAULT / '00.Inbox' / 'Vault-Log.md'
+INDEX_FILE = VAULT / 'Inbox' / 'Vault-Index.md'
+LOG_FILE = VAULT / 'Inbox' / 'Vault-Log.md'
 DATE = datetime.date.today().isoformat()
 
-EXCLUDE_DIRS = {'99.Template', '98.image', '.obsidian'}
+EXCLUDE_DIRS = {'Templates', 'Attachments', '.obsidian'}
 EXCLUDE_PREFIXES = ('Vault-Lint-Report', 'Vault-Semantic-Report')
 EXCLUDE_NAMES = {'Vault-Index.md', 'Vault-Log.md'}
 

@@ -30,7 +30,7 @@ CACHE_PATH = Path(__file__).parent / "embeddings-cache.json"
 OLLAMA_URL = "http://localhost:11434/api/embed"
 MODEL = "bge-m3"
 
-EXCLUDE_DIRS = {"99.Template", ".obsidian"}
+EXCLUDE_DIRS = {"Templates", ".obsidian"}
 EXCLUDE_PREFIXES = ("Vault-Lint-Report", "Vault-Semantic-Report")
 
 
