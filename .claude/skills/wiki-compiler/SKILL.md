@@ -97,9 +97,23 @@ python3 scripts/compile-state.py diff {project}/raw/ --state {project}/wiki/_met
 이 개념들로 위키를 컴파일할까요?
 ```
 
-### Step 4: 개념별 아티클 생성
+### Step 4: 개념별 아티클 생성 (병렬 에이전트)
 
-각 개념에 대해 `wiki/concepts/{concept-name}.md`를 생성한다.
+**CRITICAL: 1 concept = 1 agent.** 각 에이전트가 해당 개념의 raw 파일을 **직접** 읽고 아티클을 작성한다.
+
+> **절대 금지**: raw를 먼저 요약하고 그 요약으로 아티클을 쓰는 "요약의 요약" 패턴.
+> 이 패턴은 코드 예시, API 상세, 실전 패턴이 소실되어 빈약한 결과를 낳는다.
+
+**실행 방법:**
+```
+Agent tool (background, parallel) × N개 개념
+├── 각 에이전트에게 전달:
+│   ├── 읽어야 할 raw 파일 경로 (전체 경로)
+│   ├── 출력 파일 경로
+│   ├── frontmatter 템플릿
+│   └── 아래 작성 원칙
+└── 모든 에이전트 완료 후 INDEX 업데이트
+```
 
 **아티클 템플릿:**
 
@@ -107,32 +121,43 @@ python3 scripts/compile-state.py diff {project}/raw/ --state {project}/wiki/_met
 ---
 title: {개념명}
 sources:
-  - raw/{source1}.md
-  - raw/{source2}.md
+  - Sources/{topic}/{source1}.md
+  - Sources/{topic}/{source2}.md
 related:
   - "[[다른-개념]]"
-last_compiled: {YYYY-MM-DDTHH:mm}
+last_compiled: {YYYY-MM-DD}
+tags:
+  - {주제}/compiled
+  - wiki/compiled
 ---
 
 ## 핵심
 
-> raw 소스들을 종합한 이 개념의 핵심 설명 (2-3 문장)
+raw 소스들을 종합한 이 개념의 핵심 설명 (2-3 문장). 출처 각주 포함.[^1]
 
 ## 상세
 
-소스별로 이 개념에 대해 말하는 내용을 종합.
-각 주장에 출처 표기: *(출처: raw/article-1.md)*
+### 섹션 제목
+
+소스의 코드 예시를 **전부** 포함하여 상세 설명.
+각 주장에 각주로 출처 표기.[^1]
 
 ## 연결
 
 - [[관련-개념A]]: 관계 설명
 - [[관련-개념B]]: 관계 설명
+
+[^1]: Sources/{topic}/{source1}.md
+[^2]: Sources/{topic}/{source2}.md
 ```
 
 **아티클 작성 원칙:**
 - raw 소스에 없는 정보를 추가하지 않는다 (환각 방지)
 - 여러 소스가 상충하면 양쪽을 모두 기록하고 차이를 명시한다
-- 각 주장의 출처를 raw 파일명으로 표기한다
+- **각주(`[^n]`)로 출처를 표기한다** (인라인 아닌 각주 방식)
+- **raw의 코드 예시를 전부 포함한다** — 코드는 절대 생략하지 않는다
+- **최소 100줄 이상** — 빈약한 아티클은 컴파일 실패로 간주한다
+- 마크다운 테이블은 반드시 헤더행, 구분행, 데이터행 형식을 준수한다
 
 ### Step 5: INDEX.md 생성
 

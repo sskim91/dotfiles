@@ -21,7 +21,7 @@ DATE = datetime.date.today().isoformat()
 
 EXCLUDE_DIRS = {'Templates', 'Attachments', '.obsidian'}
 EXCLUDE_PREFIXES = ('Vault-Lint-Report', 'Vault-Semantic-Report')
-EXCLUDE_NAMES = {'Vault-Index.md', 'Vault-Log.md'}
+EXCLUDE_NAMES = {'Vault-Index.md', 'Vault-Log.md', '_INDEX.md'}
 
 
 def extract_summary(path: Path) -> str:
