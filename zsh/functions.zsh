@@ -330,3 +330,24 @@ cdx() {
     codex "${codex_args[@]}" "$@"
   fi
 }
+
+#-------------------------------------------------------------------------------
+# Fetch DESIGN.md from awesome-design-md repo
+# Usage: design <site-name>   # e.g. design linear.app
+#        design --list         # list available sites
+#-------------------------------------------------------------------------------
+function design() {
+    local repo="VoltAgent/awesome-design-md"
+    local base="https://raw.githubusercontent.com/${repo}/main/design-md"
+
+    if [[ "$1" == "--list" ]]; then
+        gh api "repos/${repo}/contents/design-md" --jq '.[].name' | sort
+        return
+    fi
+
+    [[ -z "$1" ]] && { echo "Usage: design <site-name> | design --list"; return 1; }
+
+    curl -sL "${base}/$1/DESIGN.md" -o DESIGN.md \
+        && echo "✓ DESIGN.md ($1) → $(pwd)/DESIGN.md" \
+        || echo "✗ Failed to fetch DESIGN.md for '$1'"
+}
