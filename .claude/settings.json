@@ -119,7 +119,7 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/til-review.sh",
-            "if": "Write(*/dev/TIL/*.md)|Edit(*/dev/TIL/*.md)",
+            "if": "Write(**/dev/TIL/**/*.md)|Edit(**/dev/TIL/**/*.md)",
             "timeout": 180
           },
           {
