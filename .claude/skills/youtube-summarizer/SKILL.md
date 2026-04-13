@@ -75,7 +75,7 @@ Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note
 ### 4단계: 저장 및 검증
 
 ```
-□ Write tool로 Inbox에 저장
+□ Write tool로 _Inbox에 저장
 □ Read tool로 파일 생성 확인
 □ 실패 시 재시도
 □ 검증 완료 후 경로 안내
@@ -209,7 +209,7 @@ created: YYYY-MM-DD
 | 항목 | 값 |
 |------|-----|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
-| 저장 위치 | `Inbox` |
+| 저장 위치 | `_Inbox` |
 | 파일명 | `{Title}.md` — 순수 제목, 접두사 없음 (예: `RAG 파이프라인 구축 가이드.md`) |
 
 ---
