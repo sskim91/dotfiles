@@ -113,19 +113,16 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/file-dispatcher.sh check",
-            "timeout": 180,
-            "asyncRewake": true
+            "timeout": 180
           },
           {
             "type": "command",
             "command": "~/.claude/hooks/til-review.sh",
-            "if": "Write(**/dev/TIL/**/*.md)|Edit(**/dev/TIL/**/*.md)",
             "timeout": 180
           },
           {
             "type": "command",
             "command": "~/.claude/hooks/vault-linker.sh",
-            "if": "Write(*iCloud~md~obsidian*.md)|Edit(*iCloud~md~obsidian*.md)",
             "timeout": 10
           }
         ]
