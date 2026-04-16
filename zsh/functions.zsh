@@ -17,7 +17,7 @@ function manpdf() {
 # Convert EUC-KR to UTF-8
 #-------------------------------------------------------------------------------
 function enc() {
-    iconv -c -f EUC-KR -t UTF-8 $1 >utf8_"$1"
+    iconv -c -f EUC-KR -t UTF-8 "$1" >utf8_"$1"
 }
 
 #-------------------------------------------------------------------------------
@@ -49,7 +49,13 @@ function killport() {
     fi
 
     local PORT="$1"
-    kill $(lsof -t -i :$PORT)
+    local pids
+    pids=$(lsof -t -i :"$PORT" 2>/dev/null)
+    if [ -z "$pids" ]; then
+        echo -e "\033[0;31mNo process found on port ${PORT}\033[0m"
+        return 1
+    fi
+    echo "$pids" | xargs kill
     echo -e "\033[0;33m${PORT} port has been closed\033[0m"
 }
 
@@ -282,26 +288,23 @@ cco() {
     esac
   done
 
-  env "${env_vars[@]}" claude --model "$model" "${claude_args[@]}"
+  env "${env_vars[@]}" claude --model "$model" "${claude_args[@]}" "$@"
 }
 
 # Gemini CLI
 gem() {
   local gemini_args=()
 
-  case "$1" in
-    -y)
-      gemini_args+=("--yolo")
-      ;;
-    -r)
-      gemini_args+=("--resume")
-      ;;
-    -ry|-yr)
-      gemini_args+=("--resume" "--yolo")
-      ;;
-  esac
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y)  gemini_args+=("--yolo"); shift ;;
+      -r)  gemini_args+=("--resume"); shift ;;
+      -ry|-yr) gemini_args+=("--resume" "--yolo"); shift ;;
+      *)   break ;;
+    esac
+  done
 
-  gemini "${gemini_args[@]}"
+  gemini "${gemini_args[@]}" "$@"
 }
 
 # Codex (workspace-write sandbox + on-request approval by default)

@@ -30,7 +30,7 @@ link_file() {
 #-------------------------------------------------------------------------------
 # Check for Homebrew and install if we don't have it
 #-------------------------------------------------------------------------------
-if test ! $(which brew); then
+if ! command -v brew &>/dev/null; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -115,8 +115,15 @@ done
 echo "Linking .config directories..."
 mkdir -p "${XDG_CONFIG_HOME:=$HOME/.config}"
 for dir in nvim ghostty kitty yazi; do
-    rm -rf "$HOME/.config/$dir" 2>/dev/null
-    ln -nfs "$DOTFILES/.config/$dir" "$HOME/.config/$dir"
+    target="$HOME/.config/$dir"
+    if [ -d "$target" ] && [ ! -L "$target" ]; then
+        backup="${target}.backup.$(date +%Y%m%d%H%M%S)"
+        mv "$target" "$backup"
+        echo "  ↳ backed up existing $dir to $(basename "$backup")"
+    elif [ -L "$target" ]; then
+        rm -f "$target"
+    fi
+    ln -nfs "$DOTFILES/.config/$dir" "$target"
     echo "  ✓ .config/$dir"
 done
 
@@ -151,7 +158,7 @@ fi
 #-------------------------------------------------------------------------------
 # Install Python 3.12 using mise
 #-------------------------------------------------------------------------------
-if test ! $(mise which python 2>/dev/null); then
+if ! mise which python &>/dev/null; then
     echo "Installing Python 3.12 via mise..."
     mise install python@3.12
     mise use -g python@3.12
@@ -163,7 +170,7 @@ fi
 #-------------------------------------------------------------------------------
 echo "Setting up Python package managers..."
 
-if test ! $(which uv); then
+if ! command -v uv &>/dev/null; then
     echo "Installing uv..."
     UV_NO_MODIFY_PATH=1 curl -LsSf https://astral.sh/uv/install.sh | sh
     export PATH="$HOME/.local/bin:$PATH"
@@ -172,7 +179,7 @@ else
     echo "  ✓ uv already installed"
 fi
 
-if test ! $(which poetry); then
+if ! command -v poetry &>/dev/null; then
     echo "Installing Poetry..."
     curl -sSL https://install.python-poetry.org | sed 's/symlinks=False/symlinks=True/' | python3 -
     export PATH="$HOME/.local/bin:$PATH"
@@ -307,9 +314,9 @@ fi
 #-------------------------------------------------------------------------------
 # Make ZSH the default shell environment
 #-------------------------------------------------------------------------------
-if [ "$SHELL" != "$(which zsh)" ]; then
+if [ "$SHELL" != "$(command -v zsh)" ]; then
     echo "Changing default shell to zsh..."
-    chsh -s $(which zsh)
+    chsh -s "$(command -v zsh)"
 fi
 
 echo "✅ Dotfiles installation completed!"

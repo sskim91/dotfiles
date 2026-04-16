@@ -4,10 +4,10 @@
 export DOTFILES="$HOME/.dotfiles"
 
 # Homebrew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # mise (asdf replacement) - runtime version management
-eval "$(mise activate zsh)"
+command -v mise &>/dev/null && eval "$(mise activate zsh)"
 
 # Environment variables and PATH (EDITOR, FZF_*, MANPAGER, Claude hooks, etc.)
 source "$DOTFILES/zsh/path.zsh"
