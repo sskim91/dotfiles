@@ -214,6 +214,7 @@ mvn -T 4 test spotbugs:check
 | Security 구현 | `springboot-security` |
 | JPA 테스트 (DataJpaTest, Testcontainers) | `jpa-patterns` |
 | Core Spring Boot 패턴 | `springboot-patterns` |
+| 병합 전 다축 코드 리뷰 (correctness/security/perf) | `code-review` |
 
 ## References
 

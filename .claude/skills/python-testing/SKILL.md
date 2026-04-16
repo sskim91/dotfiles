@@ -301,6 +301,7 @@ exclude_lines = [
 | Ruff, mypy, formatting, naming | `python-code-style` |
 | Hypothesis, factory_boy, snapshot, plugins | [references/advanced-testing.md](references/advanced-testing.md) |
 | TDD methodology (general) | `test-driven-development` superpowers |
+| pytest 실패 triage, flaky 테스트, git bisect | `debugging` |
 
 ## References
 

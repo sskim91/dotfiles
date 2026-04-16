@@ -417,6 +417,7 @@ mvn jacoco:report                       # Generate HTML report
 | TDD methodology (Red-Green-Refactor general) | `test-driven-development` superpowers |
 | Build + lint + security verification | `springboot-verification` |
 | Security configuration being tested | `springboot-security` |
+| 테스트 실패 triage, 근본 원인 분석, git bisect | `debugging` |
 
 ## Gotchas
 

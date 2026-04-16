@@ -466,10 +466,10 @@
       ".worktreeinclude에 .env를 추가하면 worktree에 자동 복사"
     ]
   },
-  "alwaysThinkingEnabled": true,
   "effortLevel": "high",
   "autoUpdatesChannel": "latest",
-  "voiceEnabled": true,
+  "tui": "default",
   "autoDreamEnabled": true,
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "voiceEnabled": true
 }
