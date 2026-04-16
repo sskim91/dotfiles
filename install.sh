@@ -247,8 +247,10 @@ link_file "$DOTFILES/.codex/config/global.json" "$HOME/.codex/hooks.json"
 link_file "$DOTFILES/.codex/hooks" "$HOME/.codex/hooks"
 link_file "$DOTFILES/.codex/rules" "$HOME/.codex/rules"
 if [ ! -f "$HOME/.codex/config.toml" ]; then
-    echo "  → Create ~/.codex/config.toml from ~/.codex/config.toml.example and fill local values."
+    cp "$HOME/.codex/config.toml.example" "$HOME/.codex/config.toml"
+    echo "  ✓ config.toml created from example"
 fi
+"$DOTFILES/.codex/setup-mcp.sh"
 
 #-------------------------------------------------------------------------------
 # Link Karabiner-Elements configuration

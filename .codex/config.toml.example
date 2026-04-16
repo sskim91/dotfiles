@@ -85,6 +85,14 @@ args = ["-y", "@wonderwhy-er/desktop-commander"]
 command = "sh"
 args = ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]
 
+[mcp_servers.mermaid-mcp]
+command = "npx"
+args = ["-y", "mcp-remote", "https://mcp.mermaid.ai/mcp"]
+
+[mcp_servers.brave-search]
+command = "sh"
+args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y @brave/brave-search-mcp-server --transport stdio"]
+
 ################################################################################
 # Feature Flags
 ################################################################################
