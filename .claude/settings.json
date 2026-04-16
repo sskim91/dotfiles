@@ -131,7 +131,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash -c '\"$HOME/.local/share/mise/shims/node\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js\"'"
+    "command": "bash -c 'COLUMNS=$(tmux display-message -p \"#{pane_width}\" 2>/dev/null || tput cols </dev/tty 2>/dev/null || echo 160); export COLUMNS; exec \"$HOME/.local/share/mise/shims/node\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js\"'"
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
