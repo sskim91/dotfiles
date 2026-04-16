@@ -1,3 +1,4 @@
+#:schema https://developers.openai.com/codex/config-schema.json
 # Codex configuration (config.toml)
 #
 # Copy to ~/.codex/config.toml:
