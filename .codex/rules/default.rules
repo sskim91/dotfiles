@@ -1,0 +1,306 @@
+################################################################################
+# Codex Execution Policy Rules
+#
+# Aligned with Claude Code settings.json deny/ask patterns.
+# Precedence: forbidden > prompt > allow (most restrictive wins)
+#
+# Test: codex execpolicy check --pretty --rules ~/.codex/rules/default.rules -- <cmd>
+################################################################################
+
+
+# ==============================================================================
+# FORBIDDEN — dangerous, destructive, or irreversible
+# ==============================================================================
+
+# --- rm: use trash instead (macOS 15+ built-in /usr/bin/trash) ----------------
+prefix_rule(
+    pattern = ["rm", "-rf", "/"],
+    decision = "forbidden",
+    justification = "Recursive delete on root is catastrophic. Use 'trash' instead.",
+    match = ["rm -rf /"],
+)
+
+prefix_rule(
+    pattern = ["rm", "-rf"],
+    decision = "forbidden",
+    justification = "Use 'trash <path>' instead of rm -rf. macOS has built-in trash command.",
+    match = ["rm -rf foo", "rm -rf ~/projects"],
+    not_match = ["rm foo.txt"],
+)
+
+prefix_rule(
+    pattern = ["sudo", "rm"],
+    decision = "forbidden",
+    justification = "sudo rm is extremely dangerous. Use 'trash' or review manually.",
+    match = ["sudo rm -rf /tmp/junk", "sudo rm foo"],
+)
+
+# --- git force push ----------------------------------------------------------
+prefix_rule(
+    pattern = ["git", "push", "--force"],
+    decision = "forbidden",
+    justification = "Force push rewrites remote history. Use --force-with-lease if necessary, with manual review.",
+    match = ["git push --force", "git push --force origin main"],
+)
+
+prefix_rule(
+    pattern = ["git", "push", "-f"],
+    decision = "forbidden",
+    justification = "Force push (-f) rewrites remote history. Use --force-with-lease with manual review.",
+    match = ["git push -f", "git push -f origin main"],
+)
+
+prefix_rule(
+    pattern = ["git", "push", "--force-with-lease"],
+    decision = "forbidden",
+    justification = "Even --force-with-lease should be done manually with full context.",
+    match = ["git push --force-with-lease origin feature"],
+)
+
+# --- git destructive operations -----------------------------------------------
+prefix_rule(
+    pattern = ["git", "reset", "--hard"],
+    decision = "forbidden",
+    justification = "Hard reset discards uncommitted work permanently. Use 'git stash' first.",
+    match = ["git reset --hard", "git reset --hard HEAD~3"],
+)
+
+prefix_rule(
+    pattern = ["git", "clean", ["-fd", "-f", "-fdx"]],
+    decision = "forbidden",
+    justification = "git clean permanently deletes untracked files. Review with 'git clean -n' first.",
+    match = ["git clean -fd", "git clean -f", "git clean -fdx"],
+)
+
+prefix_rule(
+    pattern = ["git", "checkout", "."],
+    decision = "forbidden",
+    justification = "Discards all unstaged changes. Use 'git stash' to preserve work.",
+    match = ["git checkout ."],
+)
+
+# --- npm/pip dangerous --------------------------------------------------------
+prefix_rule(
+    pattern = ["npm", "publish"],
+    decision = "forbidden",
+    justification = "Publishing packages must be done manually with full review.",
+    match = ["npm publish", "npm publish --access public"],
+)
+
+prefix_rule(
+    pattern = ["pip", "install", "--user"],
+    decision = "forbidden",
+    justification = "Global user installs can break system Python. Use venv or uv.",
+    match = ["pip install --user requests"],
+)
+
+# --- system dangerous ---------------------------------------------------------
+prefix_rule(
+    pattern = ["chmod", "777"],
+    decision = "forbidden",
+    justification = "chmod 777 is a security risk. Use specific permissions (644, 755).",
+    match = ["chmod 777 file.sh"],
+)
+
+
+# ==============================================================================
+# PROMPT — needs confirmation before execution
+# ==============================================================================
+
+# --- git push (non-force) -----------------------------------------------------
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "prompt",
+    justification = "Pushing affects remote repository. Review changes before pushing.",
+    match = ["git push", "git push origin main", "git push -u origin feature"],
+)
+
+# --- git rebase ---------------------------------------------------------------
+prefix_rule(
+    pattern = ["git", "rebase"],
+    decision = "prompt",
+    justification = "Rebase rewrites commit history. Confirm branch and target.",
+    match = ["git rebase main", "git rebase -i HEAD~3"],
+)
+
+# --- git branch delete --------------------------------------------------------
+prefix_rule(
+    pattern = ["git", "branch", ["-d", "-D"]],
+    decision = "prompt",
+    justification = "Deleting branches may lose work. Confirm branch name.",
+    match = ["git branch -d feature", "git branch -D stale-branch"],
+)
+
+# --- package install ----------------------------------------------------------
+prefix_rule(
+    pattern = ["npm", ["install", "i"]],
+    decision = "prompt",
+    justification = "Package installation modifies node_modules and lock file.",
+    match = ["npm install express", "npm i react"],
+    not_match = ["npm view express"],
+)
+
+prefix_rule(
+    pattern = ["pip", "install"],
+    decision = "prompt",
+    justification = "Package installation modifies environment. Prefer uv for venvs.",
+    match = ["pip install requests", "pip install -r requirements.txt"],
+)
+
+prefix_rule(
+    pattern = ["uv", ["add", "remove"]],
+    decision = "prompt",
+    justification = "Modifying project dependencies. Review pyproject.toml changes.",
+    match = ["uv add requests", "uv remove flask"],
+)
+
+# --- gh mutations -------------------------------------------------------------
+prefix_rule(
+    pattern = ["gh", "pr", ["create", "merge", "close", "reopen"]],
+    decision = "prompt",
+    justification = "PR mutations are visible to the team. Review before executing.",
+    match = ["gh pr create", "gh pr merge 123", "gh pr close 456"],
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["create", "close", "reopen"]],
+    decision = "prompt",
+    justification = "Issue mutations are visible to the team. Review before executing.",
+    match = ["gh issue create", "gh issue close 789"],
+)
+
+# --- docker mutations ---------------------------------------------------------
+prefix_rule(
+    pattern = ["docker", ["rm", "rmi", "system"]],
+    decision = "prompt",
+    justification = "Docker cleanup operations may remove needed containers/images.",
+    match = ["docker rm my-container", "docker rmi my-image", "docker system prune"],
+)
+
+
+# ==============================================================================
+# ALLOW — safe, read-only or routine operations
+# ==============================================================================
+
+# --- git read-only ------------------------------------------------------------
+prefix_rule(
+    pattern = ["git", ["status", "log", "diff", "show", "branch", "tag", "remote", "stash"]],
+    decision = "allow",
+    match = [
+        "git status", "git log --oneline", "git diff HEAD",
+        "git show HEAD", "git branch -a", "git tag -l",
+        "git remote -v", "git stash list",
+    ],
+)
+
+prefix_rule(
+    pattern = ["git", "fetch"],
+    decision = "allow",
+    match = ["git fetch", "git fetch origin"],
+)
+
+prefix_rule(
+    pattern = ["git", ["add", "commit", "switch", "restore"]],
+    decision = "allow",
+    match = ["git add .", "git commit -m 'fix'", "git switch main", "git restore file.txt"],
+)
+
+# --- gh read-only -------------------------------------------------------------
+prefix_rule(
+    pattern = ["gh", "pr", ["view", "list", "checks", "diff", "status"]],
+    decision = "allow",
+    match = [
+        "gh pr view 123", "gh pr list", "gh pr checks",
+        "gh pr diff 123", "gh pr status",
+    ],
+)
+
+prefix_rule(
+    pattern = ["gh", "issue", ["view", "list", "status"]],
+    decision = "allow",
+    match = ["gh issue view 456", "gh issue list", "gh issue status"],
+)
+
+prefix_rule(
+    pattern = ["gh", ["api", "repo", "run", "release"]],
+    decision = "allow",
+    match = ["gh api repos/owner/repo", "gh repo view", "gh run list", "gh release list"],
+)
+
+# --- package info (read-only) -------------------------------------------------
+prefix_rule(
+    pattern = ["npm", ["view", "list", "outdated", "audit", "info"]],
+    decision = "allow",
+    match = ["npm view express", "npm list", "npm outdated", "npm audit"],
+)
+
+prefix_rule(
+    pattern = ["pip", ["index", "show", "list", "freeze"]],
+    decision = "allow",
+    match = ["pip index versions requests", "pip show flask", "pip list", "pip freeze"],
+)
+
+# --- uv (safe operations) ----------------------------------------------------
+prefix_rule(
+    pattern = ["uv", "run"],
+    decision = "allow",
+    match = ["uv run pytest", "uv run python script.py", "uv run ruff check ."],
+)
+
+prefix_rule(
+    pattern = ["uv", ["sync", "lock", "tree", "pip"]],
+    decision = "allow",
+    match = ["uv sync", "uv lock", "uv tree", "uv pip list"],
+)
+
+# --- modern CLI tools (read-only) ---------------------------------------------
+prefix_rule(
+    pattern = [["bat", "eza", "fd", "rg", "delta", "duf", "htop", "dust", "procs"]],
+    decision = "allow",
+    match = ["bat README.md", "eza -la", "fd '*.py'", "rg TODO", "duf"],
+)
+
+prefix_rule(
+    pattern = [["cat", "ls", "head", "tail", "wc", "file", "which", "whoami", "date", "pwd", "env", "printenv"]],
+    decision = "allow",
+    match = ["cat file.txt", "ls -la", "head -20 log.txt", "wc -l src/*.py", "date", "pwd"],
+)
+
+# --- build & test -------------------------------------------------------------
+prefix_rule(
+    pattern = [["make", "gradle", "mvn", "cargo"]],
+    decision = "allow",
+    match = ["make build", "gradle test", "mvn compile", "cargo build"],
+)
+
+prefix_rule(
+    pattern = ["python", ["-c", "-m"]],
+    decision = "allow",
+    match = ["python -c 'print(1)'", "python -m pytest"],
+)
+
+prefix_rule(
+    pattern = ["npx"],
+    decision = "allow",
+    match = ["npx tsc --noEmit", "npx eslint ."],
+)
+
+# --- mise (version manager) ---------------------------------------------------
+prefix_rule(
+    pattern = ["mise"],
+    decision = "allow",
+    match = ["mise list", "mise current", "mise install python@3.12"],
+)
+
+# --- docker read-only ---------------------------------------------------------
+prefix_rule(
+    pattern = ["docker", ["ps", "images", "logs", "inspect", "stats", "top"]],
+    decision = "allow",
+    match = ["docker ps", "docker images", "docker logs my-app", "docker inspect container"],
+)
+
+prefix_rule(
+    pattern = ["docker", "compose", ["ps", "logs", "config"]],
+    decision = "allow",
+    match = ["docker compose ps", "docker compose logs", "docker compose config"],
+)
