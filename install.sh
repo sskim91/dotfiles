@@ -14,7 +14,12 @@ fi
 #-------------------------------------------------------------------------------
 link_file() {
     local src="$1" dst="$2"
-    if [ -e "$src" ]; then
+    if [ -e "$src" ] || [ -L "$src" ]; then
+        if [ -e "$dst" ] && [ ! -L "$dst" ]; then
+            local backup="${dst}.backup.$(date +%Y%m%d%H%M%S)"
+            mv "$dst" "$backup"
+            echo "  ↳ backed up existing $(basename "$dst") to $(basename "$backup")"
+        fi
         ln -nfs "$src" "$dst"
         echo "  ✓ $(basename "$dst")"
     else
@@ -212,6 +217,12 @@ for f in statusline.sh settings.json CLAUDE.md; do
 done
 
 #-------------------------------------------------------------------------------
+# Link shared agent skills
+#-------------------------------------------------------------------------------
+mkdir -p "$HOME/.agents"
+link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
+
+#-------------------------------------------------------------------------------
 # Register Claude Code MCP servers (user scope)
 #-------------------------------------------------------------------------------
 "$DOTFILES/.claude/setup-mcp.sh"
@@ -232,8 +243,12 @@ link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
 echo "Setting up Codex CLI configuration..."
 mkdir -p "$HOME/.codex"
 link_file "$DOTFILES/.codex/config.toml.example" "$HOME/.codex/config.toml.example"
-mkdir -p "$HOME/.agents"
-link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
+link_file "$DOTFILES/.codex/config/global.json" "$HOME/.codex/hooks.json"
+link_file "$DOTFILES/.codex/hooks" "$HOME/.codex/hooks"
+link_file "$DOTFILES/.codex/rules" "$HOME/.codex/rules"
+if [ ! -f "$HOME/.codex/config.toml" ]; then
+    echo "  → Create ~/.codex/config.toml from ~/.codex/config.toml.example and fill local values."
+fi
 
 #-------------------------------------------------------------------------------
 # Link Karabiner-Elements configuration

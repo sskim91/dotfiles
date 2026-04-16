@@ -90,6 +90,7 @@ args = ["-c", "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAV
 
 [features]
 multi_agent = true
+codex_hooks = true
 
 ################################################################################
 # UI

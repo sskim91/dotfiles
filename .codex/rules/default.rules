@@ -1,7 +1,7 @@
 ################################################################################
 # Codex Execution Policy Rules
 #
-# Aligned with Claude Code settings.json deny/ask patterns.
+# Codex execution policy for common read-only, prompted, and forbidden commands.
 # Precedence: forbidden > prompt > allow (most restrictive wins)
 #
 # Test: codex execpolicy check --pretty --rules ~/.codex/rules/default.rules -- <cmd>

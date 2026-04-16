@@ -1,0 +1,29 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/pre-commit-gate.sh\"",
+            "statusMessage": "Running pre-commit security checks",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/prompt-rewriter.sh\"",
+            "statusMessage": "Preparing prompt rewrite context",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
