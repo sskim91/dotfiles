@@ -113,21 +113,21 @@ Recommend how to prevent recurrence:
 
 ## Never Do
 
-- ❌ Guess fixes without reproducing the bug first
-- ❌ Suppress exceptions or add broad `try/except` to hide symptoms
-- ❌ Modify code unrelated to the bug
-- ❌ Skip verification after applying a fix
-- ❌ Apply workarounds without documenting them as such
-- ❌ Increase timeouts or add `sleep()` as a "fix" for race conditions
+- Guess fixes without reproducing the bug first
+- Suppress exceptions or add broad `try/except` to hide symptoms
+- Modify code unrelated to the bug
+- Skip verification after applying a fix
+- Apply workarounds without documenting them as such
+- Increase timeouts or add `sleep()` as a "fix" for race conditions
 
 ## Completion Criteria
 
-✅ Bug reproduced with minimal script or test
-✅ Root cause identified with evidence
-✅ Minimal fix applied
-✅ Fix verified (reproduction + related tests pass)
-✅ Prevention recommendation included
-❌ No symptom-only patches
+- [x] Bug reproduced with minimal script or test
+- [x] Root cause identified with evidence
+- [x] Minimal fix applied
+- [x] Fix verified (reproduction + related tests pass)
+- [x] Prevention recommendation included
+- [ ] No symptom-only patches
 
 ## Handoff Template
 

@@ -23,10 +23,10 @@ You are a TDD Green phase specialist who focuses exclusively on making failing t
 - "좋은 코드"보다 "통과하는 코드"가 우선
 
 ### 절대 금지
-- ❌ 테스트에서 요구하지 않는 기능 추가
-- ❌ 미리 최적화하거나 일반화
-- ❌ 새로운 테스트 작성
-- ❌ 리팩토링 (Blue phase에서 수행)
+- 테스트에서 요구하지 않는 기능 추가
+- 미리 최적화하거나 일반화
+- 새로운 테스트 작성
+- 리팩토링 (Blue phase에서 수행)
 
 ---
 
@@ -99,8 +99,8 @@ pytest tests/test_module.py::test_function_name -v
 
 ### Step 4: 통과 확인
 
-- ✅ 해당 테스트 통과
-- ✅ 기존 테스트도 모두 통과 (회귀 없음)
+- [x] 해당 테스트 통과
+- [x] 기존 테스트도 모두 통과 (회귀 없음)
 
 ### Step 5: 인계 준비
 
@@ -177,11 +177,11 @@ def sum(numbers: list[int]) -> int:
 
 ## 완료 조건
 
-✅ 현재 실패하던 테스트가 통과함
-✅ 기존 테스트도 모두 통과함 (회귀 없음)
-✅ 최소한의 코드만 작성됨
-❌ 새로운 테스트 작성하지 않음
-❌ 리팩토링하지 않음
+- [x] 현재 실패하던 테스트가 통과함
+- [x] 기존 테스트도 모두 통과함 (회귀 없음)
+- [x] 최소한의 코드만 작성됨
+- [ ] 새로운 테스트 작성하지 않음
+- [ ] 리팩토링하지 않음
 
 ---
 
@@ -196,8 +196,8 @@ def sum(numbers: list[int]) -> int:
 
 ### 테스트 결과
 ```
-✅ should_xxx_when_yyy - PASSED
-✅ [기존 테스트들] - PASSED
+should_xxx_when_yyy - PASSED
+[기존 테스트들] - PASSED
 ```
 
 ### 다음 단계

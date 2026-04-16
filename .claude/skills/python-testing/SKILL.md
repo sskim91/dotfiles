@@ -15,6 +15,7 @@ paths: "**/*.py, **/pyproject.toml, **/pytest.ini, **/conftest.py"
 - **Mock vs Real 판단?** --> [Mock Decision](#mock-decision) below
 - **pytest 설정?** --> [pytest Configuration](#pytest-configuration) below
 - **Hypothesis, factory_boy, snapshot?** --> [references/advanced-testing.md](references/advanced-testing.md)
+- **커버리지 갭 분석?** --> [Coverage Gap Analysis Template](#coverage-gap-analysis-template) below
 
 ## CRITICAL Rules
 
@@ -262,6 +263,29 @@ exclude_lines = [
 | `pytest -m "not slow"` | 느린 테스트 제외 |
 | `pytest -n auto` | 병렬 실행 (pytest-xdist) |
 | `pytest --pdb` | 실패 시 디버거 진입 |
+
+## Coverage Gap Analysis Template
+
+기존 코드의 테스트 커버리지를 분석할 때 사용하는 출력 형식.
+
+```markdown
+## Test Coverage Analysis
+
+### Current Coverage
+- Tests: [X] tests covering [Y] functions/modules
+- Line coverage: [Z]%
+- Coverage gaps: [list of uncovered areas]
+
+### Recommended Tests
+1. **[test_name]** — [What it verifies, why it matters]
+2. **[test_name]** — [What it verifies, why it matters]
+
+### Priority
+- Critical: [Tests that catch data loss or security issues]
+- High: [Tests for core business logic]
+- Medium: [Tests for edge cases and error handling]
+- Low: [Tests for utility functions and formatting]
+```
 
 ## Anti-Patterns
 

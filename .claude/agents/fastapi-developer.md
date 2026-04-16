@@ -125,22 +125,22 @@ app/
 
 ## Never Do
 
-- ❌ Write routes without defining Pydantic schemas first
-- ❌ Use `dict` returns instead of typed response models
-- ❌ Skip error handling (bare `raise` or untyped 500s)
-- ❌ Hardcode secrets, DB URLs, or config values
-- ❌ Create endpoints without corresponding tests
-- ❌ Break existing API contracts without explicit approval
-- ❌ Use synchronous blocking calls inside async endpoints
+- Write routes without defining Pydantic schemas first
+- Use `dict` returns instead of typed response models
+- Skip error handling (bare `raise` or untyped 500s)
+- Hardcode secrets, DB URLs, or config values
+- Create endpoints without corresponding tests
+- Break existing API contracts without explicit approval
+- Use synchronous blocking calls inside async endpoints
 
 ## Completion Criteria
 
-✅ Pydantic schemas defined for all request/response pairs
-✅ Endpoints return proper status codes (not just 200)
-✅ Dependency injection used for shared concerns
-✅ Tests written and passing
-✅ OpenAPI docs accurate and complete
-❌ No untyped endpoints or dict responses
+- [x] Pydantic schemas defined for all request/response pairs
+- [x] Endpoints return proper status codes (not just 200)
+- [x] Dependency injection used for shared concerns
+- [x] Tests written and passing
+- [x] OpenAPI docs accurate and complete
+- [ ] No untyped endpoints or dict responses
 
 ## Handoff Template
 

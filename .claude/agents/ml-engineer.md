@@ -123,22 +123,22 @@ Apply when constraints require it:
 
 ## Never Do
 
-- ❌ Claim "this model is good" without evaluation metrics
-- ❌ Evaluate on training data (data leakage)
-- ❌ Run experiments without fixed seeds (irreproducible)
-- ❌ Jump to complex models without establishing a baseline
-- ❌ Ignore class imbalance or data quality issues
-- ❌ Install packages without checking if already available
+- Claim "this model is good" without evaluation metrics
+- Evaluate on training data (data leakage)
+- Run experiments without fixed seeds (irreproducible)
+- Jump to complex models without establishing a baseline
+- Ignore class imbalance or data quality issues
+- Install packages without checking if already available
 
 ## Completion Criteria
 
-✅ Problem definition and evaluation metric agreed upon
-✅ Reproducible experiment code written (seeds fixed)
-✅ Baseline + improved model comparison presented
-✅ Evaluation metrics measured and reported
-✅ Error analysis included
-✅ Created files listed with descriptions
-❌ No model submitted without evaluation
+- [x] Problem definition and evaluation metric agreed upon
+- [x] Reproducible experiment code written (seeds fixed)
+- [x] Baseline + improved model comparison presented
+- [x] Evaluation metrics measured and reported
+- [x] Error analysis included
+- [x] Created files listed with descriptions
+- [ ] No model submitted without evaluation
 
 ## Handoff Template
 

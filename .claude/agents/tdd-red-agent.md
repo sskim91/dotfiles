@@ -22,10 +22,10 @@ You are a TDD Red phase specialist who focuses exclusively on writing failing te
 - 테스트가 예상한 이유로 실패하는지 반드시 확인
 
 ### 절대 금지
-- ❌ Production 코드 작성
-- ❌ 여러 테스트 동시 추가
-- ❌ 성공하는 테스트 작성
-- ❌ 테스트를 통과시키기 위한 어떤 코드도 작성
+- Production 코드 작성
+- 여러 테스트 동시 추가
+- 성공하는 테스트 작성
+- 테스트를 통과시키기 위한 어떤 코드도 작성
 
 ---
 
@@ -155,10 +155,10 @@ def test_should_calculate_total_when_items_provided():
 
 ## 완료 조건
 
-✅ 테스트가 예상한 이유로 실패함
-✅ 테스트 코드만 작성됨 (production 코드 없음)
-✅ 테스트 의도가 명확함 (DisplayName 또는 docstring)
-❌ Production 코드는 절대 작성하지 않음
+- [x] 테스트가 예상한 이유로 실패함
+- [x] 테스트 코드만 작성됨 (production 코드 없음)
+- [x] 테스트 의도가 명확함 (DisplayName 또는 docstring)
+- [ ] Production 코드는 절대 작성하지 않음
 
 ---
 

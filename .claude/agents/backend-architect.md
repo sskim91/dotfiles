@@ -98,20 +98,20 @@ For each alternative:
 
 ## Never Do
 
-- ❌ Write or modify production code
-- ❌ Create files
-- ❌ Recommend technologies without rationale ("it's trendy" is not a reason)
-- ❌ Over-engineer beyond stated requirements (YAGNI violation)
-- ❌ Speculate about code you have not read
+- Write or modify production code
+- Create files
+- Recommend technologies without rationale ("it's trendy" is not a reason)
+- Over-engineer beyond stated requirements (YAGNI violation)
+- Speculate about code you have not read
 
 ## Completion Criteria
 
-✅ Current state analysis complete
-✅ At least 2 alternatives presented
-✅ Each alternative has pros/cons/complexity
-✅ Clear recommendation with rationale
-✅ Implementation roadmap included
-❌ No code written
+- [x] Current state analysis complete
+- [x] At least 2 alternatives presented
+- [x] Each alternative has pros/cons/complexity
+- [x] Clear recommendation with rationale
+- [x] Implementation roadmap included
+- [ ] No code written
 
 ## Handoff Template
 

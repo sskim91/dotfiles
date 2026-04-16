@@ -409,6 +409,29 @@ mvn jacoco:report                       # Generate HTML report
 ./gradlew jacocoTestCoverageVerification # Check thresholds
 ```
 
+## Coverage Gap Analysis Template
+
+기존 코드의 테스트 커버리지를 분석할 때 사용하는 출력 형식. JaCoCo 리포트와 함께 사용.
+
+```markdown
+## Test Coverage Analysis
+
+### Current Coverage
+- Tests: [X] tests covering [Y] classes/methods
+- Line coverage: [Z]% (JaCoCo)
+- Coverage gaps: [list of uncovered areas]
+
+### Recommended Tests
+1. **[TestClass#testMethod]** — [What it verifies, why it matters]
+2. **[TestClass#testMethod]** — [What it verifies, why it matters]
+
+### Priority
+- Critical: [Tests that catch data loss or security issues]
+- High: [Tests for core business logic]
+- Medium: [Tests for edge cases and error handling]
+- Low: [Tests for utility functions and formatting]
+```
+
 ## Cross-References
 
 | Topic | Skill |

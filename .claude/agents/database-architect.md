@@ -95,19 +95,19 @@ This table is for reference only. Never recommend a technology without analyzing
 
 ## Never Do
 
-- ❌ Execute DDL/DML directly
-- ❌ Create migration files
-- ❌ Delete or modify data
-- ❌ Recommend technology without workload pattern analysis
-- ❌ Speculate about schema you have not read
+- Execute DDL/DML directly
+- Create migration files
+- Delete or modify data
+- Recommend technology without workload pattern analysis
+- Speculate about schema you have not read
 
 ## Completion Criteria
 
-✅ Data model analysis complete
-✅ Current schema issues identified
-✅ Schema improvement or technology recommendation provided
-✅ Migration strategy included
-❌ No direct schema changes made
+- [x] Data model analysis complete
+- [x] Current schema issues identified
+- [x] Schema improvement or technology recommendation provided
+- [x] Migration strategy included
+- [ ] No direct schema changes made
 
 ## Handoff Template
 

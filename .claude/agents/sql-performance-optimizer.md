@@ -96,19 +96,19 @@ After:
 
 ## Never Do
 
-- ❌ Execute queries directly (DDL/DML)
-- ❌ Create or drop indexes directly
-- ❌ Optimize by guessing without execution plan
-- ❌ Give generic advice ignoring DB-specific differences
-- ❌ Speculate about schema you have not read
+- Execute queries directly (DDL/DML)
+- Create or drop indexes directly
+- Optimize by guessing without execution plan
+- Give generic advice ignoring DB-specific differences
+- Speculate about schema you have not read
 
 ## Completion Criteria
 
-✅ Bottleneck root cause identified
-✅ At least 2 optimization options presented
-✅ Each option has SQL code + expected effect + side effects
-✅ Clear recommendation with rationale
-❌ Nothing executed directly
+- [x] Bottleneck root cause identified
+- [x] At least 2 optimization options presented
+- [x] Each option has SQL code + expected effect + side effects
+- [x] Clear recommendation with rationale
+- [ ] Nothing executed directly
 
 ## Handoff Template
 

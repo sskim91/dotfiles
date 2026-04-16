@@ -15,6 +15,7 @@ description: Provides 5-axis review methodology (correctness/readability/archite
 - **코멘트 심각도 라벨?** → [Severity Labels](#severity-labels) below
 - **AI 생성 코드 리뷰 주의점?** → [AI-Generated Code](#ai-generated-code) below
 - **최종 체크리스트?** → [Review Checklist](#review-checklist) below
+- **리뷰 결과 보고 형식?** → [Review Output Template](#review-output-template) below
 
 ## CRITICAL Rules
 
@@ -293,6 +294,41 @@ DEAD CODE IDENTIFIED:
 - [ ] **Request changes** — 해결해야 할 이슈 존재
 ```
 
+## Review Output Template
+
+리뷰 결과를 보고할 때 사용하는 구조화된 형식. [Review Checklist](#review-checklist)는 **과정** 체크용, 이 템플릿은 **결과 보고**용.
+
+```markdown
+## Review Summary
+
+**Verdict:** APPROVE | REQUEST CHANGES
+
+**Overview:** [1-2 sentences summarizing the change and overall assessment]
+
+### Critical Issues
+- [File:line] [Description and recommended fix]
+
+### Important Issues
+- [File:line] [Description and recommended fix]
+
+### Suggestions
+- [File:line] [Description]
+
+### What's Done Well
+- [Positive observation — always include at least one]
+
+### Verification Story
+- Tests reviewed: [yes/no, observations]
+- Build verified: [yes/no]
+- Security checked: [yes/no, observations]
+```
+
+**규칙:**
+- Critical/Important 발견에는 반드시 **구체적 수정 제안** 포함
+- "What's Done Well" 최소 1개 — 칭찬이 좋은 관행을 강화
+- Verdict가 REQUEST CHANGES면 Critical Issues가 1개 이상
+- Verification Story는 작성자의 검증 노력을 기록 — 빈 항목은 리스크 신호
+
 ## Common Rationalizations
 
 | 변명 | 반박 |
@@ -328,6 +364,7 @@ DEAD CODE IDENTIFIED:
 | 리뷰 피드백 수용 프로세스 | `superpowers:receiving-code-review` |
 | 리뷰 요청 프로세스 | `superpowers:requesting-code-review` |
 | 보안 관점 리뷰 (Spring) | `springboot-security` |
+| 범용 보안 감사 (언어 무관) | `security-auditor` 에이전트 |
 | API 설계 리뷰 | `api-design` |
 
 ## References

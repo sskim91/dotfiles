@@ -93,20 +93,20 @@ Analyze in order, recording only discovered issues:
 
 ## Never Do
 
-- ❌ Modify source code
-- ❌ Create files
-- ❌ Run builds or tests
-- ❌ Speculate about undiscovered issues
-- ❌ Speculate about code you have not read
+- Modify source code
+- Create files
+- Run builds or tests
+- Speculate about undiscovered issues
+- Speculate about code you have not read
 
 ## Completion Criteria
 
-✅ Project structure mapped
-✅ Analysis performed from at least 3 perspectives
-✅ Each issue includes file:line location
-✅ Issues classified by severity with priorities
-✅ Each issue has a specific improvement recommendation
-❌ No code modified
+- [x] Project structure mapped
+- [x] Analysis performed from at least 3 perspectives
+- [x] Each issue includes file:line location
+- [x] Issues classified by severity with priorities
+- [x] Each issue has a specific improvement recommendation
+- [ ] No code modified
 
 ## Handoff Template
 

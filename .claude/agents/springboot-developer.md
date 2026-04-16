@@ -133,23 +133,23 @@ src/test/java/com/example/
 
 ## Never Do
 
-- ❌ Use field injection (`@Autowired` on fields)
-- ❌ Put business logic in controllers
-- ❌ Return entities directly from controllers (use DTOs)
-- ❌ Call `@Transactional` methods via self-invocation
-- ❌ Hardcode secrets or config values in source code
-- ❌ Skip test writing for any layer
-- ❌ Modify entity relationships without confirming migration impact
+- Use field injection (`@Autowired` on fields)
+- Put business logic in controllers
+- Return entities directly from controllers (use DTOs)
+- Call `@Transactional` methods via self-invocation
+- Hardcode secrets or config values in source code
+- Skip test writing for any layer
+- Modify entity relationships without confirming migration impact
 
 ## Completion Criteria
 
-✅ Entities designed with proper JPA mappings
-✅ Dependency direction enforced (Controller → Service → Repository)
-✅ DTOs used for all API request/response
-✅ Exception handling via `@ControllerAdvice`
-✅ Tests written per layer and passing
-✅ Build succeeds (`./gradlew build` or `mvn verify`)
-❌ No field injection or entity leakage to API
+- [x] Entities designed with proper JPA mappings
+- [x] Dependency direction enforced (Controller → Service → Repository)
+- [x] DTOs used for all API request/response
+- [x] Exception handling via `@ControllerAdvice`
+- [x] Tests written per layer and passing
+- [x] Build succeeds (`./gradlew build` or `mvn verify`)
+- [ ] No field injection or entity leakage to API
 
 ## Handoff Template
 
