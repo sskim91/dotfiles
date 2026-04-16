@@ -1,0 +1,7 @@
+# Allow read-only git commands in Plan Mode for research
+[[rule]]
+toolName = "run_shell_command"
+commandPrefix = ["git status", "git diff", "git log", "git show", "git branch", "git blame"]
+decision = "allow"
+priority = 100
+modes = ["plan"]

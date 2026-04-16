@@ -1,0 +1,6 @@
+# Allow custom subagents in Plan Mode for research
+[[rule]]
+toolName = ["security-auditor", "backend-architect", "database-architect"]
+decision = "allow"
+priority = 100
+modes = ["plan"]

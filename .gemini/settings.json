@@ -107,6 +107,7 @@
     }
   },
   "general": {
+    "enableNotifications": true,
     "sessionRetention": {
       "enabled": true,
       "maxAge": "30d"
@@ -117,7 +118,13 @@
       "respectGitIgnore": false
     }
   },
+  "ui": {
+    "theme": "Tokyo Night"
+  },
   "model": {
     "name": "gemini-3-flash-preview"
+  },
+  "experimental": {
+    "modelSteering": true
   }
 }
