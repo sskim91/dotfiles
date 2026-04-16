@@ -49,6 +49,9 @@
     },
     "folderTrust": {
       "enabled": true
+    },
+    "environmentVariableRedaction": {
+      "enabled": true
     }
   },
   "mcpServers": {
@@ -104,9 +107,7 @@
     }
   },
   "general": {
-    "previewFeatures": true,
     "sessionRetention": {
-      "warningAcknowledged": true,
       "enabled": true,
       "maxAge": "30d"
     }
