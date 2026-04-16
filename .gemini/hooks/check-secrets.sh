@@ -79,8 +79,8 @@ if [[ -n "$FOUND_SECRETS" ]]; then
     echo "Use environment variables instead of hardcoding secrets." >&2
 
     # Block the operation (exit 2)
-    echo '{"decision": "block", "reason": "Potential hardcoded secrets detected. Use environment variables instead."}'
-    exit 2
+    echo '{"decision": "deny", "reason": "Potential hardcoded secrets detected. Use environment variables instead."}'
+    exit 0
 fi
 
 # Allow the operation

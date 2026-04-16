@@ -241,6 +241,7 @@ echo "Setting up Gemini configuration..."
 mkdir -p "$HOME/.gemini"
 link_file "$DOTFILES/.gemini/settings.json" "$HOME/.gemini/settings.json"
 link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
+link_file "$DOTFILES/.gemini/hooks" "$HOME/.gemini/hooks"
 # skills는 ~/.agents/skills에서 로드됨 (Gemini CLI가 자동 탐색)
 # ~/.gemini/skills에 중복 링크하면 Skill conflict 발생
 

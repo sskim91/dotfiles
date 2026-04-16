@@ -21,8 +21,8 @@ if echo "$FILE_PATH" | grep -qE "$ENV_PATTERNS"; then
     echo "🚨 Environment file detected: $FILE_PATH" >&2
     echo "Use .env.example with placeholder values instead." >&2
 
-    echo '{"decision": "block", "reason": "Environment/config files (.env, secrets.json, etc.) should not be created with real values. Create .env.example with placeholders instead."}'
-    exit 2
+    echo '{"decision": "deny", "reason": "Environment/config files (.env, secrets.json, etc.) should not be created with real values. Create .env.example with placeholders instead."}'
+    exit 0
 fi
 
 echo '{}'

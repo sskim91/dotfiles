@@ -66,8 +66,8 @@ priority = 100
 [[rule]]
 toolName = "run_shell_command"
 commandPrefix = "rm"
-decision = "allow"
-priority = 100
+decision = "ask_user"
+priority = 200
 
 # --- Text Processing ---
 

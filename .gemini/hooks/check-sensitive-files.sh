@@ -17,8 +17,8 @@ if echo "$FILE_PATH" | grep -qE "$SENSITIVE_PATTERNS"; then
     echo "🚨 Sensitive file detected: $FILE_PATH" >&2
     echo "Private keys and certificates should not be created by AI." >&2
 
-    echo '{"decision": "block", "reason": "Sensitive file type (.pem, .key, .crt, etc.) should not be created. Use proper key management tools instead."}'
-    exit 2
+    echo '{"decision": "deny", "reason": "Sensitive file type (.pem, .key, .crt, etc.) should not be created. Use proper key management tools instead."}'
+    exit 0
 fi
 
 echo '{}'

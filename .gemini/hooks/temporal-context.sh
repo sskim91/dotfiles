@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # SessionStart hook to inject current date/time context
-# Gemini CLI version
+# Gemini CLI version — uses hookSpecificOutput.additionalContext per spec
 
-CURRENT_TIME=$(date '+%H:%M:%S %Y-%m-%d')
+CURRENT_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
 
 echo "📅 Current time: $CURRENT_TIME" >&2
 
-# Gemini CLI format
 cat <<EOF
 {
-  "context": "Current time and date: $CURRENT_TIME"
+  "hookSpecificOutput": {
+    "additionalContext": "Current date and time: $CURRENT_TIME"
+  }
 }
 EOF
