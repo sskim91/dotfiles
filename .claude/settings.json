@@ -466,7 +466,7 @@
       ".worktreeinclude에 .env를 추가하면 worktree에 자동 복사"
     ]
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "autoUpdatesChannel": "latest",
   "tui": "default",
   "autoDreamEnabled": true,
