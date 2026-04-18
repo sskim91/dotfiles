@@ -216,12 +216,28 @@ fi
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code configuration..."
 mkdir -p "$HOME/.claude"
-for dir in agents hooks output-styles skills rules; do
+for dir in agents hooks output-styles rules; do
     link_file "$DOTFILES/.claude/$dir" "$HOME/.claude/$dir"
 done
 for f in statusline.sh settings.json CLAUDE.md; do
     link_file "$DOTFILES/.claude/$f" "$HOME/.claude/$f"
 done
+
+# Per-skill symlinks: ~/.claude/skills/ is a real directory so external tools
+# (gstack, etc.) can write siblings without touching dotfiles.
+echo "Linking custom skills individually..."
+mkdir -p "$HOME/.claude/skills"
+# If old setup left a directory-level symlink, replace it with a real directory.
+if [ -L "$HOME/.claude/skills" ]; then
+    unlink "$HOME/.claude/skills"
+    mkdir -p "$HOME/.claude/skills"
+fi
+for src in "$DOTFILES/.claude/skills"/*/; do
+    [ -d "$src" ] || continue
+    name=$(basename "$src")
+    ln -nfs "$src" "$HOME/.claude/skills/$name"
+done
+echo "  ✓ custom skills linked"
 
 #-------------------------------------------------------------------------------
 # Link shared agent skills
