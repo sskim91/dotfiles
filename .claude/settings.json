@@ -165,8 +165,7 @@
     "aws-serverless@agent-plugins-for-aws": true,
     "deploy-on-aws@agent-plugins-for-aws": true,
     "codex@openai-codex": true,
-    "postman@claude-plugins-official": true,
-    "learning-output-style@claude-plugins-official": true
+    "postman@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "pm-skills": {
