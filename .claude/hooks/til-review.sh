@@ -46,6 +46,36 @@ fi
 CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.5}"
 GEMINI_MODEL="${TIL_GEMINI_MODEL:-gemini-3-flash-preview}"
 
+# Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
+# Hook timeout in settings.json must be > 2 × max(CODEX_TIMEOUT, GEMINI_TIMEOUT).
+CODEX_TIMEOUT=${TIL_CODEX_TIMEOUT:-120}
+GEMINI_TIMEOUT=${TIL_GEMINI_TIMEOUT:-120}
+
+# Portable timeout (no coreutils dependency on macOS).
+# Returns 124 on timeout (GNU convention), otherwise the command's exit code.
+run_with_timeout() {
+	local secs=$1; shift
+	"$@" &
+	local pid=$!
+	(
+		sleep "$secs"
+		kill -TERM "$pid" 2>/dev/null && {
+			sleep 2
+			kill -KILL "$pid" 2>/dev/null
+		}
+	) &
+	local watchdog=$!
+	wait "$pid" 2>/dev/null
+	local rc=$?
+	kill -TERM "$watchdog" 2>/dev/null
+	wait "$watchdog" 2>/dev/null
+	# 143 = 128 + SIGTERM; treat as timeout
+	if [[ $rc -eq 143 || $rc -eq 137 ]]; then
+		return 124
+	fi
+	return $rc
+}
+
 # Shared review rubric. Keep model-specific execution rules in the wrappers below.
 BASE_REVIEW_RUBRIC_PROMPT="**오늘 날짜: $(date +%Y-%m-%d)**
 
@@ -207,9 +237,8 @@ $OUTPUT_FORMAT_PROMPT"
 TMPDIR_REVIEW=$(mktemp -d)
 trap 'rm -rf "$TMPDIR_REVIEW"' EXIT
 
-run_codex() {
-	# --output-last-message isolates the final response from Codex's reasoning/session logs
-	(cd "$TIL_DIR" && cat "$FILE_PATH" | \
+_codex_invoke() {
+	cd "$TIL_DIR" && cat "$FILE_PATH" | \
 		codex exec -m "$CODEX_MODEL" \
 			--ephemeral \
 			--sandbox read-only \
@@ -217,13 +246,45 @@ run_codex() {
 			--output-last-message "$TMPDIR_REVIEW/codex.txt" \
 			-c 'approval_policy="never"' \
 			-c 'web_search="live"' \
-			"$CODEX_REVIEW_PROMPT" >/dev/null 2>&1)
+			"$CODEX_REVIEW_PROMPT" \
+			>"$TMPDIR_REVIEW/codex.stdout" 2>"$TMPDIR_REVIEW/codex.err"
+}
+
+run_codex() {
+	run_with_timeout "$CODEX_TIMEOUT" _codex_invoke
+	local rc=$?
+	if [[ $rc -eq 124 ]]; then
+		echo "⚠️  Codex 1차 timeout(${CODEX_TIMEOUT}s) — 자동 재시도 중..." >&2
+		run_with_timeout "$CODEX_TIMEOUT" _codex_invoke
+		rc=$?
+	fi
+	if [[ $rc -eq 124 ]]; then
+		printf '## Blocker\n없음\n\n## Refinement\n없음\n\n## Insight\n없음\n\nSTATUS: ERROR\n[SYSTEM] Codex 리뷰가 %ss × 2회 모두 timeout되었습니다. 리뷰 인프라 장애이므로 문서 수정으로 해결되지 않습니다. 다음 파일로 넘어가지 말고 사용자에게 보고하세요.\n' \
+			"$CODEX_TIMEOUT" > "$TMPDIR_REVIEW/codex.txt"
+	fi
+	return $rc
+}
+
+_gemini_invoke() {
+	cd "$TIL_DIR" && cat "$FILE_PATH" | \
+		gemini -y --sandbox false -m "$GEMINI_MODEL" \
+			"$GEMINI_REVIEW_PROMPT" \
+			>"$TMPDIR_REVIEW/gemini.txt" 2>"$TMPDIR_REVIEW/gemini.err"
 }
 
 run_gemini() {
-	(cd "$TIL_DIR" && cat "$FILE_PATH" | \
-		gemini -y --sandbox false -m "$GEMINI_MODEL" \
-			"$GEMINI_REVIEW_PROMPT" 2>/dev/null > "$TMPDIR_REVIEW/gemini.txt")
+	run_with_timeout "$GEMINI_TIMEOUT" _gemini_invoke
+	local rc=$?
+	if [[ $rc -eq 124 ]]; then
+		echo "⚠️  Gemini 1차 timeout(${GEMINI_TIMEOUT}s) — 자동 재시도 중..." >&2
+		run_with_timeout "$GEMINI_TIMEOUT" _gemini_invoke
+		rc=$?
+	fi
+	if [[ $rc -eq 124 ]]; then
+		printf '## Blocker\n없음\n\n## Refinement\n없음\n\n## Insight\n없음\n\nSTATUS: ERROR\n[SYSTEM] Gemini 리뷰가 %ss × 2회 모두 timeout되었습니다. 리뷰 인프라 장애이므로 문서 수정으로 해결되지 않습니다. 다음 파일로 넘어가지 말고 사용자에게 보고하세요.\n' \
+			"$GEMINI_TIMEOUT" > "$TMPDIR_REVIEW/gemini.txt"
+	fi
+	return $rc
 }
 
 case "$TIL_REVIEW_MODE" in
@@ -266,6 +327,12 @@ esac
 		echo ""
 		echo "─── 1️⃣ Codex ($CODEX_MODEL) Primary Review ───"
 		echo "Codex review failed or produced no output. exit_status=${CODEX_STATUS:-unknown}"
+		if [[ -s "$TMPDIR_REVIEW/codex.err" ]]; then
+			echo "--- codex stderr (last 20 lines) ---"
+			tail -n 20 "$TMPDIR_REVIEW/codex.err"
+		fi
+		echo "STATUS: ERROR"
+		echo "[SYSTEM] 리뷰 도구 자체가 실패했습니다. 문서 수정으로 해결되지 않으니 사용자에게 보고하세요."
 	fi
 
 	if [[ -s "$TMPDIR_REVIEW/gemini.txt" ]]; then
@@ -276,6 +343,12 @@ esac
 		echo ""
 		echo "─── 2️⃣ Gemini ($GEMINI_MODEL) Verification ───"
 		echo "Gemini review failed or produced no output. exit_status=${GEMINI_STATUS:-unknown}"
+		if [[ -s "$TMPDIR_REVIEW/gemini.err" ]]; then
+			echo "--- gemini stderr (last 20 lines) ---"
+			tail -n 20 "$TMPDIR_REVIEW/gemini.err"
+		fi
+		echo "STATUS: ERROR"
+		echo "[SYSTEM] 리뷰 도구 자체가 실패했습니다. 문서 수정으로 해결되지 않으니 사용자에게 보고하세요."
 	fi
 
 	echo ""
