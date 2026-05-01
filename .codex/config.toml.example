@@ -100,6 +100,9 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 [features]
 multi_agent = true
 codex_hooks = true
+# Persisted /goal workflows (Codex 0.128.0+)
+# TUI commands: /goal create | /goal pause | /goal resume | /goal clear
+goals = true
 
 ################################################################################
 # UI
