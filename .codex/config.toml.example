@@ -65,6 +65,9 @@ file_opener = "vscode"
 # Web search mode: disabled | cached | live. Default: "cached"
 web_search = "cached"
 
+# Suppress "Under-development features enabled" banner for opt-in unstable features (e.g. goals)
+suppress_unstable_features_warning = true
+
 ################################################################################
 # MCP Servers
 ################################################################################
