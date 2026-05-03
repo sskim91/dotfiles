@@ -1,40 +1,45 @@
 #!/bin/bash
 
-# File dispatcher that routes to appropriate language-specific hooks based on file extension
+# File dispatcher that routes to appropriate language-specific hooks based on file extension.
+# On lint failure, surfaces the child script's output to Claude inline via
+# PostToolUse hookSpecificOutput.updatedToolOutput (Claude Code 2.1.121+).
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
-HOOK_TYPE="${1:-check}"  # check or review
+HOOK_TYPE="${1:-check}"
 
-# Determine file extension - TypeScript and JavaScript are now separate
-if [[ "$FILE_PATH" =~ \.py$ ]]; then
-	LANGUAGE="python"
-elif [[ "$FILE_PATH" =~ \.java$ ]]; then
-	LANGUAGE="java"
-elif [[ "$FILE_PATH" =~ \.(ts|tsx)$ ]]; then
-	LANGUAGE="typescript"
-elif [[ "$FILE_PATH" =~ \.(js|jsx|mjs|cjs)$ ]]; then
-	LANGUAGE="javascript"
-elif [[ "$FILE_PATH" =~ \.(go)$ ]]; then
-	LANGUAGE="go"
-elif [[ "$FILE_PATH" =~ \.(rs)$ ]]; then
-	LANGUAGE="rust"
-elif [[ "$FILE_PATH" =~ \.(cpp|cc|cxx|h|hpp)$ ]]; then
-	LANGUAGE="cpp"
-else
-	# No specific handler for this file type
-	exit 0
-fi
+case "$FILE_PATH" in
+	*.py) LANGUAGE="python" ;;
+	*.java) LANGUAGE="java" ;;
+	*.ts|*.tsx) LANGUAGE="typescript" ;;
+	*.js|*.jsx|*.mjs|*.cjs) LANGUAGE="javascript" ;;
+	*.go) LANGUAGE="go" ;;
+	*.rs) LANGUAGE="rust" ;;
+	*.cpp|*.cc|*.cxx|*.h|*.hpp) LANGUAGE="cpp" ;;
+	*) exit 0 ;;
+esac
 
-# Construct hook script path
 HOOK_SCRIPT="$(dirname "$0")/${LANGUAGE}-${HOOK_TYPE}.sh"
+[[ -f "$HOOK_SCRIPT" ]] || exit 0
 
-# Check if the hook script exists
-if [[ -f "$HOOK_SCRIPT" ]]; then
-	# Execute the appropriate hook script
-	echo "$INPUT" | "$HOOK_SCRIPT"
-	exit $?
-else
-	# No hook for this language/type combination
+TMP_OUT=$(mktemp)
+trap 'rm -f "$TMP_OUT"' EXIT
+
+echo "$INPUT" | "$HOOK_SCRIPT" >"$TMP_OUT" 2>&1
+CHILD_EXIT=$?
+
+if [[ "$CHILD_EXIT" -eq 0 ]]; then
 	exit 0
 fi
+
+LINT_OUTPUT=$(cat "$TMP_OUT")
+[[ -z "$LINT_OUTPUT" ]] && exit 0
+
+ORIGINAL=$(echo "$INPUT" | jq -r '.tool_response // "" | if type == "object" then tojson else tostring end')
+
+UPDATED=$(printf '%s\n\n[%s-%s lint feedback]\n%s' "$ORIGINAL" "$LANGUAGE" "$HOOK_TYPE" "$LINT_OUTPUT")
+
+jq -n --arg out "$UPDATED" \
+	'{hookSpecificOutput: {hookEventName: "PostToolUse", updatedToolOutput: $out}}'
+
+exit 0
