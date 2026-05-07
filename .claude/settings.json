@@ -48,7 +48,13 @@
       "Bash(pip install --user*)",
       "Edit(**/*credentials*)",
       "Edit(**/*secret*)",
-      "Edit(**/*password*)"
+      "Edit(**/*password*)",
+      "Edit(~/.zshrc)",
+      "Edit(~/.zprofile)",
+      "Edit(~/.bashrc)",
+      "Edit(~/.bash_profile)",
+      "Edit(~/.claude/**)",
+      "Edit(.git/**)"
     ],
     "ask": [
       "Read(**/*credentials*)",
