@@ -4,19 +4,25 @@
 
 # --- Shell & Core ---
 brew "bash"
+brew "coreutils"
+brew "gnu-tar"
 brew "pkgconf"
 
 # --- File & Navigation ---
 brew "bat"
 brew "duf"
+brew "dust"
 brew "eza"
 brew "fd"
 brew "fzf"
+brew "sd"
 brew "yazi"
 brew "zoxide"
 
 # --- System Monitoring ---
 brew "htop"
+brew "hyperfine"
+brew "procs"
 
 # --- Editor & Multiplexer ---
 brew "neovim"
@@ -25,7 +31,11 @@ brew "tmux"
 # --- Git Tooling ---
 brew "gh"
 brew "git-delta"
+brew "lazygit"
 brew "pre-commit"
+
+# --- Code Search ---
+brew "ast-grep"
 
 # --- Language Servers ---
 brew "jdtls"
@@ -39,13 +49,24 @@ brew "mise"
 brew "mysql-client"
 
 # --- Web / Networking ---
+brew "doggo"
 brew "httpd"
+brew "httpie"
+
+# --- Data Tools ---
+brew "yq"
+
+# --- Media ---
+brew "poppler"
+brew "yt-dlp"
 
 # --- Docs & Help ---
+brew "glow"
 brew "tlrc"
 
 # --- AI CLI ---
 brew "gemini-cli"
+brew "llmfit"
 brew "opencode"
 
 # =============================================================================
@@ -74,6 +95,7 @@ cask "zed"
 cask "chatgpt"
 cask "claude"
 cask "codex-app"
+cask "codexbar"
 cask "lm-studio"
 cask "ollama-app"
 
