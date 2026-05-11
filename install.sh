@@ -31,12 +31,30 @@ link_file() {
 # Check for Homebrew and install if we don't have it
 #-------------------------------------------------------------------------------
 if ! command -v brew &>/dev/null; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    # Xcode CLT must be present before Homebrew install (otherwise the brew
+    # installer triggers a blocking GUI dialog for CLT).
+    if ! xcode-select -p &>/dev/null; then
+        echo "⚠️  Xcode Command Line Tools not found. Triggering install..."
+        xcode-select --install
+        echo "    Complete the GUI installation, then re-run this script."
+        exit 1
+    fi
+
+    # NONINTERACTIVE=1 skips "Press RETURN to continue" prompts.
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 
-brew bundle
+# Sanity check: abort early if brew install silently failed (sudo timeout,
+# network error). Otherwise every downstream step cascades into failure.
+if ! command -v brew &>/dev/null; then
+    echo "❌ Homebrew installation failed or not in PATH. Aborting."
+    echo "   Try: eval \"\$(/opt/homebrew/bin/brew shellenv)\" and re-run."
+    exit 1
+fi
+
+brew bundle --file="$DOTFILES/Brewfile"
 
 #-------------------------------------------------------------------------------
 # Install global Git configuration
