@@ -3,6 +3,22 @@
 export DOTFILES=$HOME/.dotfiles
 
 #-------------------------------------------------------------------------------
+# Bootstrap: Xcode Command Line Tools
+# Everything below (git, brew, compilers) depends on CLT. On a fresh macOS,
+# /usr/bin/git is just a stub that triggers this install dialog anyway — we
+# do it here explicitly and wait, so the rest of the script can run unattended.
+#-------------------------------------------------------------------------------
+if ! xcode-select -p &>/dev/null; then
+    echo "Installing Xcode Command Line Tools..."
+    xcode-select --install 2>/dev/null || true
+    echo "Waiting for CLT installation to finish (typically 10-15 minutes)..."
+    until xcode-select -p &>/dev/null; do
+        sleep 10
+    done
+    echo "  ✓ Xcode Command Line Tools installed"
+fi
+
+#-------------------------------------------------------------------------------
 # Update dotfiles itself
 #-------------------------------------------------------------------------------
 if [ -d "$DOTFILES/.git" ]; then
@@ -31,16 +47,8 @@ link_file() {
 # Check for Homebrew and install if we don't have it
 #-------------------------------------------------------------------------------
 if ! command -v brew &>/dev/null; then
-    # Xcode CLT must be present before Homebrew install (otherwise the brew
-    # installer triggers a blocking GUI dialog for CLT).
-    if ! xcode-select -p &>/dev/null; then
-        echo "⚠️  Xcode Command Line Tools not found. Triggering install..."
-        xcode-select --install
-        echo "    Complete the GUI installation, then re-run this script."
-        exit 1
-    fi
-
     # NONINTERACTIVE=1 skips "Press RETURN to continue" prompts.
+    # CLT is guaranteed by the bootstrap block above.
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
