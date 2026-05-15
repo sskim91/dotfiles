@@ -47,8 +47,11 @@ link_file() {
 # Check for Homebrew and install if we don't have it
 #-------------------------------------------------------------------------------
 if ! command -v brew &>/dev/null; then
-    # NONINTERACTIVE=1 skips "Press RETURN to continue" prompts.
+    # NONINTERACTIVE=1 skips "Press RETURN to continue" prompts but cannot
+    # prompt for sudo password — pre-warm the sudo timestamp cache so brew's
+    # /usr/bin/sudo calls (mkdir/chown under /opt/homebrew) succeed unattended.
     # CLT is guaranteed by the bootstrap block above.
+    sudo -v
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
     eval "$(/opt/homebrew/bin/brew shellenv)"
