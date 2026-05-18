@@ -65,7 +65,20 @@ if ! command -v brew &>/dev/null; then
     exit 1
 fi
 
-brew bundle --file="$DOTFILES/Brewfile"
+echo "Installing Homebrew CLI tools..."
+if ! brew bundle --file="$DOTFILES/Brewfile"; then
+    echo "❌ Homebrew CLI bundle failed. Aborting."
+    echo "   Re-run after fixing the failed formula: brew bundle --file=\"$DOTFILES/Brewfile\""
+    exit 1
+fi
+
+if [ -f "$DOTFILES/Brewfile.cask" ]; then
+    echo "Installing Homebrew GUI apps..."
+    if ! brew bundle --file="$DOTFILES/Brewfile.cask"; then
+        echo "⚠️  Some Homebrew casks failed to install. Continuing bootstrap."
+        echo "   Re-run later: brew bundle --file=\"$DOTFILES/Brewfile.cask\""
+    fi
+fi
 
 #-------------------------------------------------------------------------------
 # Install global Git configuration

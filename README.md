@@ -18,7 +18,8 @@ cd ~/.dotfiles && ./install.sh
 - **.config/** - Neovim (LazyVim), Ghostty, Kitty, Karabiner, Zed
 - **.claude/** - Hooks, skills (17), agents (9), rules
 - **.gemini/** - Gemini CLI config
-- **Brewfile** - Homebrew packages
+- **Brewfile** - Required Homebrew CLI packages
+- **Brewfile.cask** - Optional Homebrew GUI applications
 
 ## Key Aliases
 

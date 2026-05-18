@@ -9,7 +9,7 @@ Personal dotfiles repository managing macOS development environment. Centralized
 ## Quick Commands
 
 ```bash
-./install.sh              # Full installation (Homebrew, packages, symlinks via Brewfile)
+./install.sh              # Full installation (CLI Brewfile, optional casks, symlinks)
 source ~/.zshrc           # Reload shell config (alias: rr)
 ```
 

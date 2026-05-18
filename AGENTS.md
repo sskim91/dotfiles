@@ -1,7 +1,7 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Root setup files: `install.sh`, `Brewfile`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
+- Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
 - Shell customizations live in `zsh/`:
   - `aliases.zsh` for aliases
   - `functions.zsh` for reusable functions
@@ -13,7 +13,8 @@
 
 ## Build, Test, and Development Commands
 - `./install.sh`: full bootstrap (Homebrew packages, symlinks, runtimes, hooks).
-- `brew bundle`: install/update packages from `Brewfile`.
+- `brew bundle`: install/update required CLI packages from `Brewfile`.
+- `brew bundle --file=Brewfile.cask`: install/update optional GUI applications.
 - `source ~/.zshrc` (or `rr`): reload shell configuration after edits.
 - `pre-commit install`: install local Git hooks.
 - `pre-commit run --all-files`: run formatting, JSON/YAML checks, and secret scanning.
