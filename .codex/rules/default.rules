@@ -107,14 +107,6 @@ prefix_rule(
 # PROMPT — needs confirmation before execution
 # ==============================================================================
 
-# --- git push (non-force) -----------------------------------------------------
-prefix_rule(
-    pattern = ["git", "push"],
-    decision = "prompt",
-    justification = "Pushing affects remote repository. Review changes before pushing.",
-    match = ["git push", "git push origin main", "git push -u origin feature"],
-)
-
 # --- git rebase ---------------------------------------------------------------
 prefix_rule(
     pattern = ["git", "rebase"],
