@@ -311,8 +311,8 @@ case "$TIL_REVIEW_MODE" in
 		;;
 esac
 
-# Pass review outputs to Claude via stderr
-{
+# Aggregate review outputs into a single block (used for both Claude context and stderr fallback).
+REVIEW_BLOCK=$(
 	echo ""
 	echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 	echo "🤖 TIL Review (mode: $TIL_REVIEW_MODE)"
@@ -353,9 +353,40 @@ esac
 
 	echo ""
 	echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-	echo "위 리뷰를 참고하여 문서를 개선해주세요."
+	echo "위 리뷰를 참고하여 문서를 개선해주세요. STATUS: FAIL이면 Blocker를 반드시 해결한 뒤 다음 작업으로 넘어가세요."
 	echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-} >&2
+)
 
-# Exit with code 2 so Claude processes the stderr output
-exit 2
+# Collapse STATUS across both reviewers. ERROR > FAIL > PASS (infra failure beats document failure).
+overall_status="PASS"
+if grep -q "^STATUS: FAIL" "$TMPDIR_REVIEW"/codex.txt "$TMPDIR_REVIEW"/gemini.txt 2>/dev/null; then
+	overall_status="FAIL"
+fi
+if grep -q "^STATUS: ERROR" "$TMPDIR_REVIEW"/codex.txt "$TMPDIR_REVIEW"/gemini.txt 2>/dev/null; then
+	overall_status="ERROR"
+fi
+
+case "$overall_status" in
+	PASS)  notify_body="✅ PASS — $(basename "$FILE_PATH")" ;;
+	FAIL)  notify_body="❌ FAIL — $(basename "$FILE_PATH") — Blocker 수정 필요" ;;
+	ERROR) notify_body="⚠️ ERROR — 리뷰 인프라 장애 ($(basename "$FILE_PATH"))" ;;
+esac
+
+# OSC 777 notify (Ghostty/Warp/urxvt). BEL-terminated. Claude Code allowlists OSC 0/1/2/9/99/777 + BEL.
+term_seq=$(printf '\033]777;notify;TIL Review;%s\007' "$notify_body")
+
+# JSON output (requires Claude Code v2.1.141+). Processed only on exit 0.
+jq -nc \
+	--arg ctx "$REVIEW_BLOCK" \
+	--arg seq "$term_seq" \
+	--arg msg "TIL review: $overall_status — $(basename "$FILE_PATH")" \
+	'{
+		hookSpecificOutput: {
+			hookEventName: "PostToolUse",
+			additionalContext: $ctx
+		},
+		terminalSequence: $seq,
+		systemMessage: $msg
+	}'
+
+exit 0
