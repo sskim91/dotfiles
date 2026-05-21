@@ -163,26 +163,10 @@
     "elastic-elasticsearch@elastic-agent-skills": true,
     "aws-serverless@claude-plugins-official": true,
     "deploy-on-aws@claude-plugins-official": true,
-    "pm-data-analytics@pm-skills": true,
-    "pm-execution@pm-skills": true,
-    "pm-go-to-market@pm-skills": true,
-    "pm-market-research@pm-skills": true,
-    "pm-marketing-growth@pm-skills": true,
-    "pm-product-discovery@pm-skills": true,
-    "pm-product-strategy@pm-skills": true,
-    "aws-serverless@agent-plugins-for-aws": true,
-    "deploy-on-aws@agent-plugins-for-aws": true,
     "codex@openai-codex": true,
     "postman@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-    "pm-skills": {
-      "source": {
-        "source": "github",
-        "repo": "phuryn/pm-skills"
-      },
-      "autoUpdate": true
-    },
     "claude-hud": {
       "source": {
         "source": "github",
@@ -201,13 +185,6 @@
       "source": {
         "source": "git",
         "url": "https://github.com/elastic/agent-skills.git"
-      },
-      "autoUpdate": true
-    },
-    "agent-plugins-for-aws": {
-      "source": {
-        "source": "github",
-        "repo": "awslabs/agent-plugins"
       },
       "autoUpdate": true
     },
