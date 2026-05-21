@@ -15,7 +15,7 @@ alias desk="cd ~/Desktop"
 alias dot="cd ~/.dotfiles"
 alias dev="cd ~/dev"
 alias til="cd ~/dev/TIL"
-alias comp="cd ~/company-src"
+alias work="cd ~/work"
 alias oss="cd ~/dev/oss"
 alias note="cd ~/Library/Mobile\ Documents/iCloud\~md\~obsidian/Documents/Note"
 
