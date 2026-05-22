@@ -1,0 +1,26 @@
+{
+  "file-write-safety": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.gemini/antigravity-cli/hooks/check-secrets.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.gemini/antigravity-cli/hooks/check-sensitive-files.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "~/.gemini/antigravity-cli/hooks/check-env-files.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

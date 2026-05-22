@@ -43,6 +43,15 @@ link_file() {
     fi
 }
 
+cleanup_antigravity_installer_path_edits() {
+    # The official installer appends a PATH block to shell profiles. ~/.local/bin
+    # is already managed in zsh/path.zsh, so keep bootstrap idempotent.
+    for profile in "$DOTFILES/.zshrc" "$DOTFILES/.zprofile" "$HOME/.zshrc" "$HOME/.zprofile" "$HOME/.profile"; do
+        [ -f "$profile" ] || continue
+        perl -0pi -e 's/\n{0,2}# Added by Antigravity CLI installer\nexport PATH="[^"\n]*\/\.local\/bin:\$PATH"\n//g' "$profile"
+    done
+}
+
 #-------------------------------------------------------------------------------
 # Check for Homebrew and install if we don't have it
 #-------------------------------------------------------------------------------
@@ -78,6 +87,20 @@ if [ -f "$DOTFILES/Brewfile.cask" ]; then
         echo "⚠️  Some Homebrew casks failed to install. Continuing bootstrap."
         echo "   Re-run later: brew bundle --file=\"$DOTFILES/Brewfile.cask\""
     fi
+fi
+
+#-------------------------------------------------------------------------------
+# Install Antigravity CLI
+#-------------------------------------------------------------------------------
+echo "Setting up Antigravity CLI..."
+export PATH="$HOME/.local/bin:$PATH"
+cleanup_antigravity_installer_path_edits
+if ! command -v agy &>/dev/null; then
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+    cleanup_antigravity_installer_path_edits
+    echo "  ✓ Antigravity CLI installed"
+else
+    echo "  ✓ Antigravity CLI already installed ($(agy --version 2>/dev/null))"
 fi
 
 #-------------------------------------------------------------------------------
@@ -306,6 +329,23 @@ link_file "$DOTFILES/.gemini/hooks" "$HOME/.gemini/hooks"
 link_file "$DOTFILES/.gemini/agents" "$HOME/.gemini/agents"
 # skills는 ~/.agents/skills에서 로드됨 (Gemini CLI가 자동 탐색)
 # ~/.gemini/skills에 중복 링크하면 Skill conflict 발생
+
+#-------------------------------------------------------------------------------
+# Link Antigravity CLI configuration
+#-------------------------------------------------------------------------------
+echo "Setting up Antigravity CLI configuration..."
+mkdir -p "$HOME/.gemini/antigravity-cli"
+mkdir -p "$HOME/.gemini/antigravity"
+mkdir -p "$HOME/.gemini/config"
+link_file "$DOTFILES/.gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
+link_file "$DOTFILES/.gemini/antigravity-cli/hooks" "$HOME/.gemini/antigravity-cli/hooks"
+link_file "$DOTFILES/.gemini/antigravity-cli/mcp_config.json" "$HOME/.gemini/config/mcp_config.json"
+link_file "$DOTFILES/.gemini/antigravity-cli/hooks.json" "$HOME/.gemini/config/hooks.json"
+link_file "$HOME/.gemini/config/mcp_config.json" "$HOME/.gemini/antigravity-cli/mcp_config.json"
+link_file "$HOME/.gemini/config/hooks.json" "$HOME/.gemini/antigravity-cli/hooks.json"
+link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/config/skills"
+link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/antigravity-cli/skills"
+link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/antigravity/skills"
 
 #-------------------------------------------------------------------------------
 # Link Codex CLI configuration

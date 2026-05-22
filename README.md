@@ -17,7 +17,7 @@ cd ~/.dotfiles && ./install.sh
 - **git/** - Git config with conditional identity switching
 - **.config/** - Neovim (LazyVim), Ghostty, Kitty, Karabiner, Zed
 - **.claude/** - Hooks, skills (17), agents (9), rules
-- **.gemini/** - Gemini CLI config
+- **.gemini/** - Gemini CLI and Antigravity CLI config
 - **Brewfile** - Required Homebrew CLI packages
 - **Brewfile.cask** - Optional Homebrew GUI applications
 
@@ -33,7 +33,8 @@ vim → nvim    cat → bat    ls → eza    top → htop    df → duf
 |----------|------|-------|
 | `ccv` | Claude Code | `-y` `-r` `-ry` |
 | `cco` | Claude + Ollama | `-y` `-r` `-m <model>` |
-| `gem` | Gemini CLI | `-y` `-r` `-ry` |
+| `agy` | Antigravity CLI | `-y` `-s` `-r` `-ry` |
+| `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
 | `cdx` | Codex CLI | `update` |
 
 ## License

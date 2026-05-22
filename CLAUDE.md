@@ -26,6 +26,8 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
 | `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
 | `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
+| `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` |
+| `~/.gemini/config/{hooks,mcp_config}.json` | `~/.dotfiles/.gemini/antigravity-cli/` |
 | `~/.config/karabiner/` | `~/.dotfiles/.config/karabiner/` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
@@ -89,7 +91,7 @@ UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
 PostToolUse(Write|Edit) → file-dispatcher.sh check
-PostToolUse: if Write|Edit(*/dev/TIL/*.md) → til-review.sh (Gemini fact-check, requires ENABLE_TIL_REVIEW=1)
+PostToolUse: if Write|Edit(*/dev/TIL/*.md) → til-review.sh (Antigravity fact-check, requires ENABLE_TIL_REVIEW=1)
 ```
 
 **File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension:
@@ -175,7 +177,8 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 |----------|------|---------|
 | `ccv` | Claude Code (flag shortcuts) | `-y` (skip permissions), `-d` (dontAsk), `-r` (resume), `-ry` `-rd` (combo) |
 | `cco` | Claude Code + Ollama (local model) | Same + `-m <model>` (default: qwen3-coder:30b) |
-| `gem` | Gemini CLI | `-y` (yolo), `-r` (resume), `-ry` (both) |
+| `agy` | Antigravity CLI | `-y` (skip permissions), `-s` (sandbox), `-r` (continue latest), `-ry` (combo) |
+| `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
 | `cdx` | Codex CLI | `update` (install latest), default: full-auto mode |
 
 ## Karabiner Key Mappings

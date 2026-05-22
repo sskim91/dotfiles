@@ -15,9 +15,6 @@ source "$DOTFILES/zsh/path.zsh"
 # LM Studio CLI
 export PATH="$PATH:$HOME/.lmstudio/bin"
 
-# Antigravity
-export PATH="$HOME/.antigravity/antigravity/bin:$PATH"
-
 # JetBrains Toolbox
 export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 

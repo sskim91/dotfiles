@@ -291,8 +291,35 @@ cco() {
   env "${env_vars[@]}" claude --model "$model" "${claude_args[@]}" "$@"
 }
 
-# Gemini CLI
+# Antigravity CLI
+agy() {
+  if (( ! $+commands[agy] )); then
+    print -u2 "Antigravity CLI is not installed. Run: curl -fsSL https://antigravity.google/cli/install.sh | bash"
+    return 127
+  fi
+
+  local agy_args=()
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -y)  agy_args+=("--dangerously-skip-permissions"); shift ;;
+      -s)  agy_args+=("--sandbox"); shift ;;
+      -r)  agy_args+=("--continue"); shift ;;
+      -ry|-yr) agy_args+=("--continue" "--dangerously-skip-permissions"); shift ;;
+      *)   break ;;
+    esac
+  done
+
+  command agy "${agy_args[@]}" "$@"
+}
+
+# Gemini CLI compatibility wrapper. Prefer Antigravity CLI when installed.
 gem() {
+  if (( $+commands[agy] )); then
+    agy "$@"
+    return
+  fi
+
   local gemini_args=()
 
   while [[ $# -gt 0 ]]; do

@@ -68,6 +68,8 @@ brew "glow"
 brew "tlrc"
 
 # --- AI CLI ---
+# Antigravity CLI is installed by install.sh with the official installer.
+# Keep Gemini CLI available as a migration fallback until the cutoff.
 brew "gemini-cli"
 brew "llmfit"
 brew "opencode"

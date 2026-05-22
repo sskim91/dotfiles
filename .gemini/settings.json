@@ -56,48 +56,35 @@
   },
   "mcpServers": {
     "context7": {
-      "command": "npx",
+      "command": "bash",
       "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @upstash/context7-mcp@latest"
       ],
-      "env": {
-        "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
-      },
       "timeout": 30000
     },
     "playwright": {
-      "command": "npx",
+      "command": "bash",
       "args": [
-        "-y",
-        "@playwright/mcp@latest"
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @playwright/mcp@latest"
       ],
-      "env": {
-        "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
-      },
       "timeout": 30000
     },
     "desktop-commander": {
-      "command": "npx",
+      "command": "bash",
       "args": [
-        "-y",
-        "@wonderwhy-er/desktop-commander"
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @wonderwhy-er/desktop-commander"
       ],
-      "env": {
-        "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
-      },
       "timeout": 30000
     },
     "tavily": {
       "command": "bash",
       "args": [
-        "-c",
-        "npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}\""
+        "-lc",
+        "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}\""
       ],
-      "env": {
-        "TAVILY_API_KEY": "$TAVILY_API_KEY",
-        "PATH": "/Users/sskim/.local/share/mise/shims:/opt/homebrew/bin:/usr/bin:/bin"
-      },
       "timeout": 30000
     }
   },

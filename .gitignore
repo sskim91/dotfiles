@@ -51,6 +51,11 @@ Icon
 .claude/settings.local.json
 
 # ======================
+# Antigravity runtime
+# ======================
+.antigravitycli/
+
+# ======================
 # Override global gitignore (/.config)
 # ======================
 !.config/

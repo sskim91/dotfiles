@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @upstash/context7-mcp@latest"
+      ],
+      "timeout": 30000
+    },
+    "playwright": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @playwright/mcp@latest"
+      ],
+      "timeout": 30000
+    },
+    "desktop-commander": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @wonderwhy-er/desktop-commander"
+      ],
+      "timeout": 30000
+    },
+    "tavily": {
+      "command": "bash",
+      "args": [
+        "-lc",
+        "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=${TAVILY_API_KEY}\""
+      ],
+      "timeout": 30000
+    }
+  }
+}
