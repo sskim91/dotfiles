@@ -56,7 +56,6 @@ cask "utm"
 
 # --- Notes & Documentation ---
 cask "heynote"
-cask "notion"
 cask "obsidian"
 cask "pdf-expert"
 cask "ridibooks"
