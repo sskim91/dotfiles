@@ -13,15 +13,8 @@
     path = .gitconfig_company      # ~/company-src/ 이하에서는 회사 설정 파일(.gitconfig_company)을 추가로 로드
 [includeIf "gitdir:~/work/"]
     path = .gitconfig_company      # ~/work/ 이하에서는 회사 설정 파일(.gitconfig_company)을 추가로 로드
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = /usr/bin/opendiff
-[mergetool "sourcetree"]
-	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
-	path = /usr/bin/opendiff
-[commit]
-	template = /Users/sskim/.stCommitMsg
+# Sourcetree-managed sections ([difftool "sourcetree"], [mergetool "sourcetree"], [commit].template)
+# live in ~/.gitconfig (untracked) and layer on top of this file via [include].
 
 [interactive]
     diffFilter = delta --color-only  # interactive 모드에서 delta로 색상만 출력 (수정은 Git 내부 처리)

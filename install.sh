@@ -107,7 +107,22 @@ fi
 # Install global Git configuration
 #-------------------------------------------------------------------------------
 echo "Linking Git configuration..."
-for f in .gitconfig .gitconfig_personal .gitconfig_company .gitignore_global; do
+# .gitconfig is intentionally NOT symlinked. Sourcetree rewrites ~/.gitconfig
+# on launch, which would dirty the tracked file. Instead, ~/.gitconfig is a
+# thin local stub that [include]s the tracked base; tool-managed sections
+# (Sourcetree difftool/mergetool, commit.template) live in the stub only.
+if [ ! -e "$HOME/.gitconfig" ] || [ -L "$HOME/.gitconfig" ]; then
+    [ -L "$HOME/.gitconfig" ] && unlink "$HOME/.gitconfig"
+    cat > "$HOME/.gitconfig" <<'GITCONFIG_STUB'
+# Local layer for ~/.gitconfig. Tracked base lives in ~/.dotfiles/git/.gitconfig.
+# Tool-managed sections (Sourcetree etc.) belong here, NOT in the tracked file.
+
+[include]
+	path = ~/.dotfiles/git/.gitconfig
+GITCONFIG_STUB
+    echo "  ✓ ~/.gitconfig stub created"
+fi
+for f in .gitconfig_personal .gitconfig_company .gitignore_global; do
     link_file "$DOTFILES/git/$f" "$HOME/$f"
 done
 git config --global core.excludesfile "$HOME/.gitignore_global"

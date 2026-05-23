@@ -21,7 +21,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 |---------------|-----------------|
 | `~/.zshrc` | `~/.dotfiles/.zshrc` |
 | `~/.zprofile` | `~/.dotfiles/.zprofile` |
-| `~/.gitconfig` | `~/.dotfiles/git/.gitconfig` |
+| `~/.gitconfig` | local stub file (not a symlink) — `[include]`s `~/.dotfiles/git/.gitconfig`; Sourcetree-managed sections live here to avoid dirtying tracked file |
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
 | `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
