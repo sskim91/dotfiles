@@ -53,7 +53,6 @@
       "Edit(~/.zprofile)",
       "Edit(~/.bashrc)",
       "Edit(~/.bash_profile)",
-      "Edit(~/.claude/**)",
       "Edit(.git/**)"
     ],
     "ask": [
@@ -432,5 +431,6 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "verbose": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "advisorModel": "opus"
 }
