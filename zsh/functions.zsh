@@ -238,12 +238,24 @@ function y() {
 }
 
 #-------------------------------------------------------------------------------
-# Update all: Homebrew + Claude Code
+# Update all: Homebrew + Claude Code + Antigravity CLI
 #-------------------------------------------------------------------------------
+function update-antigravity() {
+    if (( ! $+commands[agy] )); then
+        print -u2 "Antigravity CLI is not installed."
+        return 127
+    fi
+    curl -fsSL https://antigravity.google/cli/install.sh | bash
+}
+
 function update() {
     brew update && brew upgrade && brew cleanup
     echo "==> Updating Claude Code..."
     claude update
+    if (( $+commands[agy] )); then
+        echo "==> Updating Antigravity CLI..."
+        update-antigravity
+    fi
 }
 
 # Claude
