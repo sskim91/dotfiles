@@ -18,4 +18,14 @@ CLAUDECODE= claude mcp add -s user tavily-remote -- sh -c "npx -y mcp-remote \"h
 CLAUDECODE= claude mcp add -s user brave-search -- sh -c "BRAVE_API_KEY=\"\$BRAVE_API_KEY\" npx -y @brave/brave-search-mcp-server" 2>/dev/null \
     && echo "✓ brave-search added" || echo "✓ brave-search already exists"
 
+if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi
+if [ -n "$YOUTRACK_URL" ] && [ -n "$YOUTRACK_TOKEN" ]; then
+    CLAUDECODE= claude mcp add -s user --transport http youtrack \
+        "$YOUTRACK_URL/mcp" \
+        --header "Authorization: Bearer $YOUTRACK_TOKEN" 2>/dev/null \
+        && echo "✓ youtrack added" || echo "✓ youtrack already exists"
+else
+    echo "⚠️  youtrack skipped (YOUTRACK_URL or YOUTRACK_TOKEN not set in .env.local)"
+fi
+
 echo "✅ Claude Code MCP servers registered"
