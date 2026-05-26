@@ -1,4 +1,10 @@
 {
   "colorScheme": "tokyo night",
-  "model": "Gemini 3.5 Flash (High)"
+  "model": "Gemini 3.5 Flash (High)",
+  "trustedWorkspaces": [
+    "/Users/sskim/dev",
+    "/Users/sskim/work",
+    "/Users/sskim/.dotfiles",
+    "/Users/sskim/Downloads"
+  ]
 }
