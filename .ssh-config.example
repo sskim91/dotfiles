@@ -6,3 +6,15 @@ Host ocl
     HostName <YOUR_SERVER_IP>
     User <YOUR_USERNAME>
     IdentityFile ~/.ssh/<YOUR_KEY_FILE>
+
+# GitHub multi-account (optional)
+# Personal account uses default github.com; company account uses an alias
+# so a separate SSH key can be bound without `gh auth switch`.
+# Clone company repos with: git@github.com-company:<org>/<repo>.git
+Host github.com-company
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/<COMPANY_KEY_FILE>
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    UseKeychain yes
