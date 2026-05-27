@@ -73,6 +73,7 @@
     ],
     "defaultMode": "plan"
   },
+  "model": "claude-opus-4-7[1m]",
   "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
@@ -424,13 +425,13 @@
       ".worktreeinclude에 .env를 추가하면 worktree에 자동 복사"
     ]
   },
-  "effortLevel": "xhigh",
+  "effortLevel": "high",
+  "advisorModel": "opus",
   "autoUpdatesChannel": "latest",
   "tui": "default",
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "verbose": true,
-  "voiceEnabled": true,
-  "advisorModel": "opus"
+  "voiceEnabled": true
 }
