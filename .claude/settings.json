@@ -73,7 +73,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "claude-opus-4-7[1m]",
+  "model": "opus[1m]",
   "enableAllProjectMcpServers": true,
   "hooks": {
     "SessionStart": [
