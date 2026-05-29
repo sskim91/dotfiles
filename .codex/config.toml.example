@@ -69,6 +69,30 @@ web_search = "cached"
 suppress_unstable_features_warning = true
 
 ################################################################################
+# Context / Auto-Compaction
+################################################################################
+
+# Codex auto-compacts conversation history when context fills (built-in default
+# is derived from the model context window). Override the trigger explicitly with
+# a TOKEN COUNT (not a percentage — unlike Claude Code's 80% auto-compact).
+# To emulate "compact at 80%": set this to (context_window * 0.8).
+# Check the live window via statusLine "context-window-size", then multiply.
+# 80% is a safety margin, not a quality-optimal point (Chroma "Context Rot" 2025
+# shows quality degrades gradually well before the window fills).
+# gpt-5.5 window = 272000 → 80% = 217600 (75% = 204000 is more conservative).
+# model_auto_compact_token_limit = 217600
+
+# Which part of the active context is charged against the limit above:
+# - total            : count the full active context (default behavior)
+# - body_after_prefix: count only tokens after the carried prefix in the current
+#                       compaction window (avoids re-triggering too eagerly)
+# model_auto_compact_token_limit_scope = "total"
+
+# Customize the prompt used when compacting history (optional):
+# compact_prompt = "..."
+# experimental_compact_prompt_file = "/abs/path/to/compact-prompt.md"
+
+################################################################################
 # MCP Servers
 ################################################################################
 
