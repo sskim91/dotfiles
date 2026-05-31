@@ -6,9 +6,9 @@
         "matcher": "",
         "hooks": [
           {
-            "name": "temporal-context",
+            "name": "session-context",
             "type": "command",
-            "command": "~/.gemini/hooks/temporal-context.sh",
+            "command": "~/.gemini/hooks/session-context.sh",
             "description": "Inject current date/time context"
           }
         ]

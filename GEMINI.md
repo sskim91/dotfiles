@@ -34,7 +34,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 Legacy Gemini CLI configuration is located in `.gemini/settings.json`.
 Antigravity CLI settings are stored in `.gemini/antigravity-cli/settings.json`. Hooks and MCP are linked into `~/.gemini/config/`, which is the path Antigravity uses after onboarding.
 
-1. **SessionStart**: Executes `temporal-context.sh` to inject the current date/time.
+1. **SessionStart**: Executes `session-context.sh` to inject the current date/time.
 2. **BeforeTool (File Ops)**: Security hooks block accidental writes of sensitive data:
    - `check-secrets.sh`: Blocks hardcoded secrets.
    - `check-sensitive-files.sh`: Blocks `.pem`, `.key`, etc.
@@ -79,4 +79,4 @@ The `.claude/skills/` directory contains 17+ specialized "skills" (e.g., `git-co
 1. **Tool Usage**: Prefer `npx` for temporary tools and `brew` for persistent system tools.
 2. **File Edits**: Use surgical replacements for config files to avoid breaking existing logic.
 3. **Shell**: You are operating in a `zsh` environment on `darwin` (macOS). Use modern alternatives (`eza`, `fd`, `bat`) when possible.
-4. **Context**: Use the `temporal-context` provided at session start to remain aware of the current time/date.
+4. **Context**: Use the `session-context` provided at session start to remain aware of the current time/date.

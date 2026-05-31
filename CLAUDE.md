@@ -99,7 +99,7 @@ Personal GitHub uses HTTPS via `gh` CLI (active account = `sskim91`). Company Gi
 Settings in `.claude/settings.json`. Hooks execute on file operations:
 
 ```
-SessionStart → temporal-context.sh (injects current date/time)
+SessionStart → session-context.sh (injects current date/time)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)

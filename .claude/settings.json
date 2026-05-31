@@ -82,7 +82,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/temporal-context.sh"
+            "command": "~/.claude/hooks/session-context.sh"
           }
         ]
       }
@@ -159,25 +159,18 @@
     "github@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
-    "obsidian@obsidian-skills": false,
     "elastic-elasticsearch@elastic-agent-skills": true,
     "aws-serverless@claude-plugins-official": true,
     "deploy-on-aws@claude-plugins-official": true,
     "codex@openai-codex": true,
-    "postman@claude-plugins-official": true
+    "postman@claude-plugins-official": true,
+    "temporal@temporal-marketplace": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
-      },
-      "autoUpdate": true
-    },
-    "obsidian-skills": {
-      "source": {
-        "source": "github",
-        "repo": "kepano/obsidian-skills"
       },
       "autoUpdate": true
     },
@@ -192,6 +185,13 @@
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
+      },
+      "autoUpdate": true
+    },
+    "temporal-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "temporalio/claude-temporal-plugin"
       },
       "autoUpdate": true
     }
