@@ -83,6 +83,8 @@ Icon
 # Docs (plans, internal notes)
 # ======================
 docs/
+# 예외: .claude/docs/는 추적 (working-style 등 동기화 대상 설정 문서)
+!.claude/docs/
 
 # ======================
 # Session handoff
