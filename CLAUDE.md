@@ -103,8 +103,9 @@ SessionStart → session-context.sh (injects current date/time)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
-PostToolUse(Write|Edit) → file-dispatcher.sh check
-PostToolUse: if Write|Edit(*/dev/TIL/*.md) → til-review.sh (Antigravity fact-check, requires ENABLE_TIL_REVIEW=1)
+PostToolUse(Write|Edit|MultiEdit) → file-dispatcher.sh check (routes by extension)
+PostToolUse(Write|Edit|MultiEdit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
+PostToolUse(Write|Edit|MultiEdit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
 ```
 
 **File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension:
@@ -193,6 +194,20 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 | `agy` | Antigravity CLI | `-y` (skip permissions), `-s` (sandbox), `-r` (continue latest), `-ry` (combo) |
 | `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
 | `cdx` | Codex CLI | `update` (install latest), default: full-auto mode |
+
+## Multi-Tool AI Harness
+
+This repo configures three AI CLIs in parallel. Each reads its own guidance file:
+
+| Tool | Guidance file | Config/hooks |
+|------|---------------|--------------|
+| Claude Code | `.claude/CLAUDE.md` (global) + `CLAUDE.md` (this file, project) | `.claude/hooks/`, `.claude/settings.json` |
+| Codex CLI | `AGENTS.md` (project) | `.codex/hooks/`, `.codex/config/`, `.codex/rules/`, `.codex/setup-mcp.sh` |
+| Antigravity / Gemini CLI | `GEMINI.md` (project) | `.gemini/antigravity-cli/{settings,hooks,mcp_config}.json` |
+
+`.codex/hooks/` mirrors `.claude/hooks/` (file-dispatcher, pre-commit-gate, check-* security gates, prompt-rewriter, language checks) so Codex sessions get the same guardrails. Keep the three project guidance files in sync when changing cross-cutting conventions (commit style, security policy).
+
+**Global collaboration style** (`.claude/docs/working-style.md`) is shared across all three tools via symlink — `~/.codex/AGENTS.md` and `~/.gemini/GEMINI.md` both symlink to it, and Claude's global `.claude/CLAUDE.md` `@import`s it. Edit collaboration conventions in that one file only; symlinks propagate automatically.
 
 ## Karabiner Key Mappings
 

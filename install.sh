@@ -339,6 +339,8 @@ link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
 echo "Setting up Gemini configuration..."
 mkdir -p "$HOME/.gemini"
 link_file "$DOTFILES/.gemini/settings.json" "$HOME/.gemini/settings.json"
+# 전역 협업 방식 정본 공유 (Claude working-style.md와 단일 소스)
+link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.gemini/GEMINI.md"
 link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
 link_file "$DOTFILES/.gemini/hooks" "$HOME/.gemini/hooks"
 link_file "$DOTFILES/.gemini/agents" "$HOME/.gemini/agents"
@@ -371,6 +373,8 @@ link_file "$DOTFILES/.codex/config.toml.example" "$HOME/.codex/config.toml.examp
 link_file "$DOTFILES/.codex/config/global.json" "$HOME/.codex/hooks.json"
 link_file "$DOTFILES/.codex/hooks" "$HOME/.codex/hooks"
 link_file "$DOTFILES/.codex/rules" "$HOME/.codex/rules"
+# 전역 협업 방식 정본 공유 (Claude working-style.md와 단일 소스)
+link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.codex/AGENTS.md"
 if [ ! -f "$HOME/.codex/config.toml" ]; then
     cp "$HOME/.codex/config.toml.example" "$HOME/.codex/config.toml"
     echo "  ✓ config.toml created from example"

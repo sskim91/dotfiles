@@ -35,8 +35,8 @@
 - For shell changes, validate with `zsh -n` and a quick interactive reload.
 
 ## Commit & Pull Request Guidelines
-- Follow the existing concise, imperative style used in history (for example: `fix zsh PATH ordering`, `add yazi flavor setup`).
-- Gitmoji-style prefixes are acceptable when consistent with recent commits (for example `:wrench:`, `:sparkles:`, `:memo:`).
+- Use Conventional Commits: `type(scope): subject` in imperative mood, no trailing period (for example: `feat(codex-hooks): add lint dispatcher`, `chore(claude): refresh spinner tips`).
+- Do NOT use Gitmoji or emoji prefixes. Recent history is 100% Conventional Commits, and the `git-commit` skill bans emoji prefixes.
 - PRs should include:
   - what changed and why
   - impacted paths (for example `zsh/path.zsh`, `.config/nvim/**`)

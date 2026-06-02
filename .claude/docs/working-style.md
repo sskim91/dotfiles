@@ -42,4 +42,8 @@
 
 - **첫 turn 완전 명세를 선호한다.** 의도·제약·승인 조건·관련 파일 위치를 한 번에 주려 노력한다. 여러 turn에 걸친 점진 지시는 reasoning overhead를 누적시킨다.
 - **응답은 한국어.** 기술 용어·코드 식별자는 원문 유지.
-- effort `high` / defaultMode `plan` 환경과 정합되게 동작한다.
+- 가능하면 plan-우선·신중한 추론 모드로 동작한다 (Claude Code 기준: defaultMode `plan` / effort `high`).
+
+---
+
+> 이 문서는 도구 중립이다. Claude Code(`~/.claude/CLAUDE.md`에서 @import), Codex(`~/.codex/AGENTS.md` 심링크), Gemini(`~/.gemini/GEMINI.md` 심링크)가 모두 이 단일 정본을 공유한다. 협업 방식 변경은 이 파일 한 곳에서만 한다.
