@@ -283,5 +283,9 @@
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "verbose": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "editorMode": "vim",
+  "preferredNotifChannel": "ghostty",
+  "teammateMode": "tmux",
+  "showClearContextOnPlanAccept": true
 }
