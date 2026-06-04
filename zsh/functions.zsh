@@ -343,20 +343,37 @@ gem() {
 }
 
 # Codex (workspace-write sandbox + on-request approval by default)
-#   cdx         → full-auto (workspace-write sandbox, 작업 디렉토리 내 수정 허용)
-#   cdx -y      → yolo (sandbox/승인 전부 해제, 위험)
-#   cdx -r      → 최근 세션 이어서 시작 (full-auto)
-#   cdx -ry     → 최근 세션 이어서 시작 (yolo)
-#   cdx -ro     → read-only (코드 탐색/리뷰 전용, 수정 불가)
+#
+# 기본값:
+#   - 작업 디렉토리 안에서는 파일 수정 가능: --sandbox workspace-write
+#   - 명령 실행 승인은 Codex가 필요하다고 판단할 때만 요청: --ask-for-approval on-request
+#
+# Resume 동작:
+#   - codex resume은 기본적으로 "현재 cwd의 이전 interactive session 목록" picker를 띄운다.
+#   - --all을 붙이면 cwd 필터를 해제해서 전체 세션 picker를 띄운다.
+#   - --last를 붙이면 picker 없이 가장 최근 세션으로 바로 들어간다.
+#
+# Shorthand:
+#   cdx         → 새 Codex 세션 시작 (workspace-write + on-request approval)
+#   cdx -y      → 새 Codex 세션 시작, yolo mode (sandbox/승인 전부 해제, 위험)
+#   cdx -r      → 현재 디렉토리의 이전 세션 목록 picker에서 선택해 재개
+#   cdx -ra     → 전체 이전 세션 목록 picker에서 선택해 재개 (cwd 필터 해제)
+#   cdx -rl     → 현재 디렉토리의 가장 최근 세션으로 바로 재개
+#   cdx -ry     → 현재 디렉토리의 이전 세션 목록 picker에서 선택해 재개, yolo mode
+#   cdx -rly    → 현재 디렉토리의 가장 최근 세션으로 바로 재개, yolo mode
+#   cdx -ro     → read-only mode로 새 세션 시작 (코드 탐색/리뷰 전용, 수정 불가)
 cdx() {
   local subcmd=""
-  local codex_args=("--full-auto")
+  local codex_args=("--sandbox" "workspace-write" "--ask-for-approval" "on-request")
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -y)     codex_args=("--dangerously-bypass-approvals-and-sandbox"); shift ;;
-      -r)     subcmd="resume"; codex_args=("--last" "--full-auto"); shift ;;
-      -ry|-yr) subcmd="resume"; codex_args=("--last" "--dangerously-bypass-approvals-and-sandbox"); shift ;;
+      -r)     subcmd="resume"; codex_args=("--sandbox" "workspace-write" "--ask-for-approval" "on-request"); shift ;;
+      -ra|-ar) subcmd="resume"; codex_args=("--all" "--sandbox" "workspace-write" "--ask-for-approval" "on-request"); shift ;;
+      -rl|-lr) subcmd="resume"; codex_args=("--last" "--sandbox" "workspace-write" "--ask-for-approval" "on-request"); shift ;;
+      -ry|-yr) subcmd="resume"; codex_args=("--dangerously-bypass-approvals-and-sandbox"); shift ;;
+      -rly|-ryl|-lry|-lyr|-yrl|-ylr) subcmd="resume"; codex_args=("--last" "--dangerously-bypass-approvals-and-sandbox"); shift ;;
       -ro)    codex_args=("--sandbox" "read-only"); shift ;;
       *) break ;;
     esac
