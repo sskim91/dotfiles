@@ -238,7 +238,7 @@ function y() {
 }
 
 #-------------------------------------------------------------------------------
-# Update all: Homebrew + Claude Code + Antigravity CLI
+# Update all: Homebrew + Claude Code + Antigravity CLI + Codex CLI
 #-------------------------------------------------------------------------------
 function update() {
     brew update && brew upgrade && brew cleanup
@@ -247,6 +247,10 @@ function update() {
     if (( $+commands[agy] )); then
         echo "==> Updating Antigravity CLI..."
         agy update
+    fi
+    if (( $+commands[codex] )); then
+        echo "==> Updating Codex CLI..."
+        codex update
     fi
 }
 
