@@ -22,12 +22,24 @@ personality = "pragmatic"
 # Provider id selected from [model_providers]. Default: "openai".
 model_provider = "openai"
 
+# Optional model override for /review. Default: unset (uses current session model).
+review_model = "gpt-5.5"
+
 ################################################################################
 # Reasoning & Verbosity (Responses API capable models)
 ################################################################################
 
 # Reasoning effort: minimal | low | medium | high | xhigh
 model_reasoning_effort = "high"
+
+# Optional override used when Codex runs in plan mode: none | minimal | low | medium | high | xhigh
+plan_mode_reasoning_effort = "high"
+
+# Reasoning summary: auto | concise | detailed | none
+model_reasoning_summary = "auto"
+
+# Text verbosity for GPT-5 family (Responses API): low | medium | high
+model_verbosity = "medium"
 
 ################################################################################
 # Approval & Sandbox
@@ -52,7 +64,7 @@ sandbox_mode = "read-only"
 project_doc_max_bytes = 32768
 
 ################################################################################
-# History & File Opener
+# File Opener
 ################################################################################
 
 # URI scheme: vscode | vscode-insiders | windsurf | cursor | none
@@ -91,6 +103,14 @@ suppress_unstable_features_warning = true
 # Customize the prompt used when compacting history (optional):
 # compact_prompt = "..."
 # experimental_compact_prompt_file = "/abs/path/to/compact-prompt.md"
+
+################################################################################
+# History
+################################################################################
+
+[history]
+persistence = "save-all"
+max_bytes = 5242880
 
 ################################################################################
 # MCP Servers
