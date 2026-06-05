@@ -120,7 +120,27 @@ prompt_context() {
   fi
 }
 
+# fzf-git.sh: make delta fill the preview pane width.
+# delta runs in a pipe inside fzf --preview, so it can't detect the pane width
+# and defaults to 80 cols (halved again by side-by-side). Pass the real width
+# via fzf's FZF_PREVIEW_COLUMNS (expanded at preview time, hence single quotes).
+export FZF_GIT_PAGER='delta --width=$FZF_PREVIEW_COLUMNS'
+
 [[ -f ~/fzf-git.sh/fzf-git.sh ]] && source ~/fzf-git.sh/fzf-git.sh
+
+# fzf-git.sh: widen diff preview pane (upstream default is right,50%).
+# Redefine after sourcing so the cloned repo stays untouched (survives `git pull`).
+if typeset -f _fzf_git_fzf >/dev/null; then
+  _fzf_git_fzf() {
+    fzf --height 50% --tmux 90%,70% \
+      --layout reverse --multi --min-height 20+ --border \
+      --no-separator --header-border horizontal \
+      --border-label-pos 2 \
+      --color 'label:blue' \
+      --preview-window 'right,70%' --preview-border line \
+      --bind 'ctrl-/:change-preview-window(down,50%|hidden|)' "$@"
+  }
+fi
 
 source "$DOTFILES/zsh/aliases.zsh"
 source "$DOTFILES/zsh/functions.zsh"
