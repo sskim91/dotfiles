@@ -28,13 +28,12 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
 | `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` |
 | `~/.gemini/config/{hooks,mcp_config}.json` | `~/.dotfiles/.gemini/antigravity-cli/` |
-| `~/.config/karabiner/` | `~/.dotfiles/.config/karabiner/` |
+| `~/.config/karabiner/assets/complex_modifications/my_custom_key.json` | `~/.dotfiles/.config/karabiner/my_custom_key.json` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
 | `~/.config/ruff/ruff.toml` | `~/.dotfiles/.config/ruff/ruff.toml` |
 | `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
 | `~/.config/yazi/` | `~/.dotfiles/.config/yazi/` |
-| `~/.config/obsidian/` | `~/.dotfiles/.config/obsidian/` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
 
@@ -161,7 +160,10 @@ description: Short description for Claude. Use when ...
 Located in `.claude/agents/`. Custom agent configurations for Task tool:
 - TDD agents: `tdd-red-agent`, `tdd-green-agent`, `tdd-blue-agent`
 - Architecture: `backend-architect`, `database-architect`
+- Development: `fastapi-developer`, `springboot-developer`
 - Analysis: `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`
+- Debugging: `python-debugger`
+- Security: `security-auditor`
 - ML: `ml-engineer`
 
 ## Neovim (LazyVim)
@@ -190,10 +192,10 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 | Function | Tool | Options |
 |----------|------|---------|
 | `ccv` | Claude Code (flag shortcuts) | `-y` (skip permissions), `-d` (dontAsk), `-r` (resume), `-ry` `-rd` (combo) |
-| `cco` | Claude Code + Ollama (local model) | Same + `-m <model>` (default: qwen3-coder:30b) |
+| `cco` | Claude Code + Ollama (local model) | `-y` (skip permissions), `-r` (resume), `-ry` (combo), `-m <model>` (default: qwen3-coder:30b) |
 | `agy` | Antigravity CLI | `-y` (skip permissions), `-s` (sandbox), `-r` (continue latest), `-ry` (combo) |
 | `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
-| `cdx` | Codex CLI | `update` (install latest), default: full-auto mode |
+| `cdx` | Codex CLI | default: `workspace-write` sandbox + `on-request` approval; `-y` (yolo/bypass), `-r`/`-ra`/`-rl` (resume: picker/all/last), `-ro` (read-only) |
 
 ## Multi-Tool AI Harness
 

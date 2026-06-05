@@ -20,7 +20,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 | Feature | Dotfiles Source | Home Destination |
 |---------|-----------------|------------------|
 | ZSH | `.zprofile`, `.zshrc`, `zsh/` | `~/.zprofile`, `~/.zshrc` |
-| Git | `git/.gitconfig` | `~/.gitconfig` |
+| Git | `git/.gitconfig` | `~/.gitconfig` (local stub that `[include]`s the tracked base — not a symlink) |
 | Neovim | `.config/nvim/` | `~/.config/nvim/` |
 | Legacy Gemini CLI | `.gemini/` | `~/.gemini/` |
 | Antigravity CLI settings | `.gemini/antigravity-cli/settings.json` | `~/.gemini/antigravity-cli/settings.json` |
@@ -68,7 +68,7 @@ Uses **mise** for managing language runtimes (Node.js, Python).
 - Activated in `.zprofile` via `mise activate zsh`.
 
 ### AI Skills & Logic
-The `.claude/skills/` directory contains 17+ specialized "skills" (e.g., `git-commit`, `til`, `obsidian-note`).
+The `.claude/skills/` directory contains specialized "skills" (e.g., `git-commit`, `til`, `obsidian-note`).
 - **Guidance for Antigravity/Gemini**: Before implementing new automation or workflows, check `.claude/skills/` for existing logic that can be adapted or reused.
 
 ## Security & Privacy
