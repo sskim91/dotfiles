@@ -308,6 +308,8 @@ done
 
 # Per-skill symlinks: ~/.claude/skills/ is a real directory so external tools
 # (gstack, etc.) can write siblings without touching dotfiles.
+# Ongoing sync (skills added after install) is handled by the link-skills.sh
+# SessionStart hook — this loop just seeds the links on a fresh install.
 echo "Linking custom skills individually..."
 mkdir -p "$HOME/.claude/skills"
 # If old setup left a directory-level symlink, replace it with a real directory.

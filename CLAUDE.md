@@ -99,6 +99,7 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 
 ```
 SessionStart → session-context.sh (injects current date/time)
+SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
