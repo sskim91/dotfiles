@@ -70,7 +70,9 @@ Frontmatter:
 ```yaml
 ---
 source:
-  - "local:/Users/sskim/work/GenOS/..."   # 또는 "youtrack:SAMSUNGCARD-96"
+  - "admin-api/src/main.py"               # repo-relative evidence identifier
+  - "origin/project/samsung-card/feat/96:admin-api/src/util/pims_utils.py"
+  - "SAMSUNGCARD-96"
 related_notes:
   - "[[실존하는_노트만]]"                  # 반드시 vault에 존재하는 노트
 tags:
@@ -81,6 +83,8 @@ tags:
 created: YYYY-MM-DD        # 오늘 날짜
 ---
 ```
+`source`는 Obsidian 클릭 링크가 아니라 근거 식별자로 쓴다. URI-style prefix나 개인 PC 절대경로를 붙이지 않는다. GenOS 레포 파일은 `admin-front/src/layouts/UserLayout.js`처럼 repo-relative path만 쓴다. 특정 브랜치 파일은 `origin/project/samsung-card/feat/96:admin-api/src/util/pims_utils.py`처럼 `git show <branch>:<path>`에 바로 넣을 수 있는 형태로 쓴다. 다른 repo가 근거면 `genos-chart/helmfile.yaml`처럼 repo 이름을 첫 path segment로 둔다. 이슈는 `SAMSUNGCARD-96`처럼 사람이 바로 읽는 식별자로 쓴다. 본문 근거는 필요하면 `admin-front/src/layouts/UserLayout.js:95`처럼 repo-relative `file:line`으로 인용한다.
+
 본문:
 - **## 핵심 아이디어** — 정의가 아니라 hook/통찰 한 문단. "왜 이게 중요한가".
 - 주제에 맞는 자유 섹션 — **trade-off와 판단을 반드시 포함**. 근거(코드 `file:line`, 실측 수치)로 뒷받침. 위키피디아 톤 금지, 엔지니어링 블로그 톤.
