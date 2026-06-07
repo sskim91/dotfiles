@@ -35,6 +35,17 @@ contains "$obsidian" "Claude Code"
 contains "$obsidian" "Codex"
 printf 'PASS: obsidian-note-boundary\n'
 
+contains "$obsidian" "Reading Spine"
+contains "$obsidian" "맥락"
+contains "$obsidian" "핵심 모델"
+contains "$obsidian" "판단"
+contains "$obsidian" "트레이드오프"
+contains "$obsidian" "써먹는 곳"
+contains "$obsidian" "남은 질문"
+contains "$obsidian" '본문에 `## 연결` 섹션을 만들지 않는다'
+contains "$obsidian" "짧게 요약하려고 정보를 압축하지 않는다"
+printf 'PASS: obsidian-note-reading-spine\n'
+
 strict="$root/.claude/skills/agentic-notes/references/strict-verification.md"
 test -f "$strict" || fail "missing strict verification reference"
 contains "$strict" "--verify strict"
