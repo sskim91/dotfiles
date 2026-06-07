@@ -56,6 +56,11 @@ Icon
 .antigravitycli/
 
 # ======================
+# OMO runtime
+# ======================
+.omo/
+
+# ======================
 # Override global gitignore (/.config)
 # ======================
 !.config/
