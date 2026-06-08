@@ -177,7 +177,8 @@
     "deploy-on-aws@claude-plugins-official": true,
     "codex@openai-codex": true,
     "postman@claude-plugins-official": true,
-    "temporal@temporal-marketplace": true
+    "temporal@temporal-marketplace": true,
+    "slack@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -290,15 +291,15 @@
   },
   "effortLevel": "high",
   "advisorModel": "opus",
+  "showClearContextOnPlanAccept": true,
   "autoUpdatesChannel": "latest",
   "tui": "default",
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
+  "editorMode": "normal",
   "verbose": true,
-  "voiceEnabled": true,
-  "editorMode": "vim",
   "preferredNotifChannel": "ghostty",
   "teammateMode": "tmux",
-  "showClearContextOnPlanAccept": true
+  "voiceEnabled": true
 }
