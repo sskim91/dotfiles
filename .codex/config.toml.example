@@ -142,6 +142,8 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 
 [features]
 multi_agent = true
+# Keep v2 disabled on 0.138.0: spawn_agent is rejected by the API when this is enabled.
+multi_agent_v2 = false
 hooks = true
 # Persisted /goal workflows (Codex 0.128.0+)
 # TUI commands: /goal create | /goal pause | /goal resume | /goal clear
