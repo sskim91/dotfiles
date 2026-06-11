@@ -34,11 +34,7 @@
       "mcp__desktop-commander__*",
       "mcp__plugin_context7_context7__*",
       "mcp__plugin_serena_serena__*",
-      "mcp__plugin_playwright_playwright__*",
-      "mcp__plugin_aws-serverless_aws-serverless-mcp__*",
-      "mcp__plugin_deploy-on-aws_awsiac__*",
-      "mcp__plugin_deploy-on-aws_awsknowledge__*",
-      "mcp__plugin_deploy-on-aws_awspricing__*"
+      "mcp__plugin_playwright_playwright__*"
     ],
     "deny": [
       "Bash(git push --force)",
@@ -169,12 +165,9 @@
     "frontend-design@claude-plugins-official": true,
     "serena@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true,
-    "github@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "explanatory-output-style@claude-plugins-official": true,
     "elastic-elasticsearch@elastic-agent-skills": true,
-    "aws-serverless@claude-plugins-official": true,
-    "deploy-on-aws@claude-plugins-official": true,
     "codex@openai-codex": true,
     "postman@claude-plugins-official": true,
     "temporal@temporal-marketplace": true,
