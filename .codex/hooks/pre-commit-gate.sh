@@ -35,7 +35,7 @@ if [[ $FAILED -ne 0 ]]; then
       "permissionDecisionReason": "Security check failed. Sensitive files, env files, or hardcoded secrets detected in staged changes."
     }
   }'
-  exit 2
+  exit 0
 fi
 
 exit 0

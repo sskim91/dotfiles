@@ -1,5 +1,20 @@
 {
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/session-context.sh\""
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/link-skills.sh\""
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -9,6 +24,12 @@
             "command": "bash \"$HOME/.dotfiles/.codex/hooks/pre-commit-gate.sh\"",
             "statusMessage": "Running pre-commit security checks",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/block-rm.sh\"",
+            "statusMessage": "Checking for unsafe rm commands",
+            "timeout": 10
           }
         ]
       }
@@ -33,7 +54,19 @@
             "type": "command",
             "command": "bash \"$HOME/.dotfiles/.codex/hooks/file-dispatcher.sh\" check",
             "statusMessage": "Linting changed files",
-            "timeout": 60
+            "timeout": 180
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/til-review.sh\"",
+            "statusMessage": "Reviewing TIL notes",
+            "timeout": 300
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.dotfiles/.codex/hooks/vault-linker.sh\"",
+            "statusMessage": "Linking Obsidian vault",
+            "timeout": 10
           }
         ]
       }

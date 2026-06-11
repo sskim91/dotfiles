@@ -56,6 +56,15 @@ Icon
 .antigravitycli/
 
 # ======================
+# Codex runtime / local artifacts
+# (canonical: .codex/config.toml.example + .codex/config/global.json)
+# ======================
+.codex/config.toml
+.codex/hooks.json
+.codex/agents/
+/.agents/
+
+# ======================
 # OMO runtime
 # ======================
 .omo/
