@@ -70,6 +70,11 @@ Icon
 .omo/
 
 # ======================
+# OMC runtime (oh-my-claudecode)
+# ======================
+.omc/
+
+# ======================
 # Override global gitignore (/.config)
 # ======================
 !.config/

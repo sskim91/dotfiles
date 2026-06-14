@@ -90,3 +90,8 @@ export ENABLE_GEMINI_REVIEW=0        # Legacy Gemini AI 코드 리뷰 (.py, .jav
 export ENABLE_TIL_REVIEW=1           # Antigravity TIL 문서 리뷰 (~/dev/TIL/*.md)
 export ENABLE_VAULT_LINKER=0         # Obsidian vault 노트 자동 링킹 제안
 export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 Gemini 리뷰 스킵
+
+# ----------------------------------------------------------------------------
+# OMC (oh-my-claudecode)
+# ----------------------------------------------------------------------------
+export ENABLE_OMC_COMPANION_SYNC=1   # SessionStart: CLAUDE-omc.md를 설치된 플러그인 버전과 동기화

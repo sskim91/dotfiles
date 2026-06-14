@@ -92,6 +92,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/link-skills.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/omc-companion-sync.sh"
           }
         ]
       }
@@ -171,7 +175,8 @@
     "codex@openai-codex": true,
     "postman@claude-plugins-official": true,
     "temporal@temporal-marketplace": true,
-    "slack@claude-plugins-official": true
+    "slack@claude-plugins-official": true,
+    "oh-my-claudecode@omc": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -199,6 +204,13 @@
       "source": {
         "source": "github",
         "repo": "temporalio/claude-temporal-plugin"
+      },
+      "autoUpdate": true
+    },
+    "omc": {
+      "source": {
+        "source": "git",
+        "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
       },
       "autoUpdate": true
     }

@@ -258,6 +258,45 @@ prefix_rule(
     match = ["cat file.txt", "ls -la", "head -20 log.txt", "wc -l src/*.py", "date", "pwd"],
 )
 
+# --- terminal and macOS utility tools -----------------------------------------
+prefix_rule(
+    pattern = ["tmux"],
+    decision = "allow",
+    match = ["tmux ls", "tmux capture-pane -p", "tmux new-session -d -s codex"],
+)
+
+prefix_rule(
+    pattern = ["qlmanage"],
+    decision = "allow",
+    match = ["qlmanage -p image.png", "qlmanage -t -s 512 image.png"],
+)
+
+# --- OMO and ULW workflow tools -----------------------------------------------
+prefix_rule(
+    pattern = ["omo", ["doctor", "boulder", "ulw-loop"]],
+    decision = "allow",
+    match = ["omo doctor --status", "omo boulder --json", "omo ulw-loop status --json"],
+)
+
+prefix_rule(
+    pattern = ["omo-ulw-loop"],
+    decision = "allow",
+    match = ["omo-ulw-loop status --json", "omo-ulw-loop record-evidence --goal-id g1 --criterion-id c1 --status pass --evidence ok"],
+)
+
+prefix_rule(
+    pattern = [["omo-rules", "omo-lsp", "omo-comment-checker", "omo-telemetry", "omo-ultrawork", "omo-start-work-continuation"], "hook"],
+    decision = "allow",
+    match = [
+        "omo-rules hook session-start",
+        "omo-lsp hook post-tool-use",
+        "omo-comment-checker hook post-tool-use",
+        "omo-telemetry hook session-start",
+        "omo-ultrawork hook user-prompt-submit",
+        "omo-start-work-continuation hook stop",
+    ],
+)
+
 # --- build & test -------------------------------------------------------------
 prefix_rule(
     pattern = [["make", "gradle", "mvn", "cargo"]],

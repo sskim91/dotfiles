@@ -27,3 +27,9 @@
 │ Bind mounts: ./src:/app (Hot Reload)    │
 └─────────────────────────────────────────┘
 ```
+
+## OMC 오케스트레이션 레이어
+oh-my-claudecode(OMC)의 상시 오케스트레이션 지침을 모든 세션에 적용한다. 위 사용자 지침이 항상 우선한다.
+아래 파일은 머신 로컬 산출물(dotfiles 미추적)이며, 새 머신에서는 `/oh-my-claudecode:omc-setup`으로 재생성된다. 없으면 이 import는 무시된다.
+
+@~/.claude/CLAUDE-omc.md
