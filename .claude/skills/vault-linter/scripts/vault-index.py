@@ -2,7 +2,6 @@
 """vault-index.py — Generate vault index markdown file.
 
 Writes $VAULT/_Inbox/Vault-Index.md (full overwrite each run).
-Initializes $VAULT/_Inbox/Vault-Log.md if missing (Claude appends entries).
 """
 import os
 import sys
@@ -16,7 +15,6 @@ VAULT = Path(os.environ.get(
     os.path.expanduser('~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note')
 ))
 INDEX_FILE = VAULT / '_Inbox' / 'Vault-Index.md'
-LOG_FILE = VAULT / '_Inbox' / 'Vault-Log.md'
 DATE = datetime.date.today().isoformat()
 
 EXCLUDE_DIRS = {'Templates', 'Attachments', '.obsidian'}
@@ -97,20 +95,6 @@ def main() -> int:
 
     print(f"Wrote: {INDEX_FILE}")
     print(f"Total: {total} notes across {len(entries)} folders")
-
-    if not LOG_FILE.exists():
-        with open(LOG_FILE, 'w', encoding='utf-8') as f:
-            f.write(
-                f"---\n"
-                f"tags:\n"
-                f"  - vault/maintenance\n"
-                f"created: {DATE}\n"
-                f"---\n\n"
-                f"# Vault Maintenance Log\n\n"
-                f"> Append-only. 각 entry는 vault-linter --index 실행 시 Claude가 추가.\n"
-                f"> 포맷: `## [YYYY-MM-DD] phase summary`\n\n"
-            )
-        print(f"Initialized: {LOG_FILE}")
 
     return 0
 

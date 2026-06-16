@@ -13,8 +13,9 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | 항목 | 값 |
 |------|-----|
 | Vault 경로 | `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` |
-| 리포트 저장 위치 | `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` |
-| 검사 제외 | `Templates/`, `.obsidian/` |
+| 기본 산출물 | `_Inbox/Vault-Index.md` |
+| 진단 리포트 저장 위치 | `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` (명시적으로 리포트를 요청한 경우만) |
+| 검사 제외 | `Templates/`, `.obsidian/`, `Vault-Lint-Report*`, `Vault-Semantic-Report*`, `Vault-Index.md`, `Vault-Log.md` |
 
 ## 사용법
 
@@ -25,7 +26,8 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 /vault-linter --stale            # 오래된 노트만
 /vault-linter --suggestions      # 새 노트 후보만
 /vault-linter --semantic         # 의미 기반 유사 노트 연결
-/vault-linter --index            # Vault 인덱스 + 유지보수 로그 갱신
+/vault-linter --index            # Vault 인덱스만 갱신
+/vault-linter --report           # 명시적으로 Vault-Lint-Report 생성
 ```
 
 ## Scripts
@@ -35,11 +37,12 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | `scripts/vault-scan.sh list-notes` | 제외 대상 빼고 전체 노트 목록 출력 |
 | `scripts/vault-scan.sh extract-links <file>` | 파일에서 `[[wikilink]]` 추출 (alias 처리 포함) |
 | `scripts/vault-scan.sh check-links <file>` | 깨진 링크만 출력 |
+| `scripts/vault-scan.sh check-links-all` | 전체 vault의 깨진 링크를 한 번의 노트 인덱스로 TSV 출력 |
 | `scripts/vault-scan.sh find-orphans` | 어디서도 참조되지 않은 노트 목록 |
 | `scripts/vault-scan.sh tag-list` | 태그별 사용 횟수 |
 | `scripts/semantic-linker.py` | bge-m3 임베딩 + 코사인 유사도 후보 추출 |
 | `scripts/semantic-linker.py --cache-only` | 임베딩 캐시만 빌드 (유사도 계산 생략) |
-| `scripts/vault-index.py` | 폴더별 노트 카탈로그 생성 + 유지보수 로그 초기화 |
+| `scripts/vault-index.py` | 폴더별 노트 카탈로그 생성 |
 
 스크립트가 결정적 검증을 수행하고, Claude는 결과를 해석하고 제안한다.
 
@@ -115,9 +118,10 @@ bash scripts/vault-scan.sh check-links "$NOTE"
 └── 깨진 참조: 0개
 ```
 
-### Step 7: 리포트 생성
+### Step 7: 리포트 생성 (`--report` 명시 시에만)
 
-결과를 `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md`에 저장한다.
+기본 실행과 `--index` 실행은 Obsidian vault에 `Vault-Lint-Report-*`를 남기지 않는다.
+사용자가 명시적으로 진단 리포트를 요청했을 때만 결과를 `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md`에 저장한다.
 
 ```markdown
 ---
@@ -243,9 +247,9 @@ created: {YYYY-MM-DD}
 | [[C]] | [[D]] | 0.76 | 키워드 우연 겹침 |
 ```
 
-### Step 9: Vault 인덱스 + 유지보수 로그 — `--index`
+### Step 9: Vault 인덱스 — `--index`
 
-카파시의 "LLM Wiki" 패턴에서 **index.md + log.md**는 LLM이 vault 탐색 시 가장 먼저 읽는 메타 레이어다. 매번 877개 노트를 Glob 하지 않고, 카탈로그에서 관련 폴더를 좁히고 진입.
+카파시의 "LLM Wiki" 패턴에서 **index.md**는 LLM이 vault 탐색 시 가장 먼저 읽는 메타 레이어다. 매번 전체 노트를 Glob 하지 않고, 카탈로그에서 관련 폴더를 좁히고 진입한다.
 
 #### 9-1: 인덱스 생성 (결정적)
 
@@ -255,40 +259,22 @@ python3 scripts/vault-index.py
 
 동작:
 - `_Inbox/Vault-Index.md` 전체 덮어쓰기 (폴더별 노트 + 본문 첫 줄 요약)
-- `_Inbox/Vault-Log.md` 없으면 초기화 (있으면 건드리지 않음)
-
-#### 9-2: 유지보수 로그 추가 (LLM)
-
-최신 리포트를 읽고 `_Inbox/Vault-Log.md` 끝에 한 entry를 append한다.
-
-1. `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md` (최신) 읽기 → 요약 테이블에서 건수 추출
-2. `_Inbox/Vault-Semantic-Report-{YYYY-MM-DD}.md` (있으면) 읽기 → 연결/거절 건수 추출
-3. 아래 포맷으로 log 맨 아래에 append (기존 entry는 절대 수정 금지):
-
-```markdown
-## [YYYY-MM-DD] Weekly lint + semantic
-
-- Notes: N개 (지난 주 대비 ±M)
-- Lint: X orphans, Y broken, Z stale, T tag 비일관성
-- Semantic: C 연결, R 거절
-- Note: (특이사항 있으면 한 줄)
-```
-
-이전 entry가 없으면 "Notes: N개 (첫 실행)"로 기록.
+- `_Inbox/Vault-Log.md`는 생성하지 않음
+- `_Inbox/Vault-Lint-Report-{YYYY-MM-DD}.md`는 생성하지 않음
 
 ## Self-Check
 
 ```markdown
 □ 제외 대상(Templates, .obsidian)을 빼고 스캔했는가
 □ 깨진 링크에서 Obsidian alias([[이름|별칭]])를 올바르게 처리했는가
-□ 리포트를 _Inbox에 저장했는가
+□ `--index` 실행은 `Vault-Index.md`만 생성/갱신했는가
+□ 리포트는 사용자가 명시적으로 요청한 경우에만 _Inbox에 저장했는가
 □ 고아 노트에 구체적 연결 후보를 제안했는가
 □ 새 노트 후보의 출처 노트를 명시했는가
 □ 각 플래그(--orphans, --links 등) 단독 실행이 가능한 구조인가
 □ --semantic 실행 전 ollama + bge-m3 설치를 확인했는가
 □ 이미 연결된 노트 쌍을 중복 제안하지 않았는가
-□ --index는 Vault-Index.md 덮어쓰기 + Vault-Log.md append 구조를 지켰는가
-□ Vault-Log.md 기존 entry는 수정하지 않고 append만 했는가
+□ --index는 Vault-Index.md 덮어쓰기만 수행했는가
 ```
 
 ## Gotchas
