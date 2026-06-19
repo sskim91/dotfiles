@@ -34,6 +34,7 @@ brew "tmux"
 # --- Git Tooling ---
 brew "gh"
 brew "git-delta"
+brew "git-lfs"
 brew "lazygit"
 brew "pre-commit"
 

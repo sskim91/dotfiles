@@ -128,6 +128,15 @@ done
 git config --global core.excludesfile "$HOME/.gitignore_global"
 git config --global core.editor "nvim"
 
+# Git LFS: register global clean/smudge filters (binary comes from Brewfile).
+# --skip-repo avoids planting LFS hooks in this non-LFS dotfiles repo. Writes
+# filter.lfs.* into the ~/.gitconfig stub (untracked). Existing LFS repos still
+# need `git lfs install` run once in-repo for the pre-push hook (fresh clones
+# pick the hooks up on checkout).
+if command -v git-lfs &>/dev/null; then
+    git lfs install --skip-repo >/dev/null 2>&1 && echo "  ✓ Git LFS filters registered"
+fi
+
 #-------------------------------------------------------------------------------
 # Tmux Plugin Manager
 #-------------------------------------------------------------------------------
