@@ -1,6 +1,6 @@
 # GEMINI.md
 
-This file provides guidance to Antigravity CLI and legacy Gemini CLI when working within this dotfiles repository. It complements the existing `CLAUDE.md` and defines the environment's architecture, tools, and AI-specific configurations.
+This file provides guidance to Antigravity CLI (`agy`) when working within this dotfiles repository. It complements the existing `CLAUDE.md` and defines the environment's architecture, tools, and AI-specific configurations.
 
 ## Repository Overview
 
@@ -22,7 +22,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 | ZSH | `.zprofile`, `.zshrc`, `zsh/` | `~/.zprofile`, `~/.zshrc` |
 | Git | `git/.gitconfig` | `~/.gitconfig` (local stub that `[include]`s the tracked base — not a symlink) |
 | Neovim | `.config/nvim/` | `~/.config/nvim/` |
-| Legacy Gemini CLI | `.gemini/` | `~/.gemini/` |
+| Antigravity global context | `.claude/docs/working-style.md` | `~/.gemini/GEMINI.md` |
 | Antigravity CLI settings | `.gemini/antigravity-cli/settings.json` | `~/.gemini/antigravity-cli/settings.json` |
 | Antigravity config | `.gemini/antigravity-cli/{hooks,mcp_config}.json` | `~/.gemini/config/` |
 | Claude | `.claude/` | `~/.claude/` |
@@ -31,11 +31,9 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 ## Gemini and Antigravity CLI Integration
 
 ### Hook System
-Legacy Gemini CLI configuration is located in `.gemini/settings.json`.
-Antigravity CLI settings are stored in `.gemini/antigravity-cli/settings.json`. Hooks and MCP are linked into `~/.gemini/config/`, which is the path Antigravity uses after onboarding.
+Antigravity CLI settings are stored in `.gemini/antigravity-cli/settings.json`. Hooks and MCP are linked into `~/.gemini/config/`, which is the path Antigravity uses after onboarding. Hooks are declared in `.gemini/antigravity-cli/hooks.json`:
 
-1. **SessionStart**: Executes `session-context.sh` to inject the current date/time.
-2. **BeforeTool (File Ops)**: Security hooks block accidental writes of sensitive data:
+1. **PreToolUse (File Ops)**: Security hooks in `.gemini/antigravity-cli/hooks/` block accidental writes of sensitive data on `write_to_file`/`replace_file_content`:
    - `check-secrets.sh`: Blocks hardcoded secrets.
    - `check-sensitive-files.sh`: Blocks `.pem`, `.key`, etc.
    - `check-env-files.sh`: Blocks `.env` and sensitive config files.
@@ -48,7 +46,7 @@ The environment provides the following MCP servers for enhanced capabilities:
 - `tavily`: High-quality web search.
 
 ### Migration Notes
-Antigravity CLI uses `agy` as its executable. Keep Gemini CLI available as a fallback during migration, but prefer `agy` for new terminal sessions. After installing Antigravity CLI, run:
+Antigravity CLI uses `agy` as its executable. Gemini CLI stopped serving free/Pro/Ultra tiers on 2026-06-18 and has been removed from this repo; `agy` is now the sole terminal agent for this stack. The one-time plugin import from the old Gemini CLI was:
 
 ```bash
 agy plugin import gemini

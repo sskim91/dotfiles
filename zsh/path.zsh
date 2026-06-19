@@ -86,10 +86,9 @@ export ENABLE_PMD=0                  # PMD - 코드 분석
 # ----------------------------------------------------------------------------
 # Code Review (모든 언어 공통 - *-review.sh)
 # ----------------------------------------------------------------------------
-export ENABLE_GEMINI_REVIEW=0        # Legacy Gemini AI 코드 리뷰 (.py, .java, .ts, .js)
 export ENABLE_TIL_REVIEW=1           # Antigravity TIL 문서 리뷰 (~/dev/TIL/*.md)
 export ENABLE_VAULT_LINKER=0         # Obsidian vault 노트 자동 링킹 제안
-export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 Gemini 리뷰 스킵
+export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 TIL 리뷰 스킵
 
 # ----------------------------------------------------------------------------
 # OMC (oh-my-claudecode)

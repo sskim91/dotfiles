@@ -25,7 +25,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
 | `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
-| `~/.gemini/settings.json` | `~/.dotfiles/.gemini/settings.json` |
+| `~/.gemini/GEMINI.md` | `~/.dotfiles/.claude/docs/working-style.md` (Antigravity 글로벌 컨텍스트 — Claude/Codex와 동일 정본) |
 | `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` |
 | `~/.gemini/config/{hooks,mcp_config}.json` | `~/.dotfiles/.gemini/antigravity-cli/` |
 | `~/.config/karabiner/assets/complex_modifications/my_custom_key.json` | `~/.dotfiles/.config/karabiner/my_custom_key.json` |

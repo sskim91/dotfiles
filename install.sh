@@ -336,26 +336,18 @@ link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
 "$DOTFILES/.claude/setup-mcp.sh"
 
 #-------------------------------------------------------------------------------
-# Link Gemini configuration
-#-------------------------------------------------------------------------------
-echo "Setting up Gemini configuration..."
-mkdir -p "$HOME/.gemini"
-link_file "$DOTFILES/.gemini/settings.json" "$HOME/.gemini/settings.json"
-# 전역 협업 방식 정본 공유 (Claude working-style.md와 단일 소스)
-link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.gemini/GEMINI.md"
-link_file "$DOTFILES/.gemini/policies" "$HOME/.gemini/policies"
-link_file "$DOTFILES/.gemini/hooks" "$HOME/.gemini/hooks"
-link_file "$DOTFILES/.gemini/agents" "$HOME/.gemini/agents"
-# skills는 ~/.agents/skills에서 로드됨 (Gemini CLI가 자동 탐색)
-# ~/.gemini/skills에 중복 링크하면 Skill conflict 발생
-
-#-------------------------------------------------------------------------------
 # Link Antigravity CLI configuration
 #-------------------------------------------------------------------------------
+# (Legacy Gemini CLI config — settings.json/hooks/agents/policies — was removed
+#  after Gemini CLI stopped serving free/Pro/Ultra tiers on 2026-06-18.
+#  Antigravity CLI keeps its own config under ~/.gemini/antigravity-cli/.)
 echo "Setting up Antigravity CLI configuration..."
 mkdir -p "$HOME/.gemini/antigravity-cli"
 mkdir -p "$HOME/.gemini/antigravity"
 mkdir -p "$HOME/.gemini/config"
+# Antigravity CLI reads ~/.gemini/GEMINI.md as the global developer context.
+# Share the single collaboration-style source (same file Claude/Codex use).
+link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.gemini/GEMINI.md"
 link_file "$DOTFILES/.gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 link_file "$DOTFILES/.gemini/antigravity-cli/hooks" "$HOME/.gemini/antigravity-cli/hooks"
 link_file "$DOTFILES/.gemini/antigravity-cli/mcp_config.json" "$HOME/.gemini/config/mcp_config.json"

@@ -321,25 +321,17 @@ agy() {
   command agy "${agy_args[@]}" "$@"
 }
 
-# Gemini CLI compatibility wrapper. Prefer Antigravity CLI when installed.
+# Gemini CLI compatibility wrapper (muscle-memory alias for `agy`).
+# Gemini CLI stopped serving free/Pro/Ultra tiers on 2026-06-18 and was
+# superseded by Antigravity CLI, so `gem` now always routes to `agy`.
 gem() {
-  if (( $+commands[agy] )); then
-    agy "$@"
-    return
+  if (( ! $+commands[agy] )); then
+    print -u2 "Gemini CLI was superseded by Antigravity CLI on 2026-06-18."
+    print -u2 "Install it with: curl -fsSL https://antigravity.google/cli/install.sh | bash"
+    return 127
   fi
 
-  local gemini_args=()
-
-  while [[ $# -gt 0 ]]; do
-    case "$1" in
-      -y)  gemini_args+=("--yolo"); shift ;;
-      -r)  gemini_args+=("--resume"); shift ;;
-      -ry|-yr) gemini_args+=("--resume" "--yolo"); shift ;;
-      *)   break ;;
-    esac
-  done
-
-  gemini "${gemini_args[@]}" "$@"
+  agy "$@"
 }
 
 # Codex (workspace-write sandbox + on-request approval by default)

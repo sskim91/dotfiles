@@ -69,7 +69,7 @@ brew "tlrc"
 
 # --- AI CLI ---
 # Antigravity CLI is installed by install.sh with the official installer.
-# Keep Gemini CLI available as a migration fallback until the cutoff.
-brew "gemini-cli"
+# (Gemini CLI dropped: stopped serving free/Pro/Ultra tiers on 2026-06-18,
+#  superseded by Antigravity CLI.)
 brew "llmfit"
 brew "opencode"
