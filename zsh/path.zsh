@@ -1,6 +1,9 @@
 # API Keys - .env.local에서 로드 (gitignored)
 [[ -f "$DOTFILES/.env.local" ]] && source "$DOTFILES/.env.local"
 
+# 관리자 API 설정 - .env.admin-api에서 로드 (gitignored, 비번 제외)
+[[ -f "$DOTFILES/.env.admin-api" ]] && source "$DOTFILES/.env.admin-api"
+
 # TLDR - 명령어 간단 설명 도구
 export TLDR_AUTO_UPDATE_DISABLED="FALSE"
 

@@ -202,6 +202,15 @@ for f in .zshrc .zprofile .tmux.conf .vimrc; do
 done
 
 #-------------------------------------------------------------------------------
+# Link standalone scripts into ~/.local/bin (on PATH)
+#-------------------------------------------------------------------------------
+echo "Linking scripts to ~/.local/bin..."
+mkdir -p "$HOME/.local/bin"
+for s in admin-api-token.sh; do
+    link_file "$DOTFILES/scripts/$s" "$HOME/.local/bin/$s"
+done
+
+#-------------------------------------------------------------------------------
 # Link .config directories
 #-------------------------------------------------------------------------------
 echo "Linking .config directories..."
