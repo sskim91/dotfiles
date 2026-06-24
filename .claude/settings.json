@@ -305,6 +305,7 @@
   "editorMode": "normal",
   "verbose": true,
   "preferredNotifChannel": "ghostty",
+  "autoCompactEnabled": true,
   "teammateMode": "tmux",
   "voiceEnabled": true
 }
