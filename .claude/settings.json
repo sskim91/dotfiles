@@ -52,7 +52,6 @@
       "Bash(npm publish*)",
       "Bash(pip install --user*)",
       "Edit(**/*credentials*)",
-      "Edit(**/*secret*)",
       "Edit(**/*password*)",
       "Edit(~/.zshrc)",
       "Edit(~/.zprofile)",
@@ -63,7 +62,6 @@
     "ask": [
       "Read(**/*credentials*)",
       "Read(**/*password*)",
-      "Read(**/*secret*)",
       "Read(**/*.pem)",
       "Read(**/*.key)",
       "Read(**/*.p12)",
