@@ -211,13 +211,6 @@
         "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
       },
       "autoUpdate": false
-    },
-    "obsidian-skills": {
-      "source": {
-        "source": "github",
-        "repo": "kepano/obsidian-skills"
-      },
-      "autoUpdate": false
     }
   },
   "language": "korean",
