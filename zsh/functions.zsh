@@ -252,6 +252,30 @@ function update() {
         echo "==> Updating Codex CLI..."
         codex update
     fi
+    echo "==> Updating Claude Code plugins..."
+    ccpu
+}
+
+# Claude Code plugin update (on-demand replacement for startup autoUpdate)
+# autoUpdate가 startup마다 git pull을 돌려 로드 에러를 유발하므로 settings.json에서 껐다.
+# 대신 원할 때 이 함수로 marketplace + 설치된 플러그인을 일괄 갱신한다.
+# scope(project/user)와 projectPath는 installed_plugins.json에서 읽어 정확히 지정한다.
+function ccpu() {
+    local ip="$HOME/.claude/plugins/installed_plugins.json"
+    echo "==> Refreshing marketplaces..."
+    claude plugin marketplace update
+    echo "==> Updating installed plugins..."
+    local name scope ppath
+    jq -r '.plugins | to_entries[] | .key as $n | .value[] | [$n, .scope, (.projectPath // "")] | @tsv' "$ip" 2>/dev/null | \
+    while IFS=$'\t' read -r name scope ppath; do
+        echo "  -> $name ($scope)"
+        if [[ "$scope" == "project" && -n "$ppath" ]]; then
+            (cd "$ppath" && claude plugin update "$name" --scope project) 2>&1 | sed 's/^/     /'
+        else
+            claude plugin update "$name" --scope "$scope" 2>&1 | sed 's/^/     /'
+        fi
+    done
+    echo "==> Done. Restart Claude Code to apply."
 }
 
 # Claude
