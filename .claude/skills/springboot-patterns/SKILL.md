@@ -6,7 +6,7 @@ paths: "**/*.java, **/build.gradle*, **/pom.xml, **/application*.yml, **/applica
 
 # Spring Boot Core Patterns
 
-Spring Boot 3.x/4.x 핵심 패턴. JPA, API 설계, 보안, 테스트는 전용 스킬 참조.
+Spring Boot 4 (현재 GA — Spring Framework 7 기반, Java 17+ / Jakarta EE 11) 핵심 패턴. Boot 3.x는 legacy이나 prod에서 여전히 흔함(3.5 = 마지막 3.x, Framework 6.2 기반). JPA, API 설계, 보안, 테스트는 전용 스킬 참조.
 
 ## Quick Start
 

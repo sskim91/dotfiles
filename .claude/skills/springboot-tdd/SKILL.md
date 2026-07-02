@@ -24,7 +24,7 @@ Red-Green-Refactor for Spring Boot. JPA/Testcontainers 테스트는 `jpa-pattern
 4. **AAA pattern** — Arrange-Act-Assert 구조 엄수
 5. **Fast unit tests, slow integration tests** — 단위 테스트는 DB/네트워크 없이
 6. **NEVER `@Transactional` on `@SpringBootTest`** — 실제 트랜잭션 동작을 왜곡, 테스트에서만 통과하는 코드 발생
-7. **Use `@MockitoBean` not `@MockBean`** — Spring Framework 6.2+ / Boot 3.4+ (기존 `@MockBean`은 deprecated)
+7. **Use `@MockitoBean` / `@MockitoSpyBean`** — Boot 4에서 `@MockBean`/`@SpyBean`은 **제거됨**(3.4 deprecated → 4.0 removal). import 경로 이동: `org.springframework.boot.test.mock.mockito.*` → `org.springframework.test.context.bean.override.mockito.*`
 
 ## TDD Cycle
 
@@ -445,7 +445,7 @@ mvn jacoco:report                       # Generate HTML report
 ## Gotchas
 
 <!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
-- ❌ `@MockBean` 사용 (Spring Boot 3.4+ deprecated) → `@MockitoBean` 사용
+- ❌ `@MockBean`/`@SpyBean` 사용 (Boot 4에서 제거됨) → `@MockitoBean`/`@MockitoSpyBean` 사용
 - ❌ `@SpringBootTest`에 `@Transactional` 추가 → 테스트 간 격리 문제 발생
 - ❌ MockMvc에서 한글 응답 깨짐 → `.accept(MediaType.APPLICATION_JSON)` 설정
 - ❌ 테스트마다 새 ApplicationContext 로딩 → Base 클래스로 context 재사용

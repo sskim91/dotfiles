@@ -6,7 +6,8 @@ paths: "**/*.java, **/build.gradle*, **/pom.xml, **/application*.yml, **/applica
 
 # Spring Boot Security Patterns
 
-Spring Security 6+ with lambda DSL. Deny by default, validate inputs, least privilege.
+Spring Security 7 (Boot 4 기반) — lambda DSL 전용. Deny by default, validate inputs, least privilege.
+Boot 3.x + Security 6 legacy 코드에서 넘어올 때는 아래 [Security 7 / Boot 4 migration](#security-7--boot-4-migration) 참조.
 
 ## When to Activate
 
@@ -26,7 +27,7 @@ Spring Security 6+ with lambda DSL. Deny by default, validate inputs, least priv
 5. **Never concatenate SQL strings** — parameterized query 또는 Spring Data 사용
 6. **Never log tokens, passwords, PII** — 구조화된 로깅에서 민감 필드 제외
 
-## SecurityFilterChain (Spring Security 6+)
+## SecurityFilterChain (Spring Security 7)
 
 ```java
 @Configuration
@@ -395,6 +396,20 @@ http.requiresChannel(channel ->
 - [ ] Dependencies scanned for CVEs (OWASP/Snyk)
 - [ ] No secrets, tokens, PII in logs
 - [ ] HTTPS enforced in production
+
+## Security 7 / Boot 4 migration
+
+Boot 4는 Spring Security 7과 함께 배포된다. Security 6에서 deprecated였던 API가 **제거**되었으므로, 위 예제처럼 처음부터 lambda DSL로 작성하면 그대로 호환된다. Security 6 legacy 코드에서 올라올 때 컴파일 에러가 나는 지점:
+
+| 제거됨 (SS6 deprecated → SS7 removed) | 대체 |
+|--------------------------------------|------|
+| 비-lambda chained DSL `.and()` | lambda DSL (`http.csrf(c -> ...)` 형태) |
+| `authorizeRequests()` | `authorizeHttpRequests()` |
+| custom DSL의 `HttpSecurity#apply(...)` | `.with(...)` |
+| `@EnableGlobalMethodSecurity` | `@EnableMethodSecurity` (이미 위 예제에서 사용) |
+| `antMatchers()` / `mvcMatchers()` | `requestMatchers()` |
+
+> 이 스킬의 SecurityFilterChain·OAuth2·Method Security 예제는 이미 SS7 스타일(lambda + `authorizeHttpRequests` + `@EnableMethodSecurity`)이라 Boot 4에서 수정 없이 동작한다.
 
 ## Gotchas
 
