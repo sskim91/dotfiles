@@ -244,7 +244,7 @@ Step 2에서 판별한 카테고리는 **경로가 아니라 frontmatter 태그*
 
 파일 저장 후 사용자에게 아래 정보를 안내한다:
 
-- 저장 경로 (카테고리 포함)
+- 저장 경로 및 카테고리 태그 (카테고리는 경로가 아닌 frontmatter `tags`에 기록됨)
 - 원문 제목 → 번역 제목
 - 이미지: 원문에서 가져온 수 / mermaid fallback 수
 
@@ -259,7 +259,7 @@ grep -rli "키워드" "$VAULT" --include="*.md" | head -5
 
 관련 노트가 발견되면:
 - 관련 노트의 `related_notes` 프로퍼티에 번역본 wikilink(`[[번역본-파일명]]`)를 제안 (사용자 확인 후 추가)
-- 번역본이 vault 내부(`Sources/Translations/{category}/`)에 있으므로 wikilink가 Obsidian 그래프뷰·백링크에 자동 반영됨
+- 번역본이 vault 내부(`Sources/Translations/`, flat 구조)에 있으므로 wikilink가 Obsidian 그래프뷰·백링크에 자동 반영됨
 - 관련 노트 목록을 완료 리포트에 포함
 
 ### Step 9: Self-Check

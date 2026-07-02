@@ -55,7 +55,7 @@ In a single message, read all of:
 - `~/.dotfiles/.mcp.json` (if present) — MCP server configuration
 - `~/.dotfiles/zsh/path.zsh` — `ENABLE_*` env vars
 - `~/.dotfiles/zsh/functions.zsh` — AI CLI wrappers (`ccv`, `cco`, `gem`, `cdx`) and their flags
-- `~/.claude/projects/-Users-sskim--dotfiles/memory/MEMORY.md` (and linked memory files when relevant) — multi-machine context, security posture, prior decisions
+- `~/.claude/projects/-Users-sskim--dotfiles/memory/MEMORY.md` (if present — and linked memory files when relevant) — multi-machine context, security posture, prior decisions
 - `ls ~/.dotfiles/.claude/hooks/` — hook script names
 - `ls ~/.dotfiles/.claude/skills/` — skill names
 

@@ -16,6 +16,8 @@ paths: "**/*.sql, **/migrations/**, **/flyway/**, **/liquibase/**"
 - **EXPLAIN 분석?** --> [references/query-plan-analysis.md](references/query-plan-analysis.md)
 - **PostgreSQL 심화?** --> [references/postgres-optimization-guide.md](references/postgres-optimization-guide.md)
 - **MySQL 심화?** --> [references/mysql-optimization-guide.md](references/mysql-optimization-guide.md)
+- **단계별 체크리스트?** --> [assets/query-optimization-checklist.md](assets/query-optimization-checklist.md), [assets/index-strategy-checklist.md](assets/index-strategy-checklist.md)
+- **실행할 진단 SQL?** --> [scripts/analyze-slow-queries.sql](scripts/analyze-slow-queries.sql), [scripts/index-recommendations.sql](scripts/index-recommendations.sql)
 
 ## CRITICAL Rules
 
@@ -244,6 +246,10 @@ FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 20;
 | PostgreSQL 전용 최적화 | [references/postgres-optimization-guide.md](references/postgres-optimization-guide.md) |
 | MySQL 전용 최적화 | [references/mysql-optimization-guide.md](references/mysql-optimization-guide.md) |
 | 고급 기법 (파티셔닝, MV, 모니터링) | [references/advanced-techniques.md](references/advanced-techniques.md) |
+| 쿼리 최적화 4단계 체크리스트 | [assets/query-optimization-checklist.md](assets/query-optimization-checklist.md) |
+| 인덱스 설계 체크리스트 | [assets/index-strategy-checklist.md](assets/index-strategy-checklist.md) |
+| 슬로우 쿼리 진단 SQL (PG/MySQL, pg_stat_statements 필요) | [scripts/analyze-slow-queries.sql](scripts/analyze-slow-queries.sql) |
+| 인덱스 진단·추천 SQL (미사용/중복 인덱스 탐지) | [scripts/index-recommendations.sql](scripts/index-recommendations.sql) |
 
 ## References
 
