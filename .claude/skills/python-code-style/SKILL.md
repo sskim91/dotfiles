@@ -42,7 +42,7 @@ Need type checking?
 
 ```toml
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_ignores = true
@@ -56,7 +56,7 @@ disallow_untyped_defs = false
 
 ```toml
 [tool.pyright]
-pythonVersion = "3.12"
+pythonVersion = "3.13"
 typeCheckingMode = "strict"
 ```
 
@@ -75,7 +75,7 @@ typeCheckingMode = "strict"
 ```toml
 [tool.ruff]
 line-length = 120
-target-version = "py312"
+target-version = "py313"
 
 [tool.ruff.lint]
 select = [

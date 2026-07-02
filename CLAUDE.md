@@ -21,6 +21,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 |---------------|-----------------|
 | `~/.zshrc` | `~/.dotfiles/.zshrc` |
 | `~/.zprofile` | `~/.dotfiles/.zprofile` |
+| `~/.vimrc` | `~/.dotfiles/.vimrc` |
 | `~/.gitconfig` | local stub file (not a symlink) — `[include]`s `~/.dotfiles/git/.gitconfig`; Sourcetree-managed sections live here to avoid dirtying tracked file |
 | `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
 | `~/.claude/*` | `~/.dotfiles/.claude/*` |
@@ -34,6 +35,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.config/ruff/ruff.toml` | `~/.dotfiles/.config/ruff/ruff.toml` |
 | `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
 | `~/.config/yazi/` | `~/.dotfiles/.config/yazi/` |
+| `~/.local/bin/admin-api-token.sh` | `~/.dotfiles/scripts/admin-api-token.sh` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
 
