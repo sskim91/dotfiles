@@ -110,7 +110,7 @@ pytest tests/test_module.py::TestClass::test_method -v
 
 테스트가 예상대로 실패하면:
 1. 실패 메시지 기록
-2. 다음 단계 명시: "**tdd-green-agent**에게 인계하세요"
+2. 결과 반환 시 다음 단계 권고: 오케스트레이터가 **tdd-green-agent**를 디스패치하도록 안내
 
 ---
 
@@ -176,8 +176,8 @@ def test_should_calculate_total_when_items_provided():
 [실제 실패 메시지 붙여넣기]
 ```
 
-### 다음 단계
-**tdd-green-agent**에게 인계하여 최소한의 코드로 테스트를 통과시키세요.
+### 다음 단계 (오케스트레이터 권고)
+**tdd-green-agent**를 디스패치하여 최소한의 코드로 테스트를 통과시키세요.
 ```
 
-테스트가 실패하면 즉시 **tdd-green-agent**에게 인계하세요.
+테스트가 예상한 이유로 실패하면 위 템플릿으로 결과를 반환하고 작업을 종료한다. 서브에이전트는 다른 에이전트를 직접 호출할 수 없다 — Green phase 디스패치는 오케스트레이터(메인 세션)가 수행한다.
