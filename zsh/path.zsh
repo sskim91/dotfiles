@@ -66,6 +66,7 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export ENABLE_ESLINT=0               # ESLint - JavaScript 린팅
 export ENABLE_OXC=0                  # OXC - Rust 기반 고속 린터
 export ENABLE_STANDARD=0             # Standard JS - 제로 설정 스타일
+export ENABLE_BIOME=0                # Biome - JS/TS 통합 린터+포매터 (javascript-check.sh, typescript-check.sh 공용)
 
 # ----------------------------------------------------------------------------
 # TypeScript 개발 도구 (typescript-check.sh)

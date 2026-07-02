@@ -218,7 +218,7 @@ wiki의 각 개념과 vault의 기존 노트를 교차 연결한다.
 | `youtube-summarizer` | 영상 요약을 raw/에 저장 → 다음 컴파일에 포함 |
 | `obsidian-note` | 개별 노트를 raw/에 추가 가능 |
 | `vault-linter` | 컴파일된 wiki를 lint 대상에 포함 |
-| `cc-team-builder` | 대규모 raw(20+ 파일)는 병렬 에이전트로 처리 |
+| 병렬 서브에이전트 | 대규모 raw(20+ 파일)는 병렬 에이전트로 처리 (`superpowers:dispatching-parallel-agents` 또는 OMC `/team`) |
 
 ## Self-Check
 
@@ -235,7 +235,7 @@ wiki의 각 개념과 vault의 기존 노트를 교차 연결한다.
 
 - raw/ 파일은 절대 수정하지 않는다 — 원본 보존이 핵심
 - wiki/ 파일은 수동 편집 금지 — 다음 컴파일에서 덮어써질 수 있음
-- 대규모 raw(20+ 파일)는 한 번에 컨텍스트에 넣기 어려울 수 있음 → cc-team-builder로 병렬 처리 고려
+- 대규모 raw(20+ 파일)는 한 번에 컨텍스트에 넣기 어려울 수 있음 → 병렬 서브에이전트 fan-out(`superpowers:dispatching-parallel-agents` 또는 OMC `/team`) 고려
 - 이미지는 raw/images/에 유지하고 wiki에서 상대경로로 참조
 - vault 경로에 공백 포함 (iCloud path) — 항상 따옴표로 감싸기
 - 증분 컴파일 시 기존 아티클의 sources에 새 raw 파일이 추가될 수 있음 — 아티클 전체를 재생성

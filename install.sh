@@ -320,7 +320,7 @@ mkdir -p "$HOME/.claude"
 for dir in agents hooks output-styles rules; do
     link_file "$DOTFILES/.claude/$dir" "$HOME/.claude/$dir"
 done
-for f in statusline.sh settings.json CLAUDE.md; do
+for f in settings.json CLAUDE.md; do
     link_file "$DOTFILES/.claude/$f" "$HOME/.claude/$f"
 done
 
@@ -366,6 +366,11 @@ mkdir -p "$HOME/.gemini/config"
 # Antigravity CLI reads ~/.gemini/GEMINI.md as the global developer context.
 # Share the single collaboration-style source (same file Claude/Codex use).
 link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.gemini/GEMINI.md"
+# NOTE: Antigravity CLI rewrites settings.json and hooks.json as REAL files at
+# runtime, breaking these symlinks (same pattern as Sourcetree vs ~/.gitconfig).
+# That drift is expected: this block only seeds links on a fresh machine.
+# Treat the dotfiles copies as the canonical source and re-run install.sh
+# (or re-link manually) after Antigravity clobbers them.
 link_file "$DOTFILES/.gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 link_file "$DOTFILES/.gemini/antigravity-cli/hooks" "$HOME/.gemini/antigravity-cli/hooks"
 link_file "$DOTFILES/.gemini/antigravity-cli/mcp_config.json" "$HOME/.gemini/config/mcp_config.json"
