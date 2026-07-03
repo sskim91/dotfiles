@@ -71,9 +71,6 @@ alias du='du -ch'   # 사람이 읽기 쉬운 형식
 # 별칭 검색
 alias ag="alias | grep "  # 특정 별칭 찾기
 
-# Serena MCP - AI 코드 분석 도구
-alias add-serena="bash ~/.dotfiles/add-serena-uvx.sh"
-
 # 터미널 이미지 뷰어 (Kitty 프로토콜)
 alias img='kitten icat'                      # 이미지 보기 (기본 중앙)
 alias imgl='kitten icat --align left'        # 왼쪽 정렬

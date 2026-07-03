@@ -35,7 +35,7 @@ The user runs three hooks on every Write/Edit/MultiEdit (file-dispatcher, til-re
 
 ### MCP
 
-Look for `ENABLE_TOOL_SEARCH=1` in settings.json env. If set (the user has it set), MCP changes that affect tool availability timing — `alwaysLoad`, `nonblocking` mode, server-startup retries — are higher leverage because every tool call currently goes through deferred lookup. `alwaysLoad: true` on serena/github/context7 would skip that.
+Look for `ENABLE_TOOL_SEARCH=1` in settings.json env. If set (the user has it set), MCP changes that affect tool availability timing — `alwaysLoad`, `nonblocking` mode, server-startup retries — are higher leverage because every tool call currently goes through deferred lookup. `alwaysLoad: true` on github/context7 would skip that.
 
 ### Env vars
 

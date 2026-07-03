@@ -1,6 +1,6 @@
 ---
 name: mcp-integration
-description: Use when user asks to "add MCP server", "integrate MCP", "configure MCP", "use .mcp.json", "MCP 서버 추가", or discusses MCP plugin configuration. Do NOT use for Serena (use init-serena), general plugin development, or non-MCP tools.
+description: Use when user asks to "add MCP server", "integrate MCP", "configure MCP", "use .mcp.json", "MCP 서버 추가", or discusses MCP plugin configuration. Do NOT use for general plugin development or non-MCP tools.
 ---
 
 # MCP Integration for Claude Code Plugins

@@ -1,6 +1,6 @@
 ---
 name: find-docs
-description: Use when looking up API references, library documentation, CLI commands, or checking version-specific behavior for any developer technology. Prefer this when documentation accuracy matters or model knowledge may be outdated. Do NOT use for general web search or news (use tavily/brave search) or for searching the local codebase (use Grep/Serena).
+description: Use when looking up API references, library documentation, CLI commands, or checking version-specific behavior for any developer technology. Prefer this when documentation accuracy matters or model knowledge may be outdated. Do NOT use for general web search or news (use tavily/brave search) or for searching the local codebase (use Grep).
 ---
 
 # Documentation Lookup

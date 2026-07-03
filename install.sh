@@ -426,20 +426,6 @@ if command -v ya &> /dev/null; then
 fi
 
 #-------------------------------------------------------------------------------
-# Install Serena MCP (AI semantic code analysis)
-#-------------------------------------------------------------------------------
-echo "Setting up Serena MCP..."
-mkdir -p $HOME/dev
-
-if [ ! -d "$HOME/dev/serena" ]; then
-    echo "Cloning Serena repository..."
-    git clone https://github.com/oraios/serena.git $HOME/dev/serena
-    echo "  ✓ Serena cloned"
-else
-    echo "  ✓ Serena already installed"
-fi
-
-#-------------------------------------------------------------------------------
 # Setup pre-commit hooks
 #-------------------------------------------------------------------------------
 echo "Setting up pre-commit hooks..."
