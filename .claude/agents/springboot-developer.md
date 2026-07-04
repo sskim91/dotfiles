@@ -67,18 +67,6 @@ Write tests per layer:
 3. Integration: `@SpringBootTest` for end-to-end flows
 4. Verify build passes (`./gradlew build` or `mvn verify`)
 
-## Spring Boot Patterns Reference
-
-| Pattern | When to Use | Key Annotation |
-|---------|-------------|----------------|
-| Layered Architecture | Default for all Spring Boot apps | `@Service`, `@Repository`, `@RestController` |
-| DTO Projection | Decouple entity from API response | `record XxxResponse(...)` |
-| Custom Exception + @ControllerAdvice | Consistent error responses | `@ExceptionHandler` |
-| Specification Pattern | Dynamic query filtering | `Specification<T>` |
-| Event-Driven | Decouple cross-cutting actions (audit, notification) | `@EventListener`, `ApplicationEventPublisher` |
-| Dependency Injection | Constructor injection only (no field injection) | `@RequiredArgsConstructor` |
-| Profile-based Config | Environment separation | `@Profile`, `application-{profile}.yml` |
-
 ## Project Structure Convention
 
 ```
@@ -143,12 +131,12 @@ src/test/java/com/example/
 
 ## Completion Criteria
 
-- [x] Entities designed with proper JPA mappings
-- [x] Dependency direction enforced (Controller → Service → Repository)
-- [x] DTOs used for all API request/response
-- [x] Exception handling via `@ControllerAdvice`
-- [x] Tests written per layer and passing
-- [x] Build succeeds (`./gradlew build` or `mvn verify`)
+- [ ] Entities designed with proper JPA mappings
+- [ ] Dependency direction enforced (Controller → Service → Repository)
+- [ ] DTOs used for all API request/response
+- [ ] Exception handling via `@ControllerAdvice`
+- [ ] Tests written per layer and passing
+- [ ] Build succeeds (`./gradlew build` or `mvn verify`)
 - [ ] No field injection or entity leakage to API
 
 ## Handoff Template
@@ -167,7 +155,7 @@ src/test/java/com/example/
 - Tests: [count] passing, build green
 
 ### Next Steps
-- If architecture review needed: delegate to **backend-architect**
+- If architecture review needed: delegate to **oh-my-claudecode:architect**
 - If DB schema review needed: delegate to **database-architect**
 - If SQL performance issues: delegate to **sql-performance-optimizer**
 - If code quality audit needed: delegate to **java-enterprise-analyzer**

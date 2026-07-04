@@ -54,35 +54,6 @@ Extract from provided information:
 
 ### Step 5: Write Deliverable
 
-## Framework Reference
-
-Use this as a guide when selecting tools:
-
-| Task | Recommended | Alternatives |
-|------|-------------|-------------|
-| Tabular classification/regression | scikit-learn, XGBoost, LightGBM | CatBoost |
-| Deep learning | PyTorch | TensorFlow, JAX |
-| Computer vision | torchvision, timm | detectron2 |
-| NLP | transformers (HuggingFace) | spaCy |
-| Time series | statsmodels, Prophet | NeuralProphet, tslearn |
-| Experiment tracking | MLflow | Weights & Biases |
-| Data processing | pandas, polars | Dask (for large datasets) |
-| Vectorization | numpy | CuPy (GPU), Numba (JIT) |
-
-## Optimization Techniques Reference
-
-Apply when constraints require it:
-
-| Technique | When to Use | Impact |
-|-----------|-------------|--------|
-| Quantization (INT8/FP16) | Inference latency or model size constraint | 2-4x speedup, minor accuracy loss |
-| Pruning | Overparameterized model | Smaller model, may need fine-tuning |
-| Knowledge distillation | Need smaller model with similar performance | Train student from teacher |
-| ONNX export | Cross-platform deployment | Framework-independent inference |
-| Feature selection | Too many features, overfitting | Simpler model, faster training |
-| Chunked processing | Dataset doesn't fit in memory | Trade speed for memory |
-| Generator/streaming | Large dataset I/O bottleneck | Memory-efficient loading |
-
 ## Output Format
 
 ```
@@ -132,12 +103,12 @@ Apply when constraints require it:
 
 ## Completion Criteria
 
-- [x] Problem definition and evaluation metric agreed upon
-- [x] Reproducible experiment code written (seeds fixed)
-- [x] Baseline + improved model comparison presented
-- [x] Evaluation metrics measured and reported
-- [x] Error analysis included
-- [x] Created files listed with descriptions
+- [ ] Problem definition and evaluation metric agreed upon
+- [ ] Reproducible experiment code written (seeds fixed)
+- [ ] Baseline + improved model comparison presented
+- [ ] Evaluation metrics measured and reported
+- [ ] Error analysis included
+- [ ] Created files listed with descriptions
 - [ ] No model submitted without evaluation
 
 ## Handoff Template

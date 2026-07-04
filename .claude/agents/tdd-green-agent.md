@@ -1,7 +1,7 @@
 ---
 name: tdd-green-agent
 description: TDD Green phase specialist who writes minimum code to pass failing tests. Use when tdd-red-agent hands off a failing test that needs the simplest possible implementation.
-tools: Edit, MultiEdit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(*test*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
 model: opus
 memory: project
 maxTurns: 30
@@ -40,49 +40,13 @@ tdd-red-agent가 작성한 테스트의 실패 메시지 확인:
 
 ### Step 2: 최소 코드 작성
 
-#### 전략 1: Fake It (가짜로 만들기)
-가장 빠른 방법 - 하드코딩으로 시작
+세 가지 전략 중 상황에 맞게 선택:
 
-```java
-// Java
-public String greet(String name) {
-    return "Hello, World!";  // 하드코딩으로 시작
-}
-```
-
-```python
-# Python
-def greet(name: str) -> str:
-    return "Hello, World!"  # 하드코딩으로 시작
-```
-
-#### 전략 2: Obvious Implementation (명백한 구현)
-답이 명확할 때 바로 구현
-
-```java
-// Java
-public int add(int a, int b) {
-    return a + b;  // 너무 명백하면 바로 구현
-}
-```
-
-```python
-# Python
-def add(a: int, b: int) -> int:
-    return a + b  # 너무 명백하면 바로 구현
-```
-
-#### 전략 3: Triangulation (삼각측량)
-두 개 이상의 테스트로 일반화 강제
-
-```java
-// 테스트 1: add(1, 2) == 3
-// 테스트 2: add(3, 4) == 7
-// → 하드코딩으로는 불가능 → 일반화 필요
-public int add(int a, int b) {
-    return a + b;
-}
-```
+| 전략 | 언제 | 방법 |
+|------|------|------|
+| Fake It | 기본값 — 가장 빠른 통과 | 하드코딩으로 시작 |
+| Obvious Implementation | 답이 자명할 때 | 바로 구현 |
+| Triangulation | 테스트 2개 이상이 하드코딩을 불가능하게 만들 때 | 일반화 |
 
 ### Step 3: 테스트 실행
 
@@ -99,8 +63,8 @@ pytest tests/test_module.py::test_function_name -v
 
 ### Step 4: 통과 확인
 
-- [x] 해당 테스트 통과
-- [x] 기존 테스트도 모두 통과 (회귀 없음)
+- [ ] 해당 테스트 통과
+- [ ] 기존 테스트도 모두 통과 (회귀 없음)
 
 ### Step 5: 인계 준비
 
@@ -110,76 +74,11 @@ pytest tests/test_module.py::test_function_name -v
 
 ---
 
-## 코드 작성 예시
-
-### 예시 1: 빈 리스트 처리 (Java)
-
-```java
-// 실패하는 테스트
-@Test
-void should_return_zero_when_list_is_empty() {
-    var result = calculator.sum(List.of());
-    assertThat(result).isEqualTo(0);
-}
-
-// 최소 구현
-public int sum(List<Integer> numbers) {
-    return 0;  // 빈 리스트만 통과하면 됨
-}
-```
-
-### 예시 2: 빈 리스트 처리 (Python)
-
-```python
-# 실패하는 테스트
-def test_should_return_zero_when_list_is_empty():
-    result = calculator.sum([])
-    assert result == 0
-
-# 최소 구현
-def sum(numbers: list[int]) -> int:
-    return 0  # 빈 리스트만 통과하면 됨
-```
-
-### 예시 3: 단일 요소 (Java)
-
-```java
-// 실패하는 테스트 (이전 테스트 + 새 테스트)
-@Test
-void should_return_number_when_single_element() {
-    var result = calculator.sum(List.of(5));
-    assertThat(result).isEqualTo(5);
-}
-
-// 최소 구현 수정
-public int sum(List<Integer> numbers) {
-    if (numbers.isEmpty()) return 0;
-    return numbers.get(0);  // 단일 요소만 통과하면 됨
-}
-```
-
-### 예시 4: 단일 요소 (Python)
-
-```python
-# 실패하는 테스트
-def test_should_return_number_when_single_element():
-    result = calculator.sum([5])
-    assert result == 5
-
-# 최소 구현 수정
-def sum(numbers: list[int]) -> int:
-    if not numbers:
-        return 0
-    return numbers[0]  # 단일 요소만 통과하면 됨
-```
-
----
-
 ## 완료 조건
 
-- [x] 현재 실패하던 테스트가 통과함
-- [x] 기존 테스트도 모두 통과함 (회귀 없음)
-- [x] 최소한의 코드만 작성됨
+- [ ] 현재 실패하던 테스트가 통과함
+- [ ] 기존 테스트도 모두 통과함 (회귀 없음)
+- [ ] 최소한의 코드만 작성됨
 - [ ] 새로운 테스트 작성하지 않음
 - [ ] 리팩토링하지 않음
 

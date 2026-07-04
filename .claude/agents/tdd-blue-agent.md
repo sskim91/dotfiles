@@ -1,7 +1,7 @@
 ---
 name: tdd-blue-agent
 description: TDD Refactor phase specialist who improves code structure while keeping all tests green. Use when tdd-green-agent hands off passing code that needs cleanup, duplication removal, or design improvement.
-tools: Edit, MultiEdit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(*test*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
 model: opus
 memory: project
 maxTurns: 30
@@ -55,153 +55,7 @@ pytest          # Python
 
 ### Step 3: 리팩토링 수행
 
-#### 3.1 Extract Method/Function
-
-**Java Before:**
-```java
-public double calculateTotal(List<Item> items) {
-    double total = 0;
-    for (Item item : items) {
-        total += item.getPrice() * item.getQuantity();
-        if (item.getQuantity() > 10) {
-            total -= item.getPrice() * item.getQuantity() * 0.1;
-        }
-    }
-    return total;
-}
-```
-
-**Java After:**
-```java
-public double calculateTotal(List<Item> items) {
-    return items.stream()
-        .mapToDouble(this::calculateItemTotal)
-        .sum();
-}
-
-private double calculateItemTotal(Item item) {
-    double subtotal = item.getPrice() * item.getQuantity();
-    return applyBulkDiscount(subtotal, item.getQuantity());
-}
-
-private double applyBulkDiscount(double subtotal, int quantity) {
-    return quantity > BULK_THRESHOLD ? subtotal * 0.9 : subtotal;
-}
-```
-
-**Python Before:**
-```python
-def calculate_total(items: list[Item]) -> float:
-    total = 0
-    for item in items:
-        total += item.price * item.quantity
-        if item.quantity > 10:
-            total -= item.price * item.quantity * 0.1
-    return total
-```
-
-**Python After:**
-```python
-BULK_THRESHOLD = 10
-BULK_DISCOUNT = 0.1
-
-def calculate_total(items: list[Item]) -> float:
-    return sum(_calculate_item_total(item) for item in items)
-
-def _calculate_item_total(item: Item) -> float:
-    subtotal = item.price * item.quantity
-    return _apply_bulk_discount(subtotal, item.quantity)
-
-def _apply_bulk_discount(subtotal: float, quantity: int) -> float:
-    if quantity > BULK_THRESHOLD:
-        return subtotal * (1 - BULK_DISCOUNT)
-    return subtotal
-```
-
-#### 3.2 Remove Duplication (DRY)
-
-**Java Before:**
-```java
-public void processOrder(Order order) {
-    log.info("Processing order: " + order.getId());
-    // 처리 로직
-    log.info("Order processed: " + order.getId());
-}
-
-public void cancelOrder(Order order) {
-    log.info("Cancelling order: " + order.getId());
-    // 취소 로직
-    log.info("Order cancelled: " + order.getId());
-}
-```
-
-**Java After:**
-```java
-public void processOrder(Order order) {
-    executeWithLogging(order, "Processing", "processed", this::doProcess);
-}
-
-public void cancelOrder(Order order) {
-    executeWithLogging(order, "Cancelling", "cancelled", this::doCancel);
-}
-
-private void executeWithLogging(Order order, String startAction, String endAction,
-                                 Consumer<Order> action) {
-    log.info("{} order: {}", startAction, order.getId());
-    action.accept(order);
-    log.info("Order {}: {}", endAction, order.getId());
-}
-```
-
-**Python Before:**
-```python
-def process_order(order: Order) -> None:
-    logger.info(f"Processing order: {order.id}")
-    # 처리 로직
-    logger.info(f"Order processed: {order.id}")
-
-def cancel_order(order: Order) -> None:
-    logger.info(f"Cancelling order: {order.id}")
-    # 취소 로직
-    logger.info(f"Order cancelled: {order.id}")
-```
-
-**Python After:**
-```python
-from contextlib import contextmanager
-
-@contextmanager
-def log_action(order: Order, action: str, past_tense: str):
-    logger.info(f"{action} order: {order.id}")
-    yield
-    logger.info(f"Order {past_tense}: {order.id}")
-
-def process_order(order: Order) -> None:
-    with log_action(order, "Processing", "processed"):
-        _do_process(order)
-
-def cancel_order(order: Order) -> None:
-    with log_action(order, "Cancelling", "cancelled"):
-        _do_cancel(order)
-```
-
-#### 3.3 Introduce Explaining Variable
-
-**Before:**
-```python
-if user.age >= 18 and user.subscription and user.subscription.is_active and not user.is_banned:
-    allow_access()
-```
-
-**After:**
-```python
-is_adult = user.age >= 18
-has_active_subscription = user.subscription and user.subscription.is_active
-is_allowed = is_adult and has_active_subscription and not user.is_banned
-
-if is_allowed:
-    allow_access()
-```
+위 표의 기법을 **한 번에 하나씩, 작은 단위로** 적용한다.
 
 ### Step 4: 테스트 실행 (매 변경 후)
 
@@ -246,9 +100,9 @@ pytest
 
 ## 완료 조건
 
-- [x] 모든 테스트가 통과함
-- [x] 코드 품질이 개선됨
-- [x] 행동(behavior)은 변경되지 않음
+- [ ] 모든 테스트가 통과함
+- [ ] 코드 품질이 개선됨
+- [ ] 행동(behavior)은 변경되지 않음
 - [ ] 새로운 기능 추가하지 않음
 
 ---
@@ -279,4 +133,4 @@ pytest
 - [ ] [다음 테스트 2]
 ```
 
-리팩토링이 완료되면 **tdd-red-agent**에게 다음 테스트를 요청하세요.
+리팩토링이 완료되면 위 템플릿으로 결과를 반환하고 작업을 종료한다. 서브에이전트는 다른 에이전트를 직접 호출할 수 없다 — 다음 Red phase 디스패치는 오케스트레이터(메인 세션)가 수행한다.

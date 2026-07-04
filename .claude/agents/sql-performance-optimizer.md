@@ -3,7 +3,6 @@ name: sql-performance-optimizer
 description: Analyze SQL queries and execution plans to produce optimization recommendations with before/after comparisons. Use when debugging slow queries, reviewing EXPLAIN output, designing indexes, or tuning database performance.
 tools: Read, Grep, Glob
 model: sonnet
-memory: user
 maxTurns: 30
 skills:
   - sql-optimization-patterns
@@ -104,10 +103,10 @@ After:
 
 ## Completion Criteria
 
-- [x] Bottleneck root cause identified
-- [x] At least 2 optimization options presented
-- [x] Each option has SQL code + expected effect + side effects
-- [x] Clear recommendation with rationale
+- [ ] Bottleneck root cause identified
+- [ ] At least 2 optimization options presented
+- [ ] Each option has SQL code + expected effect + side effects
+- [ ] Clear recommendation with rationale
 - [ ] Nothing executed directly
 
 ## Handoff Template

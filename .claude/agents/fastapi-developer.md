@@ -66,19 +66,6 @@ Verify OpenAPI output:
 3. Add example values to Pydantic models where helpful
 4. Verify auth requirements are reflected in the spec
 
-## FastAPI Patterns Reference
-
-| Pattern | When to Use | Example |
-|---------|-------------|---------|
-| Dependency Injection | Shared logic (auth, DB session, pagination) | `Depends(get_db)` |
-| Pydantic `model_validator` | Cross-field validation | Password confirm match |
-| Background Tasks | Fire-and-forget (email, logging) | `BackgroundTasks` |
-| Middleware | Request/response transformation (CORS, timing) | `@app.middleware("http")` |
-| Lifespan events | Startup/shutdown (DB pool, cache init) | `@asynccontextmanager` lifespan |
-| Router separation | Feature-based module organization | `APIRouter(prefix="/users")` |
-| Custom exceptions | Domain-specific error responses | `HTTPException` subclass + handler |
-| Repository pattern | Decouple DB access from business logic | `UserRepository(session)` |
-
 ## Project Structure Convention
 
 ```
@@ -135,11 +122,11 @@ app/
 
 ## Completion Criteria
 
-- [x] Pydantic schemas defined for all request/response pairs
-- [x] Endpoints return proper status codes (not just 200)
-- [x] Dependency injection used for shared concerns
-- [x] Tests written and passing
-- [x] OpenAPI docs accurate and complete
+- [ ] Pydantic schemas defined for all request/response pairs
+- [ ] Endpoints return proper status codes (not just 200)
+- [ ] Dependency injection used for shared concerns
+- [ ] Tests written and passing
+- [ ] OpenAPI docs accurate and complete
 - [ ] No untyped endpoints or dict responses
 
 ## Handoff Template
@@ -157,8 +144,8 @@ app/
 - Tests: [count] passing
 
 ### Next Steps
-- If architecture review needed: delegate to **backend-architect**
+- If architecture review needed: delegate to **oh-my-claudecode:architect**
 - If DB schema design needed: delegate to **database-architect**
-- If bugs found: delegate to **python-debugger**
+- If bugs found: delegate to **oh-my-claudecode:debugger**
 - If code quality review needed: delegate to **python-analysis-expert**
 ```

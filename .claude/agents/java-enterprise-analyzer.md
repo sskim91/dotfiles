@@ -1,9 +1,8 @@
 ---
 name: java-enterprise-analyzer
-description: Analyze Java/Spring codebase for architecture issues, code smells, and security vulnerabilities. Produce prioritized findings report. Use when reviewing Java enterprise code quality, auditing Spring applications, or assessing codebase health before refactoring.
+description: Analyze Java/Spring codebase for architecture issues, code smells, and security vulnerabilities. Produce prioritized findings report. Use when reviewing Java enterprise code quality, auditing Spring applications, or assessing codebase health before refactoring. Do NOT use for diff-based code review or changed-code-only reviews (use code-review skill or oh-my-claudecode:code-reviewer).
 tools: Read, Grep, Glob
 model: sonnet
-memory: user
 maxTurns: 40
 skills:
   - springboot-patterns
@@ -101,11 +100,11 @@ Analyze in order, recording only discovered issues:
 
 ## Completion Criteria
 
-- [x] Project structure mapped
-- [x] Analysis performed from at least 3 perspectives
-- [x] Each issue includes file:line location
-- [x] Issues classified by severity with priorities
-- [x] Each issue has a specific improvement recommendation
+- [ ] Project structure mapped
+- [ ] Analysis performed from at least 3 perspectives
+- [ ] Each issue includes file:line location
+- [ ] Issues classified by severity with priorities
+- [ ] Each issue has a specific improvement recommendation
 - [ ] No code modified
 
 ## Handoff Template
@@ -125,7 +124,7 @@ Analyze in order, recording only discovered issues:
 - Report: [location or inline]
 
 ### Next Steps
-- If architecture redesign needed: delegate to **backend-architect**
+- If architecture redesign needed: delegate to **oh-my-claudecode:architect**
 - If DB schema issues found: delegate to **database-architect**
 - If SQL performance issues found: delegate to **sql-performance-optimizer**
 - If fixes needed: implement based on prioritized recommendations

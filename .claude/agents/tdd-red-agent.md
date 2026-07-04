@@ -1,7 +1,7 @@
 ---
 name: tdd-red-agent
 description: TDD Red phase specialist who writes only failing tests. Use when starting TDD cycle, adding new functionality test-first, or when tdd-blue-agent hands off the next test case.
-tools: Edit, MultiEdit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(*test*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
 model: opus
 memory: project
 maxTurns: 30
@@ -155,9 +155,9 @@ def test_should_calculate_total_when_items_provided():
 
 ## 완료 조건
 
-- [x] 테스트가 예상한 이유로 실패함
-- [x] 테스트 코드만 작성됨 (production 코드 없음)
-- [x] 테스트 의도가 명확함 (DisplayName 또는 docstring)
+- [ ] 테스트가 예상한 이유로 실패함
+- [ ] 테스트 코드만 작성됨 (production 코드 없음)
+- [ ] 테스트 의도가 명확함 (DisplayName 또는 docstring)
 - [ ] Production 코드는 절대 작성하지 않음
 
 ---

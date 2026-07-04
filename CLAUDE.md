@@ -112,9 +112,9 @@ SessionStart → omc-companion-sync.sh (syncs ~/.claude/CLAUDE-omc.md with insta
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
-PostToolUse(Write|Edit|MultiEdit) → file-dispatcher.sh check (routes by extension)
-PostToolUse(Write|Edit|MultiEdit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
-PostToolUse(Write|Edit|MultiEdit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
+PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
+PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
+PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
 ```
 
 **File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension:
@@ -167,14 +167,14 @@ description: Short description for Claude. Use when ...
 
 ### Agents
 
-Located in `.claude/agents/`. Custom agent configurations for Task tool:
+Located in `.claude/agents/`. Custom agent configurations for the Agent tool:
 - TDD agents: `tdd-red-agent`, `tdd-green-agent`, `tdd-blue-agent`
-- Architecture: `backend-architect`, `database-architect`
+- Architecture: `database-architect`
 - Development: `fastapi-developer`, `springboot-developer`
 - Analysis: `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`
-- Debugging: `python-debugger`
-- Security: `security-auditor`
 - ML: `ml-engineer`
+
+**Overlap policy**: plugin/external agents take priority. A custom agent that duplicates a plugin agent gets deleted, not scoped (removed 2026-07: `backend-architect` → oh-my-claudecode:architect, `security-auditor` → oh-my-claudecode:security-reviewer, `python-debugger` → oh-my-claudecode:debugger + superpowers:systematic-debugging).
 
 ## Neovim (LazyVim)
 

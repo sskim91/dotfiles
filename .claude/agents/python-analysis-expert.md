@@ -3,7 +3,6 @@ name: python-analysis-expert
 description: Analyze Python codebase for type safety, performance, security issues, and code quality. Produce prioritized findings report. Use when reviewing Python code quality, auditing Django/FastAPI applications, or assessing codebase health before refactoring. Do NOT use for diff-based code review, simplify tasks, or changed-code-only reviews.
 tools: Read, Grep, Glob
 model: sonnet
-memory: user
 maxTurns: 40
 skills:
   - python-patterns
@@ -105,11 +104,11 @@ Analyze in order, recording only discovered issues:
 
 ## Completion Criteria
 
-- [x] Project structure mapped
-- [x] Analysis performed from at least 3 perspectives
-- [x] Each issue includes file:line location
-- [x] Issues classified by severity with priorities
-- [x] Each issue has a specific improvement recommendation
+- [ ] Project structure mapped
+- [ ] Analysis performed from at least 3 perspectives
+- [ ] Each issue includes file:line location
+- [ ] Issues classified by severity with priorities
+- [ ] Each issue has a specific improvement recommendation
 - [ ] No code modified
 
 ## Handoff Template
@@ -129,7 +128,7 @@ Analyze in order, recording only discovered issues:
 - Report: [location or inline]
 
 ### Next Steps
-- If architecture redesign needed: delegate to **backend-architect**
+- If architecture redesign needed: delegate to **oh-my-claudecode:architect**
 - If DB/ORM issues found: delegate to **database-architect**
 - If ML code needs review: delegate to **ml-engineer**
 - If fixes needed: implement based on prioritized recommendations

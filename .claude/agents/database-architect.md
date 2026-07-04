@@ -3,7 +3,6 @@ name: database-architect
 description: Analyze database schemas and data requirements to produce storage architecture recommendations with migration strategies. Use when designing new schemas, reviewing existing data models, planning database migrations, or evaluating storage technology choices.
 tools: Read, Grep, Glob
 model: opus
-memory: user
 maxTurns: 50
 ---
 
@@ -103,10 +102,10 @@ This table is for reference only. Never recommend a technology without analyzing
 
 ## Completion Criteria
 
-- [x] Data model analysis complete
-- [x] Current schema issues identified
-- [x] Schema improvement or technology recommendation provided
-- [x] Migration strategy included
+- [ ] Data model analysis complete
+- [ ] Current schema issues identified
+- [ ] Schema improvement or technology recommendation provided
+- [ ] Migration strategy included
 - [ ] No direct schema changes made
 
 ## Handoff Template
@@ -128,5 +127,5 @@ This table is for reference only. Never recommend a technology without analyzing
 ### Next Steps
 - If SQL optimization needed: delegate to **sql-performance-optimizer**
 - If implementation needed: delegate to appropriate implementation agent
-- If architecture impact: delegate to **backend-architect**
+- If architecture impact: delegate to **oh-my-claudecode:architect**
 ```

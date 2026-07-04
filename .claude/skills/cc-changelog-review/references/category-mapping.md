@@ -27,7 +27,7 @@ Pure bug fixes are skipped — they're covered by the upgrade itself, not by con
 
 ### Hooks
 
-The user runs three hooks on every Write/Edit/MultiEdit (file-dispatcher, til-review, vault-linker). Any changelog entry that:
+The user runs three hooks on every Write/Edit (file-dispatcher, til-review, vault-linker). Any changelog entry that:
 
 - **Adds new fields to PostToolUse input** → potential observability win. Check whether the user's hooks could use the new field.
 - **Allows new return types from hooks** → potential output-injection win. Example: 2.1.121 expanded `hookSpecificOutput.updatedToolOutput` from MCP-only to all tools, which the user already adopted in `file-dispatcher.sh`.
