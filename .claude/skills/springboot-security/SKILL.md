@@ -6,253 +6,30 @@ paths: "**/*.java, **/build.gradle*, **/pom.xml, **/application*.yml, **/applica
 
 # Spring Boot Security Patterns
 
-Spring Security 7 (Boot 4 기반) — lambda DSL 전용. Deny by default, validate inputs, least privilege.
-Boot 3.x + Security 6 legacy 코드에서 넘어올 때는 아래 [Security 7 / Boot 4 migration](#security-7--boot-4-migration) 참조.
+버전 경계(Security 6 → 7)와 판단 규칙만 담는다. Spring Security 일반 구현 지식은 모델에 이미 있음.
 
-## When to Activate
-
-- SecurityFilterChain 구성
-- JWT / OAuth2 인증 구현
-- @PreAuthorize 인가 규칙 추가
-- CORS, CSRF, 보안 헤더 설정
-- 비밀번호 인코딩, 시크릿 관리
-- Rate limiting, 의존성 보안 스캔
+**버전 컨텍스트**: Spring Security 7 (Boot 4 기반) — **lambda DSL 전용**. 학습 데이터에 흔한 구버전 관용구를 쓰지 말 것 (아래 migration 표).
 
 ## CRITICAL Rules
 
 1. **Deny by default** — 명시적으로 허용한 경로만 접근 가능
 2. **Never store plaintext passwords** — BCrypt(12+) 또는 Argon2 사용
 3. **Never hardcode secrets** — `${ENV_VAR}` 또는 Vault
-4. **Never trust X-Forwarded-For directly** — ForwardedHeaderFilter + trusted proxy 설정 필수
-5. **Never concatenate SQL strings** — parameterized query 또는 Spring Data 사용
-6. **Never log tokens, passwords, PII** — 구조화된 로깅에서 민감 필드 제외
+4. **Never trust X-Forwarded-For directly** — ForwardedHeaderFilter + trusted proxy 설정 필수 (rate limiting의 `getRemoteAddr()`도 동일)
+5. **Never log tokens, passwords, PII** — 구조화된 로깅에서 민감 필드 제외
+6. **PREFER** OAuth2 Resource Server (`oauth2ResourceServer().jwt()`) over custom JWT filter — 외부 IdP든 자체 발급이든 검증엔 공식 권장 방식. 커스텀 `OncePerRequestFilter`는 자체 토큰 **발급**까지 해야 할 때만
 
-## SecurityFilterChain (Spring Security 7)
+## Security 7 / Boot 4 Migration
 
-```java
-@Configuration
-@EnableWebSecurity
-@EnableMethodSecurity
-public class SecurityConfig {
+Security 6에서 deprecated였던 API가 SS7에서 **제거됨**. 컴파일 에러 나는 지점:
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http,
-            JwtAuthFilter jwtAuthFilter) throws Exception {
-        return http
-            .csrf(csrf -> csrf.disable()) // Stateless API — CSRF not needed
-            .sessionManagement(sm ->
-                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/actuator/health").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated())
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .headers(headers -> headers
-                .contentSecurityPolicy(csp ->
-                    csp.policyDirectives("default-src 'self'"))
-                .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny))
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
-    }
-}
-```
-
-## JWT Authentication
-
-### Approach 1: OAuth2 Resource Server (PREFERRED)
-
-외부 IdP(Keycloak, Auth0, Okta) 또는 자체 발급 JWT를 검증할 때 **공식 권장** 방식.
-Spring Boot가 `JwtDecoder`를 자동 구성하므로 커스텀 필터가 불필요하다.
-
-```java
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    return http
-        .csrf(csrf -> csrf.disable())
-        .sessionManagement(sm ->
-            sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/api/auth/**", "/actuator/health").permitAll()
-            .requestMatchers("/api/admin/**").hasRole("ADMIN")
-            .anyRequest().authenticated())
-        .oauth2ResourceServer(oauth2 -> oauth2
-            .jwt(Customizer.withDefaults()))
-        .build();
-}
-```
-
-```yaml
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: https://auth.example.com/realms/myapp
-          # 또는 자체 서명 키:
-          # public-key-location: classpath:public.pem
-```
-
-Spring Boot가 자동으로 JWT 서명 검증, `iss`/`exp`/`aud` 클레임 검증, scope→authority 매핑을 처리한다.
-
-### Approach 2: Custom JWT Filter (자체 토큰 발급 시)
-
-OAuth2 인프라 없이 직접 JWT를 발급/검증해야 할 때만 사용:
-
-```java
-@Component
-public class JwtAuthFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-
-    public JwtAuthFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-        this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
-    }
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null || !header.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        String token = header.substring(7);
-        String username = jwtService.extractUsername(token);
-
-        if (username != null
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails user = userDetailsService.loadUserByUsername(username);
-            if (jwtService.isValid(token, user)) {
-                var auth = new UsernamePasswordAuthenticationToken(
-                    user, null, user.getAuthorities());
-                auth.setDetails(new WebAuthenticationDetailsSource()
-                    .buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-        }
-        chain.doFilter(request, response);
-    }
-}
-```
-
-### JWT Service
-
-```java
-@Service
-public class JwtService {
-    @Value("${app.jwt.secret}")
-    private String secret;
-
-    @Value("${app.jwt.expiration:PT1H}")
-    private Duration expiration;
-
-    public String generateToken(UserDetails user) {
-        return Jwts.builder()
-            .subject(user.getUsername())
-            .issuedAt(new Date())
-            .expiration(Date.from(Instant.now().plus(expiration)))
-            .signWith(getSigningKey())
-            .compact();
-    }
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public boolean isValid(String token, UserDetails user) {
-        return extractUsername(token).equals(user.getUsername())
-            && !isExpired(token);
-    }
-
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
-    }
-}
-```
-
-## JWT Role Mapping (Custom Claims)
-
-IdP의 JWT에 커스텀 roles 클레임이 있을 때:
-
-```java
-@Bean
-public JwtAuthenticationConverter jwtAuthConverter() {
-    JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
-    converter.setAuthorityPrefix("ROLE_");
-    converter.setAuthoritiesClaimName("roles"); // JWT의 roles 클레임 매핑
-
-    JwtAuthenticationConverter authConverter = new JwtAuthenticationConverter();
-    authConverter.setJwtGrantedAuthoritiesConverter(converter);
-    return authConverter;
-}
-
-// SecurityFilterChain에서 사용
-.oauth2ResourceServer(oauth2 -> oauth2
-    .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter())))
-```
-
-## Method Security
-
-```java
-@RestController
-@RequestMapping("/api/orders")
-public class OrderController {
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public List<OrderDto> listAll() { /* ... */ }
-
-    @PreAuthorize("@authz.isOwner(#id, authentication)")
-    @GetMapping("/{id}")
-    public OrderDto getById(@PathVariable Long id) { /* ... */ }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) { /* ... */ }
-}
-
-@Component("authz")
-public class AuthorizationService {
-    private final OrderRepository orderRepo;
-
-    public boolean isOwner(Long orderId, Authentication auth) {
-        return orderRepo.findById(orderId)
-            .map(order -> order.getUserId().equals(getUserId(auth)))
-            .orElse(false);
-    }
-}
-```
-
-## CORS Configuration
-
-```java
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration config = new CorsConfiguration();
-    config.setAllowedOrigins(List.of("https://app.example.com"));
-    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
-    config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-    config.setAllowCredentials(true);
-    config.setMaxAge(3600L);
-
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/**", config);
-    return source;
-}
-```
-
-**Rules:**
-- Production에서 `*` origin 금지
-- `allowCredentials(true)` 사용 시 specific origin 필수
-- Security filter level에서 설정 (controller-level 아님)
+| 제거됨 (SS6 deprecated → SS7 removed) | 대체 |
+|--------------------------------------|------|
+| 비-lambda chained DSL `.and()` | lambda DSL (`http.csrf(c -> ...)` 형태) |
+| `authorizeRequests()` | `authorizeHttpRequests()` |
+| custom DSL의 `HttpSecurity#apply(...)` | `.with(...)` |
+| `@EnableGlobalMethodSecurity` | `@EnableMethodSecurity` |
+| `antMatchers()` / `mvcMatchers()` | `requestMatchers()` |
 
 ## CSRF Strategy
 
@@ -261,126 +38,6 @@ public CorsConfigurationSource corsConfigurationSource() {
 | Stateless API (JWT/Bearer) | Disable | Token itself prevents CSRF |
 | Session-based web app | Enable | Browser auto-sends cookies |
 | Mixed (API + web) | Enable for web paths | Selective protection |
-
-```java
-// Stateless API
-http.csrf(csrf -> csrf.disable());
-
-// Session-based with SPA
-http.csrf(csrf -> csrf
-    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-    .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()));
-```
-
-## Secrets Management
-
-```yaml
-# BAD
-spring:
-  datasource:
-    password: mySecretPassword123
-
-# GOOD: Environment variable
-spring:
-  datasource:
-    password: ${DB_PASSWORD}
-
-# GOOD: Spring Cloud Vault
-spring:
-  cloud:
-    vault:
-      uri: https://vault.example.com
-      token: ${VAULT_TOKEN}
-      kv:
-        backend: secret
-        default-context: myapp
-```
-
-## Rate Limiting
-
-```java
-@Component
-public class RateLimitFilter extends OncePerRequestFilter {
-    private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain chain)
-            throws ServletException, IOException {
-        // SECURITY: getRemoteAddr() is correct only when ForwardedHeaderFilter
-        // is configured with trusted proxy. See springboot-patterns for details.
-        String clientIp = request.getRemoteAddr();
-        Bucket bucket = buckets.computeIfAbsent(clientIp, k ->
-            Bucket.builder()
-                .addLimit(Bandwidth.classic(100,
-                    Refill.greedy(100, Duration.ofMinutes(1))))
-                .build());
-
-        if (bucket.tryConsume(1)) {
-            chain.doFilter(request, response);
-        } else {
-            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(
-                "{\"type\":\"about:blank\",\"title\":\"Too Many Requests\",\"status\":429}");
-        }
-    }
-}
-```
-
-## Input Validation
-
-```java
-// BAD: No validation
-@PostMapping("/users")
-public User create(@RequestBody UserDto dto) { return userService.create(dto); }
-
-// GOOD: Validated DTO
-public record CreateUserRequest(
-    @NotBlank @Size(max = 100) String name,
-    @NotBlank @Email String email,
-    @NotNull @Min(0) @Max(150) Integer age) {}
-
-@PostMapping("/users")
-public ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest req) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(req));
-}
-```
-
-## SQL Injection Prevention
-
-```java
-// BAD: String concatenation
-@Query(value = "SELECT * FROM users WHERE name = '" + name + "'", nativeQuery = true)
-
-// GOOD: Parameterized query
-@Query(value = "SELECT * FROM users WHERE name = :name", nativeQuery = true)
-List<User> findByName(@Param("name") String name);
-
-// GOOD: Spring Data derived query (auto-parameterized)
-List<User> findByEmailAndActiveTrue(String email);
-```
-
-## HTTPS Enforcement
-
-```yaml
-# application.yml — SSL 설정
-server:
-  port: 8443
-  ssl:
-    bundle: my-server   # SSL Bundles (Spring Boot 3.1+)
-    # 또는 전통적 방식:
-    # key-store: classpath:keystore.p12
-    # key-store-password: ${SSL_KEYSTORE_PASSWORD}
-    # key-store-type: PKCS12
-```
-
-HTTP → HTTPS 리다이렉트:
-```java
-// SecurityFilterChain 내에서
-http.requiresChannel(channel ->
-    channel.anyRequest().requiresSecure());
-```
 
 ## Security Checklist
 
@@ -391,37 +48,22 @@ http.requiresChannel(channel ->
 - [ ] CSRF posture matches app type (stateless vs session)
 - [ ] Secrets externalized, none in source
 - [ ] Security headers configured (CSP, X-Frame-Options)
-- [ ] CORS restricted to known origins
+- [ ] CORS restricted to known origins (`*` 금지, `allowCredentials(true)`면 specific origin 필수)
 - [ ] Rate limiting on public/expensive endpoints
 - [ ] Dependencies scanned for CVEs (OWASP/Snyk)
 - [ ] No secrets, tokens, PII in logs
 - [ ] HTTPS enforced in production
 
-## Security 7 / Boot 4 migration
-
-Boot 4는 Spring Security 7과 함께 배포된다. Security 6에서 deprecated였던 API가 **제거**되었으므로, 위 예제처럼 처음부터 lambda DSL로 작성하면 그대로 호환된다. Security 6 legacy 코드에서 올라올 때 컴파일 에러가 나는 지점:
-
-| 제거됨 (SS6 deprecated → SS7 removed) | 대체 |
-|--------------------------------------|------|
-| 비-lambda chained DSL `.and()` | lambda DSL (`http.csrf(c -> ...)` 형태) |
-| `authorizeRequests()` | `authorizeHttpRequests()` |
-| custom DSL의 `HttpSecurity#apply(...)` | `.with(...)` |
-| `@EnableGlobalMethodSecurity` | `@EnableMethodSecurity` (이미 위 예제에서 사용) |
-| `antMatchers()` / `mvcMatchers()` | `requestMatchers()` |
-
-> 이 스킬의 SecurityFilterChain·OAuth2·Method Security 예제는 이미 SS7 스타일(lambda + `authorizeHttpRequests` + `@EnableMethodSecurity`)이라 Boot 4에서 수정 없이 동작한다.
-
 ## Gotchas
 
 <!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
-- ❌ `permitAll()`을 `requestMatchers()` 전에 선언 → 순서 중요, 구체적 매칭 먼저
+- ❌ `authorizeRequests()`, `antMatchers()`, `.and()` 생성 (SS7에서 제거됨) → migration 표 참조
+- ❌ `permitAll()`을 넓은 매처 뒤에 선언 → 순서 중요, 구체적 매칭 먼저
 - ❌ `@PreAuthorize`에서 하드코딩된 role 문자열 → 상수 또는 enum 사용
 - ❌ JWT 비밀키를 application.yml에 직접 작성 → 환경변수 필수
-- ❌ CORS 설정에서 `allowedOrigins("*")` → 명시적 도메인 지정
+- ❌ 커스텀 JWT 필터부터 작성 → OAuth2 Resource Server가 기본 선택지
 
 ## References
 
 - [Spring Security Reference](https://docs.spring.io/spring-security/reference/) — Official documentation
-- [Spring Security OAuth2 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/) — JWT validation
-- [Spring Boot Security Properties](https://docs.spring.io/spring-boot/appendix/application-properties/#appendix.application-properties.security) — All security properties
-- [Baeldung: Spring Security](https://www.baeldung.com/security-spring) — Tutorials
+- [OAuth2 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/) — JWT validation
