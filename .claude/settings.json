@@ -303,5 +303,6 @@
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
   "teammateMode": "tmux",
+  "agentPushNotifEnabled": true,
   "voiceEnabled": true
 }
