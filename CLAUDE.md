@@ -117,17 +117,13 @@ PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires
 PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
 ```
 
-**File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension:
-- `.py` → `python-check.sh` (Ruff lint + fix)
-- `.java` → `java-check.sh`
-- `.ts/.tsx` → `typescript-check.sh`
-- `.js/.jsx` → `javascript-check.sh`
+**File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension. Currently `.py` → `python-check.sh` (Ruff lint + fix) only — JS/TS/Java checkers were removed in the 2026-07 hook audit (their tools were all permanently disabled, making the scripts no-ops). To add a language: create `{language}-check.sh`, add a case branch in `file-dispatcher.sh` (both `.claude/hooks/` and `.codex/hooks/`), and add an `ENABLE_*` toggle in `zsh/path.zsh`.
 
 **Hook Environment Variables** (configured in `zsh/path.zsh`):
 
 Each hook tool is individually controlled via `ENABLE_*` environment variables:
 - `ENABLE_RUFF=1` - Python Ruff linter (default enabled)
-- `ENABLE_ESLINT=0`, `ENABLE_TSC=0`, `ENABLE_BIOME=0`, `ENABLE_CHECKSTYLE=0` - Disabled by default
+- `ENABLE_TIL_REVIEW=1`, `ENABLE_VAULT_LINKER=0`, `ENABLE_OMC_COMPANION_SYNC=1` - document/review/sync hooks
 
 ### Adding New Hooks
 

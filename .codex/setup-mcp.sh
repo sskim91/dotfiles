@@ -28,7 +28,6 @@ add_if_missing() {
 # stdio servers
 add_if_missing context7          context7 -- npx -y @upstash/context7-mcp
 add_if_missing playwright        playwright -- npx @playwright/mcp@latest
-add_if_missing desktop-commander desktop-commander -- npx -y @wonderwhy-er/desktop-commander
 add_if_missing tavily-remote     tavily-remote -- sh -c 'if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi; exec npx -y mcp-remote "https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY"'
 add_if_missing brave-search      brave-search -- sh -c 'if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi; exec npx -y @brave/brave-search-mcp-server --transport stdio'
 add_if_missing youtrack          youtrack -- sh -c 'if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi; exec npx -y mcp-remote "$YOUTRACK_URL/mcp" --header "Authorization:Bearer $YOUTRACK_TOKEN"'

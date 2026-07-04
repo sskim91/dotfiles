@@ -49,43 +49,21 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 # 📌 동작 원리
 # -------------
 # Hook은 Claude Code가 파일을 Write/Edit할 때 자동 실행됩니다:
-# - check hook:  린팅, 타입 체크 등 (pre/post Write|Edit|MultiEdit)
-# - review hook: AI 코드 리뷰 (post Write|Edit|MultiEdit only)
+# - check hook:  린팅 등 (post Write|Edit)
 #
 # 🔧 설정 방법
 # ------------
 # ENABLE_XXX=0/1 → 개별 도구 활성화 여부
 #
-# 📝 현재 상태: 대부분 비활성화. Ruff(ENABLE_RUFF)와 TIL review(ENABLE_TIL_REVIEW)만
-#    기본 활성 — 나머지는 필요한 것만 선택적으로 1로 변경
+# 📝 현재 상태: Ruff(ENABLE_RUFF)·TIL review(ENABLE_TIL_REVIEW)만 기본 활성.
+#    2026-07 훅 감사에서 영구 비활성이던 JS/TS/Java 체커(스크립트 포함)를 제거 —
+#    새 언어 지원 시 {language}-check.sh + ENABLE_* 토글 + dispatcher 라우트를 함께 추가
 # ============================================================================
-
-# ----------------------------------------------------------------------------
-# JavaScript 개발 도구 (javascript-check.sh)
-# ----------------------------------------------------------------------------
-export ENABLE_ESLINT=0               # ESLint - JavaScript 린팅
-export ENABLE_OXC=0                  # OXC - Rust 기반 고속 린터
-export ENABLE_STANDARD=0             # Standard JS - 제로 설정 스타일
-export ENABLE_BIOME=0                # Biome - JS/TS 통합 린터+포매터 (javascript-check.sh, typescript-check.sh 공용)
-
-# ----------------------------------------------------------------------------
-# TypeScript 개발 도구 (typescript-check.sh)
-# ----------------------------------------------------------------------------
-export ENABLE_TSC=0                  # TypeScript Compiler - 타입 체크
 
 # ----------------------------------------------------------------------------
 # Python 개발 도구 (python-check.sh)
 # ----------------------------------------------------------------------------
 export ENABLE_RUFF=1                 # Ruff - 린터
-export ENABLE_TY=0                   # Typos - 오타 검사
-export ENABLE_PYREFLY=0              # Pyrefly - 정적 분석
-
-# ----------------------------------------------------------------------------
-# Java 개발 도구 (java-check.sh)
-# ----------------------------------------------------------------------------
-export ENABLE_CHECKSTYLE=0           # Checkstyle - 스타일 체커
-export ENABLE_SPOTBUGS=0             # SpotBugs - 버그 검출
-export ENABLE_PMD=0                  # PMD - 코드 분석
 
 # ----------------------------------------------------------------------------
 # Code Review (모든 언어 공통 - *-review.sh)

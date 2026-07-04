@@ -3,11 +3,9 @@
 # Contract: reads {tool_input:{file_path}} on stdin, lints that one file,
 # prints feedback, exits 2 on failure. Mirrors .claude/hooks/python-check.sh.
 #
-# Ruff is enabled by default; ty/pyrefly opt-in via ENABLE_*.
+# Ruff is enabled by default (ENABLE_RUFF=0 to disable).
 
 ENABLE_RUFF=${ENABLE_RUFF:-1}
-ENABLE_TY=${ENABLE_TY:-0}
-ENABLE_PYREFLY=${ENABLE_PYREFLY:-0}
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
@@ -31,20 +29,6 @@ CHECK_SUCCESS=1
 if [[ "$ENABLE_RUFF" -eq 1 ]]; then
 	if ! "${RUFF[@]}" check "$FILE_PATH" --fix; then
 		echo "❌ ruff check failed" >&2
-		CHECK_SUCCESS=0
-	fi
-fi
-
-if [[ "$ENABLE_TY" -eq 1 ]]; then
-	if ! uvx ty check .; then
-		echo "❌ ty check failed" >&2
-		CHECK_SUCCESS=0
-	fi
-fi
-
-if [[ "$ENABLE_PYREFLY" -eq 1 ]]; then
-	if ! uvx pyrefly check; then
-		echo "❌ pyrefly check failed" >&2
 		CHECK_SUCCESS=0
 	fi
 fi

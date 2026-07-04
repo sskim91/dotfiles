@@ -43,7 +43,7 @@ Two locations:
 - `~/.dotfiles/.claude/settings.json:env` — Claude Code session vars only.
 - `~/.dotfiles/zsh/path.zsh` — vars exported to all spawned shells (and inherited by Claude Code from the login shell).
 
-If a new env var has a paired `ENABLE_X=0|1` toggle pattern matching the user's hooks (e.g., `ENABLE_RUFF`, `ENABLE_TY`), recommend adding to `path.zsh` with a default that matches their conservative posture (most ENABLE_* vars are 0 by default).
+If a new env var has a paired `ENABLE_X=0|1` toggle pattern matching the user's hooks (e.g., `ENABLE_RUFF`), recommend adding to `path.zsh` with a default that matches their conservative posture (only actively used tools get a toggle; permanently-disabled toggles were removed in the 2026-07 hook audit).
 
 ### Skills
 

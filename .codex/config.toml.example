@@ -124,10 +124,6 @@ args = ["-y", "@upstash/context7-mcp"]
 command = "npx"
 args = ["@playwright/mcp@latest"]
 
-[mcp_servers.desktop-commander]
-command = "npx"
-args = ["-y", "@wonderwhy-er/desktop-commander"]
-
 [mcp_servers.tavily-remote]
 command = "sh"
 args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]

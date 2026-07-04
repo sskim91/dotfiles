@@ -42,7 +42,6 @@ Antigravity CLI settings are stored in `.gemini/antigravity-cli/settings.json`. 
 The environment provides the following MCP servers for enhanced capabilities:
 - `context7`: Up-to-date documentation and code examples.
 - `playwright`: Web browser automation and testing.
-- `desktop-commander`: Advanced local file and system operations.
 - `tavily`: High-quality web search.
 
 ### Migration Notes

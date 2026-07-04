@@ -10,12 +10,6 @@ HOOK_TYPE="${1:-check}"
 
 case "$FILE_PATH" in
 	*.py) LANGUAGE="python" ;;
-	*.java) LANGUAGE="java" ;;
-	*.ts|*.tsx) LANGUAGE="typescript" ;;
-	*.js|*.jsx|*.mjs|*.cjs) LANGUAGE="javascript" ;;
-	*.go) LANGUAGE="go" ;;
-	*.rs) LANGUAGE="rust" ;;
-	*.cpp|*.cc|*.cxx|*.h|*.hpp) LANGUAGE="cpp" ;;
 	*) exit 0 ;;
 esac
 

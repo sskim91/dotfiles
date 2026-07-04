@@ -39,9 +39,6 @@ while IFS= read -r f; do
 	[[ -f "$f" ]] || continue   # deleted/renamed-away files won't exist → skip
 	case "$f" in
 		*.py) LANGUAGE="python" ;;
-		*.java) LANGUAGE="java" ;;
-		*.ts | *.tsx) LANGUAGE="typescript" ;;
-		*.js | *.jsx | *.mjs | *.cjs) LANGUAGE="javascript" ;;
 		*) continue ;;
 	esac
 	SCRIPT="$HOOK_DIR/${LANGUAGE}-${HOOK_TYPE}.sh"

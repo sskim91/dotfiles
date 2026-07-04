@@ -41,7 +41,7 @@
 ## AI Harness & Hooks
 - `.codex/hooks/` mirrors `.claude/hooks/`: file-dispatcher (language checks on edit), pre-commit-gate (blocks commits touching sensitive files, `.env` files, or hardcoded secrets), and prompt-rewriter.
 - If a hook blocks an operation, fix the flagged content (remove the secret, exclude the file) — do not bypass or disable the hook.
-- Hook language checks are toggled via `ENABLE_*` env vars in `zsh/path.zsh` (e.g. `ENABLE_RUFF=1`; ESLint/tsc/Biome/Checkstyle default off).
+- Hook language checks are toggled via `ENABLE_*` env vars in `zsh/path.zsh` (e.g. `ENABLE_RUFF=1`; Python/Ruff is the only language checker — JS/TS/Java checkers were removed in the 2026-07 hook audit).
 
 ## Gotchas
 - After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).

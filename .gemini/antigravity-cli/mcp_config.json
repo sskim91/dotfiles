@@ -16,14 +16,6 @@
       ],
       "timeout": 30000
     },
-    "desktop-commander": {
-      "command": "bash",
-      "args": [
-        "-lc",
-        "export PATH=\"$HOME/.local/share/mise/shims:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH\"; exec npx -y @wonderwhy-er/desktop-commander"
-      ],
-      "timeout": 30000
-    },
     "tavily": {
       "command": "bash",
       "args": [
