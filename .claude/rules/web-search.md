@@ -13,6 +13,11 @@
 | Site URL mapping | `tavily_map` | - |
 | Deep research | `tavily_research` | - |
 
+## Recency
+
+- The current date is injected at session start (session-context hook) — use it directly; do not run `date` first.
+- For time-sensitive info (versions, releases, news), include the current year-month in the search query and prefer recent results.
+
 ## URL Extraction Flow
 
 1. **GitHub URL** → `gh` CLI (`gh pr view`, `gh issue view`, `gh repo view`)

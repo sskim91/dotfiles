@@ -11,7 +11,13 @@ Personal dotfiles repository managing macOS development environment. Centralized
 ```bash
 ./install.sh              # Full installation (CLI Brewfile, optional casks, symlinks)
 source ~/.zshrc           # Reload shell config (alias: rr)
+pre-commit run --all-files   # Validate before commit (format, JSON/YAML checks, secret scan)
+zsh -n .zshrc zsh/*.zsh      # Syntax-check shell config changes
 ```
+
+## Commit Convention
+
+Conventional Commits: `type(scope): subject` in imperative mood, no trailing period. No Gitmoji/emoji prefixes (e.g. `feat(codex-hooks): add lint dispatcher`).
 
 ## Symlink Architecture
 
@@ -211,7 +217,14 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 | Codex CLI | `AGENTS.md` (project) | `.codex/hooks/`, `.codex/config/`, `.codex/rules/`, `.codex/setup-mcp.sh` |
 | Antigravity / Gemini CLI | `GEMINI.md` (project) | `.gemini/antigravity-cli/{settings,hooks,mcp_config}.json` |
 
-`.codex/hooks/` mirrors `.claude/hooks/` (file-dispatcher, pre-commit-gate, check-* security gates, prompt-rewriter, language checks) so Codex sessions get the same guardrails. Keep the three project guidance files in sync when changing cross-cutting conventions (commit style, security policy).
+`.codex/hooks/` mirrors `.claude/hooks/` (file-dispatcher, pre-commit-gate, check-* security gates, prompt-rewriter, language checks) so Codex sessions get the same guardrails.
+
+**Parity checklist** — when changing any of these, update all three guidance files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`):
+- Commit convention (Conventional Commits, no emoji)
+- Symlink-edit rule (edit in `~/.dotfiles/`, not `$HOME`; `.gitconfig` stub exception)
+- Validation commands (`pre-commit run --all-files`, `zsh -n`)
+- Gotchas (tmux reload, `ENABLE_*` toggles, primary terminal)
+- Security policy (secrets, `.env` handling)
 
 **Global collaboration style** (`.claude/docs/working-style.md`) is shared across all three tools via symlink — `~/.codex/AGENTS.md` and `~/.gemini/GEMINI.md` both symlink to it, and Claude's global `.claude/CLAUDE.md` `@import`s it. Edit collaboration conventions in that one file only; symlinks propagate automatically.
 

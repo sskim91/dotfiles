@@ -69,6 +69,11 @@ Uses **mise** for managing language runtimes (Node.js, Python).
 The `.claude/skills/` directory contains specialized "skills" (e.g., `git-commit`, `til`, `obsidian-note`).
 - **Guidance for Antigravity/Gemini**: Before implementing new automation or workflows, check `.claude/skills/` for existing logic that can be adapted or reused.
 
+## Validation & Commits
+- Before commit: `pre-commit run --all-files` (format, JSON/YAML checks, secret scan).
+- Shell changes: validate with `zsh -n .zshrc zsh/*.zsh`.
+- Commit convention: Conventional Commits `type(scope): subject`, imperative mood, no Gitmoji/emoji prefixes.
+
 ## Security & Privacy
 - **Do not commit** `.env.local` or any file containing secrets.
 - Use the provided Git identity switching (`git/.gitconfig_personal` vs `git/.gitconfig_company`) based on the directory context.

@@ -1,5 +1,9 @@
 # Repository Guidelines
 
+## Symlink Architecture (Critical)
+- All configs are symlinked from `~/.dotfiles/` into `$HOME` (e.g. `~/.zshrc` → `~/.dotfiles/.zshrc`). **Always edit files inside `~/.dotfiles/`, never the symlinked locations.**
+- Exceptions that are NOT symlinks: `~/.gitconfig` is a local stub that `[include]`s `~/.dotfiles/git/.gitconfig`; some `~/.gemini/` files get overwritten by Antigravity at runtime. Editing those home-side files silently diverges from the tracked source.
+
 ## Project Structure & Module Organization
 - Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
 - Shell customizations live in `zsh/`:
@@ -33,6 +37,16 @@
 - Required before PR/merge: `pre-commit run --all-files`.
 - For changed scripts, run targeted checks (for example `python3 -m py_compile scripts/yt-transcript.py`).
 - For shell changes, validate with `zsh -n` and a quick interactive reload.
+
+## AI Harness & Hooks
+- `.codex/hooks/` mirrors `.claude/hooks/`: file-dispatcher (language checks on edit), pre-commit-gate (blocks commits touching sensitive files, `.env` files, or hardcoded secrets), and prompt-rewriter.
+- If a hook blocks an operation, fix the flagged content (remove the secret, exclude the file) — do not bypass or disable the hook.
+- Hook language checks are toggled via `ENABLE_*` env vars in `zsh/path.zsh` (e.g. `ENABLE_RUFF=1`; ESLint/tsc/Biome/Checkstyle default off).
+
+## Gotchas
+- After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).
+- Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
+- When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
 
 ## Commit & Pull Request Guidelines
 - Use Conventional Commits: `type(scope): subject` in imperative mood, no trailing period (for example: `feat(codex-hooks): add lint dispatcher`, `chore(claude): refresh spinner tips`).
