@@ -123,6 +123,79 @@ function tcp() {
 }
 
 #-------------------------------------------------------------------------------
+# FortiGate SSL-VPN (openfortivpn) — background daemon via launchd
+#
+# The tunnel runs as a root LaunchDaemon so it survives closing the terminal
+# and needs no per-connect sudo/VPN prompts. Auto-reconnect is handled natively
+# by openfortivpn's `persistent` config key (not a shell loop).
+#
+# Secrets & endpoint live in /etc/openfortivpn/config (root:wheel 600), NOT in
+# this tracked repo. The plist (no secrets) is copied to /Library/LaunchDaemons.
+# One-time setup lives in the repo docs; see `vpn -h`.
+#-------------------------------------------------------------------------------
+function vpn() {
+    local CONFIG="/etc/openfortivpn/config"
+    local PLIST="/Library/LaunchDaemons/openfortivpn.plist"
+    local SERVICE="system/openfortivpn"
+    local LOG="/var/log/openfortivpn.log"
+
+    case "$1" in
+        up)
+            [ -f "$PLIST" ] || { echo -e "\033[0;31mDaemon not installed: ${PLIST}\nRun the one-time setup (vpn -h).\033[0m"; return 1; }
+            sudo launchctl bootstrap system "$PLIST" 2>/dev/null  # no-op if already loaded
+            sudo launchctl kickstart -k "$SERVICE" \
+                && echo -e "\033[0;33mVPN starting in background. Check: vpn status\033[0m"
+            ;;
+        down)
+            sudo launchctl kill TERM "$SERVICE" \
+                && echo -e "\033[0;33mVPN stopped.\033[0m"
+            ;;
+        status)
+            if pgrep -x openfortivpn >/dev/null 2>&1; then
+                echo -e "\033[0;32mVPN running.\033[0m"
+                # openfortivpn on macOS uses a ppp interface (utun on some setups).
+                ifconfig 2>/dev/null | grep -A2 -E "^(ppp|utun)[0-9]" | grep "inet " | sed 's/^/  /'
+            else
+                echo -e "\033[0;31mVPN not running.\033[0m"
+            fi
+            ;;
+        log)
+            [ -f "$LOG" ] && sudo tail -f "$LOG" || echo -e "\033[0;31mNo log yet: ${LOG}\033[0m"
+            ;;
+        fg)
+            shift  # drop "fg" so extra args pass through cleanly
+            # Foreground run — for first-time cert discovery / debugging.
+            if [ -f "$CONFIG" ]; then
+                sudo openfortivpn -c "$CONFIG" "$@"
+            else
+                sudo openfortivpn "$@"
+            fi
+            ;;
+        -h|--help|"")
+            echo "FortiGate SSL-VPN via openfortivpn (background launchd daemon)"
+            echo ""
+            echo "Usage:"
+            echo "  vpn up        # start tunnel in background (one Mac-password prompt)"
+            echo "  vpn down      # stop tunnel"
+            echo "  vpn status    # is it connected? show utun IP"
+            echo "  vpn log       # tail the daemon log"
+            echo "  vpn fg        # run in foreground (setup/debug)"
+            echo ""
+            echo "One-time setup:"
+            echo "  1. brew install openfortivpn"
+            echo "  2. sudo openfortivpn <host>:443 -u <id>   # note the --trusted-cert digest, Ctrl-C"
+            echo "  3. write /etc/openfortivpn/config (host/port/username/password/trusted-cert/persistent), chmod 600"
+            echo "  4. sudo cp ~/.dotfiles/.config/openfortivpn/openfortivpn.plist /Library/LaunchDaemons/"
+            echo "     sudo chown root:wheel /Library/LaunchDaemons/openfortivpn.plist"
+            echo "     sudo launchctl bootstrap system /Library/LaunchDaemons/openfortivpn.plist"
+            echo "  5. vpn up"
+            ;;
+        *)
+            echo -e "\033[0;31mUnknown: vpn $1  (try: vpn -h)\033[0m"; return 1 ;;
+    esac
+}
+
+#-------------------------------------------------------------------------------
 # Echo with yellow color
 #-------------------------------------------------------------------------------
 function e() {

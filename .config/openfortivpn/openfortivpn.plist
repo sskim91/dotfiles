@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  openfortivpn LaunchDaemon (on-demand, background).
+
+  This template carries NO secrets — the gateway host, credentials and cert
+  digest all live in /etc/openfortivpn/config (root:wheel 600). Safe to track.
+
+  RunAtLoad=false  -> stays idle after boot; only `vpn up` starts it.
+  No KeepAlive     -> reconnect is handled by `persistent = <sec>` in the config
+                      file (openfortivpn reconnects inside its own process).
+
+  Install (must be COPIED, not symlinked — launchd rejects non-root plists):
+    sudo cp ~/.dotfiles/.config/openfortivpn/openfortivpn.plist /Library/LaunchDaemons/
+    sudo chown root:wheel /Library/LaunchDaemons/openfortivpn.plist
+    sudo chmod 644        /Library/LaunchDaemons/openfortivpn.plist
+    sudo launchctl bootstrap system /Library/LaunchDaemons/openfortivpn.plist
+
+  Binary path assumes Homebrew on Apple Silicon (/opt/homebrew).
+  On Intel Macs change it to /usr/local/bin/openfortivpn.
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>openfortivpn</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/homebrew/bin/openfortivpn</string>
+        <string>-c</string>
+        <string>/etc/openfortivpn/config</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/var/log/openfortivpn.log</string>
+    <key>StandardErrorPath</key>
+    <string>/var/log/openfortivpn.log</string>
+</dict>
+</plist>
