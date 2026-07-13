@@ -38,6 +38,9 @@ alias mv='mv -i'
 # Homebrew 관리
 alias services="brew services"                              # 서비스 관리
 
+# Claude Code 관리
+alias ccpu="claude plugin marketplace update"               # 수동(autoUpdate:false) marketplace 전체 갱신 — 필요할 때만
+
 # eza를 사용한 향상된 파일 목록 표시
 alias ll="eza --color-scale all --icons --time-style long-iso -lhbg --git --group-directories-first --hyperlink"   # 자세한 목록 + Git 상태
 alias la="eza --color-scale all --icons --time-style long-iso -lahbg --git --group-directories-first --hyperlink"  # 숨김 파일 포함
