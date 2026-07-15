@@ -35,6 +35,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.gemini/GEMINI.md` | `~/.dotfiles/.claude/docs/working-style.md` (Antigravity 글로벌 컨텍스트 — Claude/Codex와 동일 정본) |
 | `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` — Antigravity가 실행 시 실파일로 덮어써 심링크가 깨질 수 있음(`.gitconfig`의 Sourcetree 패턴과 동일). dotfiles 쪽이 정본이며 install.sh 재실행으로 재링크 |
 | `~/.gemini/config/{hooks,mcp_config}.json` | `~/.dotfiles/.gemini/antigravity-cli/` — `hooks.json`은 위와 같은 덮어쓰기 드리프트 대상 |
+| `~/.codex/hooks.json` | `~/.dotfiles/.codex/config/global.json` — cmux가 자기 훅을 병합한 실파일로 덮어써 심링크가 깨짐(antigravity 패턴과 동일). dotfiles 쪽이 정본이며 `global.json` 수정 시 install.sh 재실행으로 재링크(직후 cmux가 다시 병합·덮어씀) |
 | `~/.config/karabiner/assets/complex_modifications/my_custom_key.json` | `~/.dotfiles/.config/karabiner/my_custom_key.json` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |

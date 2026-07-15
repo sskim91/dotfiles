@@ -2,7 +2,7 @@
 
 ## Symlink Architecture (Critical)
 - All configs are symlinked from `~/.dotfiles/` into `$HOME` (e.g. `~/.zshrc` → `~/.dotfiles/.zshrc`). **Always edit files inside `~/.dotfiles/`, never the symlinked locations.**
-- Exceptions that are NOT symlinks: `~/.gitconfig` is a local stub that `[include]`s `~/.dotfiles/git/.gitconfig`; some `~/.gemini/` files get overwritten by Antigravity at runtime. Editing those home-side files silently diverges from the tracked source.
+- Exceptions that are NOT symlinks: `~/.gitconfig` is a local stub that `[include]`s `~/.dotfiles/git/.gitconfig`; some `~/.gemini/` files get overwritten by Antigravity at runtime; `~/.codex/hooks.json` gets overwritten by cmux merging its own hooks (tracked source: `.codex/config/global.json`). Editing those home-side files silently diverges from the tracked source.
 
 ## Project Structure & Module Organization
 - Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.

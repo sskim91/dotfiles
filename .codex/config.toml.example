@@ -14,7 +14,7 @@
 # Core Model Selection
 ################################################################################
 
-model = "gpt-5.5"
+model = "gpt-5.6-sol"
 
 # Communication style: none | friendly | pragmatic
 personality = "pragmatic"
@@ -84,21 +84,22 @@ suppress_unstable_features_warning = true
 # Context / Auto-Compaction
 ################################################################################
 
-# Codex auto-compacts conversation history when context fills (built-in default
-# is derived from the model context window). Override the trigger explicitly with
-# a TOKEN COUNT (not a percentage — unlike Claude Code's 80% auto-compact).
-# To emulate "compact at 80%": set this to (context_window * 0.8).
-# Check the live window via statusLine "context-window-size", then multiply.
-# 80% is a safety margin, not a quality-optimal point (Chroma "Context Rot" 2025
-# shows quality degrades gradually well before the window fills).
-# gpt-5.5 window = 272000 → 80% = 217600 (75% = 204000 is more conservative).
-# model_auto_compact_token_limit = 217600
+# Token threshold that triggers auto-compaction of conversation history.
+# gpt-5.5 advertised context window = 272,000 tokens.
+# Codex effective context window = 258,400 tokens (95% of advertised window).
+#   80% = 206720 (overflow safety margin)
+#   75% = 193800 (balanced for long agent/document workflows)
+#   70% = 180880 (more conservative for very long ULW/research sessions)
+# NOTE: 75% is an engineering heuristic, not a quality-optimal point. Research
+# (Chroma "Context Rot" 2025) shows quality degrades gradually well before the
+# window fills, so this is a safety margin, not a quality guarantee.
+model_auto_compact_token_limit = 193800
 
-# Which part of the active context is charged against the limit above:
-# - total            : count the full active context (default behavior)
-# - body_after_prefix: count only tokens after the carried prefix in the current
+# Scope charged against the limit above:
+# - total            : full active context (default)
+# - body_after_prefix: only tokens after the carried prefix in the current
 #                       compaction window (avoids re-triggering too eagerly)
-# model_auto_compact_token_limit_scope = "total"
+model_auto_compact_token_limit_scope = "total"
 
 # Customize the prompt used when compacting history (optional):
 # compact_prompt = "..."
@@ -132,19 +133,26 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 command = "sh"
 args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y @brave/brave-search-mcp-server --transport stdio"]
 
+[mcp_servers.youtrack]
+command = "sh"
+args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y mcp-remote \"$YOUTRACK_URL/mcp\" --header \"Authorization:Bearer $YOUTRACK_TOKEN\""]
+
 ################################################################################
 # Feature Flags
 ################################################################################
 
 [features]
+plugin_hooks = true
+unified_exec = true
+child_agents_md = true
+plugins = true
 multi_agent = true
-# Keep v2 disabled on 0.138.0: spawn_agent is rejected by the API when this is enabled.
-multi_agent_v2 = false
 hooks = true
-memories = true
 # Persisted /goal workflows (Codex 0.128.0+)
 # TUI commands: /goal create | /goal pause | /goal resume | /goal clear
 goals = true
+memories = true
+js_repl = false
 
 ################################################################################
 # UI
@@ -154,3 +162,5 @@ goals = true
 notifications = false
 animations = true
 show_tooltips = true
+status_line = ["model-with-reasoning", "current-dir", "git-branch", "context-remaining", "context-used", "five-hour-limit", "weekly-limit", "codex-version", "context-window-size"]
+status_line_use_colors = true

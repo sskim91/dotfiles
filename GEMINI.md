@@ -26,6 +26,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 | Antigravity CLI settings | `.gemini/antigravity-cli/settings.json` | `~/.gemini/antigravity-cli/settings.json` |
 | Antigravity config | `.gemini/antigravity-cli/{hooks,mcp_config}.json` | `~/.gemini/config/` |
 | Claude | `.claude/` | `~/.claude/` |
+| Codex hooks | `.codex/config/global.json` | `~/.codex/hooks.json` (cmux merges its own hooks and overwrites the symlink with a real file — the dotfiles side is the source of truth) |
 | Apps | `.config/` | `~/.config/` |
 
 ## Gemini and Antigravity CLI Integration
