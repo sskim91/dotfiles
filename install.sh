@@ -361,7 +361,6 @@ link_file "$DOTFILES/.claude/skills" "$HOME/.agents/skills"
 #  Antigravity CLI keeps its own config under ~/.gemini/antigravity-cli/.)
 echo "Setting up Antigravity CLI configuration..."
 mkdir -p "$HOME/.gemini/antigravity-cli"
-mkdir -p "$HOME/.gemini/antigravity"
 mkdir -p "$HOME/.gemini/config"
 # Antigravity CLI reads ~/.gemini/GEMINI.md as the global developer context.
 # Share the single collaboration-style source (same file Claude/Codex use).
@@ -377,9 +376,10 @@ link_file "$DOTFILES/.gemini/antigravity-cli/mcp_config.json" "$HOME/.gemini/con
 link_file "$DOTFILES/.gemini/antigravity-cli/hooks.json" "$HOME/.gemini/config/hooks.json"
 link_file "$HOME/.gemini/config/mcp_config.json" "$HOME/.gemini/antigravity-cli/mcp_config.json"
 link_file "$HOME/.gemini/config/hooks.json" "$HOME/.gemini/antigravity-cli/hooks.json"
+# Skills: ~/.gemini/config/skills is the ONLY path recognized by all Antigravity
+# flavors (app/CLI/IDE) — verified empirically 2026-07. Per-flavor paths
+# (antigravity-cli/skills, antigravity/skills) are redundant; do not re-add.
 link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/config/skills"
-link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/antigravity-cli/skills"
-link_file "$DOTFILES/.claude/skills" "$HOME/.gemini/antigravity/skills"
 
 #-------------------------------------------------------------------------------
 # Link Codex CLI configuration

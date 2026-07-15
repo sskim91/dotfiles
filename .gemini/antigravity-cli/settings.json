@@ -1,6 +1,11 @@
 {
   "colorScheme": "tokyo night",
   "model": "Gemini 3.5 Flash (High)",
+  "statusLine": {
+    "type": "",
+    "command": "",
+    "enabled": true
+  },
   "trustedWorkspaces": [
     "/Users/sskim/dev",
     "/Users/sskim/work",
