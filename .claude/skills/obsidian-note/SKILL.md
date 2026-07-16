@@ -1,6 +1,6 @@
 ---
 name: obsidian-note
-description: Use when user mentions "Obsidian", "옵시디언", "write as note", "save to notes", "노트로 저장", or /obsidian-note command. Do NOT use for TIL (use til), YouTube notes (use youtube-summarizer), GenOS 작업 지식 캡처 (use genos-knowledge-capture), or deep/team/multi-angle note research (use agentic-notes).
+description: Use when user mentions "Obsidian", "옵시디언", "write as note", "save to notes", "노트로 저장", or /obsidian-note command. Do NOT use for TIL (use til), YouTube notes (use youtube-summarizer), GenOS 작업 지식 캡처 (use genos-knowledge-capture), GenOS 패치노트·릴리스 노트 (use write-genos-patch-notes), or deep/team/multi-angle note research (use agentic-notes).
 ---
 
 # Zettelkasten Note Writer

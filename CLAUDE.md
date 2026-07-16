@@ -162,6 +162,8 @@ description: Short description for Claude. Use when ...
 ...
 ```
 
+3. Claude·Codex 겸용 Skill은 선택적으로 `agents/openai.yaml`을 포함한다. Claude Code는 이 파일을 무시하고, Codex는 Skill 목록과 호출 UI의 metadata로 사용한다.
+
 ### Agents
 
 Located in `.claude/agents/`. Custom agent configurations for the Agent tool:
