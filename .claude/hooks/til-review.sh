@@ -44,7 +44,7 @@ fi
 
 # Model configuration
 CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.5}"
-ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.5 Flash (High)}"
+ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.6 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
 # Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
