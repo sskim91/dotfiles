@@ -7,6 +7,20 @@ Host ocl
     User <YOUR_USERNAME>
     IdentityFile ~/.ssh/<YOUR_KEY_FILE>
 
+# Cluster of nodes sharing one User/key, differing only by IP (optional)
+# Wildcard block holds the common settings; per-node blocks add only HostName.
+# SSH merges all matching blocks (first value wins on conflict).
+Host mycluster-*
+    User <SHARED_USERNAME>
+    IdentityFile ~/.ssh/<CLUSTER_KEY_FILE>
+    IdentitiesOnly yes
+
+Host mycluster-node1
+    HostName <NODE1_IP>
+
+Host mycluster-node2
+    HostName <NODE2_IP>
+
 # GitHub multi-account (optional)
 # Personal account uses default github.com; company account uses an alias
 # so a separate SSH key can be bound without `gh auth switch`.
