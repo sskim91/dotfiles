@@ -135,7 +135,7 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/til-review.sh",
-            "timeout": 300
+            "timeout": 400
           },
           {
             "type": "command",
