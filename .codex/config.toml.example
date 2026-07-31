@@ -85,7 +85,7 @@ suppress_unstable_features_warning = true
 ################################################################################
 
 # Token threshold that triggers auto-compaction of conversation history.
-# gpt-5.5 advertised context window = 272,000 tokens.
+# GPT-5.6 Sol/Terra/Luna advertised context window = 272,000 tokens.
 # Codex effective context window = 258,400 tokens (95% of advertised window).
 #   80% = 206720 (overflow safety margin)
 #   75% = 193800 (balanced for long agent/document workflows)
@@ -142,7 +142,6 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 ################################################################################
 
 [features]
-plugin_hooks = true
 unified_exec = true
 child_agents_md = true
 plugins = true
@@ -152,7 +151,6 @@ hooks = true
 # TUI commands: /goal create | /goal pause | /goal resume | /goal clear
 goals = true
 memories = true
-js_repl = false
 
 ################################################################################
 # UI
