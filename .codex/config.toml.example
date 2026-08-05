@@ -23,7 +23,7 @@ personality = "pragmatic"
 model_provider = "openai"
 
 # Optional model override for /review. Default: unset (uses current session model).
-review_model = "gpt-5.5"
+# review_model = "gpt-5.6-terra"
 
 ################################################################################
 # Reasoning & Verbosity (Responses API capable models)
@@ -85,8 +85,9 @@ suppress_unstable_features_warning = true
 ################################################################################
 
 # Token threshold that triggers auto-compaction of conversation history.
-# GPT-5.6 Sol/Terra/Luna advertised context window = 272,000 tokens.
-# Codex effective context window = 258,400 tokens (95% of advertised window).
+# Current Codex runtime observed for gpt-5.6-sol: 258,400 effective tokens.
+# Re-check session metadata after changing models; do not derive this value from
+# the API model's 272K pricing threshold.
 #   80% = 206720 (overflow safety margin)
 #   75% = 193800 (balanced for long agent/document workflows)
 #   70% = 180880 (more conservative for very long ULW/research sessions)

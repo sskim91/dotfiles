@@ -68,7 +68,7 @@ if [[ "$SKIP_TRANSLATED_REVIEW" -eq 1 ]] && grep -q "한국어로 번역한 글�
 fi
 
 # Model configuration
-CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.5}"
+CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.6-terra}"
 ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.6 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
