@@ -73,6 +73,14 @@ export ENABLE_VAULT_LINKER=0         # Obsidian vault 노트 자동 링킹 제�
 export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 TIL 리뷰 스킵
 
 # ----------------------------------------------------------------------------
+# Claude Code — 앱 레벨 설정
+# (settings.json env 블록은 subprocess에만 전달; 앱 자체 로직엔 셸 export 필요)
+# ----------------------------------------------------------------------------
+# autocompact: context window의 몇 % 시점에 자동 압축을 발동할지 (기본값 ~83%)
+# 낮을수록 일찍 압축 → 더 자주 / 높을수록 늦게 압축 → 맥락 보존
+export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
+
+# ----------------------------------------------------------------------------
 # OMC (oh-my-claudecode)
 # ----------------------------------------------------------------------------
 export ENABLE_OMC_COMPANION_SYNC=1   # SessionStart: CLAUDE-omc.md를 설치된 플러그인 버전과 동기화
