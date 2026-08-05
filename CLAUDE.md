@@ -112,6 +112,7 @@ SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/s
 SessionStart → omc-companion-sync.sh (syncs ~/.claude/CLAUDE-omc.md with installed OMC plugin version; requires ENABLE_OMC_COMPANION_SYNC=1)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
+  └ check-env-files.sh 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
 PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
 PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)

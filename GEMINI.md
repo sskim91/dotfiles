@@ -37,7 +37,7 @@ Antigravity CLI settings are stored in `.gemini/antigravity-cli/settings.json`. 
 1. **PreToolUse (File Ops)**: Security hooks in `.gemini/antigravity-cli/hooks/` block accidental writes of sensitive data on `write_to_file`/`replace_file_content`:
    - `check-secrets.sh`: Blocks hardcoded secrets.
    - `check-sensitive-files.sh`: Blocks `.pem`, `.key`, etc.
-   - `check-env-files.sh`: Blocks `.env` and sensitive config files.
+   - `check-env-files.sh`: Blocks newly added `.env` files, structured secret/config files (`credentials`/`secrets`/`config.local` as `.json`/`.yaml`/`.toml`), and any added line that assigns a real-looking value to a secret key. Edits to an already-tracked `.env` holding only placeholders are allowed.
 
 ### MCP Servers
 The environment provides the following MCP servers for enhanced capabilities:

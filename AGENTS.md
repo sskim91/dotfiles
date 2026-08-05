@@ -39,7 +39,7 @@
 - For shell changes, validate with `zsh -n` and a quick interactive reload.
 
 ## AI Harness & Hooks
-- `.codex/hooks/` mirrors `.claude/hooks/`: file-dispatcher (language checks on edit), pre-commit-gate (blocks commits touching sensitive files, `.env` files, or hardcoded secrets), and prompt-rewriter.
+- `.codex/hooks/` mirrors `.claude/hooks/`: file-dispatcher (language checks on edit), pre-commit-gate (blocks commits touching sensitive files, newly added `.env` files, structured secret/config files, or hardcoded secrets — edits to an already-tracked placeholder-only `.env` are allowed), and prompt-rewriter.
 - If a hook blocks an operation, fix the flagged content (remove the secret, exclude the file) — do not bypass or disable the hook.
 - Hook language checks are toggled via `ENABLE_*` env vars in `zsh/path.zsh` (e.g. `ENABLE_RUFF=1`; Python/Ruff is the only language checker — JS/TS/Java checkers were removed in the 2026-07 hook audit).
 
