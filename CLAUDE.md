@@ -112,7 +112,9 @@ SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/s
 SessionStart → omc-companion-sync.sh (syncs ~/.claude/CLAUDE-omc.md with installed OMC plugin version; requires ENABLE_OMC_COMPANION_SYNC=1)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
-  └ check-env-files.sh 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
+  ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
+  ├ check-hardcoded-secrets.sh (`ENABLE_SECRET_SCAN`, 현재 0=비활성): 코드 diff에서 API 키·토큰·credential URL 패턴 차단
+  └ check-sensitive-files.sh: 키 파일(id_rsa·.pem 등) 차단 — 토글 없이 상시 활성
 PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
 PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
 PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
@@ -126,6 +128,7 @@ PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requi
 Each hook tool is individually controlled via `ENABLE_*` environment variables:
 - `ENABLE_RUFF=1` - Python Ruff linter (default enabled)
 - `ENABLE_TIL_REVIEW=1`, `ENABLE_VAULT_LINKER=0`, `ENABLE_OMC_COMPANION_SYNC=1` - document/review/sync hooks
+- `ENABLE_ENV_FILE_CHECK=0`, `ENABLE_SECRET_SCAN=0` - commit security gates (currently disabled by user choice; set to 1 to re-enable)
 
 ### Adding New Hooks
 

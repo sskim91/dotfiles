@@ -1,6 +1,11 @@
 #!/bin/bash
 # Check for .env files and similar configuration files
 # .env 파일이 커밋되는 것을 방지
+# ENABLE_ENV_FILE_CHECK (zsh/path.zsh) 가 1이 아니면 검사 없이 통과.
+# 기본값 0 — 사용자가 이 게이트를 비활성으로 결정 (2026-08). 재활성화는 export =1.
+# (fallback을 0으로 두는 이유: export 이전에 시작된 세션에도 즉시 적용되게)
+
+[ "${ENABLE_ENV_FILE_CHECK:-0}" != "1" ] && exit 0
 
 # 환경 변수 파일 패턴
 ENV_PATTERNS="(^|/)\.env($|\.local$|\.development$|\.production$|\.staging$|\.test$)"

@@ -1,6 +1,11 @@
 #!/bin/bash
 # Check for hardcoded secrets in staged files
 # 코드에 하드코딩된 비밀 정보 감지
+# ENABLE_SECRET_SCAN (zsh/path.zsh) 가 1이 아니면 검사 없이 통과.
+# 기본값 0 — 사용자가 이 게이트를 비활성으로 결정 (2026-08). 재활성화는 export =1.
+# (fallback을 0으로 두는 이유: export 이전에 시작된 세션에도 즉시 적용되게)
+
+[ "${ENABLE_SECRET_SCAN:-0}" != "1" ] && exit 0
 
 # 검사할 파일 확장자
 CODE_EXTENSIONS="\.py$|\.java$|\.js$|\.ts$|\.go$|\.rb$|\.php$|\.sh$|\.yaml$|\.yml$|\.json$|\.xml$|\.properties$|\.gradle$|\.kt$"
@@ -101,7 +106,7 @@ for file in $STAGED_CODE_FILES; do
         STAGED_CONTENT=$(git diff --cached "$file" 2>/dev/null | grep "^+" | grep -v "^+++" || true)
 
         for pattern in "${SECRET_PATTERNS[@]}"; do
-            MATCHES=$(echo "$STAGED_CONTENT" | grep -iE "$pattern" || true)
+            MATCHES=$(echo "$STAGED_CONTENT" | grep -iE -e "$pattern" || true)
             if [ -n "$MATCHES" ]; then
                 FOUND_SECRETS="$FOUND_SECRETS\n📁 $file:\n$MATCHES\n"
             fi
