@@ -77,9 +77,6 @@ file_opener = "vscode"
 # Web search mode: disabled | cached | live. Default: "cached"
 web_search = "cached"
 
-# Suppress "Under-development features enabled" banner for opt-in unstable features (e.g. goals)
-suppress_unstable_features_warning = true
-
 ################################################################################
 # Context / Auto-Compaction
 ################################################################################
@@ -90,7 +87,7 @@ suppress_unstable_features_warning = true
 # the API model's 272K pricing threshold.
 #   80% = 206720 (overflow safety margin)
 #   75% = 193800 (balanced for long agent/document workflows)
-#   70% = 180880 (more conservative for very long ULW/research sessions)
+#   70% = 180880 (more conservative for very long research/agent sessions)
 # NOTE: 75% is an engineering heuristic, not a quality-optimal point. Research
 # (Chroma "Context Rot" 2025) shows quality degrades gradually well before the
 # window fills, so this is a safety margin, not a quality guarantee.
@@ -104,7 +101,6 @@ model_auto_compact_token_limit_scope = "total"
 
 # Customize the prompt used when compacting history (optional):
 # compact_prompt = "..."
-# experimental_compact_prompt_file = "/abs/path/to/compact-prompt.md"
 
 ################################################################################
 # History
@@ -144,8 +140,6 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 
 [features]
 unified_exec = true
-child_agents_md = true
-plugins = true
 multi_agent = true
 hooks = true
 # Persisted /goal workflows (Codex 0.128.0+)
