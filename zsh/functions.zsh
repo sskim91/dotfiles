@@ -495,3 +495,41 @@ function design() {
         && echo "✓ DESIGN.md ($1) → $(pwd)/DESIGN.md" \
         || echo "✗ Failed to fetch DESIGN.md for '$1'"
 }
+
+#-------------------------------------------------------------------------------
+# Narrow the pty width to avoid CJK line-wrap corruption on mobile terminals
+#
+# 적용 대상: iPad에서 Termius 등 SSH 클라이언트로 붙는 "복구 경로" 전용.
+# 주 경로는 vscode.dev + `code tunnel`(내장 터미널이 xterm.js라 한글 정상)이므로
+# 평소에는 쓸 일이 없다. tunnel 프로세스가 죽어 SSH로 되살려야 할 때만 필요하다.
+#
+# 원인 (2026-08 진단):
+#   - 서버 locale은 정상. Termius가 보내는 C.UTF-8은 macOS에 실재하고 한글 처리도
+#     정상임을 확인했다 (`locale -a`에 등재, `sed -n l`로 바이트 치환 없음 검증).
+#   - 문제는 전적으로 클라이언트 렌더링. Termius iOS는 번들 폰트만 쓰고(DejaVu Sans
+#     Mono, PT Mono, Source Code Pro, Ubuntu Mono, Courier New, Cascadia Code,
+#     Fira Code, JetBrains Mono, Meslo) 그중 한글 글리프를 가진 것이 없다.
+#     커스텀 폰트 추가 기능도 없어 클라이언트 측 해결이 불가능하다.
+#   - 대체 폰트 폭이 ASCII의 정확히 2배가 아니면 TUI(Claude Code 등)가 계산한 줄 끝
+#     위치와 실제가 어긋나, 오른쪽 끝에서 줄바꿈될 때 이후 내용이 밀려 겹쳐 보인다.
+#     pty 폭을 실제보다 좁게 잡아 그 경계에 닿지 않게 하는 회피책이다.
+#
+# 한계:
+#   - `????` 자체는 못 고친다. 렌더링 계층 문제라 서버측 수단이 존재하지 않는다.
+#   - tmux 안에서는 무효. tmux가 pane 크기를 따로 관리하므로 attach 전에 실행할 것.
+#   - 화면 회전이나 Split View 조정 시 클라이언트가 실제 크기를 재전송하므로 다시 실행해야 한다.
+#
+# Usage: tw          # 170칸으로 설정
+#        tw 150      # 폭 지정
+#        tw --show   # 현재 크기만 확인
+#-------------------------------------------------------------------------------
+function tw() {
+    if [[ "$1" == "--show" ]]; then
+        echo "current: $(stty size)"
+        return
+    fi
+
+    stty columns "${1:-170}" 2>/dev/null \
+        && echo "pty size -> $(stty size)  (rows cols)" \
+        || { echo "✗ stty 실패 — tty가 없는 환경인지 확인"; return 1; }
+}
