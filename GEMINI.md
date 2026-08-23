@@ -19,7 +19,7 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 
 | Feature | Dotfiles Source | Home Destination |
 |---------|-----------------|------------------|
-| ZSH | `.zprofile`, `.zshrc`, `zsh/` | `~/.zprofile`, `~/.zshrc` |
+| ZSH | `.zshenv`, `.zprofile`, `.zshrc`, `zsh/` | `~/.zshenv`, `~/.zprofile`, `~/.zshrc` |
 | Git | `git/.gitconfig` | `~/.gitconfig` (local stub that `[include]`s the tracked base — not a symlink) |
 | Neovim | `.config/nvim/` | `~/.config/nvim/` |
 | Antigravity global context | `.claude/docs/working-style.md` | `~/.gemini/GEMINI.md` |
@@ -59,6 +59,8 @@ Configuration is split into logical files in `zsh/`:
 - `aliases.zsh`: Command shortcuts (e.g., `vim` -> `nvim`, `ls` -> `eza`).
 - `functions.zsh`: Custom shell functions (e.g., `ccv`, `gem`, `mkd`).
 - `path.zsh`: PATH exports, env vars, Claude hook toggles (`ENABLE_XXX`). Sourced by `.zprofile`.
+
+Load order is `.zshenv` (every zsh) -> `.zprofile` (login only) -> `.zshrc` (interactive only). `.zshenv` holds only the Homebrew PATH prepend, since `ssh host <command>` skips `.zprofile`, `.zshrc`, and `path_helper` alike.
 
 ### Runtime Management
 Uses **mise** for managing language runtimes (Node.js, Python).

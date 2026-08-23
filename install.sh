@@ -197,7 +197,7 @@ fi
 # Link home dotfiles
 #-------------------------------------------------------------------------------
 echo "Linking home dotfiles..."
-for f in .zshrc .zprofile .tmux.conf .vimrc; do
+for f in .zshenv .zshrc .zprofile .tmux.conf .vimrc; do
     link_file "$DOTFILES/$f" "$HOME/$f"
 done
 

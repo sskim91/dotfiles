@@ -5,7 +5,7 @@
 - Exceptions that are NOT symlinks: `~/.gitconfig` is a local stub that `[include]`s `~/.dotfiles/git/.gitconfig`; some `~/.gemini/` files get overwritten by Antigravity at runtime; `~/.codex/hooks.json` gets overwritten by cmux merging its own hooks (tracked source: `.codex/config/global.json`). Editing those home-side files silently diverges from the tracked source.
 
 ## Project Structure & Module Organization
-- Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
+- Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zshenv`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
 - Shell customizations live in `zsh/`:
   - `aliases.zsh` for aliases
   - `functions.zsh` for reusable functions
@@ -46,6 +46,7 @@
 ## Gotchas
 - After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).
 - Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
+- Remote commands run via `ssh host <command>` get a non-login, non-interactive shell: `.zprofile`, `.zshrc`, and `path_helper` are all skipped. Homebrew tools needed there must get their PATH from `.zshenv` (this is why mosh fails with `mosh-server not found`).
 - When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
 
 ## Commit & Pull Request Guidelines

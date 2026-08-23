@@ -56,6 +56,7 @@ brew "mysql-client"
 brew "doggo"
 brew "httpd"
 brew "httpie"
+brew "mosh"
 
 # --- Data Tools ---
 brew "yq"

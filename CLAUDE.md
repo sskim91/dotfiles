@@ -25,6 +25,7 @@ All configurations are managed via symlinks from home directory to dotfiles:
 
 | Home Location | Dotfiles Source |
 |---------------|-----------------|
+| `~/.zshenv` | `~/.dotfiles/.zshenv` |
 | `~/.zshrc` | `~/.dotfiles/.zshrc` |
 | `~/.zprofile` | `~/.dotfiles/.zprofile` |
 | `~/.vimrc` | `~/.dotfiles/.vimrc` |
@@ -55,6 +56,12 @@ Modular ZSH configuration loaded from `zsh/`:
 | `path.zsh` | PATH, env vars, Claude hooks ENABLE_* | `.zprofile` |
 | `aliases.zsh` | Command shortcuts, tool aliases | `.zshrc` |
 | `functions.zsh` | Custom functions (mkd, killport, ccv, etc.) | `.zshrc` |
+
+Load order: `.zshenv` (every zsh) -> `.zprofile` (login only) -> `.zshrc` (interactive only).
+
+`.zshenv` carries only the Homebrew PATH prepend, because `ssh host <command>` runs a
+non-login, non-interactive shell — `.zprofile`, `.zshrc`, and `/etc/zprofile`'s
+`path_helper` are all skipped there, so `/opt/homebrew/bin` would be missing.
 
 `.zprofile` sources `path.zsh` (login-time, once). `.zshrc` sources `aliases.zsh` and `functions.zsh` explicitly.
 
@@ -251,5 +258,6 @@ Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
 - `.tmux.conf` 변경 후 반드시 `Prefix(Ctrl+a) + r`로 reload — tmux 재시작 불필요
 - tmux copy mode 진입: `Prefix + y` (기본 `[`는 window navigation으로 재바인딩됨)
 - Ghostty/kitty 둘 다 설정 존재 — 현재 주 터미널은 Ghostty
+- `ssh host <command>`로 실행되는 원격 명령은 non-login·non-interactive 셸이라 `.zprofile`/`.zshrc`/`path_helper`가 모두 건너뛰어진다. brew 도구를 원격 명령에서 써야 하면 `.zshenv`에 PATH를 넣어야 한다 (mosh가 `mosh-server not found`로 실패하는 전형적 원인)
 - `.claude/hooks/` 스크립트는 `ENABLE_*` env var로 개별 제어 — 새 hook 추가 시 `path.zsh`에 변수 추가 필요
 - Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음
