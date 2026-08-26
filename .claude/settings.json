@@ -247,6 +247,7 @@
       "autoUpdate": false
     }
   },
+  "outputStyle": "Explanatory",
   "language": "korean",
   "spinnerVerbs": {
     "mode": "replace",
@@ -327,13 +328,17 @@
     ]
   },
   "effortLevel": "xhigh",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "advisorModel": "fable",
   "showClearContextOnPlanAccept": true,
   "autoUpdatesChannel": "latest",
   "tui": "default",
   "autoDreamEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "outputStyle": "Explanatory",
   "theme": "dark",
   "editorMode": "normal",
   "verbose": true,
