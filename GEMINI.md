@@ -76,6 +76,13 @@ The `.claude/skills/` directory contains specialized "skills" (e.g., `git-commit
 - Shell changes: validate with `zsh -n .zshrc zsh/*.zsh`.
 - Commit convention: Conventional Commits `type(scope): subject`, imperative mood, no Gitmoji/emoji prefixes.
 
+## Gotchas
+- After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).
+- Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
+- Remote commands run via `ssh host <command>` get a non-login, non-interactive shell: `.zprofile`, `.zshrc`, and `path_helper` are all skipped. Homebrew tools needed there must get their PATH from `.zshenv` (this is why mosh fails with `mosh-server not found`).
+- When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
+- Neovim plugin conflicts: run `:Lazy clean` and restart — LazyVim's auto-sync does not always resolve them.
+
 ## Security & Privacy
 - **Do not commit** `.env.local` or any file containing secrets.
 - Use the provided Git identity switching (`git/.gitconfig_personal` vs `git/.gitconfig_company`) based on the directory context.

@@ -1,7 +1,7 @@
 ---
 name: springboot-developer
 description: Build production-ready Spring Boot applications with layered architecture. Use when creating REST APIs, implementing services, adding security, or building Spring Boot applications with JPA and modern Java.
-tools: Read, Edit, Write, Grep, Glob, Bash(./gradlew*), Bash(mvn*), Bash(java*)
+tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 memory: project
 maxTurns: 60

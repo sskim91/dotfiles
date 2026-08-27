@@ -84,13 +84,22 @@ ANTIGRAVITY_TIMEOUT=${TIL_ANTIGRAVITY_TIMEOUT:-120}
 # Returns 124 on timeout (GNU convention), otherwise the command's exit code.
 run_with_timeout() {
 	local secs=$1; shift
+	# Run the child in its own process group so the timeout can kill the whole tree.
+	# `"$@" &` only creates a wrapper subshell; signalling that pid left the real
+	# `codex exec` / `agy` grandchild alive, so the retry launched a second concurrent
+	# review and the EXIT trap deleted TMPDIR_REVIEW while the survivor still wrote to it.
+	# `set -m` puts the job in its own group; `kill -- -$pid` then signals the group.
+	local had_monitor=0
+	case "$-" in *m*) had_monitor=1 ;; esac
+	set -m
 	"$@" &
 	local pid=$!
+	[[ $had_monitor -eq 1 ]] || set +m
 	(
 		sleep "$secs"
-		kill -TERM "$pid" 2>/dev/null && {
+		kill -TERM -- "-$pid" 2>/dev/null && {
 			sleep 2
-			kill -KILL "$pid" 2>/dev/null
+			kill -KILL -- "-$pid" 2>/dev/null
 		}
 	) &
 	local watchdog=$!

@@ -14,7 +14,7 @@ prompt=$(cat | jq -r '.prompt // empty' 2>/dev/null)
 # Skip if prompt looks structured (contains code blocks, URLs, file paths)
 [[ "$prompt" == *'```'* ]] && exit 0     # code blocks
 [[ "$prompt" == *'http'* ]] && exit 0    # URLs
-[[ "$prompt" =~ \.(py|ts|js|java|sh|md|json|yaml)$ ]] && exit 0  # ends with file extension
+[[ "$prompt" =~ \.(py|ts|js|java|sh|md|json|yaml|yml)$ ]] && exit 0  # ends with file extension
 
 REWRITER_INSTRUCTION="## Prompt Rewriter\nThe user writes informal Korean with repeated phrases, omitted context, and broken word order.\n\nBefore executing, show a [Rewrite] block using this structure:\n- **Goal**: What the user wants (single clear sentence)\n- **Context**: Infer from conversation history — fill in \"그거\", \"아까 그\", \"그 파일\" etc.\n- **Constraints**: Any limitations or preferences mentioned or implied\n- **Output**: What form the result should take\n\nRules:\n- Preserve ALL information from original — never drop details\n- Length can exceed original — clarity over brevity\n- Same language as original\n- If the prompt is already clear and structured, skip [Rewrite] entirely\n- IMPORTANT: If a matching Skill exists for the user request, invoke the Skill tool FIRST. Rewriting does NOT replace skill invocation.\n\nAfter [Rewrite], execute that version."
 

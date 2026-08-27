@@ -1,7 +1,7 @@
 ---
 name: tdd-green-agent
 description: TDD Green phase specialist who writes minimum code to pass failing tests. Use when tdd-red-agent hands off a failing test that needs the simplest possible implementation.
-tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30

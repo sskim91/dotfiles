@@ -1,7 +1,7 @@
 ---
 name: ml-engineer
 description: Implement ML models and pipelines with reproducible experiments and proper evaluation. Produce working code with metrics report. Use when building ML models, running experiments, training classifiers, or setting up data pipelines.
-tools: Read, Edit, Write, Grep, Glob, Bash(python*), Bash(pip list*), Bash(pip show*)
+tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 memory: project
 maxTurns: 80

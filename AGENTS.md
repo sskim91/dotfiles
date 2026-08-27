@@ -48,6 +48,7 @@
 - Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
 - Remote commands run via `ssh host <command>` get a non-login, non-interactive shell: `.zprofile`, `.zshrc`, and `path_helper` are all skipped. Homebrew tools needed there must get their PATH from `.zshenv` (this is why mosh fails with `mosh-server not found`).
 - When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
+- Neovim plugin conflicts: run `:Lazy clean` and restart — LazyVim's auto-sync does not always resolve them.
 
 ## Commit & Pull Request Guidelines
 - Use Conventional Commits: `type(scope): subject` in imperative mood, no trailing period (for example: `feat(codex-hooks): add lint dispatcher`, `chore(claude): refresh spinner tips`).

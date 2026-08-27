@@ -1,7 +1,7 @@
 ---
 name: tdd-red-agent
 description: TDD Red phase specialist who writes only failing tests. Use when starting TDD cycle, adding new functionality test-first, or when tdd-blue-agent hands off the next test case.
-tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30

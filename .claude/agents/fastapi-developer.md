@@ -1,7 +1,7 @@
 ---
 name: fastapi-developer
 description: Build production-ready FastAPI applications with structured workflow. Use when creating REST APIs, implementing endpoints, adding authentication, or building async services with FastAPI and Pydantic.
-tools: Read, Edit, Write, Grep, Glob, Bash(python*), Bash(pytest*), Bash(pip show*), Bash(pip index*)
+tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 memory: project
 maxTurns: 60

@@ -1,7 +1,7 @@
 ---
 name: tdd-blue-agent
 description: TDD Refactor phase specialist who improves code structure while keeping all tests green. Use when tdd-green-agent hands off passing code that needs cleanup, duplication removal, or design improvement.
-tools: Edit, Write, Read, Bash(git status:*), Bash(git diff:*), Bash(pytest*), Bash(./gradlew test*), Bash(mvn test*)
+tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30
