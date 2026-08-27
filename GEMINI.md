@@ -24,9 +24,10 @@ All configurations are symlinked from `~/.dotfiles/` to their respective home lo
 | Neovim | `.config/nvim/` | `~/.config/nvim/` |
 | Antigravity global context | `.claude/docs/working-style.md` | `~/.gemini/GEMINI.md` |
 | Antigravity CLI settings | `.gemini/antigravity-cli/settings.json` | `~/.gemini/antigravity-cli/settings.json` |
-| Antigravity config | `.gemini/antigravity-cli/{hooks,mcp_config}.json` | `~/.gemini/config/` |
+| Antigravity MCP | `.gemini/antigravity-cli/mcp_config.json` | `~/.gemini/config/mcp_config.json` (symlink) |
+| Antigravity hooks | `.gemini/antigravity-cli/hooks.json` | `~/.gemini/config/hooks.json` — **merged, not symlinked.** cmux *replaces* this file with one holding only its own `cmux` block, so `install.sh` uses `merge_hooks_json` to keep both top-level blocks. Re-linking it would delete cmux's hooks. |
 | Claude | `.claude/` | `~/.claude/` |
-| Codex hooks | `.codex/config/global.json` | `~/.codex/hooks.json` (cmux merges its own hooks and overwrites the symlink with a real file — the dotfiles side is the source of truth) |
+| Codex hooks | `.codex/config/global.json` | `~/.codex/hooks.json` — cmux overwrites the symlink with a real file but *merges*, keeping our 8 hooks alongside its own (unlike Antigravity; measured 2026-08-27). Both sides share one `.hooks` object, so a top-level merge is unsafe and this stays a plain symlink. |
 | Apps | `.config/` | `~/.config/` |
 
 ## Gemini and Antigravity CLI Integration

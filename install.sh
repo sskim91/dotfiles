@@ -43,6 +43,47 @@ link_file() {
     fi
 }
 
+# Merge a canonical hooks.json into a destination that a third party owns at runtime.
+#
+# Why this exists: cmux rewrites ~/.gemini/config/hooks.json as a real file containing
+# only its own "cmux" block. Re-running link_file there would restore our canonical file
+# and delete cmux's 8 hooks — the "just re-run install.sh" advice was actively harmful
+# (found 2026-08-27). A top-level merge keeps both.
+#
+# Only safe when the two sides own DIFFERENT top-level keys. That holds for Antigravity
+# ("cmux" vs "file-write-safety"), but NOT for ~/.codex/hooks.json, where cmux and our
+# hooks share one ".hooks" object and `*` would replace whole event arrays. Codex keeps
+# plain link_file: cmux re-merges our scripts on its next launch, so it self-heals.
+merge_hooks_json() {
+    local src="$1" dst="$2"
+    # Nothing there yet, or still our symlink: plain link is correct.
+    if [ ! -e "$dst" ] || [ -L "$dst" ]; then
+        link_file "$src" "$dst"
+        return
+    fi
+    if ! command -v jq >/dev/null 2>&1; then
+        echo "  ⚠️  jq not found; left existing $(basename "$dst") untouched"
+        return
+    fi
+    local backup="${dst}.backup.$(date +%Y%m%d%H%M%S)"
+    if ! command cp "$dst" "$backup"; then
+        echo "  ⚠️  could not back up $(basename "$dst"); left unchanged"
+        return 1
+    fi
+    # `command mv -f`: an interactive mv alias/function would otherwise prompt, decline,
+    # and leave the merge unapplied. The success message is gated on the mv itself —
+    # printing it unconditionally is how a rename that never happened looks like a win.
+    if jq -s '.[0] * .[1]' "$dst" "$src" > "$dst.tmp" 2>/dev/null \
+        && jq empty "$dst.tmp" 2>/dev/null \
+        && command mv -f "$dst.tmp" "$dst"; then
+        echo "  ✓ merged $(basename "$src") into existing $(basename "$dst") (backup: $(basename "$backup"))"
+    else
+        command rm -f "$dst.tmp"
+        echo "  ⚠️  merge failed for $(basename "$dst"); left unchanged (backup: $(basename "$backup"))"
+        return 1
+    fi
+}
+
 cleanup_antigravity_installer_path_edits() {
     # The official installer appends a PATH block to shell profiles. ~/.local/bin
     # is already managed in zsh/path.zsh, so keep bootstrap idempotent.
@@ -365,15 +406,17 @@ mkdir -p "$HOME/.gemini/config"
 # Antigravity CLI reads ~/.gemini/GEMINI.md as the global developer context.
 # Share the single collaboration-style source (same file Claude/Codex use).
 link_file "$DOTFILES/.claude/docs/working-style.md" "$HOME/.gemini/GEMINI.md"
-# NOTE: Antigravity CLI rewrites settings.json and hooks.json as REAL files at
-# runtime, breaking these symlinks (same pattern as Sourcetree vs ~/.gitconfig).
-# That drift is expected: this block only seeds links on a fresh machine.
-# Treat the dotfiles copies as the canonical source and re-run install.sh
-# (or re-link manually) after Antigravity clobbers them.
+# NOTE: Antigravity CLI rewrites settings.json as a REAL file at runtime, breaking
+# that symlink (same pattern as Sourcetree vs ~/.gitconfig). That drift is expected:
+# the dotfiles copy stays canonical and re-running install.sh re-links it.
+#
+# hooks.json is different and must NOT be re-linked: cmux owns that file at runtime and
+# writes only its own "cmux" block. Re-linking would restore our canonical file and
+# delete cmux's hooks, so it goes through merge_hooks_json (top-level merge, both kept).
 link_file "$DOTFILES/.gemini/antigravity-cli/settings.json" "$HOME/.gemini/antigravity-cli/settings.json"
 link_file "$DOTFILES/.gemini/antigravity-cli/hooks" "$HOME/.gemini/antigravity-cli/hooks"
 link_file "$DOTFILES/.gemini/antigravity-cli/mcp_config.json" "$HOME/.gemini/config/mcp_config.json"
-link_file "$DOTFILES/.gemini/antigravity-cli/hooks.json" "$HOME/.gemini/config/hooks.json"
+merge_hooks_json "$DOTFILES/.gemini/antigravity-cli/hooks.json" "$HOME/.gemini/config/hooks.json"
 link_file "$HOME/.gemini/config/mcp_config.json" "$HOME/.gemini/antigravity-cli/mcp_config.json"
 link_file "$HOME/.gemini/config/hooks.json" "$HOME/.gemini/antigravity-cli/hooks.json"
 # Skills: ~/.gemini/config/skills is the ONLY path recognized by all Antigravity

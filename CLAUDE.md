@@ -35,8 +35,9 @@ All configurations are managed via symlinks from home directory to dotfiles:
 | `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
 | `~/.gemini/GEMINI.md` | `~/.dotfiles/.claude/docs/working-style.md` (Antigravity 글로벌 컨텍스트 — Claude/Codex와 동일 정본) |
 | `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` — Antigravity가 실행 시 실파일로 덮어써 심링크가 깨질 수 있음(`.gitconfig`의 Sourcetree 패턴과 동일). dotfiles 쪽이 정본이며 install.sh 재실행으로 재링크 |
-| `~/.gemini/config/{hooks,mcp_config}.json` | `~/.dotfiles/.gemini/antigravity-cli/` — `hooks.json`은 cmux가 자기 훅을 병합한 실파일로 덮어쓰는 드리프트 대상(`~/.codex/hooks.json`과 동일 주체) |
-| `~/.codex/hooks.json` | `~/.dotfiles/.codex/config/global.json` — cmux가 자기 훅을 병합한 실파일로 덮어써 심링크가 깨짐(antigravity 패턴과 동일). dotfiles 쪽이 정본이며 `global.json` 수정 시 install.sh 재실행으로 재링크(직후 cmux가 다시 병합·덮어씀) |
+| `~/.gemini/config/mcp_config.json` | `~/.dotfiles/.gemini/antigravity-cli/mcp_config.json` — 심링크 |
+| `~/.gemini/config/hooks.json` | `~/.dotfiles/.gemini/antigravity-cli/hooks.json` — **심링크가 아니라 병합 대상.** cmux가 이 파일을 실파일로 **교체**하며 자기 `cmux` 블록만 남긴다(Codex와 달리 사용자 훅을 보존하지 않음 — 2026-08-27 실측). install.sh는 `merge_hooks_json`으로 최상위 키를 병합해 양쪽을 살린다. 재링크하면 cmux 훅이 삭제되므로 `link_file`을 쓰지 말 것 |
+| `~/.codex/hooks.json` | `~/.dotfiles/.codex/config/global.json` — cmux가 실파일로 덮어쓰되 **사용자 훅 8종을 보존한 채 자기 것을 추가**한다(Antigravity와 동작이 다름). `.hooks` 객체를 공유하는 구조라 최상위 병합이 불가하므로 `link_file`을 유지한다. install.sh 재실행 시 cmux 훅이 일시적으로 사라지지만 cmux 다음 실행에서 다시 병합된다 |
 | `~/.config/karabiner/assets/complex_modifications/my_custom_key.json` | `~/.dotfiles/.config/karabiner/my_custom_key.json` |
 | `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
 | `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
