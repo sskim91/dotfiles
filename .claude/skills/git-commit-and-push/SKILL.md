@@ -7,8 +7,8 @@ description: Use when user says "commit and push", "커밋하고 푸시", "올�
 
 커밋과 푸시를 순차적으로 수행합니다.
 
-> ⚠️ **GenOS 레포** (`~/work/GenOS`, 또는 `.claude/skills/genos-commit/` 존재) 에서는
-> Commit Phase가 **`genos-commit` 스킬**로 위임된다 — `git-commit` 스킬이 이 위임을 처리한다.
+> ⚠️ 레포에 `<project>-commit` 스킬이 **실제로 존재하면** Commit Phase가 그쪽으로 위임된다 —
+> `git-commit` 스킬이 존재 확인과 위임을 함께 처리한다.
 
 ## Workflow
 

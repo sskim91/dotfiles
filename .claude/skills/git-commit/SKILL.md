@@ -10,8 +10,10 @@ description: Use when user wants to commit changes, says "commit", "커밋", "�
 레포 루트에 프로젝트 전용 커밋 스킬이 있으면 **이 스킬을 쓰지 말고 그쪽으로 위임**한다.
 프로젝트 커밋 규칙(타입 접두사·이슈번호·Co-Authored-By 등)이 이 전역 스킬과 다를 수 있다.
 
-- **GenOS 레포** (`~/work/GenOS`, 또는 `.claude/skills/genos-commit/` 존재) → **`genos-commit` 스킬 사용.** 이 스킬 중단.
-- 그 외 `.claude/skills/`에 `<project>-commit` 류가 있으면 그쪽 우선.
+- 레포의 `.claude/skills/`에 `<project>-commit` 류(예: `genos-commit`)가 **실제로 존재하면** 그쪽 사용. 이 스킬 중단.
+- 존재 여부를 확인하지 않고 위임하지 않는다. 레포 경로만으로 위임 대상을 추정하면
+  대상이 없을 때 커밋이 막다른 길에 빠진다 (2026-08-27: `~/work/GenOS*` 5개 레포에
+  `genos-commit`이 없는데도 경로 조건 때문에 위임이 발동하던 문제).
 
 위임 대상이 없을 때만 아래 경로 분기로 진행.
 

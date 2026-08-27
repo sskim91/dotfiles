@@ -153,7 +153,7 @@ vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한�
 - 어두운 배경에는 `color:#fff` 지정
 - `\n` 사용 금지 — mermaid에서 줄바꿈은 `<br>`
 - subgraph에 직접 style 적용 불가 — 내부 노드에 style 적용
-- 검증: `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 렌더링 확인
+- 검증: 블록 본문을 `.mmd`로 저장 후 `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg` (exit 1이면 문법 오류)
 
 ## References
 
@@ -197,7 +197,7 @@ vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한�
 ## Verification
 
 노트 작성 완료 후:
-- mermaid 사용 시 → `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 렌더링 확인
+- mermaid 사용 시 → `npx -y @mermaid-js/mermaid-cli`로 문법 검증 통과 확인
 - related_notes의 `[[wikilink]]` → Vault에 실존하는 노트인지 확인
 - frontmatter source → URL 유효성 확인
 - 본문 구조 → Reading Spine, 연결 중복 방지, 설명 밀도 체크리스트 확인

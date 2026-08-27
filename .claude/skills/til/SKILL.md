@@ -72,7 +72,8 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - 줄바꿈은 `<br>` 사용 (`\n` 아님)
 - subgraph에는 style 지정하지 않음
 - sequenceDiagram은 `style` 대신 `rect rgba()` 사용
-- **다이어그램 작성 즉시** `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 검증
+- **다이어그램 작성 즉시** 문법 검증: 블록 본문을 `.mmd`로 저장한 뒤
+  `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg` — exit 0이면 정상, exit 1이면 문법 오류
 
 ### Step 6: 스타일 규칙
 
@@ -117,7 +118,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] mermaid style에 color가 있는가?
 - [ ] sequenceDiagram에서 `rect rgba()` 사용했는가?
 - [ ] subgraph에 style을 지정하지 않았는가?
-- [ ] `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 렌더링 검증했는가?
+- [ ] `npx -y @mermaid-js/mermaid-cli`로 문법 검증을 통과했는가?
 
 #### 스타일 (CHECK)
 - [ ] Bold 닫는 `**` 다음에 띄어쓰기가 있는가?
@@ -127,7 +128,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 ## Verification
 
-- mermaid 작성 즉시 → `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 렌더링 검증
+- mermaid 작성 즉시 → `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg`로 문법 검증 (exit 1이면 오류)
 - Self-Check 체크리스트 (Step 8) 통과 확인
 
 ## Gotchas

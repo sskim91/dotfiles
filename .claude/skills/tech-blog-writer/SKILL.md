@@ -222,7 +222,7 @@ sequenceDiagram
 ```
 
 ### Mermaid 검증
-mermaid 다이어그램 작성 후 `mcp__claude_ai_Mermaid_Chart__validate_and_render_mermaid_diagram`으로 렌더링 검증한다. 문법 오류 시 수정 후 재검증.
+mermaid 다이어그램 작성 후 블록 본문을 `.mmd`로 저장하고 `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg`로 문법을 검증한다. exit 0이면 정상, exit 1이면 문법 오류이므로 수정 후 재검증.
 
 ### 코드 예시 규칙
 
