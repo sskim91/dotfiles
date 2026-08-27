@@ -398,12 +398,29 @@ REVIEW_BLOCK=$(
 	echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 )
 
+# A reviewer that was supposed to run but produced no output is an infra failure.
+# The REVIEW_BLOCK branches above already print "STATUS: ERROR" for this case, but only
+# into the context text -- the grep below reads the FILES, and an empty file matches
+# nothing, so overall_status stayed PASS and we notified "✅ PASS" for a document nobody
+# reviewed. Only the timeout paths write their stub into the file; a fast failure
+# (auth expiry, bad model id, quota) leaves it empty.
+reviewer_missing=0
+if [[ "$TIL_REVIEW_MODE" != "antigravity" && ! -s "$TMPDIR_REVIEW/codex.txt" ]]; then
+	reviewer_missing=1
+fi
+if [[ "$TIL_REVIEW_MODE" != "codex" && ! -s "$TMPDIR_REVIEW/antigravity.txt" ]]; then
+	reviewer_missing=1
+fi
+
 # Collapse STATUS across both reviewers. ERROR > FAIL > PASS (infra failure beats document failure).
 overall_status="PASS"
 if grep -q "^STATUS: FAIL" "$TMPDIR_REVIEW"/codex.txt "$TMPDIR_REVIEW"/antigravity.txt 2>/dev/null; then
 	overall_status="FAIL"
 fi
 if grep -q "^STATUS: ERROR" "$TMPDIR_REVIEW"/codex.txt "$TMPDIR_REVIEW"/antigravity.txt 2>/dev/null; then
+	overall_status="ERROR"
+fi
+if [[ $reviewer_missing -eq 1 ]]; then
 	overall_status="ERROR"
 fi
 

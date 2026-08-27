@@ -5,8 +5,11 @@
 INPUT=$(cat)
 COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
 
-# Normalize: collapse whitespace, trim
-COMMAND=$(echo "$COMMAND" | xargs)
+# Normalize: collapse whitespace, trim.
+# Do NOT use xargs here: it applies shell quote parsing and exits non-zero on an
+# unmatched quote, leaving COMMAND empty. `rm can't.log` then matched neither grep
+# below and the delete went through -- a silent hole in an always-on guard.
+COMMAND=$(printf '%s' "$COMMAND" | tr '\n\t' '  ' | sed -e 's/  */ /g' -e 's/^ //' -e 's/ *$//')
 
 # Allow: \rm, command rm (intentional permanent delete)
 if echo "$COMMAND" | grep -qE '(\\rm|command rm)'; then

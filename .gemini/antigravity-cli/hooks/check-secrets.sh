@@ -52,7 +52,11 @@ secret_patterns=(
 
 found_secrets=""
 for pattern in "${secret_patterns[@]}"; do
-  matches=$(grep -oE "$pattern" <<<"$content" 2>/dev/null || true)
+  # -e is required: the private-key pattern starts with "-----", which grep otherwise
+  # parses as an option bundle ("grep: unrecognized option"). 2>/dev/null || true then
+  # swallowed the error, so that pattern silently never matched. The sibling scanners
+  # in .claude/hooks and .codex/hooks already use the -e form.
+  matches=$(grep -oE -e "$pattern" <<<"$content" 2>/dev/null || true)
   if [[ -n "$matches" ]]; then
     found_secrets="${found_secrets}${matches}"$'\n'
   fi
