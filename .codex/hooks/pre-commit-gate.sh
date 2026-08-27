@@ -7,8 +7,11 @@
 INPUT=$(cat)
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 
-# Only run on git commit commands
-if ! printf '%s\n' "$COMMAND" | grep -qE '^git commit'; then
+# Only run on git commit commands.
+# The separator alternation matters: a bare ^ anchor let every compound command through
+# (`git add -A && git commit -m x` skipped all three security checks). Same idiom as
+# block-rm.sh. A quoted mention like `echo "git commit"` still does not match.
+if ! printf '%s\n' "$COMMAND" | grep -qE '(^|[;&|] *)git commit'; then
   exit 0
 fi
 

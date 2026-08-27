@@ -5,8 +5,10 @@
 # 민감한 파일 확장자 패턴
 SENSITIVE_PATTERNS="\.(pem|key|p12|pfx|jks|crt|cer|keystore|truststore)$"
 
-# git diff에서 추가된 파일 중 민감한 파일 체크
-SENSITIVE_FILES=$(git diff --cached --name-only 2>/dev/null | grep -E "$SENSITIVE_PATTERNS" || true)
+# git diff에서 추가된 파일 중 민감한 파일 체크.
+# --diff-filter=d 로 삭제를 제외한다: 없으면 파일명만 보고 차단하므로, 실수로 커밋된 키를
+# "제거하는" 커밋까지 막혀 --no-verify 없이는 수습이 불가능해진다.
+SENSITIVE_FILES=$(git diff --cached --name-only --diff-filter=d 2>/dev/null | grep -E "$SENSITIVE_PATTERNS" || true)
 
 if [ -n "$SENSITIVE_FILES" ]; then
     echo "🚨 Error: Sensitive file(s) detected!"

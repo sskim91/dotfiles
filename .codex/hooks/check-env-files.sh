@@ -26,8 +26,10 @@ PLACEHOLDER_PATTERN="=(dummy|changeme|placeholder|example|test|xxx|your[-_]|\\\$
 # 발화하지 못한다. 추적 파일 우회에서 제외하고 종전처럼 무조건 차단한다.
 STRICT_PATTERNS="(^|/)(config\.local|secrets?|credentials)\.(json|yaml|yml|toml)$"
 
-# git diff에서 추가된 파일 중 환경 변수 파일 체크 (안전한 파일 제외)
-ENV_FILES=$(git diff --cached --name-only 2>/dev/null | grep -E "$ENV_PATTERNS" | grep -Ev "$SAFE_PATTERNS" || true)
+# git diff에서 추가된 파일 중 환경 변수 파일 체크 (안전한 파일 제외).
+# --diff-filter=d 로 삭제를 제외한다: 없으면 STRICT_PATTERNS 경로가 파일명만 보고 차단하므로,
+# 실수로 커밋된 secrets.json 등을 "제거하는" 커밋까지 막힌다.
+ENV_FILES=$(git diff --cached --name-only --diff-filter=d 2>/dev/null | grep -E "$ENV_PATTERNS" | grep -Ev "$SAFE_PATTERNS" || true)
 
 # 이미 추적 중인 KEY=value 형식 env 파일의 "수정"은 통과시킨다 — 레포가 의도적으로 관리하는
 # 설정(placeholder·더미값)이고, 최초 커밋 시점에 이미 사람이 판단한 파일이다.

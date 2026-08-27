@@ -116,7 +116,7 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup",
+        "matcher": "startup|resume|clear|compact",
         "hooks": [
           {
             "type": "command",
@@ -140,7 +140,7 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/pre-commit-gate.sh",
-            "if": "Bash(git commit*)"
+            "if": "Bash(*git commit*)"
           },
           {
             "type": "command",
