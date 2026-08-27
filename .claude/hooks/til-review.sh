@@ -43,15 +43,17 @@ if [[ "$SKIP_TRANSLATED_REVIEW" -eq 1 ]] && grep -q "한국어로 번역한 글�
 fi
 
 # Model configuration
-CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.5}"
+CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.6-terra}"
 ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.6 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
 # Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
 # Hook timeout in settings.json must be > 2 × max(CODEX_TIMEOUT, ANTIGRAVITY_TIMEOUT).
 # Current: 2 × 190 = 380 → settings.json til-review.sh timeout set to 400.
-# codex runs with web_search disabled (~155s on a full doc); live/cached search
-# blows past 120s and times out, so it stays off.
+# Measured 2026-08-27 on gpt-5.6-terra: disabled 61s / live 96s on a 20KB doc,
+# live 132s on the largest doc (31KB). Search costs ~35s and fits well inside 190s.
+# (The earlier "live blows past 120s" note was measured on gpt-5.5, which was ~2.5x
+# slower; that is why web_search could be turned back on.)
 CODEX_TIMEOUT=${TIL_CODEX_TIMEOUT:-190}
 ANTIGRAVITY_TIMEOUT=${TIL_ANTIGRAVITY_TIMEOUT:-120}
 
@@ -194,18 +196,23 @@ CODEX_REVIEW_PROMPT="당신은 Codex CLI로 실행되는 Claude Code PostToolUse
 
 $BASE_REVIEW_RUBRIC_PROMPT
 
-## Codex 전용: 기술 사실 검증 (웹 검색 없음)
-당신은 **web_search 없이** 실행됩니다(live/cached 검색은 리뷰가 120s를 넘겨 timeout되므로 비활성화됨). 외부 검색 대신 **당신의 기존 지식**으로 검증 가능한 기술 사실을 담당하세요:
+## Codex 전용: 사실 검증과 공식 출처 확인
+당신은 \`web_search=\"live\"\`로 실행됩니다. 다음처럼 **공식 출처로 검증 가능한 기술 사실**을 담당하세요:
 
-1. 다음 항목에서 **당신의 지식으로 명백한 오류가 확실할 때만** Blocker로 지적하세요:
+1. 문서가 다음 중 하나라도 다룬다면 **반드시 1회 이상 web_search를 호출**하세요:
    - 라이브러리/프레임워크/언어의 특정 API, 함수, 메서드, 옵션
    - 버전 번호, 릴리즈일, 지원 종료일(EOL)
    - Deprecated 여부, 권장 대체 API
+   - 외부 URL 링크
 2. 문서가 실행 가능한 완성 코드로 제시한 예제가 문법 오류로 인해 **컴파일/실행이 불가능**한 경우는 Blocker로 다루세요. 개념 설명용 코드 조각이나 의사 코드는 제외하세요. 완성 코드 여부가 명시되지 않았거나 판단이 애매하면 개념 설명용 코드 조각으로 간주하세요.
-3. 확신이 서지 않는 API/버전/Deprecated 사실은 **Blocker로 단정하지 말고** Refinement에서 \"공식 출처 확인 필요\"로만 다루세요. 검색이 없으니 불확실한 사실을 Blocker로 올리면 오탐입니다.
-4. 일반 개념 설명, 예시 코드 스타일, 문서 내부에서 충분히 확인 가능한 내용은 지적하지 마세요.
-5. 외부 URL 링크의 유효성(live 여부)은 검색 없이 확인할 수 없으므로 지적하지 마세요. 로컬 파일 링크도 검증하지 마세요.
-6. 확실하지 않으면 침묵하세요. 억지 지적을 만들지 마세요.
+3. 문서 내용이 당신의 기존 지식과 충돌하면 web_search로 확인하세요.
+4. 일반 개념 설명, 예시 코드 스타일, 문서 내부에서 충분히 확인 가능한 내용은 검색하지 마세요.
+5. Blocker로 사실 오류를 지적할 때는 **확인한 공식 문서 URL을 1줄로 인용**하세요. (예: \`근거: https://docs.python.org/3/...\`)
+6. 공식 출처로 Deprecated API 사용이 확인되면 Blocker로 다루고 대안을 명시하세요.
+7. 외부 URL 출처 링크가 깨졌거나 명백히 잘못된 경우에는 Refinement로 다루세요. 로컬 파일 링크는 검증하지 마세요.
+8. 검색 결과가 문서 내용과 일치하면 침묵하세요 (\"확인 결과 정확합니다\" 같은 사족 금지). 불일치할 때만 Blocker/Refinement에 반영하세요.
+9. 검색했지만 명확한 출처를 못 찾았다면 Blocker로 단정하지 말고 Refinement에서 \"확인 필요\"로만 다루세요.
+10. 공식 문서나 신뢰 가능한 출처가 없으면 Deprecated/API/version 관련 내용을 Blocker로 단정하지 마세요.
 
 $OUTPUT_FORMAT_PROMPT"
 
@@ -247,7 +254,7 @@ _codex_invoke() {
 			--skip-git-repo-check \
 			--output-last-message "$TMPDIR_REVIEW/codex.txt" \
 			-c 'approval_policy="never"' \
-			-c 'web_search="disabled"' \
+			-c 'web_search="live"' \
 			"$CODEX_REVIEW_PROMPT" \
 			>"$TMPDIR_REVIEW/codex.stdout" 2>"$TMPDIR_REVIEW/codex.err"
 }

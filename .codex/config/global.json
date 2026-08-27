@@ -60,7 +60,7 @@
             "type": "command",
             "command": "bash \"$HOME/.dotfiles/.codex/hooks/til-review.sh\"",
             "statusMessage": "Reviewing TIL notes",
-            "timeout": 300
+            "timeout": 400
           },
           {
             "type": "command",

@@ -73,8 +73,11 @@ ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.6 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
 # Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
-# Hook timeout in settings.json must be > 2 × max(CODEX_TIMEOUT, ANTIGRAVITY_TIMEOUT).
-CODEX_TIMEOUT=${TIL_CODEX_TIMEOUT:-120}
+# Hook timeout in .codex/config/global.json must be > 2 × max(CODEX_TIMEOUT, ANTIGRAVITY_TIMEOUT).
+# Current: 2 × 190 = 380 → global.json til-review.sh timeout set to 400.
+# Measured 2026-08-27 on gpt-5.6-terra: disabled 61s / live 96s on a 20KB doc,
+# live 132s on the largest doc (31KB). Kept in sync with .claude/hooks.
+CODEX_TIMEOUT=${TIL_CODEX_TIMEOUT:-190}
 ANTIGRAVITY_TIMEOUT=${TIL_ANTIGRAVITY_TIMEOUT:-120}
 
 # Portable timeout (no coreutils dependency on macOS).
