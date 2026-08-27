@@ -72,10 +72,21 @@ post=$(awk 'f{print} /<!-- OMC:END -->/{f=1}' "$COMPANION")
 oldver=$(extract_block "$COMPANION" | grep -oE 'OMC:VERSION:[0-9][0-9.]*' | head -1)
 
 tmp="$COMPANION.sync.$$"
-{
-  [ -n "$pre" ] && printf '%s\n' "$pre"
-  printf '%s\n' "$block"
-  [ -n "$post" ] && printf '%s\n' "$post"
-} > "$tmp" && mv "$tmp" "$COMPANION"
 
-report "OMC companion synced: ${oldver:-unknown} -> ${newver} (plugin $latest, effective next session)"
+# Use `if` for the optional pre/post parts, not `[ -n "$x" ] && printf`.
+# A brace group exits with the status of its LAST command: when the companion holds
+# only the OMC block, `post` is empty, the trailing test returns 1, the group "fails",
+# and `&& mv` is silently skipped -- leaving a .sync.<pid> orphan behind and the
+# companion stale, while the report below still claimed success.
+if {
+  if [ -n "$pre" ]; then printf '%s\n' "$pre"; fi
+  printf '%s\n' "$block"
+  if [ -n "$post" ]; then printf '%s\n' "$post"; fi
+} > "$tmp" && mv "$tmp" "$COMPANION"; then
+  report "OMC companion synced: ${oldver:-unknown} -> ${newver} (plugin $latest, effective next session)"
+fi
+
+# Write or rename failed: drop the temp file so orphans cannot accumulate, and say what
+# actually happened instead of reporting a sync that did not occur.
+command rm -f "$tmp"
+report "OMC companion sync FAILED to write $COMPANION; still at ${oldver:-unknown}"
