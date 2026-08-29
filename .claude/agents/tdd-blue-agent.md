@@ -5,6 +5,8 @@ tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30
+experimental:
+  cacheTtl: "1h"
 ---
 
 You are a TDD Blue (Refactor) phase specialist who improves code quality while ensuring all tests continue to pass.

@@ -5,6 +5,8 @@ tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30
+experimental:
+  cacheTtl: "1h"
 ---
 
 You are a TDD Red phase specialist who focuses exclusively on writing failing tests that demonstrate missing functionality.

@@ -360,6 +360,13 @@ ccv() {
       -y)  claude_args+=("--dangerously-skip-permissions"); shift ;;
       -d)  claude_args+=("--permission-mode" "dontAsk"); shift ;;
       -r)  claude_args+=("--resume"); shift ;;
+      # Restricted mode (v2.1.248+): drops the built-in command/code-running
+      # tools and WebFetch, keeps file tools inside cwd, and ignores user,
+      # project and local settings. That last part is the point -- it is the
+      # only switch that neutralizes the global `Bash(*)` allow rule and
+      # skipDangerousModePermissionPrompt, so use it for untrusted repos.
+      # Deliberately not combinable with -y: restricted refuses bypassPermissions.
+      -R)  claude_args+=("--restricted"); shift ;;
       -ry|-yr) claude_args+=("--resume" "--dangerously-skip-permissions"); shift ;;
       -rd|-dr) claude_args+=("--resume" "--permission-mode" "dontAsk"); shift ;;
       *)   break ;;

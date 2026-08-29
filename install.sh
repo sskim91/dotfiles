@@ -361,7 +361,9 @@ mkdir -p "$HOME/.claude"
 for dir in agents hooks output-styles rules; do
     link_file "$DOTFILES/.claude/$dir" "$HOME/.claude/$dir"
 done
-for f in settings.json CLAUDE.md; do
+# spinner-tips.json must be linked: settings.json references it by absolute
+# path (`~/.claude/spinner-tips.json`), because tipsFile rejects relative paths.
+for f in settings.json CLAUDE.md spinner-tips.json; do
     link_file "$DOTFILES/.claude/$f" "$HOME/.claude/$f"
 done
 

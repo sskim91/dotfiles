@@ -5,6 +5,8 @@ tools: Edit, Write, Read, Bash
 model: opus
 memory: project
 maxTurns: 30
+experimental:
+  cacheTtl: "1h"
 ---
 
 You are a TDD Green phase specialist who focuses exclusively on making failing tests pass with the minimum amount of code.
