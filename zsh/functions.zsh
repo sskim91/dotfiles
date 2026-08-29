@@ -329,9 +329,20 @@ function update() {
     ccpu
 }
 
-# Claude Code plugin update (on-demand replacement for startup autoUpdate)
-# autoUpdate가 startup마다 git pull을 돌려 로드 에러를 유발하므로 settings.json에서 껐다.
-# 대신 원할 때 이 함수로 marketplace + 설치된 플러그인을 일괄 갱신한다.
+# Claude Code plugin update — marketplace 카탈로그 + 설치된 플러그인 일괄 갱신.
+#
+# marketplace의 autoUpdate는 startup마다 카탈로그를 git pull 할 뿐, 설치된 플러그인
+# 버전은 올리지 않는다. 그건 이 함수(claude plugin update)만 한다. 그래서 autoUpdate가
+# 켜져 있어도 이 함수는 여전히 필요하다.
+#
+# 2026-07-01(7e8eb77)에 autoUpdate를 껐던 이유는 startup git pull이 간헐적 플러그인
+# 로드 에러(orphaned version, anthropics/claude-code#60219)를 냈기 때문이고, 이 함수는
+# 그 대체재로 만들어졌다. 2026-08-29에 그 결정을 철회하고 autoUpdate를 다시 켰다 —
+# 그 사이 v2.1.105(파일 점유 중 업데이트로 마켓플레이스가 깨지던 문제), v2.1.232
+# (known_marketplaces.json 동시 쓰기 race), v2.1.251(갱신 중 스킬 없이 시작)로
+# 근본 원인이 개선됐다. 다만 2.1.251에서도 여전히 손보는 영역이니, startup에
+# "plugin load" 계열 에러나 스킬 누락이 재발하면 autoUpdate부터 다시 의심할 것.
+#
 # scope(project/user)와 projectPath는 installed_plugins.json에서 읽어 정확히 지정한다.
 function ccpu() {
     local ip="$HOME/.claude/plugins/installed_plugins.json"
@@ -348,9 +359,10 @@ function ccpu() {
             claude plugin update "$name" --scope "$scope" 2>&1 | sed 's/^/     /'
         fi
     done
-    # Re-sync the OMC companion here rather than from a SessionStart hook: a plugin
-    # update is the only thing that makes ~/.claude/CLAUDE-omc.md drift, and omc's
-    # marketplace has autoUpdate=false, so nothing moves unless this function runs.
+    # Re-sync the OMC companion here rather than from a SessionStart hook: the
+    # installed plugin version is what CLAUDE-omc.md documents, and that version only
+    # changes via `claude plugin update` -- i.e. right here. marketplace autoUpdate
+    # refreshes the catalog, not the installed version, so it cannot cause drift.
     if [[ -x "$DOTFILES/scripts/omc-companion-sync.sh" ]]; then
         "$DOTFILES/scripts/omc-companion-sync.sh" -q | sed 's/^/  /'
     fi

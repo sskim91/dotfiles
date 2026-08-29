@@ -9,9 +9,10 @@
 # WHY THIS IS NOT A SessionStart HOOK (changed 2026-08-29):
 # It used to run on every session start, guarding against auto-update advancing the
 # plugin underneath the copy. Two things made that a bad trade:
-#   1. `extraKnownMarketplaces.omc.autoUpdate` is false here -- the plugin only moves
-#      when `claude plugin update` is run by hand, so the per-session poll watched for
-#      an event the user has to trigger.
+#   1. The installed plugin version only moves when `claude plugin update` runs, so
+#      the per-session poll watched for an event the user has to trigger by hand.
+#      (marketplace autoUpdate refreshes the catalog, not the installed version, so
+#      it does not cause drift either way.)
 #   2. When a real bump finally happened (5.0.0 -> 5.0.2) the OMC block diff was one
 #      line: the version marker. The guidance body was byte-identical.
 # Per-session cost and two separate bug fixes bought a comment update. The sync now

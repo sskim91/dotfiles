@@ -211,28 +211,28 @@
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
       },
-      "autoUpdate": false
+      "autoUpdate": true
     },
     "openai-codex": {
       "source": {
         "source": "github",
         "repo": "openai/codex-plugin-cc"
       },
-      "autoUpdate": false
+      "autoUpdate": true
     },
     "temporal-marketplace": {
       "source": {
         "source": "github",
         "repo": "temporalio/claude-temporal-plugin"
       },
-      "autoUpdate": false
+      "autoUpdate": true
     },
     "omc": {
       "source": {
         "source": "git",
         "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
       },
-      "autoUpdate": false
+      "autoUpdate": true
     }
   },
   "outputStyle": "Explanatory",
