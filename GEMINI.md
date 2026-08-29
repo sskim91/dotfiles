@@ -82,6 +82,9 @@ The `.claude/skills/` directory contains specialized "skills" (e.g., `git-commit
 - Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
 - Remote commands run via `ssh host <command>` get a non-login, non-interactive shell: `.zprofile`, `.zshrc`, and `path_helper` are all skipped. Homebrew tools needed there must get their PATH from `.zshenv` (this is why mosh fails with `mosh-server not found`).
 - When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
+- `.claude/settings.json` has a **dual role**: it is user scope via the `~/.claude/settings.json` symlink, and it is also project scope whenever the cwd is `~/.dotfiles`. Claude Code dedupes skills by inode but not settings.json, so both copies load (measured: identical permission rules applied to `userSettings` and `projectSettings`). Keys valid only in user/managed scope — `tipsFile`, `label` — still take effect, but the project copy logs one `[WARN] ... are ignored` line. Harmless, and it recurs for every such key.
+- Settings warnings never reach `claude -p` output; capture them with `--debug-file <path>`.
+- `block-rm.sh` inspects commands **line by line** (fixed 2026-08-29). It previously folded newlines into spaces, so a multi-line `touch x`⏎`rm x` passed straight through an always-on guard. Trade-off: heredoc content with `rm` at line start is now blocked too — use `\rm` there. The Codex mirror (`.codex/hooks/block-rm.sh`) blocks via the `decision` field with exit 0, not exit 2, so verify it against a different signal.
 - Neovim plugin conflicts: run `:Lazy clean` and restart — LazyVim's auto-sync does not always resolve them.
 
 ## Security & Privacy

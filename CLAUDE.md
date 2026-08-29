@@ -123,7 +123,7 @@ PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-file
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
   ├ check-hardcoded-secrets.sh (`ENABLE_SECRET_SCAN`, 현재 0=비활성): 코드 diff에서 API 키·토큰·credential URL 패턴 차단
   └ check-sensitive-files.sh: 키 파일(id_rsa·.pem 등) 차단 — 토글 없이 상시 활성
-PreToolUse: if Bash(*rm *) → block-rm.sh (suggests trash instead)
+PreToolUse: if Bash(*rm *) → block-rm.sh (줄 단위 검사, trash 사용 제안; `\rm`·`command rm`은 허용)
 PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
 PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
 PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
@@ -212,11 +212,15 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 
 | Function | Tool | Options |
 |----------|------|---------|
-| `ccv` | Claude Code (flag shortcuts) | `-y` (skip permissions), `-d` (dontAsk), `-r` (resume), `-ry` `-rd` (combo) |
+| `ccv` | Claude Code (flag shortcuts) | `-y` (skip permissions), `-d` (dontAsk), `-r` (resume), `-ry` `-rd` (combo), `-R` (restricted) |
 | `cco` | Claude Code + Ollama (local model) | `-y` (skip permissions), `-r` (resume), `-ry` (combo), `-m <model>` (default: qwen3-coder:30b) |
 | `agy` | Antigravity CLI | `-y` (skip permissions), `-s` (sandbox), `-r` (continue latest), `-ry` (combo) |
 | `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
 | `cdx` | Codex CLI | default: `workspace-write` sandbox + `on-request` approval; `-y` (yolo/bypass), `-r`/`-ra`/`-rl` (resume: picker/all/last), `-ro` (read-only) |
+
+`ccv -R`(`--restricted`, v2.1.248+)은 명령·코드 실행 도구와 WebFetch를 제거하고, 파일 도구를 cwd 안으로 묶고, **user/project/local 설정을 전부 무시**한다. 마지막 항목이 핵심 — 전역 `Bash(*)` allow와 `skipDangerousModePermissionPrompt: true`를 무력화하는 유일한 스위치다. 신뢰하지 않는 저장소를 열 때 쓴다. `-y`와 함께 쓰지 않는다 (restricted는 `bypassPermissions`를 거부).
+
+백그라운드 세션 관리는 `claude attach <id>` / `logs` / `stop` / `respawn` / `rm` (v2.1.251에서 `--help`에 노출). 실행 중인 세션에 `--resume`을 걸면 정확한 `attach` 명령을 안내해준다.
 
 ## Multi-Tool AI Harness
 
@@ -261,4 +265,7 @@ Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
 - Ghostty/kitty 둘 다 설정 존재 — 현재 주 터미널은 Ghostty
 - `ssh host <command>`로 실행되는 원격 명령은 non-login·non-interactive 셸이라 `.zprofile`/`.zshrc`/`path_helper`가 모두 건너뛰어진다. brew 도구를 원격 명령에서 써야 하면 `.zshenv`에 PATH를 넣어야 한다 (mosh가 `mosh-server not found`로 실패하는 전형적 원인)
 - `.claude/hooks/` 스크립트는 `ENABLE_*` env var로 개별 제어 — 새 hook 추가 시 `path.zsh`에 변수 추가 필요
+- `.claude/settings.json`은 **이중 역할**이다 — `~/.claude/settings.json` 심링크로 user 스코프이면서, `~/.dotfiles`에서 작업할 땐 같은 경로가 project 스코프다. Claude Code는 스킬은 inode로 중복 제거하지만 settings.json은 하지 않아 **양쪽 모두 로드된다**(실측: 동일 권한 규칙이 `userSettings`·`projectSettings` 양쪽에 적용). 그래서 `tipsFile`·`label`처럼 **user/managed 스코프에서만 유효한 키**를 쓰면 값은 정상 적용되지만 project 사본에 대해 `[WARN] ... are ignored` 한 줄이 남는다. 무해하지만 앞으로 그런 키마다 재발한다
+- 설정 관련 경고는 `claude -p` 출력에 안 나온다. `--debug-file <path>`로 받아야 보인다 (2026-08-29에 이걸 못 찾아 "검증 불가"로 오판한 적 있음)
+- `block-rm.sh`는 명령을 **줄 단위로** 검사한다 (2026-08-29 수정). 이전에는 개행을 공백으로 뭉개서 `touch x`⏎`rm x` 같은 멀티라인 삭제가 상시 가드를 그대로 통과했다. 대가로 heredoc 본문에 줄 처음부터 `rm`이 오면 오탐 차단되니, 그럴 때는 `\rm`을 쓴다. Codex 미러(`.codex/hooks/block-rm.sh`)는 exit 2가 아니라 `decision` 필드로 차단하므로 검증 기준이 다르다
 - Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음
