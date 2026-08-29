@@ -87,7 +87,6 @@ export ENABLE_SECRET_SCAN=0          # 코드 내 하드코딩 시크릿 패턴 
 # 낮을수록 일찍 압축 → 더 자주 / 높을수록 늦게 압축 → 맥락 보존
 export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
 
-# ----------------------------------------------------------------------------
-# OMC (oh-my-claudecode)
-# ----------------------------------------------------------------------------
-export ENABLE_OMC_COMPANION_SYNC=1   # SessionStart: CLAUDE-omc.md를 설치된 플러그인 버전과 동기화
+# ENABLE_OMC_COMPANION_SYNC는 2026-08-29에 제거됐다. CLAUDE-omc.md 동기화가
+# SessionStart 훅이 아니라 ccpu(플러그인 업데이트 함수)와 install.sh에서 명시적으로
+# 호출되므로, 켜고 끌 상시 동작 자체가 없다.

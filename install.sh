@@ -367,6 +367,13 @@ for f in settings.json CLAUDE.md spinner-tips.json; do
     link_file "$DOTFILES/.claude/$f" "$HOME/.claude/$f"
 done
 
+# Seed ~/.claude/CLAUDE-omc.md on a fresh machine. Ongoing re-sync is handled by
+# `ccpu` (a plugin update is the only thing that makes it drift), not by a hook.
+# No-ops when the OMC plugin is not installed yet.
+if [ -x "$DOTFILES/scripts/omc-companion-sync.sh" ]; then
+    "$DOTFILES/scripts/omc-companion-sync.sh" -q | sed 's/^/  /'
+fi
+
 # Per-skill symlinks: ~/.claude/skills/ is a real directory so external tools
 # (gstack, etc.) can write siblings without touching dotfiles.
 # Ongoing sync (skills added after install) is handled by the link-skills.sh

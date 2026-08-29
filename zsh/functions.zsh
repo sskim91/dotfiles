@@ -348,6 +348,12 @@ function ccpu() {
             claude plugin update "$name" --scope "$scope" 2>&1 | sed 's/^/     /'
         fi
     done
+    # Re-sync the OMC companion here rather than from a SessionStart hook: a plugin
+    # update is the only thing that makes ~/.claude/CLAUDE-omc.md drift, and omc's
+    # marketplace has autoUpdate=false, so nothing moves unless this function runs.
+    if [[ -x "$DOTFILES/scripts/omc-companion-sync.sh" ]]; then
+        "$DOTFILES/scripts/omc-companion-sync.sh" -q | sed 's/^/  /'
+    fi
     echo "==> Done. Restart Claude Code to apply."
 }
 
