@@ -199,7 +199,6 @@
     "skill-creator@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": false,
     "explanatory-output-style@claude-plugins-official": false,
-    "elastic-elasticsearch@elastic-agent-skills": false,
     "codex@openai-codex": true,
     "postman@claude-plugins-official": true,
     "temporal@temporal-marketplace": true,
@@ -211,13 +210,6 @@
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
-      },
-      "autoUpdate": false
-    },
-    "elastic-agent-skills": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/elastic/agent-skills.git"
       },
       "autoUpdate": false
     },
