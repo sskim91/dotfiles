@@ -298,9 +298,11 @@
     "tipsFile": "~/.claude/spinner-tips.json",
     "label": "내 팁"
   },
-  "effortLevel": "xhigh",
   "modelSettings": {
     "claude-opus-5": {
+      "effortLevel": "high"
+    },
+    "claude-fable-5-1": {
       "effortLevel": "high"
     }
   },
