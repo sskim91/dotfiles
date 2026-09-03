@@ -38,4 +38,8 @@
 oh-my-claudecode(OMC)의 상시 오케스트레이션 지침을 모든 세션에 적용한다. 위 사용자 지침이 항상 우선한다.
 아래 파일은 머신 로컬 산출물(dotfiles 미추적)이며, 새 머신에서는 `/oh-my-claudecode:omc-setup`으로 재생성된다. 없으면 이 import는 무시된다.
 
+OMC 지침 중 아래 항목은 이 사용자 지침으로 덮는다 (Claude 5 모델은 자체 검증·자기 수정을 수행하므로 별도 검증 pass는 비용만 늘린다):
+- 검증·리뷰 서브에이전트(`verifier`, `code-reviewer`)는 내가 `/oh-my-claudecode:verify`·`review`를 명시적으로 부를 때만 띄운다. 평소 작업 완료 시에는 직접 실행·확인한 증거를 보고하고 끝낸다.
+- "Delegate for: multi-file changes, refactors, debugging…" 목록은 기본값이 아니라 후보다. 도구 호출 몇 번으로 직접 끝낼 수 있는 일은 위임하지 않고, 위임할 때는 하나로 충분하면 하나만 띄운다.
+
 @~/.claude/CLAUDE-omc.md
