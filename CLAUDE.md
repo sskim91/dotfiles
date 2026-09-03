@@ -117,6 +117,7 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 ```
 SessionStart → session-context.sh (injects current date/time)
 SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
+SessionStart · PostModelSwitch → model-context.sh (Opus 5 세션에만 간결성·위임 제한 지침 주입; Fable은 하네스가 자체 주입하므로 무출력. `ENABLE_MODEL_CONTEXT`)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
@@ -271,4 +272,5 @@ Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
 - `.claude/settings.json`은 **이중 역할**이다 — `~/.claude/settings.json` 심링크로 user 스코프이면서, `~/.dotfiles`에서 작업할 땐 같은 경로가 project 스코프다. Claude Code는 스킬은 inode로 중복 제거하지만 settings.json은 하지 않아 **양쪽 모두 로드된다**(실측: 동일 권한 규칙이 `userSettings`·`projectSettings` 양쪽에 적용). 그래서 `tipsFile`·`label`처럼 **user/managed 스코프에서만 유효한 키**를 쓰면 값은 정상 적용되지만 project 사본에 대해 `[WARN] ... are ignored` 한 줄이 남는다. 무해하지만 앞으로 그런 키마다 재발한다
 - 설정 관련 경고는 `claude -p` 출력에 안 나온다. `--debug-file <path>`로 받아야 보인다 (2026-08-29에 이걸 못 찾아 "검증 불가"로 오판한 적 있음)
 - `block-rm.sh`는 명령을 **줄 단위로** 검사한다 (2026-08-29 수정). 이전에는 개행을 공백으로 뭉개서 `touch x`⏎`rm x` 같은 멀티라인 삭제가 상시 가드를 그대로 통과했다. 대가로 heredoc 본문에 줄 처음부터 `rm`이 오면 오탐 차단되니, 그럴 때는 `\rm`을 쓴다. Codex 미러(`.codex/hooks/block-rm.sh`)는 exit 2가 아니라 `decision` 필드로 차단하므로 검증 기준이 다르다
+- **SessionStart 훅 페이로드에는 `model` 필드가 없다** (2026-09-03, 2.1.259 실측: `{hook_event_name, source}`만 옴). PostModelSwitch도 초기 모델에는 안 뜬다. `model-context.sh`는 그래서 `ANTHROPIC_MODEL` → settings `model` 키 순으로 폴백해 새 세션의 모델을 판별한다. `claude --model X` 일회성 플래그는 이 경로에서 보이지 않는다. 페이로드 감사는 `MODEL_CONTEXT_DEBUG=<file>`로 원본을 받아서 한다
 - Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음

@@ -14,7 +14,9 @@
     "BASH_DEFAULT_TIMEOUT_MS": "180000",
     "CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR": "1",
     "MCP_SERVER_CONNECTION_BATCH_SIZE": "10",
-    "MCP_TOOL_TIMEOUT": "60000"
+    "MCP_TOOL_TIMEOUT": "60000",
+    "CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH": "1",
+    "CLAUDE_CODE_MAX_CONCURRENT_SUBAGENTS": "3"
   },
   "attribution": {
     "commit": "",
@@ -85,7 +87,7 @@
     ],
     "defaultMode": "plan"
   },
-  "model": "opus[1m]",
+  "model": "claude-fable-5-1[1m]",
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "adr": "off",
@@ -125,6 +127,10 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/link-skills.sh"
+          },
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/model-context.sh"
           }
         ]
       }
@@ -174,6 +180,16 @@
             "type": "command",
             "command": "~/.claude/hooks/vault-linker.sh",
             "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostModelSwitch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/model-context.sh"
           }
         ]
       }
@@ -235,7 +251,7 @@
       "autoUpdate": true
     }
   },
-  "outputStyle": "Explanatory",
+  "outputStyle": "default",
   "language": "korean",
   "spinnerVerbs": {
     "mode": "replace",
@@ -279,13 +295,13 @@
   },
   "spinnerTipsOverride": {
     "excludeDefault": false,
-    "label": "내 팁",
-    "tipsFile": "~/.claude/spinner-tips.json"
+    "tipsFile": "~/.claude/spinner-tips.json",
+    "label": "내 팁"
   },
   "effortLevel": "xhigh",
   "modelSettings": {
     "claude-opus-5": {
-      "effortLevel": "xhigh"
+      "effortLevel": "high"
     }
   },
   "advisorModel": "fable",
