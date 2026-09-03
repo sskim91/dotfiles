@@ -1,9 +1,8 @@
 #!/bin/bash
-# UserPromptSubmit hook for Codex.
+# UserPromptSubmit hook shared by Codex and Claude Code.
 #
-# Codex currently supports adding developer context from UserPromptSubmit hooks,
-# but not replacing the user's prompt. This hook makes the rewrite instruction
-# turn-scoped instead of keeping it in global developer_instructions.
+# Prompt rewriting is opt-in: prefix a request with `rewrite:` or `재작성:`.
+# Git/deploy context remains automatic, but only for exact intent keywords.
 
 set -euo pipefail
 
@@ -13,45 +12,57 @@ prompt=$(jq -r '.prompt // empty' 2>/dev/null || true)
 [[ "$prompt" == /* ]] && exit 0
 [[ "$prompt" == \** ]] && exit 0
 [[ "$prompt" == \#* ]] && exit 0
-[[ ${#prompt} -lt 15 ]] && exit 0
 
-[[ "$prompt" == *'```'* ]] && exit 0
-[[ "$prompt" == *'http'* ]] && exit 0
-[[ "$prompt" =~ \.(py|ts|js|java|sh|md|json|yaml|yml)$ ]] && exit 0
+context=""
 
-read -r -d '' context <<'EOF' || true
-## Prompt Rewriter
-The user writes informal Korean with repeated phrases, omitted context, and broken word order.
+append_context() {
+  if [[ -n "$context" ]]; then
+    context+=$'\n\n'
+  fi
+  context+="$1"
+}
 
-Before executing, show a [Rewrite] block using this structure:
-- **Goal**: What the user wants (single clear sentence)
-- **Context**: Infer from conversation history — fill in "그거", "아까 그", "그 파일" etc.
-- **Constraints**: Any limitations or preferences mentioned or implied
-- **Output**: What form the result should take
+case "$prompt" in
+  [Rr][Ee][Ww][Rr][Ii][Tt][Ee]:* | 재작성:*)
+    rewrite_context=""
+    read -r -d '' rewrite_context <<'EOF' || true
+## Prompt Rewrite
+The user explicitly requested a rewrite-then-execute pass.
 
-Rules:
-- Preserve ALL information from original — never drop details
-- Length can exceed original; clarity over brevity
-- Same language as original
-- If the prompt is already clear and structured, skip [Rewrite] entirely
-- IMPORTANT: If a matching Skill exists for the user request, invoke the Skill tool FIRST. Rewriting does NOT replace skill invocation.
+Before executing, show a [Rewrite] block with:
+- **Goal**: The intended outcome in one sentence
+- **Context**: Relevant conversation context and resolved references
+- **Constraints**: Requirements, limits, and approval boundaries
+- **Output**: The expected result or format
 
-After [Rewrite], execute that version.
+Preserve every requirement, use the user's language, and treat the leading
+`rewrite:` or `재작성:` as a control prefix. If a matching skill applies, invoke
+it before rewriting. Then execute the rewritten request.
 EOF
+    append_context "$rewrite_context"
+    ;;
+esac
 
-# Repo state injection, ported from .claude/hooks/prompt-rewriter.sh. The two copies
-# had drifted: only the claude side injected git/deploy context, only this side had
-# the `yml` bypass. Keep them behaviourally identical.
-if printf '%s\n' "$prompt" | grep -qiE "commit|push|pr|merge|branch|rebase|cherry-pick|stash|커밋|푸시|머지|브랜치|리베이스"; then
-  BRANCH=$(git branch --show-current 2>/dev/null || echo "N/A")
-  DIRTY=$(git status --short 2>/dev/null | wc -l | tr -d ' ')
-  context+=$'\n\n## Git Context\nBranch: '"$BRANCH"', Changed files: '"$DIRTY"
+git_pattern='(^|[^A-Za-z0-9_])(commit|push|pull request|merge|branch|rebase|cherry-pick|stash|pr)([^A-Za-z0-9_]|$)|커밋|푸시|머지|브랜치|리베이스'
+if printf '%s\n' "$prompt" | grep -qiE "$git_pattern"; then
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    branch=$(git branch --show-current 2>/dev/null || true)
+    [[ -z "$branch" ]] && branch="N/A"
+    dirty=$(git status --short | wc -l | tr -d ' ')
+  else
+    branch="N/A"
+    dirty="N/A"
+  fi
+  append_context "## Git Context"$'\n'"Branch: $branch, Changed files: $dirty"
 fi
 
-if printf '%s\n' "$prompt" | grep -qiE "deploy|배포|release|릴리즈|prod|운영"; then
-  LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "no tags")
-  context+=$'\n\n## Deploy Context\nLast tag: '"$LAST_TAG"
+deploy_pattern='(^|[^A-Za-z0-9_])(deploy|deployment|release|prod|production)([^A-Za-z0-9_]|$)|배포|릴리즈|운영'
+if printf '%s\n' "$prompt" | grep -qiE "$deploy_pattern"; then
+  last_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "no tags")
+  append_context "## Deploy Context"$'\n'"Last tag: $last_tag"
 fi
+
+[[ -z "$context" ]] && exit 0
 
 jq -n --arg ctx "$context" '{
   "hookSpecificOutput": {
