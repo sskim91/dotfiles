@@ -367,8 +367,9 @@ for f in settings.json CLAUDE.md spinner-tips.json; do
     link_file "$DOTFILES/.claude/$f" "$HOME/.claude/$f"
 done
 
-# Seed ~/.claude/CLAUDE-omc.md on a fresh machine. Ongoing re-sync is handled by
-# `ccpu` (a plugin update is the only thing that makes it drift), not by a hook.
+# Seed ~/.claude/CLAUDE-omc.md on a fresh machine. Ongoing re-sync is the
+# omc-companion-sync.sh SessionStart(startup) hook, because marketplace autoUpdate
+# bumps the installed plugin in the background without any user command.
 # No-ops when the OMC plugin is not installed yet.
 if [ -x "$DOTFILES/scripts/omc-companion-sync.sh" ]; then
     "$DOTFILES/scripts/omc-companion-sync.sh" -q | sed 's/^/  /'

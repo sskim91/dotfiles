@@ -6,18 +6,19 @@
 # layer). That companion file is a COPY of the plugin's docs/CLAUDE.md OMC block, so it
 # can drift from the plugin.
 #
-# WHY THIS IS NOT A SessionStart HOOK (changed 2026-08-29):
-# It used to run on every session start, guarding against auto-update advancing the
-# plugin underneath the copy. Two things made that a bad trade:
-#   1. The installed plugin version only moves when `claude plugin update` runs, so
-#      the per-session poll watched for an event the user has to trigger by hand.
-#      (marketplace autoUpdate refreshes the catalog, not the installed version, so
-#      it does not cause drift either way.)
-#   2. When a real bump finally happened (5.0.0 -> 5.0.2) the OMC block diff was one
-#      line: the version marker. The guidance body was byte-identical.
-# Per-session cost and two separate bug fixes bought a comment update. The sync now
-# runs from `ccpu` (the function that performs the update) and from install.sh, so it
-# is bound to the event that causes drift instead of polling for it.
+# HOW IT RUNS: from the SessionStart(startup) hook wrapper
+# .claude/hooks/omc-companion-sync.sh (toggle ENABLE_OMC_COMPANION_SYNC) and once from
+# install.sh to seed a fresh machine.
+#
+# History: 2026-08-29 this was moved out of the hook into a `ccpu` update function on
+# the belief that marketplace autoUpdate only refreshes the catalog, so the installed
+# version could only change when a person ran `claude plugin update`. That was wrong:
+# autoUpdate updates installed plugins in the background a few minutes after startup
+# (official docs; measured 2026-09-05, 5.0.2 -> 5.2.0 landed 7 minutes into a
+# session). Drift therefore happens with no user command, and the next startup is the
+# only place to catch it. Restored as a hook 2026-09-05; `ccpu` was deleted.
+# Note the OMC block body has been byte-identical across both bumps so far
+# (5.0.0 -> 5.0.2 -> 5.2.0); only the version marker moved.
 #
 # ADD-ONLY / idempotent: only the OMC:START..OMC:END block is replaced; content outside
 # the markers is preserved. A re-synced block takes effect in the NEXT session.

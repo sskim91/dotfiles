@@ -118,6 +118,7 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 SessionStart → session-context.sh (injects current date/time)
 SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
 SessionStart · PostModelSwitch → model-context.sh (Opus 5 세션에만 간결성·위임 제한 지침 주입; Fable은 하네스가 자체 주입하므로 무출력. `ENABLE_MODEL_CONTEXT`)
+SessionStart(startup) → omc-companion-sync.sh (~/.claude/CLAUDE-omc.md를 실제 로드되는 OMC 플러그인 버전에 맞춤; 동기화되면 다음 세션부터 적용. `ENABLE_OMC_COMPANION_SYNC`)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
@@ -222,7 +223,7 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 
 백그라운드 세션 관리는 `claude attach <id>` / `logs` / `stop` / `respawn` / `rm` (v2.1.251에서 `--help`에 노출). 실행 중인 세션에 `--resume`을 걸면 정확한 `attach` 명령을 안내해준다.
 
-`ccpu`는 전 scope의 플러그인을 업데이트하고, 이어서 `scripts/omc-companion-sync.sh -q`로 `~/.claude/CLAUDE-omc.md`를 갱신한다. 이 동기화는 **SessionStart 훅이 아니다** — 근거는 Gotchas 참조.
+Claude Code 플러그인은 수동 갱신 명령이 없다. 마켓플레이스 `autoUpdate`가 설치본까지 백그라운드로 올리고, `~/.claude/CLAUDE-omc.md`는 `omc-companion-sync.sh` SessionStart(startup) 훅이 따라간다 — 상세는 Gotchas 참조.
 
 ## Multi-Tool AI Harness
 
@@ -267,8 +268,8 @@ Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
 - Ghostty/kitty 둘 다 설정 존재 — 현재 주 터미널은 Ghostty
 - `ssh host <command>`로 실행되는 원격 명령은 non-login·non-interactive 셸이라 `.zprofile`/`.zshrc`/`path_helper`가 모두 건너뛰어진다. brew 도구를 원격 명령에서 써야 하면 `.zshenv`에 PATH를 넣어야 한다 (mosh가 `mosh-server not found`로 실패하는 전형적 원인)
 - `.claude/hooks/` 스크립트는 `ENABLE_*` env var로 개별 제어 — 새 hook 추가 시 `path.zsh`에 변수 추가 필요
-- **CLAUDE-omc.md 동기화를 SessionStart 훅으로 되돌리지 말 것** (2026-08-29 이관). 이 문서가 기술하는 건 **설치된** 플러그인 버전이고, 그 버전은 `claude plugin update`(= `ccpu`)로만 바뀐다. 훅은 매 세션 돌면서 사용자가 직접 쳐야만 생기는 드리프트를 감시했고, 실제 5.0.0→5.0.2 버전업에서 동기화한 내용은 버전 주석 한 줄이었다(지침 본문은 바이트 동일). 그 대가로 버그를 두 번 고쳤다. 지금은 `ccpu`와 `install.sh`가 `scripts/omc-companion-sync.sh`를 명시 호출한다 — 감시를 폴링이 아니라 원인 지점에 붙인 것
-- **마켓플레이스 `autoUpdate`는 카탈로그만 갱신한다** — 설치된 플러그인 버전은 올리지 않는다(그건 `ccpu`). 2026-07-01(`7e8eb77`)에 startup git pull이 간헐적 로드 에러를 내서 껐다가, 2026-08-29에 다시 켰다. 그 사이 v2.1.105·v2.1.232·v2.1.251로 근본 원인이 개선됐지만 2.1.251에서도 여전히 손보는 영역이다. **startup에 plugin load 에러나 스킬 누락이 재발하면 `autoUpdate`부터 의심할 것**
+- **마켓플레이스 `autoUpdate`는 설치된 플러그인까지 올린다** (공식 문서·2026-09-05 실측). 세션 시작 후 최대 10분 무작위 지연을 두고 백그라운드로 카탈로그 갱신과 설치본 업데이트를 함께 수행한다. 실행 중인 세션은 시작 시점 버전을 계속 쓰고, 새 버전은 다음 실행 또는 `/reload-plugins`에서 로드된다. 그래서 **OMC의 `[OMC UPDATE AVAILABLE]` 경고는 새 릴리스 직후 첫 세션에 구조적으로 한 번 뜬다** — OMC 훅은 startup 시점에 비교하고 Claude의 업데이트는 그 뒤에 돌기 때문이다. 수동 조치 불필요. 2026-08-29~09-05 사이 이 저장소는 "카탈로그만 갱신한다"고 잘못 적어 두었고, 그 전제로 `ccpu` 함수를 유지했다(09-05 삭제. `claude plugin update`는 플러그인 이름을 요구해 update-all 형태가 없다). 2026-07-01(`7e8eb77`)에 startup git pull이 간헐적 로드 에러를 내서 껐다가 2026-08-29에 다시 켠 이력은 그대로다. **startup에 plugin load 에러나 스킬 누락이 재발하면 `autoUpdate`부터 의심할 것**
+- **CLAUDE-omc.md 동기화는 SessionStart(startup) 훅이다** (2026-08-29 `ccpu`로 이관 → 2026-09-05 복귀). 이관 당시 근거는 "설치 버전은 사람이 `claude plugin update`를 쳐야만 바뀌니 폴링할 이유가 없다"였는데, 위 항목대로 그 전제가 틀렸다 — autoUpdate가 사람 개입 없이 설치본을 바꾸므로 드리프트를 잡을 지점은 다음 startup밖에 없다. 이관 때 지적된 버그 두 건(brace group 종료코드·버전 해석)은 `scripts/omc-companion-sync.sh`에 이미 고쳐져 있고, 훅 래퍼 `.claude/hooks/omc-companion-sync.sh`는 토글만 얹는다. `-q`라 동기화가 일어난 세션에만 한 줄 남긴다. 5.0.0→5.0.2, 5.0.2→5.2.0 두 번 모두 본문은 동일하고 버전 주석만 바뀌었으니 실질 드리프트는 지금까지 없었다
 - `.claude/settings.json`은 **이중 역할**이다 — `~/.claude/settings.json` 심링크로 user 스코프이면서, `~/.dotfiles`에서 작업할 땐 같은 경로가 project 스코프다. Claude Code는 스킬은 inode로 중복 제거하지만 settings.json은 하지 않아 **양쪽 모두 로드된다**(실측: 동일 권한 규칙이 `userSettings`·`projectSettings` 양쪽에 적용). 그래서 `tipsFile`·`label`처럼 **user/managed 스코프에서만 유효한 키**를 쓰면 값은 정상 적용되지만 project 사본에 대해 `[WARN] ... are ignored` 한 줄이 남는다. 무해하지만 앞으로 그런 키마다 재발한다
 - 설정 관련 경고는 `claude -p` 출력에 안 나온다. `--debug-file <path>`로 받아야 보인다 (2026-08-29에 이걸 못 찾아 "검증 불가"로 오판한 적 있음)
 - `block-rm.sh`는 명령을 **줄 단위로** 검사한다 (2026-08-29 수정). 이전에는 개행을 공백으로 뭉개서 `touch x`⏎`rm x` 같은 멀티라인 삭제가 상시 가드를 그대로 통과했다. 대가로 heredoc 본문에 줄 처음부터 `rm`이 오면 오탐 차단되니, 그럴 때는 `\rm`을 쓴다. Codex 미러(`.codex/hooks/block-rm.sh`)는 exit 2가 아니라 `decision` 필드로 차단하므로 검증 기준이 다르다

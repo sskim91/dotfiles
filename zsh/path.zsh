@@ -92,6 +92,7 @@ export ENABLE_MODEL_CONTEXT=1        # Opus 5 세션에 간결성·위임 제한
 # 낮을수록 일찍 압축 → 더 자주 / 높을수록 늦게 압축 → 맥락 보존
 export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
 
-# ENABLE_OMC_COMPANION_SYNC는 2026-08-29에 제거됐다. CLAUDE-omc.md 동기화가
-# SessionStart 훅이 아니라 ccpu(플러그인 업데이트 함수)와 install.sh에서 명시적으로
-# 호출되므로, 켜고 끌 상시 동작 자체가 없다.
+# CLAUDE-omc.md를 실제 로드되는 OMC 플러그인 버전에 맞추는 SessionStart(startup) 훅.
+# 마켓플레이스 autoUpdate가 세션 시작 후 백그라운드로 설치본을 올리므로, 드리프트는
+# 사용자 개입 없이 생긴다 — 다음 startup에서 잡는 것이 원인에 가장 가까운 지점이다.
+export ENABLE_OMC_COMPANION_SYNC=1  # omc-companion-sync.sh (2026-09-05 복귀)

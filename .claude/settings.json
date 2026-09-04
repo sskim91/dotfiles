@@ -133,6 +133,15 @@
             "command": "~/.claude/hooks/model-context.sh"
           }
         ]
+      },
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/omc-companion-sync.sh"
+          }
+        ]
       }
     ],
     "PreToolUse": [
