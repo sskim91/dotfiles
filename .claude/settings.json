@@ -229,7 +229,8 @@
     "postman@claude-plugins-official": false,
     "temporal@temporal-marketplace": true,
     "slack@claude-plugins-official": false,
-    "oh-my-claudecode@omc": true
+    "oh-my-claudecode@omc": true,
+    "i-have-adhd@i-have-adhd": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -259,6 +260,12 @@
         "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
       },
       "autoUpdate": true
+    },
+    "i-have-adhd": {
+      "source": {
+        "source": "github",
+        "repo": "ayghri/i-have-adhd"
+      }
     }
   },
   "outputStyle": "default",
