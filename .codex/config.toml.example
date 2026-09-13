@@ -1,127 +1,31 @@
 #:schema https://developers.openai.com/codex/config-schema.json
-# Codex configuration (config.toml)
-#
-# Copy to ~/.codex/config.toml:
-#   cp ~/.dotfiles/.codex/config.toml.example ~/.codex/config.toml
-#
-# Reference: https://developers.openai.com/codex/config-sample
-# Notes
-# - Root keys must appear before tables in TOML.
-# - [projects] section is auto-managed by Codex (trust prompt on first use)
-# - [notice] section is auto-managed by Codex
+# Fresh-install defaults. Existing ~/.codex/config.toml also contains app-managed state.
+# See .codex/README.md for the Astra setup and optional skill overrides.
 
-################################################################################
-# Core Model Selection
-################################################################################
-
-model = "gpt-5.6-sol"
-
-# Communication style: none | friendly | pragmatic
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
+model_verbosity = "medium"
 personality = "pragmatic"
 
-# Provider id selected from [model_providers]. Default: "openai".
-model_provider = "openai"
-
-# Optional model override for /review. Default: unset (uses current session model).
-# review_model = "gpt-5.6-terra"
-
-################################################################################
-# Reasoning & Verbosity (Responses API capable models)
-################################################################################
-
-# Reasoning effort: minimal | low | medium | high | xhigh
-model_reasoning_effort = "high"
-
-# Optional override used when Codex runs in plan mode: none | minimal | low | medium | high | xhigh
-plan_mode_reasoning_effort = "high"
-
-# Reasoning summary: auto | concise | detailed | none
-model_reasoning_summary = "auto"
-
-# Text verbosity for GPT-5 family (Responses API): low | medium | high
-model_verbosity = "medium"
-
-################################################################################
-# Approval & Sandbox
-################################################################################
-
-# When to ask for command approval:
-# - untrusted: only known-safe read-only commands auto-run; others prompt
-# - on-request: model decides when to ask (default)
-# - never: never prompt (risky)
+# cdx selects workspace-write; cdx -y explicitly selects full access.
+# Keep the fresh-install permission boundary independent of model tuning.
 approval_policy = "on-request"
-
-# Filesystem/network sandbox policy:
-# - read-only (default)
-# - workspace-write
-# - danger-full-access (no sandbox; extremely risky)
 sandbox_mode = "read-only"
-
-################################################################################
-# Project Documentation Controls
-################################################################################
-
-project_doc_max_bytes = 32768
-
-################################################################################
-# File Opener
-################################################################################
-
-# URI scheme: vscode | vscode-insiders | windsurf | cursor | none
 file_opener = "vscode"
+web_search = "live"
 
-################################################################################
-# Web Search
-################################################################################
+# Use the active model's context window and auto-compaction defaults.
+# No Sol-specific fixed threshold or custom compaction prompt.
 
-# Web search mode: disabled | cached | live. Default: "cached"
-web_search = "cached"
-
-################################################################################
-# Context / Auto-Compaction
-################################################################################
-
-# Token threshold that triggers auto-compaction of conversation history.
-# Current Codex runtime observed for gpt-5.6-sol: 258,400 effective tokens.
-# Re-check session metadata after changing models; do not derive this value from
-# the API model's 272K pricing threshold.
-#   80% = 206720 (overflow safety margin)
-#   75% = 193800 (balanced for long agent/document workflows)
-#   70% = 180880 (more conservative for very long research/agent sessions)
-# NOTE: 75% is an engineering heuristic, not a quality-optimal point. Research
-# (Chroma "Context Rot" 2025) shows quality degrades gradually well before the
-# window fills, so this is a safety margin, not a quality guarantee.
-model_auto_compact_token_limit = 193800
-
-# Scope charged against the limit above:
-# - total            : full active context (default)
-# - body_after_prefix: only tokens after the carried prefix in the current
-#                       compaction window (avoids re-triggering too eagerly)
-model_auto_compact_token_limit_scope = "total"
-
-# Customize the prompt used when compacting history (optional):
-# compact_prompt = "..."
-
-################################################################################
-# Tools
-################################################################################
-
-# Default-mode execution checklist. This is separate from Plan mode and /goal.
 [tools.update_plan]
 enabled = true
-
-################################################################################
-# History
-################################################################################
 
 [history]
 persistence = "save-all"
 max_bytes = 5242880
 
-################################################################################
-# MCP Servers
-################################################################################
-
+# Keep tools with a distinct workflow. Native web search covers general search;
+# the alternate search MCPs remain configured for optional re-enablement.
 [mcp_servers.context7]
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
@@ -131,10 +35,12 @@ command = "npx"
 args = ["@playwright/mcp@latest"]
 
 [mcp_servers.tavily-remote]
+enabled = false
 command = "sh"
 args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y mcp-remote \"https://mcp.tavily.com/mcp/?tavilyApiKey=$TAVILY_API_KEY\""]
 
 [mcp_servers.brave-search]
+enabled = false
 command = "sh"
 args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y @brave/brave-search-mcp-server --transport stdio"]
 
@@ -142,25 +48,37 @@ args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfile
 command = "sh"
 args = ["-c", "if [ -f \"$HOME/.dotfiles/.env.local\" ]; then . \"$HOME/.dotfiles/.env.local\"; fi; exec npx -y mcp-remote \"$YOUTRACK_URL/mcp\" --header \"Authorization:Bearer $YOUTRACK_TOKEN\""]
 
-################################################################################
-# Feature Flags
-################################################################################
+[mcp_servers.openaiDeveloperDocs]
+url = "https://developers.openai.com/mcp"
 
 [features]
 unified_exec = true
 multi_agent = true
 hooks = true
-# Persisted /goal workflows (Codex 0.128.0+)
-# TUI commands: /goal create | /goal pause | /goal resume | /goal clear
 goals = true
 memories = true
 
 [features.context_management]
 experimental_mode = true
 
-################################################################################
-# UI
-################################################################################
+[skills]
+config = [
+    { path = "~/.dotfiles/.codex/skills/adr/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/api-design/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/find-docs/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/java-modern-patterns/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/jpa-patterns/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/project-overview/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/python-code-style/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/python-patterns/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/python-testing/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/skill-guide/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/springboot-patterns/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/springboot-security/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/springboot-tdd/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/springboot-verification/SKILL.md", enabled = false },
+    { path = "~/.dotfiles/.codex/skills/sql-optimization-patterns/SKILL.md", enabled = false },
+]
 
 [tui]
 notifications = false

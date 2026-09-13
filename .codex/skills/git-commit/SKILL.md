@@ -1,0 +1,55 @@
+---
+name: git-commit
+description: 변경사항의 커밋만 요청했을 때 개인·회사·OSS 저장소별 메시지와 staging 규칙을 적용한다.
+---
+
+# Git Commit Instructions
+
+## 프로젝트 하네스 위임 (CRITICAL — 경로 분기보다 먼저)
+
+레포 루트에 프로젝트 전용 커밋 스킬이 있으면 **이 스킬을 쓰지 말고 그쪽으로 위임**한다.
+프로젝트 커밋 규칙(타입 접두사·이슈번호·Co-Authored-By 등)이 이 전역 스킬과 다를 수 있다.
+
+- 레포의 `.agents/skills/`에 `<project>-commit` 류(예: `genos-commit`)가 **실제로 존재하면** 그쪽 사용. 이 스킬 중단.
+- 존재 여부를 확인하지 않고 위임하지 않는다. 레포 경로만으로 위임 대상을 추정하면
+  대상이 없을 때 커밋이 막다른 길에 빠진다 (2026-08-27: `~/work/GenOS*` 5개 레포에
+  `genos-commit`이 없는데도 경로 조건 때문에 위임이 발동하던 문제).
+
+위임 대상이 없을 때만 아래 경로 분기로 진행.
+
+## 경로 분기 (CRITICAL)
+
+**FIRST**: `pwd`로 현재 디렉토리 확인.
+
+| 경로 | 프로젝트 타입 | 언어 |
+|------|-------------|------|
+| `~/company-src/*`, `~/work/*` | 회사 | Korean |
+| `~/dev/oss/*` | OSS 기여 | English |
+| 그 외 모든 경로 | 개인 | Korean |
+
+**Attribution**: settings.json의 `attribution`으로 관리. 스킬에서 직접 추가하지 않음.
+
+## 커밋 메시지 포맷
+
+```
+[제목 (한글 or English — 경로 분기 따름)]
+
+[본문 - 무엇을, 왜 변경했는지]
+- [상세 내용]
+```
+
+## 참고 자료
+
+| 파일 | 내용 |
+|------|------|
+| [commit-rules.md](references/commit-rules.md) | 7 Rules, Pre-Commit Checklist, Never Commit 목록 |
+
+## Gotchas
+
+<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+- ❌ Gitmoji 사용 → 사용하지 않음
+- ❌ Co-Authored-By나 "Generated with Claude" 직접 추가 → settings.json attribution이 관리함
+- ❌ Subject에 마침표 붙임 → 마침표 없음
+- ❌ Past tense 사용 ("Added") → 명령형 ("Add")
+- ❌ `git add .` 또는 `git add -A` → 파일 지정해서 스테이징
+- ❌ 개인 프로젝트에서 영어 커밋 → Korean이 기본, `~/dev/oss/*`만 English

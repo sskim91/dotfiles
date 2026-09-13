@@ -1,11 +1,12 @@
 #!/bin/bash
 # Per-language check invoked by file-dispatcher.sh (Codex) or directly.
 # Contract: reads {tool_input:{file_path}} on stdin, lints that one file,
-# prints feedback, exits 2 on failure. Mirrors .claude/hooks/python-check.sh.
+# prints feedback, exits 2 on failure. Uses Codex-owned settings.
 #
-# Ruff is enabled by default (ENABLE_RUFF=0 to disable).
+# Ruff is enabled by default (CODEX_ENABLE_RUFF=0 to disable).
 
-ENABLE_RUFF=${ENABLE_RUFF:-1}
+HOOK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+source "$HOOK_DIR/../config/hook-settings.sh" || exit 1
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
@@ -15,7 +16,7 @@ if [[ ! "$FILE_PATH" =~ \.py$ ]] || [[ ! -f "$FILE_PATH" ]]; then
 	exit 0
 fi
 
-# Prefer uvx (parity with .claude), fall back to ruff on PATH.
+# Prefer uvx, fall back to ruff on PATH.
 if command -v uvx >/dev/null 2>&1; then
 	RUFF=(uvx ruff)
 elif command -v ruff >/dev/null 2>&1; then
@@ -26,7 +27,7 @@ fi
 
 CHECK_SUCCESS=1
 
-if [[ "$ENABLE_RUFF" -eq 1 ]]; then
+if [[ "$CODEX_ENABLE_RUFF" -eq 1 ]]; then
 	if ! "${RUFF[@]}" check "$FILE_PATH" --fix; then
 		echo "❌ ruff check failed" >&2
 		CHECK_SUCCESS=0

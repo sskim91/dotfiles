@@ -1,0 +1,37 @@
+{
+  "skill_name": "cc-changelog-review",
+  "evals": [
+    {
+      "id": 1,
+      "name": "single-version-anchor-url",
+      "prompt": "https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md#21128 클로드코드 2.1.128 변경사항 보고 dotfiles에 추가할거 있나 검토해줘",
+      "expected_output": "Tiered (Tier 1/2/3) recommendation list for version 2.1.128 only, with file_path:line_number citations to ~/.dotfiles/.claude/settings.json or related files. Output in Korean. Bug fixes filtered out. Ends with the standard '어느 항목을 적용할까요?' prompt.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "version-range-with-existing-context",
+      "prompt": "claude code 2.1.120부터 2.1.126까지 변경사항 검토하고 추가할거 있나 알려줘",
+      "expected_output": "Tiered output covering all 7 versions in the inclusive range. Categorizes hooks/MCP/env vars/permissions touchpoints. Cites paths in ~/.dotfiles/. Filters bug fixes. Top-1 recommendation has explicit reasoning.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "last-n-default-no-args",
+      "prompt": "최근 클로드코드 릴리스에서 추가할거 있나 봐줘",
+      "expected_output": "Defaults to last 5 versions (per skill spec). Same tiered output structure. Asks once if range was unclear, not multiple times.",
+      "files": [],
+      "assertions": []
+    },
+    {
+      "id": 4,
+      "name": "negative-trigger-gemini-changelog",
+      "prompt": "Gemini CLI changelog 보고 settings 추가할거 있나",
+      "expected_output": "Skill should NOT trigger (description includes 'Do NOT use for non-Claude-Code changelogs'). If invoked anyway, refuses or redirects to a different approach.",
+      "files": [],
+      "assertions": []
+    }
+  ]
+}

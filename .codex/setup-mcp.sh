@@ -32,4 +32,7 @@ add_if_missing tavily-remote     tavily-remote -- sh -c 'if [ -f "$HOME/.dotfile
 add_if_missing brave-search      brave-search -- sh -c 'if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi; exec npx -y @brave/brave-search-mcp-server --transport stdio'
 add_if_missing youtrack          youtrack -- sh -c 'if [ -f "$HOME/.dotfiles/.env.local" ]; then . "$HOME/.dotfiles/.env.local"; fi; exec npx -y mcp-remote "$YOUTRACK_URL/mcp" --header "Authorization:Bearer $YOUTRACK_TOKEN"'
 
+# Official documentation; search providers remain configured but can be disabled in config.toml.
+add_if_missing openaiDeveloperDocs openaiDeveloperDocs --url https://developers.openai.com/mcp
+
 echo "Codex MCP servers setup complete"

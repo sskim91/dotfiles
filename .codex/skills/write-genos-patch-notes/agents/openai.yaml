@@ -1,0 +1,4 @@
+interface:
+  display_name: "GenOS 패치노트 작성"
+  short_description: "GenOS 버전 변경사항을 검증해 상세 패치노트로 작성"
+  default_prompt: "Use $write-genos-patch-notes to investigate a GenOS version and write a detailed Korean patch note."

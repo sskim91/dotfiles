@@ -52,4 +52,4 @@
 
 ---
 
-> 이 문서는 도구 중립이다. Claude Code(`~/.claude/CLAUDE.md`에서 @import), Codex(`~/.codex/AGENTS.md` 심링크), Gemini(`~/.gemini/GEMINI.md` 심링크)가 모두 이 단일 정본을 공유한다. 협업 방식 변경은 이 파일 한 곳에서만 한다.
+> Claude Code(`~/.claude/CLAUDE.md`에서 @import)와 Gemini(`~/.gemini/GEMINI.md` 심링크)가 이 정본을 공유한다. Codex의 협업 방식은 `.codex/AGENTS.md`에서 별도로 관리한다.

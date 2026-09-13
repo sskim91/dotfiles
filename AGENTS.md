@@ -1,64 +1,28 @@
-# Repository Guidelines
+# Dotfiles 작업 규칙
 
-## Symlink Architecture (Critical)
-- All configs are symlinked from `~/.dotfiles/` into `$HOME` (e.g. `~/.zshrc` → `~/.dotfiles/.zshrc`). **Always edit files inside `~/.dotfiles/`, never the symlinked locations.**
-- Exceptions that are NOT symlinks: `~/.gitconfig` is a local stub that `[include]`s `~/.dotfiles/git/.gitconfig`; some `~/.gemini/` files and home-side hook files are managed at runtime. Editing them directly silently diverges from the tracked source.
-- cmux hook handling is host-specific: Codex merges hooks from `.codex/config/global.json`, while Antigravity may replace `~/.gemini/config/hooks.json`. Keep the Gemini file on `merge_hooks_json` in `install.sh`; never convert it to `link_file`.
+## 원본과 실행 상태
 
-## Project Structure & Module Organization
-- Root setup files: `install.sh`, `Brewfile`, `Brewfile.cask`, `.zshenv`, `.zprofile`, `.zshrc`, `.vimrc`, `.pre-commit-config.yaml`.
-- Shell customizations live in `zsh/`:
-  - `aliases.zsh` for aliases
-  - `functions.zsh` for reusable functions
-  - `path.zsh` for PATH/env/hook toggles (sourced by `.zprofile`)
-- Tool/app configs live in `.config/` (notably `nvim/`, `ghostty/`, `kitty/`, `karabiner/`, `yazi/`, `zed/`).
-- Git identity and defaults live in `git/`.
-- Automation and checks live in `.claude/hooks/`.
-- Utility scripts live in `scripts/` (example: `scripts/yt-transcript.py`).
+- 설정 원본은 `~/.dotfiles/`에 있다. 홈의 symlink 대신 이 저장소의 원본을 수정한다.
+- `~/.gitconfig`는 `git/.gitconfig`를 include하는 로컬 stub이다. Codex의 `~/.codex/config.toml`은 앱이 관리하는 실행 상태이며, 지속할 기본 설정은 `.codex/config.toml.example`에도 반영한다. 인증·프로젝트 신뢰·앱 상태를 템플릿으로 덮어쓰지 않는다.
+- `install.sh`가 링크와 최초 설치를 관리한다. Codex 협업 지침은 `.codex/AGENTS.md`, Claude/Gemini는 `.claude/docs/working-style.md`가 정본이다.
+- cmux는 Codex의 `.codex/config/global.json`에 훅을 합칠 수 있다. Gemini의 `~/.gemini/config/hooks.json`은 `merge_hooks_json`을 유지한다. `link_file`로 바꾸면 호스트별 훅이 덮어써질 수 있다.
 
-## Build, Test, and Development Commands
-- `./install.sh`: full bootstrap (Homebrew packages, symlinks, runtimes, hooks).
-- `brew bundle`: install/update required CLI packages from `Brewfile`.
-- `brew bundle --file=Brewfile.cask`: install/update optional GUI applications.
-- `source ~/.zshrc` (or `rr`): reload shell configuration after edits.
-- `pre-commit install`: install local Git hooks.
-- `pre-commit run --all-files`: run formatting, JSON/YAML checks, and secret scanning.
-- `zsh -n .zshrc zsh/*.zsh`: syntax-check shell configuration changes.
+## 작업별 위치
 
-## Coding Style & Naming Conventions
-- Preserve existing style per file type:
-  - Shell (`*.sh`, `*.zsh`): POSIX/Bash-friendly syntax, clear guard clauses, lowercase kebab-case file names.
-  - Python (`scripts/*.py`): 4-space indentation, type hints where practical, snake_case for functions.
-  - Lua (`.config/nvim/lua/**`): follow LazyVim-style modular layout (`config/` vs `plugins/`).
-- Keep edits minimal and localized; avoid broad rewrites of stable dotfiles.
-- Name new scripts/configs descriptively by tool and purpose (example: `check-hardcoded-secrets.sh`).
+- Shell: `zsh/aliases.zsh`, `zsh/functions.zsh`, `zsh/path.zsh`. 로그인 시 PATH는 `.zprofile`, 비대화형 SSH PATH는 `.zshenv`를 확인한다.
+- 앱 설정: `.config/`. Git 설정: `git/`. 설치 패키지: `Brewfile`, `Brewfile.cask`.
+- Codex 구성과 비활성 스킬의 이유는 [.codex/README.md](.codex/README.md)에 있다. 설정·스킬 구성을 바꿀 때 참고한다.
+- 터미널·Claude 플러그인·훅 문제는 [운영 메모](.codex/docs/dotfiles-operations.md)의 해당 항목을 참고한다.
 
-## Testing Guidelines
-- This repo uses validation checks rather than a dedicated unit-test suite.
-- Required before PR/merge: `pre-commit run --all-files`.
-- For changed scripts, run targeted checks (for example `python3 -m py_compile scripts/yt-transcript.py`).
-- For shell changes, validate with `zsh -n` and a quick interactive reload.
+## 검증과 훅
 
-## AI Harness & Hooks
-- `.codex/hooks/` mirrors `.claude/hooks/`: file-dispatcher, pre-commit-gate, and prompt-rewriter. Hook enablement's source of truth is the `ENABLE_*` variables in `zsh/path.zsh`; Python/Ruff is the only language checker.
-- If a hook reports a real violation, fix the flagged content. Do not bypass the hook or change an `ENABLE_*` gate as an agent workaround.
+- 수정한 Shell 파일마다 `zsh -n <파일>` 또는 `bash -n <파일>`로 문법을 확인한다. 셸 동작을 바꿨으면 실제 reload도 확인한다.
+- PR/merge 전에는 `pre-commit run --all-files`가 필요하다. 일반 수정은 영향을 받는 검증을 수행한다.
+- Codex 훅은 커밋 보호(`pre-commit-gate.sh`, `block-rm.sh`)와 Python/Ruff(`file-dispatcher.sh`)를 담당한다. Codex의 `CODEX_ENABLE_*` 설정은 `.codex/config/hook-settings.sh`, Claude의 `ENABLE_*` 설정은 `zsh/path.zsh`에서 관리한다.
+- 훅이 실제 위반을 보고하면 해당 내용을 수정한다. 작업을 통과시키려고 훅이나 `ENABLE_*` 설정을 우회하지 않는다.
 
-## Gotchas
-- After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).
-- Both Ghostty and kitty configs exist; Ghostty is the primary terminal.
-- Remote commands run via `ssh host <command>` get a non-login, non-interactive shell: `.zprofile`, `.zshrc`, and `path_helper` are all skipped. Homebrew tools needed there must get their PATH from `.zshenv` (this is why mosh fails with `mosh-server not found`).
-- When adding a new hook script, also add its `ENABLE_*` toggle in `zsh/path.zsh`.
-- Marketplace `autoUpdate` updates installed plugins too, in the background up to ten minutes after a session starts; the running session keeps the version it loaded. OMC's `[OMC UPDATE AVAILABLE]` notice therefore shows once per release, in the first session after it, and needs no manual action. There is no `ccpu` any more (removed 2026-09-05; `claude plugin update` has no update-all form). If startup plugin-load errors or missing skills recur, investigate `autoUpdate` first.
-- `CLAUDE-omc.md` sync is the `omc-companion-sync.sh` `SessionStart(startup)` hook (`ENABLE_OMC_COMPANION_SYNC`), restored 2026-09-05 because autoUpdate changes the installed version without any user command. `install.sh` seeds it on a fresh machine.
-- `.claude/settings.json` loads as both user and project scope when cwd is `~/.dotfiles`; warnings for user-only keys such as `tipsFile` and `label` are harmless. Capture settings warnings with `--debug-file <path>`, not `claude -p` output.
-- `block-rm.sh` inspects commands line by line, so heredoc content beginning with `rm` is also blocked; use `\rm` there. The Codex mirror signals a block through the `decision` field with exit 0, so validate the field rather than the exit code.
-- Neovim plugin conflicts: run `:Lazy clean` and restart — LazyVim's auto-sync does not always resolve them.
+## 커밋
 
-## Commit & Pull Request Guidelines
-- Use Conventional Commits: `type(scope): subject` in imperative mood, no trailing period (for example: `feat(codex-hooks): add lint dispatcher`, `chore(claude): refresh spinner tips`).
-- Do NOT use Gitmoji or emoji prefixes; recent history uses Conventional Commits.
-- PRs should include:
-  - what changed and why
-  - impacted paths (for example `zsh/path.zsh`, `.config/nvim/**`)
-  - local verification steps and results
-- Never include secrets or real `.env` values; keep using `.env.local.example`.
+- Conventional Commits: `type(scope): subject`. 개인·회사 작업은 한국어 명령형, 마침표·emoji 없음. 저장소별 규칙이 있으면 따른다.
+- 합의한 파일만 명시적으로 stage한다. PR에는 변경 이유·영향 경로·검증 결과를 적는다.
+- 실제 비밀값과 `.env`는 커밋하지 않는다. `.env.local.example`을 사용한다.

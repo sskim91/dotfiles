@@ -1,20 +1,5 @@
 {
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.dotfiles/.codex/hooks/session-context.sh\""
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.dotfiles/.codex/hooks/link-skills.sh\""
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "Bash",
@@ -34,18 +19,6 @@
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.dotfiles/.codex/hooks/prompt-rewriter.sh\"",
-            "statusMessage": "Preparing prompt rewrite context",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -55,18 +28,6 @@
             "command": "bash \"$HOME/.dotfiles/.codex/hooks/file-dispatcher.sh\" check",
             "statusMessage": "Linting changed files",
             "timeout": 180
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.dotfiles/.codex/hooks/til-review.sh\"",
-            "statusMessage": "Reviewing TIL notes",
-            "timeout": 400
-          },
-          {
-            "type": "command",
-            "command": "bash \"$HOME/.dotfiles/.codex/hooks/vault-linker.sh\"",
-            "statusMessage": "Linking Obsidian vault",
-            "timeout": 10
           }
         ]
       }

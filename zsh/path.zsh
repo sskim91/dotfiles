@@ -73,7 +73,7 @@ export ENABLE_VAULT_LINKER=0         # Obsidian vault 노트 자동 링킹 제�
 export SKIP_TRANSLATED_REVIEW=1      # 번역 문서는 TIL 리뷰 스킵
 
 # ----------------------------------------------------------------------------
-# Commit 보안 게이트 (pre-commit-gate.sh — Claude/Codex 공통)
+# Commit 보안 게이트 (pre-commit-gate.sh — Claude; Codex는 .codex/config/hook-settings.sh)
 # ----------------------------------------------------------------------------
 export ENABLE_ENV_FILE_CHECK=0       # .env류/구조화 시크릿 파일 커밋 차단 (check-env-files.sh)
 export ENABLE_SECRET_SCAN=0          # 코드 내 하드코딩 시크릿 패턴 차단 (check-hardcoded-secrets.sh)

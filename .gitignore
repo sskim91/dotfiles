@@ -102,8 +102,9 @@ Icon
 # Docs (plans, internal notes)
 # ======================
 docs/
-# 예외: .claude/docs/는 추적 (working-style 등 동기화 대상 설정 문서)
+# 도구별 지침과 참고 문서는 추적한다.
 !.claude/docs/
+!.codex/docs/
 
 # ======================
 # Session handoff
@@ -115,6 +116,9 @@ _session/
 # ======================
 .claude/skills/vault-linter/scripts/embeddings-cache.json
 .claude/skills/vault-linter/scripts/semantic-review-queue.json
+.codex/skills/vault-linter/scripts/embeddings-cache.json
+.codex/skills/vault-linter/scripts/semantic-review-queue.json
+.codex/skills/**/.venv/
 
 # ======================
 # Misc
@@ -124,3 +128,6 @@ _session/
 node_modules/
 __pycache__
 poetry-installer-error-*.log
+
+# Codex skill SQL resources (override the global *.sql ignore)
+!.codex/skills/sql-optimization-patterns/scripts/*.sql
