@@ -20,3 +20,9 @@ export PATH="$PATH:$HOME/Library/Application Support/JetBrains/Toolbox/scripts"
 
 # Obsidian CLI
 export PATH="$PATH:/Applications/Obsidian.app/Contents/MacOS"
+
+# The following lines were added by Docker Desktop to add commands to your PATH.
+# Kept with its marker comments so Docker Desktop does not re-insert the block
+# at the top of this file on every launch; path made portable and guarded.
+[[ -d "$HOME/.docker/bin" ]] && export PATH="$PATH:$HOME/.docker/bin"
+# End of Docker Desktop section.
