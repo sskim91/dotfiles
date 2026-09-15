@@ -66,17 +66,8 @@ config = [
     { path = "~/.dotfiles/.codex/skills/adr/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/api-design/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/find-docs/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/java-modern-patterns/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/jpa-patterns/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/project-overview/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/python-code-style/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/python-patterns/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/python-testing/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/skill-guide/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/springboot-patterns/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/springboot-security/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/springboot-tdd/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/springboot-verification/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/sql-optimization-patterns/SKILL.md", enabled = false },
 ]
 

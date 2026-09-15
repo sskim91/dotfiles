@@ -160,6 +160,15 @@ echo '{"tool_input":{"file_path":"test.py"}}' | ~/.claude/hooks/python-check.sh
 Located in `.claude/skills/`. Each skill has `SKILL.md` with trigger description.
 Run `ls .claude/skills/` to list available skills.
 
+Skills are classified by how fast their subject changes. Language- and framework-bound skills (Java/Spring/JPA/Python 9종) were removed in 2026-09 — they were all `off`, and Claude 5 knows those ecosystems well enough that a 50-line summary added nothing. Recover with `git checkout <sha> -- .claude/skills/<name>` if ever needed. `.codex/skills/` holds real copies (not symlinks) with Korean descriptions for Codex, so any add/remove must touch both trees.
+
+| Layer | Skills | What triggers an update |
+|---|---|---|
+| 1. Principles / process (stable) | `adr` `api-design` `sql-optimization-patterns` `git-commit` `git-push` `git-commit-and-push` `session-handoff` `devlog` `learning-tracker` `project-overview` `tech-blog-writer` `sns-writer` `translate-article` `ast-grep` | Rarely. Safe to re-enable as-is after years |
+| 3. Tool / service / project-bound (volatile) | `cc-changelog-review` `codex-changelog-review` `skill-guide` `find-docs` `github-actions` `youtube-summarizer` `excalidraw-diagram` `obsidian-note` `til` `til-tagger` `vault-linter` `agentic-notes` `genos-knowledge-capture` `write-genos-patch-notes` | The target moves: CLI releases, MCP server swaps, vault restructuring, GenOS releases. Prefer "look up the current docs" procedures over pinned-version snapshots |
+
+(Layer 2, ecosystem-bound, is intentionally empty.)
+
 ### Adding New Skills
 
 1. Create directory `.claude/skills/{skill-name}/`

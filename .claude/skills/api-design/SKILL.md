@@ -52,6 +52,5 @@ description: Use when designing API endpoints, reviewing API contracts, adding p
 
 | Topic | Skill |
 |-------|-------|
-| Spring Boot REST controller, exception handling | `springboot-patterns` |
 | SQL 페이지네이션 최적화 | `sql-optimization-patterns` |
 | REST/GraphQL·auth 방식 등 아키텍처 결정 기록 | `adr` |

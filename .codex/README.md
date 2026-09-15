@@ -26,7 +26,7 @@
 
 - 일반 설계·탐색: `adr`, `api-design`, `project-overview`
 - 문서·스킬 사용 절차 중복: `find-docs`, `skill-guide`
-- 일반 Java/Python/Spring/SQL 지침: `java-modern-patterns`, `jpa-patterns`, `python-code-style`, `python-patterns`, `python-testing`, `springboot-patterns`, `springboot-security`, `springboot-tdd`, `springboot-verification`, `sql-optimization-patterns`
+- 일반 SQL 지침: `sql-optimization-patterns`
 
 나머지 22개는 GenOS·개인 vault·TIL·커밋 규칙·문서 변환·전용 도구 등 업무 지식과 자원을 제공한다. Codex 사본의 description을 짧게 정리하고 Obsidian 형식과 Excalidraw 예시는 필요할 때 읽는 references로 옮겼다. 필요한 스킬은 템플릿과 실제 설정에서 해당 override를 제거하거나 `enabled = true`로 바꾸면 된다.
 

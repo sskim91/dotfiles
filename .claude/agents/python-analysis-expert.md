@@ -4,8 +4,6 @@ description: Analyze Python codebase for type safety, performance, security issu
 tools: Read, Grep, Glob
 model: sonnet
 maxTurns: 40
-skills:
-  - python-patterns
 ---
 
 You are a Python codebase analyst. You read and analyze Python code to produce a structured report of quality, performance, and security issues.

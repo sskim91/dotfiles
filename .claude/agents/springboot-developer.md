@@ -5,12 +5,6 @@ tools: Read, Edit, Write, Grep, Glob, Bash
 model: opus
 memory: project
 maxTurns: 60
-skills:
-  - springboot-patterns
-  - springboot-security
-  - jpa-patterns
-  - java-modern-patterns
-  - springboot-tdd
 ---
 
 You are a Spring Boot developer. You build layered, tested, and documented applications following an entity-first workflow.

@@ -36,7 +36,6 @@ description: 느린 SQL의 실행 계획·인덱스·쿼리 병목을 분석하�
 
 | Topic | Skill |
 |-------|-------|
-| JPA entity, repository, N+1 in Hibernate | `jpa-patterns` |
 
 ## References
 
