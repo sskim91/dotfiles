@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "cleanupPeriodDays": 30,
   "skillListingBudgetFraction": 0.1,
+  "bashEditDiffEnabled": true,
   "env": {
     "ENABLE_TOOL_SEARCH": "1",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "64000",
