@@ -160,14 +160,20 @@ echo '{"tool_input":{"file_path":"test.py"}}' | ~/.claude/hooks/python-check.sh
 Located in `.claude/skills/`. Each skill has `SKILL.md` with trigger description.
 Run `ls .claude/skills/` to list available skills.
 
-Skills are classified by how fast their subject changes. Language- and framework-bound skills (Java/Spring/JPA/Python 9종) were removed in 2026-09 — they were all `off`, and Claude 5 knows those ecosystems well enough that a 50-line summary added nothing. Recover with `git checkout <sha> -- .claude/skills/<name>` if ever needed. `.codex/skills/` holds real copies (not symlinks) with Korean descriptions for Codex, so any add/remove must touch both trees.
+스킬은 아래 성격을 함께 가질 수 있다. **변화 속도는 재검토 기준이고, 유지·삭제는 고유한 가치와 사용 필요성으로 판단한다.** 원칙이 안정적이어도 도구·버전·경로·현재 업무 규칙은 재확인한다.
 
-| Layer | Skills | What triggers an update |
+| 내용 구분 | 예시 | 재검토 시점 |
 |---|---|---|
-| 1. Principles / process (stable) | `adr` `api-design` `sql-optimization-patterns` `git-commit` `git-push` `git-commit-and-push` `session-handoff` `devlog` `learning-tracker` `project-overview` `tech-blog-writer` `sns-writer` `translate-article` `ast-grep` | Rarely. Safe to re-enable as-is after years |
-| 3. Tool / service / project-bound (volatile) | `cc-changelog-review` `codex-changelog-review` `skill-guide` `find-docs` `github-actions` `youtube-summarizer` `excalidraw-diagram` `obsidian-note` `til` `til-tagger` `vault-linter` `agentic-notes` `genos-knowledge-capture` `write-genos-patch-notes` | The target moves: CLI releases, MCP server swaps, vault restructuring, GenOS releases. Prefer "look up the current docs" procedures over pinned-version snapshots |
+| 원칙·판단 기준 | `adr`의 결정 근거, `api-design`의 계약 검토, SQL의 측정 기준 | 새로운 근거·적용 조건이 생길 때 |
+| 개인·팀 컨벤션 | `git-commit`·`git-push`·`git-commit-and-push`, `session-handoff`, `devlog`, `learning-tracker`, `tech-blog-writer`, `sns-writer`의 형식·범위 | 사용자·팀·프로젝트 합의가 바뀔 때 |
+| 버전·환경 의존 지침 | `ast-grep`, `skill-guide`, `cc-changelog-review`, `codex-changelog-review`, `github-actions`, `youtube-summarizer`, `translate-article`, SQL의 도구·명령 | 도구·API·DB·실행 환경이 바뀔 때 |
+| 업무 절차·자원 | `excalidraw-diagram`, `obsidian-note`, `til`, `til-tagger`, `vault-linter`, `agentic-notes`, `genos-knowledge-capture`, `write-genos-patch-notes` | 업무 흐름·저장 위치·산출물 형식이 바뀔 때 |
 
-(Layer 2, ecosystem-bound, is intentionally empty.)
+일반 지식·도구 설명의 중복은 줄이고, 사용자의 선택·실제 실패 기록·진단 스크립트·템플릿은 필요성에 따라 남긴다. 버전별 사용법은 대상 프로젝트 버전을 확인한 뒤 공식 문서·실제 코드와 대조한다.
+
+2026-09에 비활성 Java/Spring/JPA/Python 스킬 9개를 제거했고, 일반 탐색·도구 설명과 중복되는 `project-overview`·`find-docs`도 제거했다. 삭제한 스킬은 복원하지 않는다. 새 필요가 생기면 프로젝트 제약은 해당 프로젝트에 기록하고, 공통 스킬은 실제 재사용 가치가 있을 때 별도로 검토한다.
+
+`.claude/skills/`와 `.codex/skills/`는 독립된 정본이다. 공통으로 관리하는 스킬은 양쪽 영향을 확인하되 도구별 description·활성 상태·실행 지침을 보존한다. 한쪽에만 필요한 스킬의 추가·삭제를 다른 쪽에 강제하지 않는다. Codex 구성은 [.codex/README.md](.codex/README.md)를 참고한다.
 
 ### Adding New Skills
 
@@ -188,9 +194,9 @@ description: Short description for Claude. Use when ...
 
 ### Agents
 
-No custom agents. `.claude/agents/` was removed in 2026-09 along with the language- and framework-bound skills it preloaded (`springboot-developer`, `fastapi-developer`, `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`, `database-architect`, `ml-engineer`, `tdd-red/green/blue-agent`). Plugin agents cover the same ground: oh-my-claudecode (`architect`, `executor`, `debugger`, `test-engineer`, `scientist`), superpowers (`test-driven-development`, `systematic-debugging`). Recover with `git checkout <sha> -- .claude/agents` if ever needed.
+커스텀 에이전트 10개는 역할 중복을 줄이기 위해 2026-09에 제거했다. `.claude/agents/`는 복원하지 않는다. 이후 작업은 현재 설치·활성화된 도구와 플러그인의 실제 기능을 확인해 수행한다. 플러그인이 이전 에이전트의 작업 품질을 동등하게 대체하는지는 별도 작업 검증이 필요하다.
 
-**Overlap policy** (still applies to any future agent): plugin/external agents take priority. A custom agent that duplicates a plugin agent gets deleted, not scoped (removed 2026-07: `backend-architect` → oh-my-claudecode:architect, `security-auditor` → oh-my-claudecode:security-reviewer, `python-debugger` → oh-my-claudecode:debugger + superpowers:systematic-debugging).
+새 에이전트는 기존 도구와 역할이 겹치는지, 고유한 업무 규칙이나 자원이 필요한지 확인한 뒤 검토한다.
 
 ## Neovim (LazyVim)
 

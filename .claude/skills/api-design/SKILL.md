@@ -5,52 +5,45 @@ description: Use when designing API endpoints, reviewing API contracts, adding p
 
 # API Design Patterns
 
-이 프로젝트들의 API 컨벤션(선택)과 리뷰 기준만 담는다. REST 일반 지식은 모델에 이미 있음.
+REST API 리뷰 기준과 새 API에 사용할 개인 기본값을 담는다. 기존 프로젝트의 계약·스키마·ADR·명시적 요구사항이 우선한다. 리뷰 요청만 받았다면 계약을 변경하지 않는다.
 
-## CRITICAL Rules
+## 계약 확인
 
-1. **ALWAYS** plural nouns, kebab-case, no verbs — `/team-members/:id` (예외: actions `/orders/:id/cancel`)
-2. **ALWAYS** semantic status codes — 200 for everything 금지, created는 `201 + Location`
-3. **ALWAYS** pagination for list endpoints — unbounded list 금지. **Public API는 cursor 기본**
-4. **NEVER** expose internal details in errors — stack trace, SQL 쿼리 금지
-5. **ALWAYS** validate at boundaries — 외부 입력·**써드파티 응답**·env/config 로딩은 검증, 이미 검증된 내부 데이터는 재검증 금지
-6. **ALWAYS** rate limiting — 내부 API 포함
-7. 버저닝: URL path (`/api/v1/`) 방식. breaking change 없이는 새 버전 만들지 않음
+- 소비자, 공개 범위, 기존 endpoint·응답·오류 형식, 호환성 요구를 먼저 확인한다.
+- 아래 기본값과 기존 계약이 다르면 차이를 설명한다. 개인 컨벤션에 맞추기 위한 일괄 변경은 하지 않는다.
+- 계약 변경안에는 영향을 받는 소비자와 migration 방법을 함께 적는다.
 
-## Response Envelope (컨벤션)
+## 리뷰 기준
+
+- 외부 입력과 신뢰 경계에서 데이터를 검증한다. 내부 데이터 재검증 여부는 경계와 변경 가능성에 따라 판단한다.
+- 오류에 stack trace, SQL, 비밀값 등 내부 구현을 노출하지 않는다.
+- 목록 API의 최대 반환량과 정렬 기준을 명확히 한다. pagination 방식은 접근 패턴·호환성에 맞춘다.
+- 인증·권한 오류와 입력 오류를 구분하고, 상태 코드와 응답 스키마를 일관되게 적용한다.
+- 요청량 제한은 공개 범위·호출자·운영 요구에 맞춰 설계한다.
+
+## 새 API의 기본값
+
+프로젝트 규칙이 없고 새 계약을 설계할 때 사용하는 선택이다.
+
+| 항목 | 기본값 |
+|---|---|
+| 경로 | 복수 명사와 kebab-case: `/team-members/:id`. 행위 endpoint는 `/orders/:id/cancel`처럼 표현 |
+| 버전 | URL path `/api/v1/`. 호환성을 깨지 않는 변경에는 새 버전을 만들지 않음 |
+| 목록 | 공개 API는 cursor pagination 우선. 정렬의 안정성과 동률 처리도 명시 |
+| 성공 응답 | 공개 API는 아래 envelope. 내부 API는 flat 응답도 허용 |
+| 오류 | machine-readable `code`, 사용자용 `message`, 필드별 `details` |
+| 모델 경계 | 저장 모델과 외부 계약을 분리해 내부 필드나 ORM 상태가 응답에 섞이지 않게 함 |
 
 ```json
-// Success:    { "data": {...} }  /  { "data": [...], "meta": { "has_next": true, "next_cursor": "..." } }
-// Error:      { "error": { "code": "validation_error", "message": "...", "details": [...] } }
+{
+  "data": [],
+  "meta": { "has_next": false, "next_cursor": null }
+}
 ```
 
-- `code`: machine-readable snake_case / `message`: human-readable / `details`: field-level errors
-- Public API는 envelope 필수, internal API는 flat 허용
+단건은 `{ "data": { ... } }`, 오류는 `{ "error": { "code": "validation_error", "message": "...", "details": [] } }`를 기본으로 한다.
 
-## Common Rationalizations
+## 관련 작업
 
-코드 리뷰에서 자주 나오는 변명과 반박. 나 자신의 설계 리뷰에도 적용하라.
-
-| 변명 | 반박 |
-|---|---|
-| "나중에 문서화할게요" | **타입이 곧 문서**다. DTO/스키마를 먼저 정의하면 OpenAPI가 자동 생성된다. |
-| "지금은 pagination 필요 없어요" | 100개 넘는 순간 필요해진다. 레거시 엔드포인트에 pagination 추가하는 게 3배 힘들다. |
-| "버저닝은 필요해질 때 하죠" | versioning 없는 breaking change = 소비자 파괴. `v1/` 프리픽스만 먼저 박아도 비용이 거의 없다. |
-| "아무도 그 미문서화된 동작 안 써요" | Hyrum's Law. 관찰 가능한 건 누군가 의존한다. |
-| "Controller에서 Entity 바로 반환해도 돼요" (Spring) | Entity 노출 = 내부 구조 유출 + JPA proxy 직렬화 시 `LazyInitializationException`. DTO 분리는 협상 불가. |
-| "내부용이라 rate limiting 안 해도 돼요" | 내부 배치 작업이 prod DB 터뜨리는 사례가 가장 흔하다. |
-| "프론트가 검증하니 서버는 생략해도 돼요" | 프론트 검증은 UX, 서버 검증은 **보안**. curl 한 번이면 프론트 우회. |
-
-## Gotchas
-
-<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
-- ❌ 인증 실패에 404 반환 → 403 (authenticated) / 401 (not authenticated)
-- ❌ validation 에러에 500 → 400 (malformed) / 422 (valid JSON, invalid data)
-- ❌ 써드파티 응답을 무검증 사용 → 사용자 입력과 동일하게 스키마 검증 (Pydantic / Zod / `@Valid`)
-
-## Cross-References
-
-| Topic | Skill |
-|-------|-------|
-| SQL 페이지네이션 최적화 | `sql-optimization-patterns` |
-| REST/GraphQL·auth 방식 등 아키텍처 결정 기록 | `adr` |
+- SQL pagination 성능 분석: `sql-optimization-patterns`
+- 응답 형식·버저닝 등 선택의 이유 기록: `adr`

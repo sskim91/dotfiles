@@ -99,14 +99,12 @@
     "excalidraw-diagram": "off",
     "github-actions": "off",
     "learning-tracker": "off",
-    "project-overview": "off",
     "sns-writer": "off",
     "sql-optimization-patterns": "off",
     "tech-blog-writer": "off",
     "til-tagger": "off",
     "translate-article": "off",
-    "youtube-summarizer": "off",
-    "find-docs": "off"
+    "youtube-summarizer": "off"
   },
   "hooks": {
     "SessionStart": [

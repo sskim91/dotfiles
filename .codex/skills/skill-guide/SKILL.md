@@ -3,119 +3,34 @@ name: skill-guide
 description: Anthropic skill 설계 가이드를 참조하거나 Claude용 SKILL.md 구조를 점검할 때 사용한다.
 ---
 
-# Skill Guide
+# Claude Skill Guide
 
-## Frontmatter Spec
+Claude용 스킬을 작성·검토할 때 참고 자료를 찾고 적용 범위를 점검한다. 이 파일이 Codex에 있어도 검토 대상은 Claude 스킬이다. Codex 스킬 작성에는 해당 환경의 `skill-creator`를 사용한다.
 
-Every skill needs a `SKILL.md` file (exact casing) in a kebab-case directory.
+## 먼저 확인할 것
 
-```yaml
----
-name: skill-name          # kebab-case, max 64 chars, must match directory name
-description: What it does and when to use it.  # max 1024 chars, no XML tags (<>)
----
-```
+- 대상이 Claude Code, Claude의 다른 제품, Codex 중 무엇인지 확인한다.
+- 기존 폴더, 호출자, 참고 자료와 사용자의 요청 범위를 읽는다. 이름이 비슷하다는 이유만으로 다른 도구의 스킬을 함께 변경하지 않는다.
+- 지원 frontmatter, 배치 위치, 도구 제한과 로딩 방식은 [Claude Code 공식 문서](https://code.claude.com/docs/en/skills)에서 대상 환경 기준으로 확인한다. 아래 로컬 자료는 작성 시점의 참고본이며 최신 명세를 대신하지 않는다.
 
-**Naming rules**: lowercase, numbers, hyphens only. No "claude" or "anthropic" prefix.
+## 내용 선택
 
-**Optional fields**:
+- 사용자의 컨벤션, 재사용 자원, 실제로 확인된 실패 지점처럼 판단을 바꾸는 정보를 남긴다.
+- `description`에는 호출할 상황과 필요한 경계를 적는다. 본문 작업 순서를 길게 요약하지 않는다.
+- 본문에는 목적·적용 조건·중요한 규칙을 두고, 긴 참고 자료는 필요한 경우에만 읽도록 연결한다.
+- 원칙, 프로젝트의 선택, 버전·환경에 의존하는 명령을 구분한다.
+- 요청받은 조사·수정 범위를 지킨다. 참고 자료의 예시를 외부 쓰기·설치·공유·유료 실행에 대한 허가로 해석하지 않는다.
 
-```yaml
-allowed-tools: "Read Grep Glob"          # Restrict tool access
-license: MIT
-compatibility: "Claude Code only"        # 1-500 chars
-metadata:
-  author: Name
-  version: 1.0.0
-  tags: [automation, workflow]
-```
+## 참고 자료 선택
 
-## Description Writing
+| 자료 | 읽을 때 |
+|---|---|
+| [Anthropic 가이드 참고본](references/anthropic-skill-guide.md) | 설계 원칙과 워크플로우 구성을 검토할 때 |
+| [실전 작성 팁](references/practical-tips.md) | 자원 배치·스킬 조합의 사례가 필요할 때 |
+| [평가 절차 메모](references/eval-guide.md) | 사용자가 비교 평가를 요청하고 당시 도구·실행 방식이 현재도 유효한지 확인할 때 |
 
-Description은 요약이 아니라 **트리거 판단 기준**이다. Claude가 세션 시작 시 모든 스킬의 description을 스캔해서 로드 여부를 결정한다.
+## 검증
 
-**Formula**: `[What it does] + [When to use it] + [Negative triggers]`
-
-```yaml
-# ✅ 구체적 트리거 + negative trigger
-description: Analyze Excel spreadsheets, create pivot tables, and generate charts.
-  Use when working with .xlsx files or analyzing tabular data.
-  Do NOT use for CSV-only operations (use data-processor skill).
-
-# ❌ 모호 — Claude가 언제 로드할지 판단 불가
-description: Helps with data analysis
-```
-
-## Skill Location
-
-| Location | Use for |
-|----------|---------|
-| `~/.claude/skills/` | Personal workflows, experiments |
-| `.claude/skills/` | Team/project, committed to git |
-
-## File Structure
-
-스킬은 **폴더**다. SKILL.md 하나가 아니다.
-
-```
-skill-name/
-├── SKILL.md              # Required — 핵심 지시사항 (5,000 words 이내)
-├── references/            # Claude가 필요할 때 읽는 상세 문서
-├── scripts/               # 결정적(deterministic) 검증/처리용 스크립트
-└── assets/                # Templates, data files
-```
-
-파일 시스템 자체가 progressive disclosure다. SKILL.md에서 어떤 파일이 있는지 알려주면, Claude가 적절한 시점에 읽는다. SKILL.md에 모든 내용을 넣지 말 것.
-
-## Content Writing Principles
-
-### Don't State the Obvious
-
-Claude는 코딩, 마크다운 구조화, 에지 케이스 처리를 이미 안다. **Claude의 일반적 사고방식을 벗어나게 하는 정보**에 집중하라 — 조직의 컨벤션, 도메인 특화 gotchas, 비직관적 패턴.
-
-### Build a Gotchas Section
-
-스킬에서 가장 가치 있는 콘텐츠는 **Gotchas 섹션**이다. Claude가 실제로 틀리는 지점을 기록하고, 시간이 지나며 축적하라.
-
-```markdown
-## Gotchas
-- API returns paginated results but doesn't indicate total count — always loop until empty
-- The `--dry-run` flag silently ignores invalid configs instead of erroring
-- Date fields use ISO 8601 but timezone is always UTC regardless of user locale
-```
-
-### Avoid Railroading
-
-정보는 주되, Claude가 상황에 맞게 적응할 유연성을 남겨라. 모든 상황에 적용되는 rigid step sequence를 강제하지 말 것.
-
-```markdown
-# ❌ 과도한 제약
-## Step 1: Always create the config file first
-## Step 2: Then validate the schema
-## Step 3: Then run the migration
-
-# ✅ 유연한 가이드
-## Setup
-Ensure config exists (see references/config-schema.md for required fields).
-Validate before running migrations — migration order matters,
-check references/migration-deps.md for dependency graph.
-```
-
-### Use Scripts for Determinism
-
-스크립트는 결정적이고, 자연어 지시는 아니다. 중요한 검증이나 출력 포맷은 `scripts/`에 코드로 번들하라.
-
-## Troubleshooting
-
-| 증상 | 원인 | 해결 |
-|------|------|------|
-| 스킬이 트리거 안됨 | description이 모호 | 트리거 문구, 파일 타입, "Use when..." 추가 |
-| 무관한 쿼리에서 트리거 | description이 넓음 | "Do NOT use for..." negative trigger 추가 |
-| 여러 스킬 충돌 | description 겹침 | 각 스킬의 범위를 구체적으로 좁힘 |
-| YAML 파싱 에러 | 포맷 오류 | `---` 구분자, 탭 대신 스페이스, 따옴표 닫기 확인 |
-| 원인 불명 | — | `claude --debug`로 스킬 로딩 과정 확인 |
-
-## References
-
-- [Anthropic 공식 스킬 가이드](references/anthropic-skill-guide.md) — 설계 원칙, 워크플로우 패턴, 테스트 전략, 전체 frontmatter 참조
-- [실전 스킬 작성 팁](references/practical-tips.md) — 9가지 스킬 유형, 고급 패턴 (데이터 저장, On Demand Hooks, 스킬 조합, 배포 전략)
+- frontmatter 파싱, 상대 링크, 참조 자원과 호출자의 존재를 확인한다.
+- description이 요청한 상황에 맞고, 기존 사용자 규칙과 충돌하지 않는지 확인한다.
+- 명령·스크립트를 바꿨으면 승인된 환경에서 실제 동작을 확인한다. 행동 품질 비교가 필요하면 대표 요청으로 평가하고, 형식 검사와 행동 평가 결과를 구분해 보고한다.

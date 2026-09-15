@@ -7,6 +7,9 @@ model_reasoning_effort = "high"
 model_verbosity = "medium"
 personality = "pragmatic"
 
+# Hide the startup warning while preserving enabled experimental features.
+suppress_unstable_features_warning = true
+
 # cdx selects workspace-write; cdx -y explicitly selects full access.
 # Keep the fresh-install permission boundary independent of model tuning.
 approval_policy = "on-request"
@@ -27,6 +30,7 @@ max_bytes = 5242880
 # Keep tools with a distinct workflow. Native web search covers general search;
 # the alternate search MCPs remain configured for optional re-enablement.
 [mcp_servers.context7]
+enabled = false
 command = "npx"
 args = ["-y", "@upstash/context7-mcp"]
 
@@ -65,8 +69,6 @@ experimental_mode = true
 config = [
     { path = "~/.dotfiles/.codex/skills/adr/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/api-design/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/find-docs/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/project-overview/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/skill-guide/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/sql-optimization-patterns/SKILL.md", enabled = false },
 ]

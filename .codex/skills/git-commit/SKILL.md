@@ -27,7 +27,7 @@ description: 변경사항의 커밋만 요청했을 때 개인·회사·OSS 저�
 | `~/dev/oss/*` | OSS 기여 | English |
 | 그 외 모든 경로 | 개인 | Korean |
 
-**Attribution**: settings.json의 `attribution`으로 관리. 스킬에서 직접 추가하지 않음.
+**Attribution**: 현재 프로젝트 지침과 실행 도구의 설정을 따른다. 도구별 설정 파일을 추정하거나 별도 요청 없이 attribution을 추가하지 않는다.
 
 ## 커밋 메시지 포맷
 
@@ -46,9 +46,9 @@ description: 변경사항의 커밋만 요청했을 때 개인·회사·OSS 저�
 
 ## Gotchas
 
-<!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
+<!-- 실제로 확인한 실패가 반복될 때 갱신 -->
 - ❌ Gitmoji 사용 → 사용하지 않음
-- ❌ Co-Authored-By나 "Generated with Claude" 직접 추가 → settings.json attribution이 관리함
+- ❌ 별도 요구 없는 Co-Authored-By·생성 도구 서명 추가 → 프로젝트 지침과 현재 도구 설정 확인
 - ❌ Subject에 마침표 붙임 → 마침표 없음
 - ❌ Past tense 사용 ("Added") → 명령형 ("Add")
 - ❌ `git add .` 또는 `git add -A` → 파일 지정해서 스테이징
