@@ -358,7 +358,7 @@ fi
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code configuration..."
 mkdir -p "$HOME/.claude"
-for dir in agents hooks output-styles rules; do
+for dir in hooks output-styles rules; do
     link_file "$DOTFILES/.claude/$dir" "$HOME/.claude/$dir"
 done
 # spinner-tips.json must be linked: settings.json references it by absolute

@@ -188,14 +188,9 @@ description: Short description for Claude. Use when ...
 
 ### Agents
 
-Located in `.claude/agents/`. Custom agent configurations for the Agent tool:
-- TDD agents: `tdd-red-agent`, `tdd-green-agent`, `tdd-blue-agent`
-- Architecture: `database-architect`
-- Development: `fastapi-developer`, `springboot-developer`
-- Analysis: `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`
-- ML: `ml-engineer`
+No custom agents. `.claude/agents/` was removed in 2026-09 along with the language- and framework-bound skills it preloaded (`springboot-developer`, `fastapi-developer`, `java-enterprise-analyzer`, `python-analysis-expert`, `sql-performance-optimizer`, `database-architect`, `ml-engineer`, `tdd-red/green/blue-agent`). Plugin agents cover the same ground: oh-my-claudecode (`architect`, `executor`, `debugger`, `test-engineer`, `scientist`), superpowers (`test-driven-development`, `systematic-debugging`). Recover with `git checkout <sha> -- .claude/agents` if ever needed.
 
-**Overlap policy**: plugin/external agents take priority. A custom agent that duplicates a plugin agent gets deleted, not scoped (removed 2026-07: `backend-architect` → oh-my-claudecode:architect, `security-auditor` → oh-my-claudecode:security-reviewer, `python-debugger` → oh-my-claudecode:debugger + superpowers:systematic-debugging).
+**Overlap policy** (still applies to any future agent): plugin/external agents take priority. A custom agent that duplicates a plugin agent gets deleted, not scoped (removed 2026-07: `backend-architect` → oh-my-claudecode:architect, `security-auditor` → oh-my-claudecode:security-reviewer, `python-debugger` → oh-my-claudecode:debugger + superpowers:systematic-debugging).
 
 ## Neovim (LazyVim)
 
