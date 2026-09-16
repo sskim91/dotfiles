@@ -2,10 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Repository Overview
-
-Personal dotfiles repository managing macOS development environment. Centralized at `~/.dotfiles` with automated installation and symlink management.
-
 ## Quick Commands
 
 ```bash
@@ -21,201 +17,40 @@ Conventional Commits: `type(scope): subject` in imperative mood, no trailing per
 
 ## Symlink Architecture
 
-All configurations are managed via symlinks from home directory to dotfiles:
+All configurations are managed via symlinks from home directory to dotfiles. The full link map lives in `install.sh`; only the entries that are **not** plain symlinks, or that carry a trap, are recorded here:
 
 | Home Location | Dotfiles Source |
 |---------------|-----------------|
-| `~/.zshenv` | `~/.dotfiles/.zshenv` |
-| `~/.zshrc` | `~/.dotfiles/.zshrc` |
-| `~/.zprofile` | `~/.dotfiles/.zprofile` |
-| `~/.vimrc` | `~/.dotfiles/.vimrc` |
 | `~/.gitconfig` | local stub file (not a symlink) — `[include]`s `~/.dotfiles/git/.gitconfig`; Sourcetree-managed sections live here to avoid dirtying tracked file |
-| `~/.config/nvim/` | `~/.dotfiles/.config/nvim/` |
-| `~/.claude/*` | `~/.dotfiles/.claude/*` |
-| `~/.tmux.conf` | `~/.dotfiles/.tmux.conf` |
 | `~/.gemini/GEMINI.md` | `~/.dotfiles/.claude/docs/working-style.md` (Antigravity 글로벌 컨텍스트 — Claude/Codex와 동일 정본) |
 | `~/.gemini/antigravity-cli/settings.json` | `~/.dotfiles/.gemini/antigravity-cli/settings.json` — Antigravity가 실행 시 실파일로 덮어써 심링크가 깨질 수 있음(`.gitconfig`의 Sourcetree 패턴과 동일). dotfiles 쪽이 정본이며 install.sh 재실행으로 재링크 |
 | `~/.gemini/config/mcp_config.json` | `~/.dotfiles/.gemini/antigravity-cli/mcp_config.json` — 심링크 |
 | `~/.gemini/config/hooks.json` | `~/.dotfiles/.gemini/antigravity-cli/hooks.json` — **심링크가 아니라 병합 대상.** cmux가 이 파일을 실파일로 **교체**하며 자기 `cmux` 블록만 남긴다(Codex와 달리 사용자 훅을 보존하지 않음 — 2026-08-27 실측). install.sh는 `merge_hooks_json`으로 최상위 키를 병합해 양쪽을 살린다. 재링크하면 cmux 훅이 삭제되므로 `link_file`을 쓰지 말 것 |
 | `~/.codex/hooks.json` | `~/.dotfiles/.codex/config/global.json` — cmux가 실파일로 덮어쓰되 **사용자 훅 8종을 보존한 채 자기 것을 추가**한다(Antigravity와 동작이 다름). `.hooks` 객체를 공유하는 구조라 최상위 병합이 불가하므로 `link_file`을 유지한다. install.sh 재실행 시 cmux 훅이 일시적으로 사라지지만 cmux 다음 실행에서 다시 병합된다 |
-| `~/.config/karabiner/assets/complex_modifications/my_custom_key.json` | `~/.dotfiles/.config/karabiner/my_custom_key.json` |
-| `~/.config/ghostty/` | `~/.dotfiles/.config/ghostty/` |
-| `~/.config/kitty/` | `~/.dotfiles/.config/kitty/` |
-| `~/.config/ruff/ruff.toml` | `~/.dotfiles/.config/ruff/ruff.toml` |
-| `~/.config/zed/settings.json` | `~/.dotfiles/.config/zed/settings.json` |
-| `~/.config/yazi/` | `~/.dotfiles/.config/yazi/` |
-| `~/.local/bin/admin-api-token.sh` | `~/.dotfiles/scripts/admin-api-token.sh` |
 
 **Important**: Edit files in `~/.dotfiles/`, not the symlinked locations.
 
-## Shell Configuration
-
-Modular ZSH configuration loaded from `zsh/`:
-
-| File | Purpose | Sourced By |
-|------|---------|------------|
-| `path.zsh` | PATH, env vars, Claude hooks ENABLE_* | `.zprofile` |
-| `aliases.zsh` | Command shortcuts, tool aliases | `.zshrc` |
-| `functions.zsh` | Custom functions (mkd, killport, ccv, etc.) | `.zshrc` |
-
-Load order: `.zshenv` (every zsh) -> `.zprofile` (login only) -> `.zshrc` (interactive only).
-
-`.zshenv` carries only the Homebrew PATH prepend, because `ssh host <command>` runs a
-non-login, non-interactive shell — `.zprofile`, `.zshrc`, and `/etc/zprofile`'s
-`path_helper` are all skipped there, so `/opt/homebrew/bin` would be missing.
-
-`.zprofile` sources `path.zsh` (login-time, once). `.zshrc` sources `aliases.zsh` and `functions.zsh` explicitly.
-
-### Adding Aliases/Functions
-
-```bash
-# In zsh/aliases.zsh - group related aliases
-alias ll='eza -l --git'
-
-# In zsh/functions.zsh - include usage help
-function myfunc() {
-    [[ -z "$1" ]] && { echo "Usage: myfunc <arg>"; return 1; }
-    # implementation
-}
-```
-
 ## Git Configuration
 
-Uses `includeIf` for automatic identity switching:
-
-| Directory | Config File |
-|-----------|-------------|
-| `~/dev/` | `git/.gitconfig_personal` |
-| `~/company-src/` | `git/.gitconfig_company` |
-| `~/work/` | `git/.gitconfig_company` |
-
-To add new directory-based config:
-```gitconfig
-# In git/.gitconfig
-[includeIf "gitdir:~/new-path/"]
-    path = .gitconfig_newname
-```
-
-### Multi-Account GitHub (Personal + Company)
-
-Personal GitHub uses HTTPS via `gh` CLI (active account = `sskim91`). Company GitHub uses SSH with a host alias so a second account can authenticate without `gh auth switch`:
-
-- Generate company key: `ssh-keygen -t ed25519 -C "<company-email>" -f ~/.ssh/company-git`
-- Register `~/.ssh/company-git.pub` on the company GitHub account
-- Add `Host github.com-company` block to `~/.ssh/config` (see `.ssh-config.example`)
-- Clone company repos with the aliased URL: `git@github.com-company:<org>/<repo>.git`
-- Place company repos under `~/work/` — `includeIf` then auto-applies company author identity
-
-`includeIf` handles **author email** only; SSH host alias handles **authentication**. Both layers are required for full automation (HTTPS+`gh` cannot do directory-based auth).
+Author identity switches by directory via `includeIf` in `git/.gitconfig` (`~/dev/` personal, `~/work/`·`~/company-src/` company). Company GitHub uses a second account over an SSH host alias — setup steps and the two-layer (identity vs. authentication) rationale are in `git/CLAUDE.md`.
 
 ## Claude Code Integration
 
 ### Hook System
 
-Settings in `.claude/settings.json`. Hooks execute on file operations:
-
-```
-SessionStart → session-context.sh (injects current date/time)
-SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
-SessionStart · PostModelSwitch → model-context.sh (Opus 5 세션에만 간결성·위임 제한 지침 주입; Fable은 하네스가 자체 주입하므로 무출력. `ENABLE_MODEL_CONTEXT`)
-SessionStart(startup) → omc-companion-sync.sh (~/.claude/CLAUDE-omc.md를 실제 로드되는 OMC 플러그인 버전에 맞춤; 동기화되면 다음 세션부터 적용. `ENABLE_OMC_COMPANION_SYNC`)
-UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
-PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
-  ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
-  ├ check-hardcoded-secrets.sh (`ENABLE_SECRET_SCAN`, 현재 0=비활성): 코드 diff에서 API 키·토큰·credential URL 패턴 차단
-  └ check-sensitive-files.sh: 키 파일(id_rsa·.pem 등) 차단 — 토글 없이 상시 활성
-PreToolUse: if Bash(*rm *) → block-rm.sh (줄 단위 검사, trash 사용 제안; `\rm`·`command rm`은 허용)
-PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
-PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
-PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
-```
-
-**File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension. Currently `.py` → `python-check.sh` (Ruff lint + fix) only — JS/TS/Java checkers were removed in the 2026-07 hook audit (their tools were all permanently disabled, making the scripts no-ops). To add a language: create `{language}-check.sh`, add a case branch in `file-dispatcher.sh` (both `.claude/hooks/` and `.codex/hooks/`), and add an `ENABLE_*` toggle in `zsh/path.zsh`.
-
-**Hook Environment Variables** (configured in `zsh/path.zsh`):
-
-Each hook tool is individually controlled via `ENABLE_*` environment variables:
-- `ENABLE_RUFF=1` - Python Ruff linter (default enabled)
-- `ENABLE_TIL_REVIEW=1`, `ENABLE_VAULT_LINKER=0` - document/review hooks
-- `ENABLE_ENV_FILE_CHECK=0`, `ENABLE_SECRET_SCAN=0` - commit security gates (currently disabled by user choice; set to 1 to re-enable)
-
-### Adding New Hooks
-
-1. Create script in `.claude/hooks/{language}-{type}.sh`
-2. Script receives JSON via stdin, extract path: `jq -r '.tool_input.file_path'`
-3. Exit 0 for success, non-zero to block operation
-
-### Hook Debugging
-
-```bash
-# Test hook manually
-echo '{"tool_input":{"file_path":"test.py"}}' | ~/.claude/hooks/python-check.sh
-
-# Check hook execution logs
-# Hooks output goes to Claude Code's stderr
-```
+Settings in `.claude/settings.json`. The hook flow, file-dispatcher pattern, and `ENABLE_*` toggles are documented in `.claude/hooks/CLAUDE.md` (loaded when working on files in that directory). Hook-related traps stay in Gotchas below.
 
 ### Skills
 
-Located in `.claude/skills/`. Each skill has `SKILL.md` with trigger description.
-Run `ls .claude/skills/` to list available skills.
+Located in `.claude/skills/`. Classification, review criteria, authoring conventions, and removal history are in `.claude/skills/CLAUDE.md`.
 
-스킬은 아래 성격을 함께 가질 수 있다. **변화 속도는 재검토 기준이고, 유지·삭제는 고유한 가치와 사용 필요성으로 판단한다.** 원칙이 안정적이어도 도구·버전·경로·현재 업무 규칙은 재확인한다.
-
-| 내용 구분 | 예시 | 재검토 시점 |
-|---|---|---|
-| 원칙·판단 기준 | `adr`의 결정 근거, `api-design`의 계약 검토, SQL의 측정 기준 | 새로운 근거·적용 조건이 생길 때 |
-| 개인·팀 컨벤션 | `git-commit`·`git-push`·`git-commit-and-push`, `session-handoff`, `devlog`, `learning-tracker`, `tech-blog-writer`, `sns-writer`의 형식·범위 | 사용자·팀·프로젝트 합의가 바뀔 때 |
-| 버전·환경 의존 지침 | `ast-grep`, `skill-guide`, `cc-changelog-review`, `codex-changelog-review`, `github-actions`, `youtube-summarizer`, `translate-article`, SQL의 도구·명령 | 도구·API·DB·실행 환경이 바뀔 때 |
-| 업무 절차·자원 | `excalidraw-diagram`, `obsidian-note`, `til`, `til-tagger`, `vault-linter`, `agentic-notes`, `genos-knowledge-capture`, `write-genos-patch-notes` | 업무 흐름·저장 위치·산출물 형식이 바뀔 때 |
-
-일반 지식·도구 설명의 중복은 줄이고, 사용자의 선택·실제 실패 기록·진단 스크립트·템플릿은 필요성에 따라 남긴다. 버전별 사용법은 대상 프로젝트 버전을 확인한 뒤 공식 문서·실제 코드와 대조한다.
-
-2026-09에 비활성 Java/Spring/JPA/Python 스킬 9개를 제거했고, 일반 탐색·도구 설명과 중복되는 `project-overview`·`find-docs`도 제거했다. 삭제한 스킬은 복원하지 않는다. 새 필요가 생기면 프로젝트 제약은 해당 프로젝트에 기록하고, 공통 스킬은 실제 재사용 가치가 있을 때 별도로 검토한다.
-
-`.claude/skills/`와 `.codex/skills/`는 독립된 정본이다. 공통으로 관리하는 스킬은 양쪽 영향을 확인하되 도구별 description·활성 상태·실행 지침을 보존한다. 한쪽에만 필요한 스킬의 추가·삭제를 다른 쪽에 강제하지 않는다. Codex 구성은 [.codex/README.md](.codex/README.md)를 참고한다.
-
-### Adding New Skills
-
-1. Create directory `.claude/skills/{skill-name}/`
-2. Create `SKILL.md` with frontmatter:
-- `description`: English, single-line. Include "Use when..." trigger hint.
-```markdown
----
-name: my-skill
-description: Short description for Claude. Use when ...
----
-
-# Skill Instructions
-...
-```
-
-3. Claude·Codex 겸용 Skill은 선택적으로 `agents/openai.yaml`을 포함한다. Claude Code는 이 파일을 무시하고, Codex는 Skill 목록과 호출 UI의 metadata로 사용한다.
+2026-09에 삭제한 스킬은 복원하지 않는다. `.claude/skills/`와 `.codex/skills/`는 독립된 정본이다 — 한쪽에만 필요한 스킬의 추가·삭제를 다른 쪽에 강제하지 않는다. Codex 구성은 [.codex/README.md](.codex/README.md)를 참고한다.
 
 ### Agents
 
 커스텀 에이전트 10개는 역할 중복을 줄이기 위해 2026-09에 제거했다. `.claude/agents/`는 복원하지 않는다. 이후 작업은 현재 설치·활성화된 도구와 플러그인의 실제 기능을 확인해 수행한다. 플러그인이 이전 에이전트의 작업 품질을 동등하게 대체하는지는 별도 작업 검증이 필요하다.
 
 새 에이전트는 기존 도구와 역할이 겹치는지, 고유한 업무 규칙이나 자원이 필요한지 확인한 뒤 검토한다.
-
-## Neovim (LazyVim)
-
-Config in `.config/nvim/`. Uses LazyVim distribution with lazy.nvim.
-
-```bash
-nvim                  # Auto-syncs plugins on startup
-:Lazy                 # Plugin manager UI
-:Mason                # LSP/formatter installer
-:LazyExtras           # Enable/disable language support
-```
-
-Enabled extras: Python, TypeScript/JavaScript, Java, JSON, Markdown
-
-## Tool Replacements
-
-Standard tools aliased to modern alternatives:
-- `cat` → `bat`, `ls` → `eza`, `vim` → `nvim`, `top` → `htop`, `df` → `duf`
-- Git pager uses `delta` for enhanced diffs
 
 ## AI CLI Wrappers
 
@@ -255,21 +90,6 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 - Security policy (secrets, `.env` handling)
 
 **Global collaboration style** (`.claude/docs/working-style.md`) is shared across all three tools via symlink — `~/.codex/AGENTS.md` and `~/.gemini/GEMINI.md` both symlink to it, and Claude's global `.claude/CLAUDE.md` `@import`s it. Edit collaboration conventions in that one file only; symlinks propagate automatically.
-
-## Karabiner Key Mappings
-
-Caps Lock as modifier key (`.config/karabiner/`):
-
-| Shortcut | Action |
-|----------|--------|
-| Caps+i/k/j/l | Arrow keys (Up/Down/Left/Right) |
-| Caps+e/d | Page Up/Down |
-| Caps+r/f | Home/End |
-| Caps+n/m | Backspace/Delete |
-
-## Version Management
-
-Uses **mise** (asdf replacement) for runtime versions. Activated in `.zprofile`.
 
 ## Gotchas
 
