@@ -28,4 +28,5 @@
 [diff]
     colorMoved = default          # 이동된 코드 블록 색상 표시 방식 (default: Git 기본값 사용)
 [credential]
+	helper =                      # 시스템 gitconfig(Xcode CLT)의 osxkeychain 누적을 초기화 (-25308 fatal 방지)
 	helper = store
