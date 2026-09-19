@@ -46,6 +46,7 @@ alias lt="eza --tree --level=2 --group-directories-first"                       
 
 # 화면 정리
 alias c="clear"
+alias cl="clear"
 
 # 명령어 기록 검색
 alias h="history"
