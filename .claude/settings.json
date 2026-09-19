@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "cleanupPeriodDays": 30,
   "skillListingBudgetFraction": 0.1,
-  "bashEditDiffEnabled": true,
   "env": {
     "ENABLE_TOOL_SEARCH": "1",
     "CLAUDE_CODE_FILE_READ_MAX_OUTPUT_TOKENS": "64000",
@@ -195,6 +194,7 @@
       }
     ]
   },
+  "bashEditDiffEnabled": true,
   "statusLine": {
     "type": "command",
     "command": "bash -c 'exec \"$HOME/.local/share/mise/shims/node\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)dist/index.js\"'"
@@ -327,5 +327,12 @@
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  }
 }
