@@ -42,6 +42,11 @@ fi
 # PostgreSQL 클라이언트 도구 (Apple Silicon 경로)
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
+# Antigravity IDE - 터미널용 `antigravity-ide`/`agy-ide` 런처 (설치기가 .zshrc에 넣던 줄을 이관)
+if [ -d "$HOME/.antigravity-ide/antigravity-ide/bin" ]; then
+  export PATH="$HOME/.antigravity-ide/antigravity-ide/bin:$PATH"
+fi
+
 # ============================================================================
 # Claude Hooks Configuration
 # ============================================================================
