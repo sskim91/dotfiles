@@ -33,6 +33,8 @@
 
 Superpowers는 양쪽 모두 유지한다. Codex 쪽은 원격 설치본(`source: remote`)이라 버전을 고정할 수 없고 자동으로 upstream을 따른다. 설치·활성 상태와 현재 버전은 `codex plugin list --json`으로 확인한다. Claude는 `superpowers@superpowers-marketplace`(obra/superpowers-marketplace, upstream 추적)를 별도로 활성화한다. 공식 마켓플레이스(`claude-plugins-official`)는 커밋 sha를 고정해 upstream보다 뒤처지므로 2026-09-22에 전환했다. Astra 정리는 Superpowers를 제거하는 조건이 아니다.
 
+Codex의 기본 개발 프로세스는 Superpowers이며, 적용 규칙과 승인 경계는 [`.codex/AGENTS.md`](AGENTS.md)의 "기본 작업 프로세스 — Superpowers" 절에서 관리한다. Claude/Gemini의 프로세스 규칙은 `.claude/docs/working-style.md`에서 별도로 관리한다. Codex는 이 문서를 자동으로 공유하지 않는다. 개인 스킬은 각 작업의 업무 규칙·도구·산출물 형식을 보완한다.
+
 ## 스킬 유지 기준
 
 스킬의 원칙·컨벤션·버전 의존 지침·업무 자원을 구분한다. 한 스킬에 여러 성격이 섞일 수 있으며, 안정적인 원칙이 있어도 실행 명령과 환경은 재확인한다. 분류 예시는 [CLAUDE.md의 Skills 절](../CLAUDE.md#skills)을 참고한다.

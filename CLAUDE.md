@@ -70,7 +70,7 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 
 Claude Code 플러그인은 수동 갱신 명령이 없다. 마켓플레이스 `autoUpdate`가 설치본까지 백그라운드로 올린다 — 상세는 Gotchas 참조.
 
-작업 프로세스 레이어는 superpowers 플러그인이다. 프로세스 규칙은 `.claude/docs/working-style.md`의 "작업 프로세스 — superpowers 스킬" 절(Claude·Codex 공유), Claude Code 실행 방식은 글로벌 `.claude/CLAUDE.md`의 "기본 프로세스" 절에 있다. oh-my-claudecode(OMC)는 2026-09-22에 플러그인·마켓플레이스·companion 파일·동기화 훅·`.omc/` 상태를 모두 제거했다. 복원하지 않는다.
+작업 프로세스 레이어는 superpowers 플러그인이다. Claude/Gemini의 프로세스 규칙은 `.claude/docs/working-style.md`의 "작업 프로세스 — superpowers 스킬" 절, Codex의 프로세스 규칙은 `.codex/AGENTS.md`의 "기본 작업 프로세스 — Superpowers" 절에서 각각 관리한다. Claude Code 실행 방식은 글로벌 `.claude/CLAUDE.md`의 "기본 프로세스" 절에 있다.
 
 ## Multi-Tool AI Harness
 
