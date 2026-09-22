@@ -53,6 +53,14 @@ Antigravity CLI uses `agy` as its executable. Gemini CLI stopped serving free/Pr
 agy plugin import gemini
 ```
 
+Superpowers (the shared process layer, see `.claude/docs/working-style.md` "작업 프로세스") is installed per machine from the upstream repo, not from this dotfiles tree:
+
+```bash
+agy plugin install https://github.com/obra/superpowers   # re-run the same command to update
+```
+
+It lands in `~/.gemini/config/plugins/superpowers/` (15 skills plus its own session-start hook, run by Antigravity from the plugin directory). It does not touch `~/.gemini/config/hooks.json`, so it is unaffected by the cmux merge described in the Symlink table. Installed 2026-09-22 at 6.4.1.
+
 ## Development Conventions
 
 ### Modular ZSH
