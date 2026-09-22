@@ -31,7 +31,7 @@
 
 나머지 22개는 GenOS·개인 vault·TIL·커밋 규칙·문서 변환·전용 도구 등 업무 지식과 자원을 제공한다. Codex 사본의 description을 짧게 정리하고 Obsidian 형식과 Excalidraw 예시는 필요할 때 읽는 references로 옮겼다. 재활성화가 필요하면 적용 조건·도구·버전·경로를 확인한 뒤 템플릿과 실제 설정의 해당 override만 변경한다.
 
-Superpowers는 양쪽 모두 유지한다. Codex 원격 설치본은 `superpowers@openai-curated-remote` 6.3.0이며 `codex plugin list --json`에서 설치·활성 상태를 확인한다. Claude는 `superpowers@claude-plugins-official`을 별도로 활성화한다. Astra 정리는 Superpowers를 제거하는 조건이 아니다.
+Superpowers는 양쪽 모두 유지한다. Codex 쪽은 원격 설치본(`source: remote`)이라 버전을 고정할 수 없고 자동으로 upstream을 따른다. 설치·활성 상태와 현재 버전은 `codex plugin list --json`으로 확인한다. Claude는 `superpowers@superpowers-marketplace`(obra/superpowers-marketplace, upstream 추적)를 별도로 활성화한다. 공식 마켓플레이스(`claude-plugins-official`)는 커밋 sha를 고정해 upstream보다 뒤처지므로 2026-09-22에 전환했다. Astra 정리는 Superpowers를 제거하는 조건이 아니다.
 
 ## 스킬 유지 기준
 

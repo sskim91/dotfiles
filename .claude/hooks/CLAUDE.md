@@ -1,6 +1,6 @@
 # Claude Code Hooks
 
-이 디렉터리의 훅 스크립트 구조와 토글. 훅 관련 함정(`block-rm.sh` 줄 단위 검사, SessionStart 페이로드에 `model` 없음, `CLAUDE-omc.md` 동기화 시점)은 루트 `CLAUDE.md`의 Gotchas에 있다.
+이 디렉터리의 훅 스크립트 구조와 토글. 훅 관련 함정(`block-rm.sh` 줄 단위 검사, SessionStart 페이로드에 `model` 없음)은 루트 `CLAUDE.md`의 Gotchas에 있다.
 
 ## Hook System
 
@@ -10,7 +10,7 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 SessionStart → session-context.sh (injects current date/time)
 SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
 SessionStart · PostModelSwitch → model-context.sh (Opus 5 세션에만 간결성·위임 제한 지침 주입; Fable은 하네스가 자체 주입하므로 무출력. `ENABLE_MODEL_CONTEXT`)
-SessionStart(startup) → omc-companion-sync.sh (~/.claude/CLAUDE-omc.md를 실제 로드되는 OMC 플러그인 버전에 맞춤; 동기화되면 다음 세션부터 적용. `ENABLE_OMC_COMPANION_SYNC`)
+SessionStart(resume|fork) → superpowers-context.sh (superpowers 플러그인 훅이 startup|clear|compact에만 걸리므로 resume·fork 세션에 using-superpowers 지침을 재주입. `ENABLE_SUPERPOWERS_CONTEXT`)
 UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용

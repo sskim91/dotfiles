@@ -34,12 +34,11 @@
 └─────────────────────────────────────────┘
 ```
 
-## OMC 오케스트레이션 레이어
-oh-my-claudecode(OMC)의 상시 오케스트레이션 지침을 모든 세션에 적용한다. 위 사용자 지침이 항상 우선한다.
-아래 파일은 머신 로컬 산출물(dotfiles 미추적)이며, 새 머신에서는 `/oh-my-claudecode:omc-setup`으로 재생성된다. 없으면 이 import는 무시된다.
-
-OMC 지침 중 아래 항목은 이 사용자 지침으로 덮는다 (Claude 5 모델은 자체 검증·자기 수정을 수행하므로 별도 검증 pass는 비용만 늘린다):
-- 검증·리뷰 서브에이전트(`verifier`, `code-reviewer`)는 내가 `/oh-my-claudecode:verify`·`review`를 명시적으로 부를 때만 띄운다. 평소 작업 완료 시에는 직접 실행·확인한 증거를 보고하고 끝낸다.
-- "Delegate for: multi-file changes, refactors, debugging…" 목록은 기본값이 아니라 후보다. 도구 호출 몇 번으로 직접 끝낼 수 있는 일은 위임하지 않고, 위임할 때는 하나로 충분하면 하나만 띄운다.
-
-@~/.claude/CLAUDE-omc.md
+## 기본 프로세스: superpowers
+superpowers 플러그인의 스킬이 모든 작업의 기본 프로세스 레이어다. 답변·조사·계획을 시작하기 전에 해당 스킬을 먼저 호출하고 그 절차를 따른다. 다른 플러그인이나 기본 동작은 superpowers 스킬이 다루지 않는 영역에만 쓴다.
+- 기능 추가·동작 변경·새 구성 요소: `superpowers:brainstorming` → `superpowers:writing-plans` → 실행(`subagent-driven-development` 또는 `executing-plans`).
+- 버그·테스트 실패·예상 밖 동작: 수정안을 내기 전에 `superpowers:systematic-debugging`.
+- 구현 중: `superpowers:test-driven-development`. 완료를 선언하기 전: `superpowers:verification-before-completion`.
+- 리뷰: 작업 단위가 끝나면 `superpowers:requesting-code-review`, 피드백을 받으면 `superpowers:receiving-code-review`.
+- brainstorming 면제 범위는 working-style.md 2절의 "자명한 변경"(오타·주석, alias/함수 1개, 단일 파일 소규모 수정)과 읽기 전용 조사·질문에 한정한다. 그 외는 작아 보여도 건너뛰지 않는다.
+- working-style.md의 "비자명한 변경은 Plan 승인 후 실행"은 brainstorming과 writing-plans의 산출물로 충족한다. 별도 Plan 형식을 이중으로 만들지 않는다.

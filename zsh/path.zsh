@@ -92,7 +92,6 @@ export ENABLE_MODEL_CONTEXT=1        # Opus 5 세션에 간결성·위임 제한
 # 낮을수록 일찍 압축 → 더 자주 / 높을수록 늦게 압축 → 맥락 보존
 export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
 
-# CLAUDE-omc.md를 실제 로드되는 OMC 플러그인 버전에 맞추는 SessionStart(startup) 훅.
-# 마켓플레이스 autoUpdate가 세션 시작 후 백그라운드로 설치본을 올리므로, 드리프트는
-# 사용자 개입 없이 생긴다 — 다음 startup에서 잡는 것이 원인에 가장 가까운 지점이다.
-export ENABLE_OMC_COMPANION_SYNC=1  # omc-companion-sync.sh (2026-09-05 복귀)
+# superpowers 플러그인의 SessionStart 훅은 startup|clear|compact에만 걸리므로, resume·fork
+# 세션에 using-superpowers 지침을 다시 주입한다 (superpowers-context.sh).
+export ENABLE_SUPERPOWERS_CONTEXT=1

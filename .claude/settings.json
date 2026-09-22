@@ -125,11 +125,11 @@
         ]
       },
       {
-        "matcher": "startup",
+        "matcher": "resume|fork",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/omc-companion-sync.sh"
+            "command": "~/.claude/hooks/superpowers-context.sh"
           }
         ]
       }
@@ -210,7 +210,6 @@
     "jdtls-lsp@claude-plugins-official": true,
     "kotlin-lsp@claude-plugins-official": false,
     "lua-lsp@claude-plugins-official": false,
-    "superpowers@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": false,
     "skill-creator@claude-plugins-official": false,
     "security-guidance@claude-plugins-official": false,
@@ -219,8 +218,8 @@
     "postman@claude-plugins-official": false,
     "temporal@temporal-marketplace": false,
     "slack@claude-plugins-official": false,
-    "oh-my-claudecode@omc": true,
-    "i-have-adhd@i-have-adhd": true
+    "i-have-adhd@i-have-adhd": true,
+    "superpowers@superpowers-marketplace": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -244,18 +243,18 @@
       },
       "autoUpdate": true
     },
-    "omc": {
-      "source": {
-        "source": "git",
-        "url": "https://github.com/Yeachan-Heo/oh-my-claudecode.git"
-      },
-      "autoUpdate": true
-    },
     "i-have-adhd": {
       "source": {
         "source": "github",
         "repo": "ayghri/i-have-adhd"
       }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      },
+      "autoUpdate": true
     }
   },
   "outputStyle": "default",
@@ -315,6 +314,13 @@
   },
   "advisorModel": "fable",
   "showClearContextOnPlanAccept": true,
+  "pluginConfigs": {
+    "agents-md@builtin": {
+      "options": {
+        "instructionFiles": "claude-md-or-agents-md"
+      }
+    }
+  },
   "autoUpdatesChannel": "latest",
   "tui": "default",
   "autoDreamEnabled": true,
@@ -327,12 +333,5 @@
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "pluginConfigs": {
-    "agents-md@builtin": {
-      "options": {
-        "instructionFiles": "claude-md-or-agents-md"
-      }
-    }
-  }
+  "voiceEnabled": true
 }
