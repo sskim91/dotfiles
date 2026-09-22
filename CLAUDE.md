@@ -70,7 +70,7 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 
 Claude Code 플러그인은 수동 갱신 명령이 없다. 마켓플레이스 `autoUpdate`가 설치본까지 백그라운드로 올린다 — 상세는 Gotchas 참조.
 
-작업 프로세스 레이어는 superpowers 플러그인이다(글로벌 `.claude/CLAUDE.md`의 "기본 프로세스" 절). oh-my-claudecode(OMC)는 2026-09-22에 플러그인·마켓플레이스·companion 파일·동기화 훅·`.omc/` 상태를 모두 제거했다. 복원하지 않는다.
+작업 프로세스 레이어는 superpowers 플러그인이다. 프로세스 규칙은 `.claude/docs/working-style.md`의 "작업 프로세스 — superpowers 스킬" 절(Claude·Codex 공유), Claude Code 실행 방식은 글로벌 `.claude/CLAUDE.md`의 "기본 프로세스" 절에 있다. oh-my-claudecode(OMC)는 2026-09-22에 플러그인·마켓플레이스·companion 파일·동기화 훅·`.omc/` 상태를 모두 제거했다. 복원하지 않는다.
 
 ## Multi-Tool AI Harness
 
@@ -106,5 +106,5 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 - `block-rm.sh`는 명령을 **줄 단위로** 검사한다 (2026-08-29 수정). 이전에는 개행을 공백으로 뭉개서 `touch x`⏎`rm x` 같은 멀티라인 삭제가 상시 가드를 그대로 통과했다. 대가로 heredoc 본문에 줄 처음부터 `rm`이 오면 오탐 차단되니, 그럴 때는 `\rm`을 쓴다. Codex 미러(`.codex/hooks/block-rm.sh`)는 exit 2가 아니라 `decision` 필드로 차단하므로 검증 기준이 다르다
 - **SessionStart 훅 페이로드에는 `model` 필드가 없다** (2026-09-03, 2.1.259 실측: `{hook_event_name, source}`만 옴). PostModelSwitch도 초기 모델에는 안 뜬다. `model-context.sh`는 그래서 `ANTHROPIC_MODEL` → settings `model` 키 순으로 폴백해 새 세션의 모델을 판별한다. `claude --model X` 일회성 플래그는 이 경로에서 보이지 않는다. 페이로드 감사는 `MODEL_CONTEXT_DEBUG=<file>`로 원본을 받아서 한다
 - **`claude-plugins-official`은 플러그인을 커밋 sha로 고정한다.** superpowers가 upstream 6.4.1인데 official은 6.3.0을 가리켜(2026-09-22) `obra/superpowers-marketplace`(sha 없이 upstream URL 추적)로 전환했다. 두 마켓플레이스에서 같은 플러그인을 동시에 켜면 스킬이 중복되니 하나만 활성화한다. 설치 스코프가 user·project 둘로 남아 있으면 `claude plugin uninstall`을 스코프별로 두 번 해야 레지스트리에서 사라진다
-- superpowers 플러그인 훅의 matcher는 `startup|clear|compact`라 **재개(resume) 세션에는 using-superpowers bootstrap이 들어오지 않는다** (6.4.1 기준). 재개 세션은 글로벌 CLAUDE.md의 "기본 프로세스: superpowers" 절만으로 동작한다. resume용 재주입 훅(`superpowers-context.sh`)을 2026-09-22에 만들었다가 두 번의 재개에서 실제 주입이 확인되지 않아 같은 날 제거했다. 스크립트 단독 실행은 정상이었으므로 원인은 미확인이다
+- superpowers 플러그인 훅의 matcher는 `startup|clear|compact`라 **재개(resume) 세션에는 using-superpowers bootstrap이 들어오지 않는다** (6.4.1 기준). 재개 세션은 working-style.md의 프로세스 절과 글로벌 CLAUDE.md의 실행 방식 절만으로 동작한다. resume용 재주입 훅(`superpowers-context.sh`)을 2026-09-22에 만들었다가 두 번의 재개에서 실제 주입이 확인되지 않아 같은 날 제거했다. 스크립트 단독 실행은 정상이었으므로 원인은 미확인이다
 - Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음

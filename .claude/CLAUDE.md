@@ -35,12 +35,7 @@
 ```
 
 ## 기본 프로세스: superpowers
-superpowers 플러그인의 스킬이 모든 작업의 기본 프로세스 레이어다. 세션 시작 시 주입되는 bootstrap 유무와 관계없이(재개 세션에는 들어오지 않는다) 이 절만으로 같은 방식으로 동작한다.
-- 요청을 받으면 답변·질문·조사·파일 열기보다 먼저 "적용되는 superpowers 스킬이 있는가"를 확인한다. 조금이라도 해당하면 `Skill` 도구로 호출한 뒤 "Using <skill> to <목적>" 한 줄을 알리고 그 절차를 따른다. 기억에 의존해 절차를 흉내 내지 않는다.
-- 프로세스 스킬(brainstorming, systematic-debugging 등)이 구현 스킬보다 먼저다. 다른 플러그인이나 기본 동작은 superpowers 스킬이 다루지 않는 영역에만 쓴다.
-- 기능 추가·동작 변경·새 구성 요소: `superpowers:brainstorming` → `superpowers:writing-plans` → 실행(`subagent-driven-development` 또는 `executing-plans`).
-- 버그·테스트 실패·예상 밖 동작: 수정안을 내기 전에 `superpowers:systematic-debugging`.
-- 구현 중: `superpowers:test-driven-development`. 완료를 선언하기 전: `superpowers:verification-before-completion`.
-- 리뷰: 작업 단위가 끝나면 `superpowers:requesting-code-review`, 피드백을 받으면 `superpowers:receiving-code-review`.
-- brainstorming 면제 범위는 working-style.md 2절의 "자명한 변경"(오타·주석, alias/함수 1개, 단일 파일 소규모 수정)과 읽기 전용 조사·질문에 한정한다. 그 외는 작아 보여도 건너뛰지 않는다.
-- working-style.md의 "비자명한 변경은 Plan 승인 후 실행"은 brainstorming과 writing-plans의 산출물로 충족한다. 별도 Plan 형식을 이중으로 만들지 않는다.
+프로세스 규칙(어떤 요청에 어떤 스킬을 먼저 쓰는지, 면제 범위, Plan 승인과의 관계)은 working-style.md의 "작업 프로세스 — superpowers 스킬" 절에 있다. Claude Code에서의 실행 방식:
+- 스킬은 `Skill` 도구로 `superpowers:<name>`을 호출하고 "Using <skill> to <목적>" 한 줄을 알린 뒤 절차를 따른다.
+- 세션 시작 시 주입되는 bootstrap은 재개 세션에는 들어오지 않는다. bootstrap 유무와 관계없이 위 규칙만으로 같은 방식으로 동작한다.
+- 다른 플러그인이나 기본 동작은 superpowers 스킬이 다루지 않는 영역에만 쓴다.

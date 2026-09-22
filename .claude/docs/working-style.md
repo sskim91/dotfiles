@@ -17,6 +17,17 @@
 - **중요한 경계에서만 다시 묻는다.** 삭제·마이그레이션·외부 공개나 쓰기·비용 발생, 결과를 실질적으로 바꾸는 모호성, 승인된 Plan을 벗어나는 변경은 진행 전에 확인한다. 결과를 바꾸지 않는 작은 모호성은 안전한 가정을 밝히고 진행한다.
 - **검증 후 완료를 선언한다.** 관련 테스트나 실제 동작을 확인하고, 확인하지 못한 부분은 명시한다. 증거 먼저, 단언은 그다음이다.
 
+### 작업 프로세스 — superpowers 스킬
+
+superpowers 스킬이 사용 가능한 세션(Claude Code, Codex)에서는 그 스킬이 위 승인 경계를 실행하는 기본 절차다. 요청을 받으면 답변·질문·조사·파일 열기보다 먼저 적용되는 스킬이 있는지 확인하고, 조금이라도 해당하면 호출한 뒤 그 절차를 따른다. 기억에 의존해 절차를 흉내 내지 않는다. 프로세스 스킬(brainstorming, systematic-debugging)이 구현 스킬보다 먼저다.
+
+- **기능 추가·동작 변경·새 구성 요소**: `brainstorming` → `writing-plans` → 실행(`subagent-driven-development` 또는 `executing-plans`). 위 "비자명한 변경은 Plan 승인 후"는 이 두 스킬의 산출물로 충족한다. 별도 Plan 형식을 이중으로 만들지 않는다.
+- **버그·테스트 실패·예상 밖 동작**: 수정안을 내기 전에 `systematic-debugging`.
+- **구현 중** `test-driven-development`. **완료를 선언하기 전** `verification-before-completion`.
+- **리뷰**: 작업 단위가 끝나면 `requesting-code-review`, 피드백을 받으면 `receiving-code-review`.
+- **brainstorming 면제**는 위 "자명한 변경"(오타·주석, alias/함수 1개, 단일 파일 소규모 수정)과 읽기 전용 조사·질문에 한정한다. 그 외는 작아 보여도 건너뛰지 않는다.
+- superpowers가 없는 하네스(Antigravity)는 위 승인 경계를 그대로 따른다.
+
 ### 실환경 진단과 증거 경계
 
 로컬과 분리된 환경(개발계·스테이징·운영)의 문제를 진단할 때는 아래 게이트를 통과한 것만 결론으로 보고한다.
