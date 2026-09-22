@@ -91,7 +91,3 @@ export ENABLE_MODEL_CONTEXT=1        # Opus 5 세션에 간결성·위임 제한
 # autocompact: context window의 몇 % 시점에 자동 압축을 발동할지 (기본값 ~83%)
 # 낮을수록 일찍 압축 → 더 자주 / 높을수록 늦게 압축 → 맥락 보존
 export CLAUDE_AUTOCOMPACT_PCT_OVERRIDE=70
-
-# superpowers 플러그인의 SessionStart 훅은 startup|clear|compact에만 걸리므로, resume·fork
-# 세션에 using-superpowers 지침을 다시 주입한다 (superpowers-context.sh).
-export ENABLE_SUPERPOWERS_CONTEXT=1

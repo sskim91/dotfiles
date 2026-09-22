@@ -123,15 +123,6 @@
             "command": "~/.claude/hooks/model-context.sh"
           }
         ]
-      },
-      {
-        "matcher": "resume|fork",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/superpowers-context.sh"
-          }
-        ]
       }
     ],
     "PreToolUse": [

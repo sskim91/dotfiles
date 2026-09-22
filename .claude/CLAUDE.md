@@ -35,7 +35,9 @@
 ```
 
 ## 기본 프로세스: superpowers
-superpowers 플러그인의 스킬이 모든 작업의 기본 프로세스 레이어다. 답변·조사·계획을 시작하기 전에 해당 스킬을 먼저 호출하고 그 절차를 따른다. 다른 플러그인이나 기본 동작은 superpowers 스킬이 다루지 않는 영역에만 쓴다.
+superpowers 플러그인의 스킬이 모든 작업의 기본 프로세스 레이어다. 세션 시작 시 주입되는 bootstrap 유무와 관계없이(재개 세션에는 들어오지 않는다) 이 절만으로 같은 방식으로 동작한다.
+- 요청을 받으면 답변·질문·조사·파일 열기보다 먼저 "적용되는 superpowers 스킬이 있는가"를 확인한다. 조금이라도 해당하면 `Skill` 도구로 호출한 뒤 "Using <skill> to <목적>" 한 줄을 알리고 그 절차를 따른다. 기억에 의존해 절차를 흉내 내지 않는다.
+- 프로세스 스킬(brainstorming, systematic-debugging 등)이 구현 스킬보다 먼저다. 다른 플러그인이나 기본 동작은 superpowers 스킬이 다루지 않는 영역에만 쓴다.
 - 기능 추가·동작 변경·새 구성 요소: `superpowers:brainstorming` → `superpowers:writing-plans` → 실행(`subagent-driven-development` 또는 `executing-plans`).
 - 버그·테스트 실패·예상 밖 동작: 수정안을 내기 전에 `superpowers:systematic-debugging`.
 - 구현 중: `superpowers:test-driven-development`. 완료를 선언하기 전: `superpowers:verification-before-completion`.
