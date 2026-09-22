@@ -331,7 +331,7 @@ function update() {
 
 # Claude
 ccv() {
-  local claude_args=(--fallback-model claude-sonnet-4-6)
+  local claude_args=()
 
   while [[ $# -gt 0 ]]; do
     case "$1" in

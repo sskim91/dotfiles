@@ -123,6 +123,15 @@
             "command": "~/.claude/hooks/model-context.sh"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -140,6 +149,26 @@
             "if": "Bash(*rm *)"
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "AskUserQuestion"
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "ExitPlanMode"
       }
     ],
     "UserPromptSubmit": [
@@ -148,6 +177,15 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/prompt-rewriter.sh"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
           }
         ]
       }
@@ -172,6 +210,26 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "AskUserQuestion"
+      },
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "ExitPlanMode"
       }
     ],
     "PostModelSwitch": [
@@ -180,6 +238,51 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/model-context.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ],
+        "matcher": "permission_prompt"
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "async": false,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "async": true,
+            "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
+            "type": "command"
           }
         ]
       }
@@ -324,5 +427,9 @@
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true
+  "voiceEnabled": true,
+  "fallbackModel": [
+    "opus",
+    "sonnet"
+  ]
 }
