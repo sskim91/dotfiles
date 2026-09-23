@@ -120,10 +120,6 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/link-skills.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/model-context.sh"
           }
         ]
       },
@@ -231,16 +227,6 @@
             "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
             "async": true
-          }
-        ]
-      }
-    ],
-    "PostModelSwitch": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/model-context.sh"
           }
         ]
       }
@@ -400,14 +386,6 @@
     "excludeDefault": false,
     "tipsFile": "~/.claude/spinner-tips.json",
     "label": "내 팁"
-  },
-  "modelSettings": {
-    "claude-opus-5": {
-      "effortLevel": "high"
-    },
-    "claude-fable-5-1": {
-      "effortLevel": "high"
-    }
   },
   "advisorModel": "fable",
   "showClearContextOnPlanAccept": true,
