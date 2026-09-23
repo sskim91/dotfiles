@@ -87,7 +87,10 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5-1[1m]",
+  "model": "opus",
+  "fallbackModel": [
+    "sonnet"
+  ],
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "adr": "off",
@@ -127,9 +130,9 @@
       {
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
         ]
       }
@@ -151,24 +154,24 @@
         ]
       },
       {
+        "matcher": "AskUserQuestion",
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
-        ],
-        "matcher": "AskUserQuestion"
+        ]
       },
       {
+        "matcher": "ExitPlanMode",
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
-        ],
-        "matcher": "ExitPlanMode"
+        ]
       }
     ],
     "UserPromptSubmit": [
@@ -183,9 +186,9 @@
       {
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
         ]
       }
@@ -212,24 +215,24 @@
         ]
       },
       {
+        "matcher": "AskUserQuestion",
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
-        ],
-        "matcher": "AskUserQuestion"
+        ]
       },
       {
+        "matcher": "ExitPlanMode",
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
-        ],
-        "matcher": "ExitPlanMode"
+        ]
       }
     ],
     "PostModelSwitch": [
@@ -244,23 +247,23 @@
     ],
     "Notification": [
       {
+        "matcher": "permission_prompt",
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
-        ],
-        "matcher": "permission_prompt"
+        ]
       }
     ],
     "PermissionRequest": [
       {
         "hooks": [
           {
-            "async": false,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": false
           }
         ]
       }
@@ -269,9 +272,9 @@
       {
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
         ]
       }
@@ -280,9 +283,9 @@
       {
         "hooks": [
           {
-            "async": true,
+            "type": "command",
             "command": "'/opt/homebrew/opt/moshi-hook/bin/moshi-hook' claude-hook",
-            "type": "command"
+            "async": true
           }
         ]
       }
@@ -427,9 +430,5 @@
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "fallbackModel": [
-    "opus",
-    "sonnet"
-  ]
+  "voiceEnabled": true
 }
