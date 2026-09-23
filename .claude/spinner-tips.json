@@ -34,5 +34,6 @@
   "Shift+Tab으로 권한 모드 순환 — default → acceptEdits → plan → auto",
   "Esc 두 번 또는 /rewind로 파일 변경 되돌리기 — 매 편집 전 자동 체크포인트",
   "ccv -R(--restricted)로 신뢰 못 하는 저장소 열기 — 실행계 도구 제거 + user/project 설정 무시",
-  "claude attach <id> / logs / stop / respawn / rm으로 백그라운드 세션 관리"
+  "claude attach <id> / logs / stop / respawn / rm으로 백그라운드 세션 관리",
+  "/effort로 현재 세션의 reasoning effort 조정 — 평소엔 모델 기본값, 어려운 작업만 올리기"
 ]
