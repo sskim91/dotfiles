@@ -4,8 +4,11 @@
 
 ```markdown
 ---
+title: "CAP 정리와 분산 시스템 트레이드오프"
 source:
   - https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+topics:
+  - Database
 related_notes:
   - "[[분산시스템의 트레이드오프]]"
   - "[[PACELC 정리]]"

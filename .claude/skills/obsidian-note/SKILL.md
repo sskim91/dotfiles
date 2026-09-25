@@ -32,8 +32,12 @@ description: Use when user mentions "Obsidian", "옵시디언", "write as note",
 
 ```yaml
 ---
-source:              # 출처 URL (있으면)
-related_notes:       # wikilink 연결 (있으면)
+title: "노트 제목"    # 파일명과 같은 순수 제목
+source:              # 출처 URL (없으면 [])
+  - https://example.com
+topics:              # Wiki MOC 대분류와 맞춘 상위 주제 1~2개 (예: Ai, Kubernetes, Python, Java, Database, Devops, Network, Security, Computer-science)
+  - Ai
+related_notes:       # 실존 노트 wikilink (없으면 [])
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
 tags:                # 계층형 태그
@@ -46,10 +50,14 @@ created: YYYY-MM-DD  # 작성일
 
 frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데이터다. 본문 구조를 개선하더라도 다음 필드명과 형태를 바꾸지 않는다.
 
+- `title`
 - `source`
+- `topics`
 - `related_notes`
 - `tags`
 - `created`
+
+필드 순서는 위 순서를 따른다. 값이 없는 `source`·`related_notes`도 빈 리스트(`[]`)로 남겨 스키마를 유지한다. 노트를 Wiki로 옮길 때는 `Wiki/_MOC/`의 해당 분야 MOC에 한 줄(`- [[노트]] — 한 줄 설명`)을 추가한다.
 
 새 필드를 임의로 추가하지 않는다. claim ledger, 판단 근거, 연결 설명처럼 길어지는 정보는 본문에 둔다.
 

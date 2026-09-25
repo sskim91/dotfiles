@@ -95,26 +95,28 @@ bash scripts/vault-scan.sh check-links "$NOTE"
 - 주제 빈도 분석
 - 2개 이상 노트에서 언급된 주제를 새 노트 후보로 제안
 
-### Step 6.5: Wiki INDEX 동기화 점검
+### Step 6.5: Wiki MOC 동기화 점검
 
-`Wiki/_INDEX.md`에 누락된 아티클이 있는지 점검한다.
+Wiki 목차는 `Wiki/_MOC/`에 있다. 최상위 목차 `00-Wiki-MOC.md`가 분야별 MOC 10개(`MOC-*.md`)를 가리키고, 각 MOC는 `## 하위 분류` 아래에 `- [[노트]] — 한 줄 설명` 형식으로 노트를 나열한다. 모든 Wiki 노트는 정확히 하나의 MOC에 속한다.
 
-1. `Wiki/` 폴더의 `.md` 파일 목록 수집 (`_INDEX.md` 제외)
-2. `Wiki/_INDEX.md` 본문에서 `[[...]]` wikilink 추출
-3. diff: 폴더에 있지만 INDEX에 없는 파일 = **누락**
-4. diff: INDEX에 있지만 폴더에 없는 링크 = **깨진 참조**
+1. `Wiki/` 바로 아래 `.md` 파일 목록 수집 (`_MOC/` 제외)
+2. `Wiki/_MOC/MOC-*.md` 본문에서 `- [[...]]` 항목 추출
+3. diff: 폴더에 있지만 어느 MOC에도 없는 파일 = **누락**
+4. diff: MOC에 있지만 폴더에 없는 링크 = **깨진 참조**
+5. 두 개 이상의 MOC(또는 한 MOC에 두 번)에 나오는 노트 = **중복**
+6. 각 MOC 도입문의 "노트 N개"와 `00-Wiki-MOC.md`의 분야별 개수가 실제 항목 수와 맞는지 확인
 
 누락 파일이 있으면:
-- 파일 내용 첫 100줄을 읽고 적절한 카테고리(INDEX의 기존 `##` 섹션)를 추천
+- 파일 내용 첫 100줄을 읽고 적절한 MOC와 하위 분류(해당 MOC의 기존 `##` 섹션)를 추천
 - 기존 섹션에 맞지 않으면 새 섹션 이름도 제안
 - 리포트에 "어느 섹션에 넣을지"까지 포함
 
 ```
-📋 Wiki INDEX 동기화
+📋 Wiki MOC 동기화
 ├── 누락: 3개
-│   ├── Spring-AI-ChatClient.md → "## Spring > Spring AI" 추천
-│   ├── Docker-Compose-v2.md → "## Docker / DevOps" 추천
-│   └── RAG-패턴.md → "## AI / LLM" 추천
+│   ├── Spring-AI-ChatClient.md → MOC-AI-LLM "## Spring AI" 추천
+│   ├── Docker-Compose-v2.md → MOC-컨테이너-IaC-개발환경 "## Docker" 추천
+│   └── RAG-패턴.md → MOC-AI-LLM "## 검색·RAG·임베딩" 추천
 └── 깨진 참조: 0개
 ```
 

@@ -157,7 +157,7 @@ flowchart TD
 ## 8. Frontmatter 속성 타입
 
 > [!info] vault 규약 우선
-> 일반적인 Obsidian frontmatter는 아래 타입을 지원하지만, **이 vault에서는 [SKILL.md](../SKILL.md)에 정의된 6필드(`source`, `related_notes`, `tags`, `created`, 선택적으로 `title`, `topics`)만 사용**한다. 임의로 `aliases`, `cssclasses` 같은 필드를 추가하지 말 것.
+> 일반적인 Obsidian frontmatter는 아래 타입을 지원하지만, **이 vault에서는 [SKILL.md](../SKILL.md)에 정의된 6필드(`title`, `source`, `topics`, `related_notes`, `tags`, `created`, 이 순서)만 사용**한다. 임의로 `aliases`, `cssclasses` 같은 필드를 추가하지 말 것.
 
 참고용 전체 타입:
 
@@ -186,8 +186,11 @@ flowchart TD
 
 ````markdown
 ---
+title: "예시 노트"
 source:
   - https://example.com/article
+topics:
+  - Computer-science
 related_notes:
   - "[[관련 노트 A]]"
   - "[[관련 노트 B]]"
