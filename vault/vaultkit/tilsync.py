@@ -61,10 +61,13 @@ from .policy import Policy, load_policy
 from .tags import normalize_tags
 
 # 정방향 링크: [텍스트](./stem.md#h) | (stem.md) | (../dir/stem.md)
+# stem은 ``.``을 포함할 수 있다(Jackson-3.0, llms.txt-AI). 첫 글자는 ``.``이 아니고,
+# 끝의 ``.md`` 뒤에는 ``#`` 또는 ``)``만 온다(.mdx·.md.bak 제외).
+_STEM = r"[\w\-][\w\-.]*"
 INTERNAL_LINK_PATTERN = re.compile(
-    r"\[([^\]]+)\]\((?:\./|\.\./[\w\-]+/)?([\w\-]+)\.md(#[^)\n]*)?\)"
+    rf"\[([^\]]+)\]\((?:\./|\.\./[\w\-]+/)?({_STEM})\.md(#[^)\n]*)?\)"
 )
-_STEM_RE = re.compile(r"[\w\-]+")
+_STEM_RE = re.compile(_STEM)
 # 역방향: ![[...]] 포함, 별칭 구분자는 | 또는 표 안의 \|
 _WIKI_LINK_PATTERN = re.compile(r"(!?)\[\[([^\]\|]*?)(?:(\\?\|)([^\]]*))?\]\]")
 _INLINE_CODE = re.compile(r"(`+)[^\n]*?(?<!`)\1(?!`)")

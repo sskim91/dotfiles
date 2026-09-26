@@ -327,6 +327,7 @@ def cmd_plan(out: Path, paths: dict) -> int:
             "folder": folder,
             "til_file": str(src.relative_to(paths["til"])),
             "til_sha": _sha(til_text),
+            "wiki_body_sha": tilsync.body_sha(fm.parse(wiki_text).body),
             "new_file": str(new_path.relative_to(out)),
             "body_changed": not same,
             "source_append": source_append,
@@ -457,7 +458,8 @@ def _render_summary(plan: dict) -> str:
         "## Wiki가 갈라진 뒤 TIL도 고쳐진 노트 (역이관하면 TIL 변경이 되돌려짐 → 검토 필요)",
         "",
         "Wiki 본문과 가장 닮은 TIL 버전(작업트리+커밋 이력)이 최신이 아닌 노트."
-        " 유형 '옛 TIL 사본'은 Wiki 수정이 없어 역이관이 TIL 변경만 되돌리므로 `--only`에서 뺀다.",
+        " 유형 '옛 TIL 사본'은 Wiki 수정이 없어 역이관이 TIL 변경만 되돌리므로 `--only`에서 뺀다"
+        "(build-state가 Wiki 본문 해시로 기록해 다음 sync가 Wiki를 새 TIL로 맞춘다).",
         "",
         "| 노트 | Wiki 기준 TIL 버전 | 이후 TIL 커밋 | 유사도 | 유형 | 변경 줄 |",
         "|---|---|---|---|---|---|",
@@ -548,7 +550,11 @@ def cmd_apply(out: Path, paths: dict, only: list[str] | None, mode: str | None) 
             continue
         applied.append(stem)
 
-    _write(out / "applied.json", json.dumps(applied, ensure_ascii=False) + "\n")
+    # 이전 실행(다른 --only, 재실행)에서 적용한 편도 남긴다
+    applied_path = out / "applied.json"
+    previous = json.loads(applied_path.read_text(encoding="utf-8")) if applied_path.exists() else []
+    recorded = sorted(set(previous) | set(applied))
+    _write(applied_path, json.dumps(recorded, ensure_ascii=False) + "\n")
     print(f"apply: {len(applied)}편 씀")
     for stem, why in failures:
         print(f"  ❌ {stem}: {why}")
@@ -564,6 +570,7 @@ def cmd_build_state(out: Path, paths: dict) -> int:
     state_path = paths["state"]
     if state_path.exists():
         raise UsageError(f"state 파일이 이미 있음({state_path}) → 덮어쓰지 않음")
+    planned = _load_plan(out, paths)["notes"]
     applied_path = out / "applied.json"
     applied = set(json.loads(applied_path.read_text(encoding="utf-8"))) if applied_path.exists() else set()
     policy, mapping, til_index, wiki_index = _load_all(paths)
@@ -571,6 +578,7 @@ def cmd_build_state(out: Path, paths: dict) -> int:
     notes: dict[str, dict] = {}
     pending: list[str] = []
     skipped: list[str] = []
+    wiki_changed: list[str] = []
     for stem, srcs in sorted(til_index.items()):
         wiki_path = wiki_index.get(stem)
         if wiki_path is None:
@@ -583,10 +591,18 @@ def cmd_build_state(out: Path, paths: dict) -> int:
         if doc is None:
             skipped.append(stem)
             continue
+        wiki_sha = tilsync.body_sha(doc.body)
+        plan_note = planned.get(stem)
+        if plan_note is not None and plan_note["wiki_body_sha"] != wiki_sha:
+            # plan 뒤 Wiki가 바뀜 → 기록하지 않음(sync가 충돌로 보고, 다시 plan 필요)
+            wiki_changed.append(stem)
+            continue
         gen = tilsync.build_note(srcs[0], srcs[0].parent.name, policy, mapping)
-        if stem in applied or equivalent(doc.body, gen.body):
-            # TIL이 Wiki 본문을 담고 있음 → 다음 sync가 Wiki 본문을 TIL 생성 본문으로 교체
-            sha = tilsync.body_sha(doc.body)
+        old_copy = plan_note is not None and plan_note["base"]["exact"]
+        if stem in applied or old_copy or equivalent(doc.body, gen.body):
+            # TIL이 Wiki 본문을 담고 있거나(이관·동등) Wiki가 옛 TIL 사본(Wiki 수정 없음)
+            # → 다음 sync가 Wiki 본문을 TIL 생성 본문으로 교체
+            sha = wiki_sha
         else:
             # 이관 안 함 → Wiki 수정이 덮이지 않도록 TIL 생성 본문 해시(sync가 "이관 필요" 보고)
             sha = tilsync.body_sha(gen.body)
@@ -598,6 +614,11 @@ def cmd_build_state(out: Path, paths: dict) -> int:
     print(f"build-state: synced {synced}, retired {len(notes) - synced} → {state_path}")
     if pending:
         print(f"  이관 필요로 남는 노트 {len(pending)}편: {', '.join(pending)}")
+    if wiki_changed:
+        print(
+            f"  plan 이후 Wiki 수정됨 — 다시 plan 필요(state에 기록 안 함) {len(wiki_changed)}편: "
+            f"{', '.join(wiki_changed)}"
+        )
     if skipped:
         print(f"  기록하지 않은 노트(중복 이름·파싱 불가) {len(skipped)}편: {', '.join(skipped)}")
     return 0

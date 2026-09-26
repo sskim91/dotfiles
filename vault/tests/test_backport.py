@@ -341,6 +341,57 @@ class BackportTest(unittest.TestCase):
         # 이미 있으면 덮어쓰지 않는다
         self.call("--build-state", "--out", str(self.out), expect=2)
 
+    def test_apply_records_union_of_runs(self) -> None:
+        self.plan()
+        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--unresolved", "text")
+        self.call("--apply", "--out", str(self.out), "--only", "노트B", "--unresolved", "text")
+        # 이미 적용한 편을 다시 넣으면 TIL이 바뀌어 실패하지만 목록에서 빠지지 않는다
+        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--unresolved", "text", expect=1)
+        self.assertEqual(
+            json.loads((self.out / "applied.json").read_text(encoding="utf-8")), ["노트B", "노트C"]
+        )
+
+    def test_build_state_skips_wiki_changed_after_plan(self) -> None:
+        plan = self.plan()
+        self.assertEqual(plan["notes"]["노트B"]["wiki_body_sha"], body_sha(self.wiki_body("노트B")))
+        self.call("--apply", "--out", str(self.out), "--unresolved", "text")
+        self.wiki_note("노트B", WIKI_B_BODY + "\nplan 뒤 Wiki에서 또 고침.\n")
+        proc = self.call("--build-state", "--out", str(self.out))
+        self.assertIn("plan 이후 Wiki 수정됨", proc.stdout)
+        self.assertIn("노트B", proc.stdout)
+        notes = json.loads(self.state_path.read_text(encoding="utf-8"))["notes"]
+        self.assertNotIn("노트B", notes)
+        self.assertEqual(notes["노트C"]["body_sha"], body_sha(self.wiki_body("노트C")))
+
+    def _old_copy_fixture(self) -> None:
+        """노트F: Wiki가 옛 TIL 사본(Wiki 수정 없음), TIL은 그 뒤 고쳐짐."""
+        self.til_note("python", "노트F", "# 에프\n\n옛 내용.\n")
+        self.wiki_note("노트F", "\n옛 내용.\n")
+        self.git_commit("init")
+        (self.til / "python" / "노트F.md").write_text("# 에프\n\n새 내용.\n", encoding="utf-8")
+        self.git_commit("later")
+
+    def test_build_state_old_copy_gets_wiki_sha(self) -> None:
+        self._old_copy_fixture()
+        self.assertTrue(self.plan()["notes"]["노트F"]["base"]["exact"])
+        self.call("--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text")
+        self.call("--build-state", "--out", str(self.out))
+        notes = json.loads(self.state_path.read_text(encoding="utf-8"))["notes"]
+        self.assertEqual(notes["노트F"]["body_sha"], body_sha(self.wiki_body("노트F")))
+        self.assertNotEqual(notes["노트E"]["body_sha"], body_sha(self.wiki_body("노트E")))
+
+    @unittest.skipUnless(_SYNC_OK, f"환경변수 덮어쓰기를 지원하는 sync script 없음: {SYNC_SCRIPT}")
+    def test_old_copy_converges_to_new_til(self) -> None:
+        self._old_copy_fixture()
+        self.plan()
+        self.call("--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text")
+        self.call("--build-state", "--out", str(self.out))
+        self.call(script=SYNC_SCRIPT)
+        second = self.sync_counts(self.call(script=SYNC_SCRIPT))
+        self.assertEqual(second["frontmatter-only"], 1)  # 노트E만 이관 필요
+        self.assertEqual(second["unchanged"], 4)
+        self.assertTrue(_eq(self.wiki_body("노트F"), "새 내용.\n"))
+
     # -- 전체 흐름 -------------------------------------------------------
 
     @unittest.skipUnless(_SYNC_OK, f"환경변수 덮어쓰기를 지원하는 sync script 없음: {SYNC_SCRIPT}")

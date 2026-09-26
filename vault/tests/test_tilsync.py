@@ -385,13 +385,10 @@ class TestReversePort(unittest.TestCase):
         self.assertEqual(
             til,
             "# T\n\n[a](./a.md) [b](./a.md) [b](./a.md#h) "
-            "[쿠버](../kubernetes/k8s-note.md) [[missing]] [[llms.txt-AI]] "
+            "[쿠버](../kubernetes/k8s-note.md) [[missing]] [llms.txt-AI](./llms.txt-AI.md) "
             "[[#로컬 절]] ![[img.png]]\n",
         )
-        self.assertEqual(
-            unresolved,
-            ["[[missing]]", "[[llms.txt-AI]]", "[[#로컬 절]]", "![[img.png]]"],
-        )
+        self.assertEqual(unresolved, ["[[missing]]", "[[#로컬 절]]", "![[img.png]]"])
 
     def test_reverse_port_anchor_without_alias(self):
         til, unresolved = reverse_port(self._wiki("[[a#h]] [[k8s-note#절 제목]]\n"), "T", self.INDEX, "ai")
@@ -419,6 +416,41 @@ class TestReversePort(unittest.TestCase):
         body = "| x | [[a\\|별칭]] |\n"
         til, _ = reverse_port(self._wiki(body), "T", self.INDEX, "ai")
         self.assertEqual(til, "# T\n\n| x | [별칭](./a.md) |\n")
+
+
+class TestDotStem(_TmpDirCase):
+    """stem에 ``.``이 든 노트(Jackson-3.0, llms.txt-AI 등) 링크 변환."""
+
+    def test_forward_converts_dot_stems(self):
+        src = self.write(
+            "spring/n.md",
+            "# T\n\n[J](../jackson/Jackson-3.0.md) [S](Spring-Framework-7.0.md#절) "
+            "[N](./Node.js가-미신.md) [l](./llms.txt-AI.md)\n",
+        )
+        gen = build_note(src, "spring", load_policy(), {})
+        self.assertEqual(
+            gen.body,
+            "[[Jackson-3.0|J]] [[Spring-Framework-7.0#절|S]] [[Node.js가-미신|N]] [[llms.txt-AI|l]]\n",
+        )
+        self.assertEqual(
+            gen.til_links,
+            ["[[Jackson-3.0]]", "[[Spring-Framework-7.0]]", "[[Node.js가-미신]]", "[[llms.txt-AI]]"],
+        )
+
+    def test_forward_keeps_md_boundary(self):
+        body = "[a](./x.mdx) [b](./x.md.bak) [c](./.md) [d](https://ex.com/a.md)\n"
+        src = self.write("ai/n.md", "# T\n\n" + body)
+        self.assertEqual(build_note(src, "ai", load_policy(), {}).body, body)
+
+    def test_dot_stem_roundtrip(self):
+        wiki_body = "[[Jackson-3.0]] [[Jackson-3.0|잭슨]] [[Spring-Framework-7.0#h|스프링]]\n"
+        wiki = "---\ntitle: 제목\n---\n" + wiki_body
+        index = {"Jackson-3.0": "jackson", "Spring-Framework-7.0": "spring", "n": "spring"}
+        til_text, unresolved = reverse_port(wiki, "제목", index, "spring")
+        self.assertEqual(unresolved, [])
+        self.assertIn("[잭슨](../jackson/Jackson-3.0.md)", til_text)
+        src = self.write("spring/n.md", til_text)
+        self.assertEqual(build_note(src, "spring", load_policy(), {}).body, wiki_body)
 
 
 class TestRoundtrip(_TmpDirCase):
