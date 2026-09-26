@@ -28,36 +28,25 @@ description: Use when user mentions "Obsidian", "옵시디언", "write as note",
 
 ### Frontmatter 템플릿
 
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (폴더별 필드 순서, 태그 형식과 허용 분야, 저장 후 등록, 링크 규칙). `_Inbox` 노트는 Wiki 형식 6필드로 쓴다.
+
 ```yaml
 ---
 title: "노트 제목"    # 파일명과 같은 순수 제목
 source:              # 출처 URL (없으면 [])
   - https://example.com
-topics:              # Wiki MOC 대분류와 맞춘 상위 주제 1~2개 (예: Ai, Kubernetes, Python, Java, Database, Devops, Network, Security, Computer-science)
-  - Ai
+topics:              # Wiki 상위 주제 1~2개, policy topics 값 중에서 (예: AI, Kubernetes, Computer Science)
+  - AI
 related_notes:       # 실존 노트 wikilink (없으면 [])
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
-tags:                # 계층형 태그
-  - domain/topic
+tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
+  - domain/sub
 created: YYYY-MM-DD  # 작성일
 ---
 ```
 
-### Frontmatter 보존 규칙
-
-frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데이터다. 본문 구조를 개선하더라도 다음 필드명과 형태를 바꾸지 않는다.
-
-- `title`
-- `source`
-- `topics`
-- `related_notes`
-- `tags`
-- `created`
-
-필드 순서는 위 순서를 따른다. 값이 없는 `source`·`related_notes`도 빈 리스트(`[]`)로 남겨 스키마를 유지한다. 노트를 Wiki로 옮길 때는 `Wiki/_MOC/`의 해당 분야 MOC에 한 줄(`- [[노트]] — 한 줄 설명`)을 추가한다.
-
-새 필드를 임의로 추가하지 않는다. claim ledger, 판단 근거, 연결 설명처럼 길어지는 정보는 본문에 둔다.
+필드명·순서·형태는 바꾸지 않고, 새 필드를 임의로 추가하지 않는다. claim ledger, 판단 근거, 연결 설명처럼 길어지는 정보는 본문에 둔다. 노트를 `_Inbox`에서 Wiki로 옮기면 `python3 ~/.dotfiles/vault/vk register "<옮긴 경로>"`로 MOC에 등록하고 결과를 보고한다.
 
 ### 본문 구조
 
@@ -103,7 +92,7 @@ frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데
 | `판단` | 조건부 결론과 적용 기준 | `내 기준`, `선택 기준` |
 | `트레이드오프` | 얻는 것과 잃는 것 | `현실적인 비용`, `대가` |
 | `써먹는 곳` | 나중에 다시 사용할 실전 맥락 | `적용 메모`, `실전 감각` |
-| `남은 질문` | 아직 열려 있는 질문과 후속 탐구 | `더 알아보기`, `다음 질문` |
+| `남은 질문` | 아직 열려 있는 질문과 후속 탐구 | `다음 질문` |
 
 ### 연결 중복 방지
 
@@ -138,6 +127,9 @@ frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데
 ### 5단계: Post-write linking
 노트 저장 완료 후 [post-write-linking.md](references/post-write-linking.md)의 절차를 실행한다.
 vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한다.
+
+### 6단계: 등록
+`python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이다. Wiki로 옮긴 뒤 다시 실행한다.
 
 ## Mermaid 핵심 규칙
 
@@ -182,6 +174,8 @@ vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한�
 □ 파일명이 순수 제목 (접두사 없음), created 날짜 현재
 □ mermaid 사용 시 렌더링 검증 완료
 □ Post-write linking 실행 완료 (관련 노트 검색 + related_notes 업데이트)
+□ `vk register` 실행 결과 보고 (Wiki로 옮겼다면 옮긴 뒤 재실행)
+□ tags가 note-rules.md 규칙(두 세그먼트, 허용 분야)을 따르는가
 ```
 
 ## Verification

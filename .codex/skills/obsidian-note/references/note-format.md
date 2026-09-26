@@ -6,28 +6,27 @@
 
 ### Frontmatter 템플릿
 
+공통 규칙은 `~/.dotfiles/vault/references/note-rules.md`에 있다. `_Inbox`·Wiki 노트는 아래 6필드를 이 순서로 쓴다.
+
 ```yaml
 ---
-source:              # 출처 URL (있으면)
-related_notes:       # wikilink 연결 (있으면)
+title: "노트 제목"    # 파일명과 같은 순수 제목
+source:              # 출처 URL (없으면 [])
+  - https://example.com
+topics:              # Wiki 상위 주제 1~2개, policy topics 값 중에서 (예: AI, Kubernetes, Computer Science)
+  - AI
+related_notes:       # 실존 노트 wikilink (없으면 [])
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
-tags:                # 계층형 태그
-  - domain/topic
+tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
+  - domain/sub
 created: YYYY-MM-DD  # 작성일
 ---
 ```
 
 ### Frontmatter 보존 규칙
 
-frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데이터다. 본문 구조를 개선하더라도 다음 필드명과 형태를 바꾸지 않는다.
-
-- `source`
-- `related_notes`
-- `tags`
-- `created`
-
-새 필드를 임의로 추가하지 않는다. claim ledger, 판단 근거, 연결 설명처럼 길어지는 정보는 본문에 둔다.
+필드명·순서·형태는 바꾸지 않고, 값이 없는 `source`·`related_notes`도 `[]`로 남긴다. 새 필드를 임의로 추가하지 않는다. claim ledger, 판단 근거, 연결 설명처럼 길어지는 정보는 본문에 둔다.
 
 ### 본문 구조
 
@@ -73,7 +72,7 @@ frontmatter는 vault 호환성, 검색, 링크 후보 관리를 위한 메타데
 | `판단` | 조건부 결론과 적용 기준 | `내 기준`, `선택 기준` |
 | `트레이드오프` | 얻는 것과 잃는 것 | `현실적인 비용`, `대가` |
 | `써먹는 곳` | 나중에 다시 사용할 실전 맥락 | `적용 메모`, `실전 감각` |
-| `남은 질문` | 아직 열려 있는 질문과 후속 탐구 | `더 알아보기`, `다음 질문` |
+| `남은 질문` | 아직 열려 있는 질문과 후속 탐구 | `다음 질문` |
 
 ### 연결 중복 방지
 

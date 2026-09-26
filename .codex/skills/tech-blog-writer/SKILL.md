@@ -328,6 +328,8 @@ Redis가 바로 그 "책상"입니다.
 6. 초안 작성 → 검토 → 수정
 ```
 
+Obsidian vault에 저장할 때는 obsidian-note 스킬의 저장 규칙과 공통 규칙 `~/.dotfiles/vault/references/note-rules.md`(폴더별 frontmatter, 태그, 저장 후 `python3 ~/.dotfiles/vault/vk register "<노트 경로>"`)를 따른다.
+
 ---
 
 ## 자주 하는 실수

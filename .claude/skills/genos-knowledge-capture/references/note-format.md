@@ -8,22 +8,27 @@
 
 ## Frontmatter
 
+필드 순서·필수 필드·태그 형식과 허용 분야는 공통 규칙 `~/.dotfiles/vault/references/note-rules.md`(Projects)를 따른다. 여기서는 GenOS 노트 고유 값만 정한다.
+
 ```yaml
 ---
+title: "GenOS admin-api 외부 시스템 로그 연동 패턴"   # 파일명과 같은 순수 제목
 source:
   - "admin-api/src/main.py"               # repo-relative evidence identifier
   - "origin/project/samsung-card/feat/96:admin-api/src/util/pims_utils.py"
   - "SAMSUNGCARD-96"
 related_notes:
+  - "[[00 GenOS 시작하기]]"               # 등록할 허브 (고객사면 00 <고객사> 시작하기)
   - "[[실존하는_노트만]]"                  # 반드시 vault에 존재하는 노트 + 이번에 함께 만드는 노트
 tags:
   - work/genos
-  - type/pattern        # 또는 type/moc, type/onboarding
-  - customer/samsung-card  # 고객사 노트일 때
-  - feature/<기능>         # 횡단 검색용
+  - type/pattern
+  - feature/<기능>
 created: YYYY-MM-DD        # 오늘 날짜
 ---
 ```
+
+태그 어휘(`work/`, `customer/`, `feature/`, `type/` facet과 일반 `domain/sub`)는 policy `tags.project_facets`·`tags.domains`에서 고른다. 고객사 노트는 `customer/<고객사>`와 함께, 그 고객사 허브의 `section_by_tag`에 있는 태그를 하나 이상 단다(섹션 결정용). 플랫폼 노트의 허브 섹션은 태그가 아니라 하위폴더로 정해진다.
 
 `source`는 Obsidian 클릭 링크가 아니라 **근거 식별자**로 쓴다. URI-style prefix나 개인 PC 절대경로를 붙이지 않는다.
 - GenOS 레포 파일: `admin-front/src/layouts/UserLayout.js`처럼 repo-relative path.

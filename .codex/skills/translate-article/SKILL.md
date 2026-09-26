@@ -37,9 +37,27 @@ description: 웹 문서 URL을 받아 한국어 번역문을 작성할 때 사�
 
 - 저장 전에 실제 vault와 현재 양식을 확인한다. 예상 경로가 없으면 다른 위치에 새 vault를 만들지 말고 경로를 확인한다.
 - `Sources/Translations/` 아래 평면 구조로 저장한다. 카테고리 폴더는 만들지 않는다.
-- 주제 분류는 기존 vault의 `tags`/`topics` 관례를 따른다. 예를 들어 `tags: [til, spring]`처럼 기록한다.
+- 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (Sources 폴더 frontmatter 순서, 태그 형식과 허용 분야, 저장 후 등록). `topics` 필드는 Sources에 쓰지 않는다.
+- 태그는 `translation` 한 개와 주제 태그 `domain/sub` 1~2개를 단다. 예: `tags: [translation, ai/agent]`. `til` 태그는 붙이지 않는다(TIL 파생 노트 전용).
 - 파일명은 번역한 제목에서 특수문자를 제거하고 공백을 `-`로 바꾼다. 예: `효과적인-에이전트-구축하기.md`.
-- frontmatter가 있으면 그 뒤 본문의 첫 줄을 `# 번역된 제목`으로 시작한다. 같은 파일이 있으면 읽어서 기존 번역·사용자 편집과 겹치는지 확인한다.
+- frontmatter는 항상 쓴다(아래 템플릿). 그 뒤 본문의 첫 줄을 `# 번역된 제목`으로 시작한다. 같은 파일이 있으면 읽어서 기존 번역·사용자 편집과 겹치는지 확인한다.
+
+### Frontmatter
+
+```yaml
+---
+title: "번역된 제목"
+source:
+  - https://원문-URL
+related_notes: []
+tags:
+  - translation
+  - ai/agent
+created: YYYY-MM-DD
+---
+```
+
+`aliases`가 필요하면(예: 원문 영어 제목) `title` 앞에 둔다.
 
 ### 출처 헤더
 
@@ -59,6 +77,7 @@ description: 웹 문서 URL을 받아 한국어 번역문을 작성할 때 사�
 ## 완료 확인
 
 - 원문과 번역문의 섹션 순서·내용·코드·링크·이미지를 대조한다.
-- 출처 헤더, 파일명, 저장 위치와 태그를 확인한다.
+- 출처 헤더, 파일명, 저장 위치, frontmatter 순서와 태그를 확인한다.
+- `python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과를 보고한다. `Sources/` 노트는 `skipped`가 정상이다.
 - 저장 경로, 원문 제목과 번역 제목, 원문 이미지 수와 재현 수, 누락·미확인 부분을 보고한다.
 - README 갱신과 Git stage·commit·push는 번역 작업에 포함하지 않는다. 사용자가 따로 요청한 경우에만 수행한다.

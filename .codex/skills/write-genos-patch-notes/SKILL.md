@@ -108,18 +108,29 @@ ledger는 검증용이며 최종 노트에 코드 경로나 commit hash와 함�
         └── GenOS v<version> 패치노트.md
 ```
 
-navigation 노트의 고정 경로:
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (Projects frontmatter 순서, 태그, 저장 후 `vk register`). 패치노트의 등록 허브는 같은 폴더의 표 노트다.
 
 ```text
-<vault>/Projects/GenonAI/GenOS/GenOS 지식 MOC.md
-<vault>/Projects/GenonAI/GenOS/GenOS 카테고리별 읽는 순서.md
+<vault>/Projects/GenonAI/GenOS/패치노트/GenOS 버전별 변경 요약.md
 ```
 
 macOS vault의 한글 파일명은 NFD Unicode로 저장될 수 있다. 이름 검색이 실패해도 파일이 없다고 결론 내리지 말고 `Projects/GenonAI/GenOS/패치노트` literal path를 먼저 열어본다. 파일 목록을 비교해야 하면 이름을 NFC로 정규화한 뒤 대조한다.
 
 저장 전 `Projects/GenonAI/GenOS` 아래를 재귀적으로 검색해 같은 버전 노트가 현재 `패치노트` 폴더나 기존 루트 위치에 있는지 NFC 정규화 후 확인한다. 기존 노트가 있으면 원문을 보존하면서 요청된 범위만 갱신하고, 새 중복 노트를 만들지 않는다. 기존 루트에서 발견한 노트는 사용자가 요청하지 않는 한 자동으로 이동하지 않는다.
 
-노트의 `related_notes`에 `[[GenOS 지식 MOC]]`를 포함하고 MOC에 노트 링크가 없으면 파일명 기반 `[[GenOS v<version> 패치노트]]` 링크를 적절한 릴리스·참고 영역에 추가한다. 같은 파일명의 노트가 vault에 하나뿐인지 확인한다. `GenOS 카테고리별 읽는 순서.md`도 열어보되, 릴리스 참고 기록은 학습 순서에 반드시 넣지 않는다. 추가하지 않았다면 그 이유를 결과에 남긴다.
+노트의 `related_notes`에는 비교 기준인 이전 버전 노트 `[[GenOS v<from> 패치노트]]`(vault에 있을 때)를 넣고, 이전 버전 노트의 `related_notes`에도 새 노트를 추가해 버전 사슬을 양방향으로 잇는다. 같은 파일명의 노트가 vault에 하나뿐인지 확인한다.
+
+저장 후 등록한다.
+
+```bash
+python3 ~/.dotfiles/vault/vk register "<vault>/Projects/GenonAI/GenOS/패치노트/GenOS v<version> 패치노트.md"
+```
+
+- `added`: `GenOS 버전별 변경 요약`의 `## 버전별 한눈에 보기` 표에 버전 순서대로 `| [[GenOS v<version> 패치노트\|v<version>]] | - | <본문 첫 문장> | - |` 행이 들어간다. 자동으로 채워지는 것은 링크와 첫 문장뿐이므로, 행의 `비교 기준`(`v<from> → v<to>`)·`핵심 변경 (한 줄)`·`고객사 업데이트 주의` 셀을 노트 내용으로 다듬는다.
+- `exists`: 이미 표에 있다. 기존 행이 새 내용과 맞는지 확인한다.
+- `unclassified`: 파일명에 버전이 없거나 표를 찾지 못했다. 파일명과 표 형식을 확인하고 직접 추가한다.
+- 허브의 `related_notes` 목록, source의 편수 표기, 한 줄 결론의 버전 범위가 새 버전을 포함하도록 맞춘다.
+- `00 GenOS 시작하기`는 `## 패치노트` 섹션에서 `GenOS 버전별 변경 요약`만 가리킨다. 개별 패치노트를 넣지 않는다. 릴리스 참고 기록은 처음 읽는 순서에도 넣지 않는다.
 
 ### 7. 검증
 
@@ -131,8 +142,8 @@ macOS vault의 한글 파일명은 NFD Unicode로 저장될 수 있다. 이름 �
 - 공개 기능과 비공개 코드 흔적이 분리됐다.
 - 최종 노트 본문에 commit hash와 구현 코드 경로가 없다.
 - `다음에 확인할 것` 섹션이 없다.
-- frontmatter가 유효하고 MOC backlink가 있다.
-- 새 노트가 MOC에서 발견 가능하다.
+- frontmatter가 note-rules.md의 Projects 순서를 따르고, 이전 버전 노트와 양방향으로 이어져 있다.
+- 새 노트가 `GenOS 버전별 변경 요약` 표에서 버전 순서대로 발견 가능하고, 행의 모든 셀이 채워져 있다.
 - 제품 repository에는 의도하지 않은 변경이 없다.
 
 접근하지 못한 Notion, 확인할 수 없는 배포본, 누락된 tag가 있으면 문서 상태와 최종 보고에 한계를 명시한다. 확인하지 못한 내용을 완료된 사실처럼 표현하지 않는다.

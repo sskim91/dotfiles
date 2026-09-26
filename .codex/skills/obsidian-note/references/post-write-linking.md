@@ -12,13 +12,18 @@ Karpathy의 "filing back" 패턴 — 모든 노트가 기존 지식과 연결되
 ### 2. Vault에서 관련 노트 검색
 
 ```bash
-VAULT="~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
-grep -rli "키워드" "$VAULT" --include="*.md" | head -10
+VAULT="$HOME/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note"
+grep -rli "키워드" "$VAULT" --include="*.md" \
+  --exclude-dir=Templates --exclude-dir=.obsidian --exclude-dir=Archive --exclude-dir=_MOC \
+  | grep -v "/_Inbox/Vault-Index.md$" | head -10
 ```
 
 **검색 제외 대상:**
 - 방금 작성한 노트 자신
-- `Templates/` 하위 파일
+- `Templates/`, `.obsidian/` 하위 파일
+- `_Inbox/Vault-Index.md` (전체 노트 카탈로그라 모든 키워드에 걸린다)
+- `Archive/` 하위 파일 (보관 노트는 연결 대상이 아니다)
+- `Wiki/_MOC/` 하위 파일 (MOC는 목차이며 `vk register`가 관리한다)
 
 ### 3. 양방향 related_notes 업데이트
 
@@ -32,8 +37,8 @@ grep -rli "키워드" "$VAULT" --include="*.md" | head -10
 
 ### 4. 후속 탐구 큐 체크
 
-발견된 관련 노트 중 `## 더 알아보기` 섹션에 현재 노트 주제와 겹치는 미탐구 항목이 있으면 알려준다:
-"[[기존노트]]의 '더 알아보기'에 이 주제가 언급되어 있습니다. 체크오프할까요?"
+발견된 관련 노트 중 `## 남은 질문` 섹션에 현재 노트 주제와 겹치는 미탐구 항목이 있으면 알려준다:
+"[[기존노트]]의 '남은 질문'에 이 주제가 언급되어 있습니다. 체크오프할까요?"
 
 ## 출력 형식
 

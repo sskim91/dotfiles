@@ -34,7 +34,9 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 **인자가 없는 경우** (`/til`):
 - 어떤 주제로 TIL을 작성할지 질문
-- 카테고리 선택 (python, java, spring, nodejs, security, computer-science, ai 등)
+- 카테고리 선택. 카테고리는 `~/dev/TIL`의 기존 최상위 폴더다(`scripts` 제외):
+  `agent`, `ai`, `aws`, `backend`, `computer-science`, `database`, `design-pattern`, `devops`, `docker`, `economics`, `frontend`, `infra`, `jackson`, `java`, `javascript`, `kafka`, `kubernetes`, `langgraph`, `mcp`, `network`, `nginx`, `nodejs`, `product-analytics`, `proxy`, `python`, `react`, `redis`, `security`, `spring`, `testing`, `web`
+- 목록은 바뀔 수 있으므로 작성 전에 `command ls -d ~/dev/TIL/*/`로 확인한다. 맞는 폴더가 없을 때만 새 폴더를 제안하고, 사용자 확인 후 만든다.
 
 ### Step 2: 리서치
 
@@ -59,7 +61,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 - **"왜(Why)"를 반드시 설명** — 정의 나열이 아닌 문제 상황에서 출발
 - **스토리텔링 패턴 사용** — 문제→의문→해답, 만약~라면?, 이상한 점 발견
-- **빌드업으로 처음 보는 독자도 따라오게** — 핵심 용어를 정의 없이 사용 금지. 도구 정의 → 직관적 기대 → 직관이 무너지는 순간 → 해법 순서로 쌓을 것 (writing-style-guide.md §6)
+- **빌드업으로 처음 보는 독자도 따라오게** — 핵심 용어를 정의 없이 사용 금지. 도구 정의 → 직관적 기대 → 직관이 무너지는 순간 → 해법 순서로 쌓을 것 (writing-style-guide.md 6절)
 - **연결어로 흐름 만들기** — 단락 간 자연스러운 전환
 - **문단 단위로 설명** — 한 줄씩 끊지 말 것
 
@@ -97,7 +99,19 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 **저장 위치:** `/Users/sskim/dev/TIL/{category}/`
 
-### Step 8: Self-Check 실행
+### Step 8: 태그 매핑 등록 (커밋 전)
+
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (4절 TIL 파생 노트, 2절 태그). TIL 노트는 커밋 시 post-commit 동기화가 Wiki 노트로 만든다. 태그는 `~/dev/TIL/tag-mapping.json`이 정본이므로, 커밋 전에 til-tagger 스킬의 분류 규칙으로 새 파일의 항목을 추가한다.
+
+```json
+"<파일명-확장자-제외>": ["domain/sub"]
+```
+
+- `domain`은 policy 허용 목록에서 고른다: `jq -r '.tags.domains[]' ~/.dotfiles/vault/vault-policy.json`
+- 항목이 없으면 Wiki 노트에 `<폴더>/untagged` 태그가 붙어 `vk check`에 걸린다.
+- `git add/commit`은 사용자가 요청할 때만 한다. 커밋 대상에 새 노트와 `tag-mapping.json`을 함께 넣는다.
+
+### Step 9: Self-Check 실행
 
 문서 작성 완료 후 아래 항목 점검:
 
@@ -107,6 +121,8 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] **빌드업이 충분한가?** — 검색으로 처음 들어온 독자가 첫 섹션에서 막히는 핵심 용어가 있는가? 모든 핵심 용어가 등장 시점에 정의되어 있는가?
 - [ ] "결론부터 말하면" 섹션이 있는가?
 - [ ] 파일명이 제목과 일치하는가?
+- [ ] 카테고리가 기존 TIL 폴더인가?
+- [ ] `tag-mapping.json`에 새 파일 항목을 추가했는가?
 
 #### 권장 (SHOULD)
 - [ ] Before/After 비교가 있는가?
@@ -129,7 +145,8 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 ## Verification
 
 - mermaid 작성 즉시 → `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg`로 문법 검증 (exit 1이면 오류)
-- Self-Check 체크리스트 (Step 8) 통과 확인
+- Self-Check 체크리스트 (Step 9) 통과 확인
+- `tag-mapping.json`에 새 파일 항목이 있고 JSON이 유효한지 확인: `python3 -m json.tool ~/dev/TIL/tag-mapping.json > /dev/null`
 
 ## Gotchas
 

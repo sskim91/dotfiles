@@ -12,7 +12,8 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 - Vault: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note`
 - 기본 저장 폴더: `_Inbox`; 템플릿: `Templates/Zettelkasten`
 - 파일명: `{Title}.md` — 분류 접두사 없는 순수 제목
-- 새 노트 또는 구조 변경은 [노트 형식](references/note-format.md)을 읽는다. `source`, `related_notes`, `tags`, `created` 필드와 Reading Spine이 이 vault의 규칙이다.
+- 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (폴더별 frontmatter 순서, 태그 형식과 허용 분야, 저장 후 등록, 링크 규칙).
+- 새 노트 또는 구조 변경은 [노트 형식](references/note-format.md)을 읽는다. `_Inbox` 노트는 Wiki 형식 6필드(`title`, `source`, `topics`, `related_notes`, `tags`, `created`)와 Reading Spine을 따른다.
 - 기존 문서를 수정할 때는 요청 범위와 기존 frontmatter를 보존한다.
 
 ## 작성 기준
@@ -24,6 +25,8 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 `related_notes`에는 실존하는 노트만 넣는다. 연결 목록은 frontmatter에서 관리하고, 본문에서는 해당 맥락에 필요한 wikilink를 자연스럽게 사용한다.
 
 저장 후 [post-write linking](references/post-write-linking.md)의 범위·절차에 따라 관련 노트 연결을 처리한다. 추가 문서 변경은 그 절차와 사용자가 허용한 범위를 따른다.
+
+마지막으로 `python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이며, 노트를 Wiki로 옮기면 옮긴 경로로 다시 실행해 MOC에 등록한다.
 
 ## 필요한 경우에만 읽는 자료
 

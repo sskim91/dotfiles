@@ -4,8 +4,11 @@
 
 ```markdown
 ---
+title: "CAP 정리와 분산 시스템 트레이드오프"
 source:
   - https://martin.kleppmann.com/2015/05/11/please-stop-calling-databases-cp-or-ap.html
+topics:
+  - Database
 related_notes:
   - "[[분산시스템의 트레이드오프]]"
   - "[[PACELC 정리]]"
@@ -53,7 +56,7 @@ Daniel Abadi가 제안한 PACELC가 이걸 보완한다:
 
 ---
 
-## 더 알아보기
+## 남은 질문
 
 - Martin Kleppmann의 "Please stop calling databases CP or AP" — CAP을 단순 분류 도구로 쓰는 관행에 대한 비판
 - Google Spanner는 어떻게 "실질적 CA"를 구현했나? TrueTime API와 GPS 시계의 역할

@@ -4,10 +4,12 @@
 # 매주 일요일 새벽 2시 실행 권장: 0 2 * * 0 ~/.dotfiles/scripts/vault-maintenance.sh
 #
 # 동작:
-# Phase 1: vault-linter 기본 (고아 노트, 깨진 링크, 태그 비일관성 점검)
+# Phase 1: vault-linter 기본 (vk check 정책 점검, 고아 노트, 깨진 링크, 태그 비일관성) — 결과는 로그에만
 # Phase 2: vault-linter --semantic (임베딩 기반 유사도 → 관련 노트 자동 연결)
-# Phase 3: vault-linter --index (카탈로그 Vault-Index.md + 유지보수 로그 Vault-Log.md)
-# 결과를 _Inbox/Vault-Lint-Report-{date}.md / Vault-Index.md / Vault-Log.md에 저장
+#          → _Inbox/Vault-Semantic-Report-{date}.md
+# Phase 3: vault-linter --index (카탈로그) → _Inbox/Vault-Index.md 덮어쓰기
+# Vault-Lint-Report는 만들지 않는다(--report 명시 시에만). Vault-Log.md도 만들지 않는다.
+# 실행 로그: ~/.local/log/vault-maintenance/vault-maintenance-{date}.log
 #
 # Max 구독 모델 — 추가 비용 없음
 
@@ -41,8 +43,8 @@ echo "--- Phase 2: Semantic Linking ---" >> "$LOG_FILE"
 PHASE2_EXIT=$?
 echo "--- Phase 2 Exit: $PHASE2_EXIT ---" >> "$LOG_FILE"
 
-# Phase 3: index + log
-echo "--- Phase 3: Index + Log ---" >> "$LOG_FILE"
+# Phase 3: index
+echo "--- Phase 3: Index ---" >> "$LOG_FILE"
 /Users/sskim/.local/bin/claude -p \
   "/vault-linter --index" \
   --permission-mode bypassPermissions \

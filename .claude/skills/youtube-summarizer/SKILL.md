@@ -85,18 +85,24 @@ Vault 경로: ~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note
 노트 저장 후, obsidian-note 스킬의 [post-write-linking.md](../obsidian-note/references/post-write-linking.md) 절차를 실행한다.
 vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한다.
 
+### 6단계: 등록
+`python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과를 보고한다. `_Inbox` 노트는 `skipped`가 정상이다(note-rules.md 3절).
+
 ---
 
 ## 문서 템플릿
 
 ```markdown
 ---
+title: "영상 제목 (한국어)"
 source:
   - YouTube URL
+topics:
+  - AI
 related_notes:
   - "[[실존하는_관련노트]]"
 tags:
-  - 도메인/하위주제
+  - domain/sub
 created: YYYY-MM-DD
 ---
 
@@ -136,10 +142,6 @@ created: YYYY-MM-DD
 
 - [ ] 추가 학습이 필요한 부분
 - [ ] 실습해볼 내용
-
-## 연결 고리
-
-- [[관련노트]]: 이 노트와의 관계 설명
 ```
 
 ---
@@ -214,16 +216,13 @@ created: YYYY-MM-DD
 
 ---
 
-## Frontmatter 필드 설명
+## Frontmatter
 
-| 필드 | 설명 |
-|------|------|
-| `source` | 원본 YouTube URL |
-| `related_notes` | 실존하는 관련 Obsidian 노트 (wikilink) |
-| `tags` | 계층형 태그 (도메인/하위주제) |
-| `created` | 파일 생성 날짜 |
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md`. `_Inbox` 노트이므로 Wiki 형식 6필드(`title` → `source` → `topics` → `related_notes` → `tags` → `created`)를 쓴다. 태그 형식·허용 분야, `topics` 값, 링크 규칙도 그 문서를 따른다. 이 스킬 고유 값은 다음뿐이다.
 
-필드 순서: `source` → `related_notes` → `tags` → `created`
+- `title`: 파일명과 같은 순수 제목
+- `source`: 원본 YouTube URL
+- 관련 노트는 `related_notes`에만 둔다. 본문에 연결 목록 섹션을 만들지 않는다.
 
 ---
 

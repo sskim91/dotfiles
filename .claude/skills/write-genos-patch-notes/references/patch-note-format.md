@@ -14,13 +14,15 @@ GenOS v<version> 패치노트.md
 
 기본 frontmatter:
 
+필드 순서와 태그 규칙은 `~/.dotfiles/vault/references/note-rules.md`(Projects)를 따른다.
+
 ```yaml
 ---
 source:
   - GenOS 플랫폼 v<version> 공식 릴리스 항목
   - v<from> → v<to> 릴리스 비교
 related_notes:
-  - "[[GenOS 지식 MOC]]"
+  - "[[GenOS v<from> 패치노트]]"
 tags:
   - work/genos
   - work/fde

@@ -8,6 +8,8 @@ description: Use when user says "vault lint", "노트 점검", "vault 정리", "
 Obsidian Vault의 건강 상태를 점검하고 지식 그래프의 일관성을 유지하는 스킬.
 Karpathy의 "LLM Knowledge Base Linting" 패턴.
 
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md`. 규칙 위반(태그·frontmatter·MOC/허브 등록·링크·TIL 원본) 판정은 결정적 도구 `python3 ~/.dotfiles/vault/vk`가 맡고, 이 스킬은 그 결과를 해석하고 판단이 필요한 항목(고아 노트 연결, 오래된 내용, 새 노트 후보, 의미 기반 연결)을 제안한다.
+
 ## 기본 설정
 
 | 항목 | 값 |
@@ -21,6 +23,8 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 
 ```
 /vault-linter                    # 전체 점검
+/vault-linter --check            # 정책 위반 점검만 (vk check, 읽기 전용)
+/vault-linter --apply            # 기계적 수정 (vk apply --dry-run 먼저, 승인 후 vk apply)
 /vault-linter --orphans          # 고아 노트만
 /vault-linter --links            # 깨진 링크만
 /vault-linter --stale            # 오래된 노트만
@@ -43,10 +47,32 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | `scripts/semantic-linker.py` | bge-m3 임베딩 + 코사인 유사도 후보 추출 |
 | `scripts/semantic-linker.py --cache-only` | 임베딩 캐시만 빌드 (유사도 계산 생략) |
 | `scripts/vault-index.py` | 폴더별 노트 카탈로그 생성 |
+| `python3 ~/.dotfiles/vault/vk check` | 정책 위반 점검(읽기 전용, 위반 시 exit 1) |
+| `python3 ~/.dotfiles/vault/vk apply --dry-run` | 기계적 수정 대상 파일만 출력 |
+| `python3 ~/.dotfiles/vault/vk apply` | 기계적 수정 적용(백업 후) |
 
 스크립트가 결정적 검증을 수행하고, Claude는 결과를 해석하고 제안한다.
 
 ## Instructions
+
+### Step 0: 정책 점검 (`--check`, 전체 점검에 포함)
+
+```bash
+python3 ~/.dotfiles/vault/vk check
+```
+
+출력은 `[kind] 경로: 내용` 줄과 마지막 `합계:` 줄이다. kind별로 묶어 보고한다. 태그(`tag`), frontmatter, MOC·허브 누락·중복(`moc-*`, `hub-missing`), 개수 표기(`count`), 깨진 링크(`link`), TIL 원본(`til-*`, `name-conflict`, `wiki-only-til-tag`), 스킬 사본 차이(`skill-drift`)가 여기서 판정된다. 아래 단계에서 같은 항목을 다시 세지 않는다.
+
+### Step 0.5: 기계적 수정 (`--apply`, 명시 요청 시에만)
+
+```bash
+python3 ~/.dotfiles/vault/vk apply --dry-run   # 항상 먼저. 바뀔 파일 목록을 사용자에게 보여 준다
+python3 ~/.dotfiles/vault/vk apply             # 사용자 승인 후에만
+```
+
+- `apply`는 태그 rename·drop, frontmatter 순서, 대응표로 정해지는 등록, MOC 개수 표기만 고친다. 실행 전 대상 파일을 `$TMPDIR/vaultkit-backup/<timestamp>/`에 복사한다.
+- TIL 파생 노트의 태그는 Wiki에서 고치지 않는다. `vk apply --til-mapping --dry-run`으로 `tag-mapping.json` 변경을 확인한 뒤 TIL 쪽에서 반영한다(til-tagger).
+- 적용 후 `vk check`를 다시 실행해 남은 항목(판단 필요)만 보고한다.
 
 ### Step 1: Vault 스캔
 
@@ -66,10 +92,7 @@ bash scripts/vault-scan.sh find-orphans
 
 ### Step 3: 깨진 위키링크 점검 (Broken Links)
 
-각 노트에 대해:
-```bash
-bash scripts/vault-scan.sh check-links "$NOTE"
-```
+Step 0의 `[link]` 항목을 쓴다(코드블록, 표 안 `\|`, 같은 노트 `#heading`, Archive는 도구가 제외한다). `--links` 단독 실행이면 `vk check` 출력에서 `[link]`만 추린다.
 
 깨진 링크가 발견되면 "새 노트를 만들까요?" 또는 "링크를 제거할까요?" 제안.
 
@@ -83,42 +106,27 @@ bash scripts/vault-scan.sh check-links "$NOTE"
 
 ### Step 5: 태그 비일관성 점검 (Tag Inconsistency)
 
-모든 태그를 수집하여 유사하지만 다른 태그 쌍을 찾는다.
+허용 분야 밖·rename 대상 잔존·단일 세그먼트는 Step 0의 `[tag]` 항목이다. 여기서는 규칙 안에 있지만 의미가 겹치는 태그 쌍만 찾는다.
 
-대소문자 차이(`ai/llm` vs `ai/LLM`), 유사 표현(`database/sql` vs `db/sql`) 등을 탐지하고 통일 제안.
+유사 표현(`database/sql` vs `database/rdb`) 등을 탐지하고 통일 제안. 통일안은 policy `tags.rename`에 추가하자고 제안하고, 노트를 직접 고치지 않는다.
 
 ### Step 6: 새 노트 후보 제안 (Article Candidates)
 
-여러 노트의 `## 더 알아보기` 섹션에서 공통 언급 주제를 추출한다.
+여러 노트의 `## 남은 질문` 섹션(옛 노트는 같은 역할의 섹션 제목이 다를 수 있다)에서 공통 언급 주제를 추출한다.
 
-- 모든 "더 알아보기" 섹션 텍스트 수집
+- 모든 "남은 질문" 섹션 텍스트 수집
 - 주제 빈도 분석
 - 2개 이상 노트에서 언급된 주제를 새 노트 후보로 제안
 
 ### Step 6.5: Wiki MOC 동기화 점검
 
-Wiki 목차는 `Wiki/_MOC/`에 있다. 최상위 목차 `00-Wiki-MOC.md`가 분야별 MOC 10개(`MOC-*.md`)를 가리키고, 각 MOC는 `## 하위 분류` 아래에 `- [[노트]] — 한 줄 설명` 형식으로 노트를 나열한다. 모든 Wiki 노트는 정확히 하나의 MOC에 속한다.
+Wiki 목차는 `Wiki/_MOC/`에 있다. 최상위 목차 `00-Wiki-MOC.md`가 분야별 MOC(`MOC-*.md`)를 가리키고, 각 MOC는 하위 분류 `##` 아래에 `- [[노트]] — 한 줄 설명` 형식으로 노트를 나열한다. 모든 Wiki 노트는 정확히 하나의 MOC에 속한다.
 
-1. `Wiki/` 바로 아래 `.md` 파일 목록 수집 (`_MOC/` 제외)
-2. `Wiki/_MOC/MOC-*.md` 본문에서 `- [[...]]` 항목 추출
-3. diff: 폴더에 있지만 어느 MOC에도 없는 파일 = **누락**
-4. diff: MOC에 있지만 폴더에 없는 링크 = **깨진 참조**
-5. 두 개 이상의 MOC(또는 한 MOC에 두 번)에 나오는 노트 = **중복**
-6. 각 MOC 도입문의 "노트 N개"와 `00-Wiki-MOC.md`의 분야별 개수가 실제 항목 수와 맞는지 확인
+누락·중복·개수 표기 불일치는 Step 0의 `vk check`가 판정한다. 태그로 섹션이 정해지는 누락은 `vk apply`(또는 노트별 `vk register`)가 등록한다. 이 단계에서는 도구가 섹션을 정하지 못한 노트(`unclassified`)만 다룬다.
 
-누락 파일이 있으면:
 - 파일 내용 첫 100줄을 읽고 적절한 MOC와 하위 분류(해당 MOC의 기존 `##` 섹션)를 추천
-- 기존 섹션에 맞지 않으면 새 섹션 이름도 제안
+- 기존 섹션에 맞지 않으면 새 섹션 이름도 제안하고, policy `moc` 대응 추가를 함께 제안
 - 리포트에 "어느 섹션에 넣을지"까지 포함
-
-```
-📋 Wiki MOC 동기화
-├── 누락: 3개
-│   ├── Spring-AI-ChatClient.md → MOC-AI-LLM "## Spring AI" 추천
-│   ├── Docker-Compose-v2.md → MOC-컨테이너-IaC-개발환경 "## Docker" 추천
-│   └── RAG-패턴.md → MOC-AI-LLM "## 검색·RAG·임베딩" 추천
-└── 깨진 참조: 0개
-```
 
 ### Step 7: 리포트 생성 (`--report` 명시 시에만)
 
@@ -128,7 +136,7 @@ Wiki 목차는 `Wiki/_MOC/`에 있다. 최상위 목차 `00-Wiki-MOC.md`가 분�
 ```markdown
 ---
 tags:
-  - vault/maintenance
+  - productivity/vault-maintenance
 created: {YYYY-MM-DD}
 ---
 
@@ -142,7 +150,7 @@ created: {YYYY-MM-DD}
 | 깨진 링크 | N건 | 🚫 |
 | 오래된 노트 | N건 | 💡 |
 | 태그 비일관성 | N건 | 💡 |
-| INDEX 누락 | N건 | 📋 |
+| 정책 위반 (vk check) | N건 | 📋 |
 | 새 노트 후보 | N건 | ✨ |
 
 ### 🚫 깨진 링크
@@ -221,7 +229,7 @@ ls scripts/semantic-review-queue.json 2>/dev/null && echo "리뷰 큐 있음 —
 ```markdown
 ---
 tags:
-  - vault/maintenance
+  - productivity/vault-maintenance
 created: {YYYY-MM-DD}
 ---
 
@@ -268,6 +276,8 @@ python3 scripts/vault-index.py
 
 ```markdown
 □ 제외 대상(Templates, .obsidian)을 빼고 스캔했는가
+□ `vk check` 결과를 kind별로 보고했는가
+□ `vk apply`는 `--dry-run` 결과를 보여 주고 승인받은 뒤에만 실행했는가
 □ 깨진 링크에서 Obsidian alias([[이름|별칭]])를 올바르게 처리했는가
 □ `--index` 실행은 `Vault-Index.md`만 생성/갱신했는가
 □ 리포트는 사용자가 명시적으로 요청한 경우에만 _Inbox에 저장했는가

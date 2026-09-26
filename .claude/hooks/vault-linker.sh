@@ -31,6 +31,9 @@ fi
 # 제외 경로
 if [[ "$FILE_PATH" =~ /Templates/ ]] || \
    [[ "$FILE_PATH" =~ /\.obsidian/ ]] || \
+   [[ "$FILE_PATH" =~ /Archive/ ]] || \
+   [[ "$FILE_PATH" =~ /Wiki/_MOC/ ]] || \
+   [[ "$FILE_PATH" == "$VAULT/_Inbox/Vault-Index.md" ]] || \
    [[ "$FILE_PATH" =~ Vault-Lint-Report ]]; then
     exit 0
 fi
@@ -41,14 +44,18 @@ NEW_FILENAME=$(basename "$FILE_PATH" .md)
 NOTE_SUMMARY=$(head -30 "$FILE_PATH" 2>/dev/null)
 
 # vault의 모든 노트 목록 수집 (파일명 = 노트 제목)
-# 제외: Template, .obsidian, 자기 자신
+# 제외: Templates, .obsidian, Archive, Wiki/_MOC, _Inbox/Vault-Index.md, 리포트, 자기 자신
+# 전체 목록을 넘긴다(잘라 내면 알파벳 뒤쪽 노트가 후보에서 빠진다).
 NOTE_LIST=$(find "$VAULT" -name "*.md" \
     -not -path "*/Templates/*" \
     -not -path "*/.obsidian/*" \
+    -not -path "$VAULT/Archive/*" \
+    -not -path "$VAULT/Wiki/_MOC/*" \
+    -not -path "$VAULT/_Inbox/Vault-Index.md" \
     -not -name "Vault-Lint-Report*" \
     2>/dev/null | while read -r f; do
         basename "$f" .md
-    done | grep -v "^${NEW_FILENAME}$" | sort | head -200)
+    done | grep -vxF "${NEW_FILENAME}" | sort)
 
 # 노트가 없으면 스킵
 if [[ -z "$NOTE_LIST" ]]; then
