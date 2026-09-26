@@ -5,9 +5,11 @@ vault 노트의 frontmatter를 줄 단위로 파싱·재작성한다. 표준 라
 그대로 다시 써서 본문·기타 키의 바이트를 보존한다.
 
 지원 형태: ``key: value``, ``key: "quoted"``, ``key: []``,
-``key:`` 다음 줄들의 ``  - item``. 그 외(중첩 dict, 블록 스칼라,
-인라인 컬렉션, 중복 키 등)는 ``parse()``가 ``None``을 반환한다 — 절대
-수정하지 않고 보고만 하는 정책(Global Constraint) 때문이다.
+``key:`` 다음 줄들의 ``  - item``, 단순 스칼라 항목만으로 된 인라인 흐름
+시퀀스 ``key: [a, b, c]``(따옴표·공백 변형 포함). 그 외(중첩 dict, 블록
+스칼라, 인라인 매핑, 중첩된 인라인 시퀀스, 항목 따옴표 안 쉼표, 중복 키
+등)는 ``parse()``가 ``None``을 반환한다 — 절대 수정하지 않고 보고만 하는
+정책(Global Constraint) 때문이다.
 """
 
 from __future__ import annotations
@@ -36,6 +38,49 @@ class Doc:
     _open_raw: str = "---\n"
     _close_raw: str = "---\n"
     _nl: str = "\n"
+
+
+def _parse_inline_flow_list(inner: str) -> list[str] | None:
+    """``key: [a, b, c]`` 값의 대괄호 안(``inner``)을 파싱한다.
+
+    단순 스칼라 항목(따옴표 유무·앞뒤 공백 무관)만 지원한다. 항목 안에
+    ``[``/``]``/``{``/``}``가 있으면(중첩 컬렉션) 또는 따옴표로 감싼 항목
+    안에 쉼표가 있으면(구분자와 구분 불가) ``None``을 반환해 상위에서
+    전체 문서 파싱을 포기하게 한다.
+    """
+    items: list[str] = []
+    buf: list[str] = []
+    quote: str | None = None
+    quoted_comma = False
+
+    for ch in inner:
+        if quote is not None:
+            buf.append(ch)
+            if ch == ",":
+                quoted_comma = True
+            if ch == quote:
+                quote = None
+            continue
+        if ch in ("'", '"'):
+            quote = ch
+            buf.append(ch)
+            continue
+        if ch in "[]{}":
+            return None
+        if ch == ",":
+            items.append("".join(buf))
+            buf = []
+            continue
+        buf.append(ch)
+
+    if quote is not None:
+        return None  # 닫히지 않은 따옴표
+    items.append("".join(buf))
+
+    if quoted_comma:
+        return None
+
+    return [item.strip() for item in items]
 
 
 def _split_line(raw: str) -> tuple:
@@ -124,8 +169,16 @@ def parse(text: str) -> Doc | None:
             fields[key] = []
         elif rest in _BLOCK_SCALARS:
             return None
-        elif rest[0] in _LEADING_SPECIAL:
-            return None  # 인라인 컬렉션([...] / {...}): 지원 밖
+        elif rest.startswith("["):
+            if not rest.endswith("]"):
+                return None  # 닫는 ] 없음: 지원 밖
+            parsed_items = _parse_inline_flow_list(rest[1:-1])
+            if parsed_items is None:
+                return None  # 중첩 컬렉션·따옴표 안 쉼표 등: 지원 밖
+            current_is_open = False
+            fields[key] = parsed_items
+        elif rest.startswith("{"):
+            return None  # 인라인 매핑: 지원 밖
         else:
             current_is_open = False
             fields[key] = rest
@@ -190,13 +243,19 @@ def get_list(doc: Doc, key: str) -> list:
 def set_list(doc: Doc, key: str, values: list) -> None:
     """리스트 값을 설정한다.
 
-    이미 리스트 형태(``key:\\n  - item``)로 쓰여 있고 값이 실질적으로 같으면
-    원본 raw를 그대로 둔다. 문자열 스칼라(``key: value``)나 ``None``이던 값은
-    내용이 같아도 표준 리스트 출력 형식으로 정규화한다 — 스칼라 형태를
-    그대로 두면 브리프가 정한 리스트 출력 형식을 벗어나기 때문이다.
+    이미 블록 리스트 형태(``key:\\n  - item``)로 쓰여 있고 값이 실질적으로
+    같으면 원본 raw를 그대로 둔다. 문자열 스칼라(``key: value``), 인라인
+    흐름 시퀀스(``key: [a, b]``), ``None``이던 값은 내용이 같아도 표준 블록
+    리스트 출력 형식으로 정규화한다 — 이 형태들을 그대로 두면 브리프가 정한
+    리스트 출력 형식을 벗어나기 때문이다. (빈 리스트 ``key: []``는 어느
+    형태로 재작성하든 출력이 동일해 예외 없이 그대로 둔다.)
     """
     current = doc.fields.get(key)
-    if key in doc._raw and isinstance(current, list) and get_list(doc, key) == list(values):
+    raw_lines = doc._raw.get(key)
+    is_block_list_form = isinstance(current, list) and (
+        not current or (raw_lines is not None and len(raw_lines) > 1)
+    )
+    if key in doc._raw and is_block_list_form and get_list(doc, key) == list(values):
         return
     doc.fields[key] = [_quote(v) for v in values]
     doc._raw.pop(key, None)

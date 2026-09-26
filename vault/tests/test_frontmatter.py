@@ -135,8 +135,8 @@ class UnsupportedTests(unittest.TestCase):
         text = "---\ntags:\n  - foo\nbody without closing\n"
         self.assertIsNone(parse(text))
 
-    def test_unsupported_returns_none_inline_list(self):
-        text = "---\ntags: [foo, bar]\n---\nbody\n"
+    def test_unsupported_returns_none_inline_mapping(self):
+        text = "---\ntags: {a: 1}\n---\nbody\n"
         self.assertIsNone(parse(text))
 
 
@@ -259,6 +259,60 @@ class SetScalarNoOpTests(unittest.TestCase):
         set_list(doc, "tags", ["foo"])
         out = render(doc)
         self.assertEqual(out, "---\ntags:\n  - foo\n---\nbody\n")
+
+    def test_set_list_empty_renders_brackets(self):
+        doc = parse(WIKI_TIL_SAMPLE)
+        set_list(doc, "topics", [])
+        out = render(doc)
+        self.assertIn("topics: []\n", out)
+
+
+class InlineFlowListTests(unittest.TestCase):
+    def test_inline_flow_list_read(self):
+        doc = parse("---\nsource: [a, b, c]\n---\nbody\n")
+        self.assertIsNotNone(doc)
+        self.assertEqual(get_list(doc, "source"), ["a", "b", "c"])
+
+        doc2 = parse('---\nsource: ["a", \'b\']\n---\nbody\n')
+        self.assertIsNotNone(doc2)
+        self.assertEqual(get_list(doc2, "source"), ["a", "b"])
+
+        # 공백 변형
+        doc3 = parse("---\nsource: [ a ,  b ,c ]\n---\nbody\n")
+        self.assertIsNotNone(doc3)
+        self.assertEqual(get_list(doc3, "source"), ["a", "b", "c"])
+
+    def test_inline_flow_list_roundtrip_untouched(self):
+        for text in (
+            "---\ntags: [foo, bar]\n---\nbody\n",
+            '---\ntags: ["foo", \'bar\']\n---\nbody\n',
+            "---\ntags: [ foo ,  bar ]\n---\nbody\n",
+        ):
+            doc = parse(text)
+            self.assertIsNotNone(doc)
+            self.assertEqual(render(doc), text)
+
+    def test_inline_flow_list_set_rewrites_block(self):
+        text = "---\ntags: [foo, bar]\n---\nbody\n"
+
+        doc = parse(text)
+        set_list(doc, "tags", ["foo", "bar", "baz"])
+        self.assertEqual(
+            render(doc), "---\ntags:\n  - foo\n  - bar\n  - baz\n---\nbody\n"
+        )
+
+        # 값이 같아도(인라인 -> 블록) 출력 형식은 블록으로 재작성돼야 한다.
+        doc2 = parse(text)
+        set_list(doc2, "tags", ["foo", "bar"])
+        self.assertEqual(render(doc2), "---\ntags:\n  - foo\n  - bar\n---\nbody\n")
+
+    def test_inline_flow_list_nested_returns_none(self):
+        for text in (
+            "---\ntags: [foo, [bar, baz]]\n---\nbody\n",  # 중첩 리스트
+            "---\ntags: [foo, {a: 1}]\n---\nbody\n",  # 중첩 매핑
+            '---\ntags: ["foo, bar", baz]\n---\nbody\n',  # 따옴표 안 쉼표
+        ):
+            self.assertIsNone(parse(text))
 
 
 if __name__ == "__main__":
