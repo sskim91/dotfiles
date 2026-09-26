@@ -14,6 +14,7 @@ from pathlib import Path
 from vaultkit.policy import Policy
 from vaultkit.register import (
     RegisterResult,
+    _insert_into_section,
     derive_maps,
     register_note,
     summary_line,
@@ -148,6 +149,59 @@ class RegisterWikiMocTest(unittest.TestCase):
         self.assertEqual(result.status, "exists")
         self.assertEqual(result.target, "MOC-Kubernetes")
 
+    def test_exists_check_scans_all_moc_files(self):
+        # 태그 매핑은 MOC-Kubernetes를 가리키지만, 노트는 실제로 이미
+        # 다른 MOC 파일(MOC-Other)에 등록돼 있다 — 컨트롤러 fix 1.
+        _write(
+            self.vault_root / "Wiki" / "_MOC" / "MOC-Other.md",
+            """---
+title: "Other MOC"
+tags:
+  - moc
+---
+# Other
+
+Wiki의 기타 노트 1개를 주제별로 묶은 목차다.
+
+## 엉뚱한 절
+
+- [[다른곳-노트]] — 이미 다른 MOC에 등록된 노트
+""",
+        )
+        note_path = self.vault_root / "Wiki" / "다른곳-노트.md"
+        _write(
+            note_path,
+            _WIKI_NOTE.format(
+                title="다른곳-노트", tag="kubernetes/pod", body="본문이다."
+            ),
+        )
+        kubernetes_moc_before = (
+            self.vault_root / "Wiki" / "_MOC" / "MOC-Kubernetes.md"
+        ).read_text(encoding="utf-8")
+        other_moc_before = (
+            self.vault_root / "Wiki" / "_MOC" / "MOC-Other.md"
+        ).read_text(encoding="utf-8")
+
+        result = register_note(note_path, self.policy)
+
+        self.assertEqual(result.status, "exists")
+        self.assertEqual(result.target, "MOC-Other")
+        self.assertEqual(result.section, "엉뚱한 절")
+        # 두 파일 모두 바뀌지 않아야 한다(태그가 가리키는 MOC-Kubernetes에
+        # 중복 등록되면 안 된다).
+        self.assertEqual(
+            kubernetes_moc_before,
+            (self.vault_root / "Wiki" / "_MOC" / "MOC-Kubernetes.md").read_text(
+                encoding="utf-8"
+            ),
+        )
+        self.assertEqual(
+            other_moc_before,
+            (self.vault_root / "Wiki" / "_MOC" / "MOC-Other.md").read_text(
+                encoding="utf-8"
+            ),
+        )
+
     def test_unclassified_when_no_mapping(self):
         note = self._write_note(
             "매핑없는-노트.md",
@@ -223,6 +277,52 @@ class RegisterWikiMocTest(unittest.TestCase):
         self.assertEqual(result.status, "added")
         self.assertEqual(before, after)
 
+    def test_insert_into_missing_trailing_newline_does_not_corrupt(self):
+        # 리뷰 repro: 파일이 줄바꿈 없이 끝나면 새 줄이 기존 마지막 줄에
+        # 그대로 붙었다 — 컨트롤러 fix 2.
+        text = "# M\n\n## A\n\n- [[x]] — y"  # 끝에 개행 없음
+
+        result = _insert_into_section(text, "A", "- [[new]] — z")
+
+        self.assertIsNotNone(result)
+        lines = result.splitlines()
+        self.assertIn("- [[x]] — y", lines)
+        self.assertIn("- [[new]] — z", lines)
+        # 기존 항목이 새 항목과 붙어서 깨지면 안 된다.
+        self.assertNotIn("y- [[new]]", result)
+
+    def test_register_note_appends_newline_when_moc_file_lacks_trailing_newline(
+        self,
+    ):
+        # 삽입 대상 절이 파일의 "마지막" 절이어야 버그가 재현된다(끝에
+        # 개행이 없으면 마지막 줄만 영향을 받으므로).
+        moc = {"kubernetes/*": ["MOC-Kubernetes", "다른 절"]}
+        policy = _make_policy(self.vault_root, moc=moc)
+
+        target_path = self.vault_root / "Wiki" / "_MOC" / "MOC-Kubernetes.md"
+        text = target_path.read_text(encoding="utf-8")
+        self.assertTrue(text.endswith("\n"))
+        # 실제 vault처럼 끝에 개행이 없는 상황을 재현한다.
+        target_path.write_text(text.rstrip("\n"), encoding="utf-8")
+
+        note = self._write_note(
+            "끝줄바꿈없음-노트.md",
+            tag="kubernetes/pod",
+            body="파일 끝에 개행이 없는 상태에서 추가된다.",
+        )
+
+        result = register_note(note, policy)
+
+        self.assertEqual(result.status, "added")
+        new_text = target_path.read_text(encoding="utf-8")
+        lines = new_text.splitlines()
+        self.assertIn("- [[Other-Note]] — 다른 절 노트", lines)
+        self.assertIn(
+            "- [[끝줄바꿈없음-노트]] — 파일 끝에 개행이 없는 상태에서 추가된다.",
+            lines,
+        )
+        self.assertNotIn("다른 절 노트- [[끝줄바꿈없음-노트]]", new_text)
+
 
 class SummaryLineTest(unittest.TestCase):
     def test_summary_line_skips_callout_and_code(self):
@@ -262,6 +362,26 @@ should be skipped.
 
             self.assertEqual(len(result), 61)  # 60자 + "…"
             self.assertTrue(result.endswith("…"))
+
+    def test_summary_line_resolves_wikilinks_to_plain_text(self):
+        # 요약에 위키링크가 그대로 남으면 이후 exists 판정이 그 노트를
+        # 잘못 "이미 등록됨"으로 오판할 수 있다 — 컨트롤러 fix 4.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "노트.md"
+            _write(
+                path,
+                "---\ntitle: \"x\"\ntags:\n  - til\n---\n"
+                "이 개념은 [[다른-노트]]와 [[또다른-노트|별칭]]에서 다룬다. "
+                "두 번째 문장은 무시된다.\n",
+            )
+
+            result = summary_line(path)
+
+            self.assertEqual(
+                result, "이 개념은 다른-노트와 별칭에서 다룬다."
+            )
+            self.assertNotIn("[[", result)
+            self.assertNotIn("]]", result)
 
 
 PATCHNOTE_TABLE = """---
@@ -382,6 +502,23 @@ class RegisterProjectHubTest(unittest.TestCase):
         result = register_note(hub_note_path, self.policy)
         self.assertEqual(
             RegisterResult("skipped", None, None, None), result
+        )
+
+    def test_project_note_outside_any_hub_is_unclassified(self):
+        # spec D3: 대응(허브) 없으면 skipped가 아니라 unclassified로
+        # 보고한다 — 컨트롤러 fix 3.
+        note_path = (
+            self.vault_root / "Projects/GenonAI/모르는고객사" / "노트.md"
+        )
+        _write(
+            note_path,
+            "---\ntitle: \"x\"\ntags:\n  - work/genos\n---\n어느 허브에도 속하지 않는다.\n",
+        )
+
+        result = register_note(note_path, self.policy)
+
+        self.assertEqual(
+            RegisterResult("unclassified", None, None, None), result
         )
 
     def test_genos_subfolder_section(self):

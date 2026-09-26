@@ -45,14 +45,26 @@ def _nfc(value: str) -> str:
 _HEADING_RE = re.compile(r"^#{1,6}\s")
 _LIST_ITEM_RE = re.compile(r"^- ")
 _SENTENCE_END_RE = re.compile(r"[.?!](?=\s|$)")
+_WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+
+
+def _resolve_wikilinks(text: str) -> str:
+    """``[[a|b]]`` -> ``b``, ``[[a]]`` -> ``a``로 위키링크를 평문으로 푼다.
+
+    등록 줄의 요약에 다른 노트 링크가 그대로 남으면, 그 노트가 이미
+    등록된 것으로 ``exists`` 판정을 오염시킬 수 있어 여기서 미리 없앤다.
+    """
+    return _WIKILINK_RE.sub(
+        lambda m: m.group(2) if m.group(2) is not None else m.group(1), text
+    )
 
 
 def summary_line(path: Path) -> str:
     """노트 본문 첫 문단의 첫 문장을 반환한다.
 
     callout(``>``로 시작하는 줄), heading, 코드블록(```` ``` ````로 감싼
-    구간)은 건너뛴다. 60자(코드포인트 기준) 초과 시 60자에서 잘라 ``…``을
-    붙인다.
+    구간)은 건너뛴다. 위키링크는 평문으로 푼다. 60자(코드포인트 기준)
+    초과 시 60자에서 잘라 ``…``을 붙인다.
     """
     text = path.read_text(encoding="utf-8")
     doc = frontmatter.parse(text)
@@ -81,7 +93,7 @@ def summary_line(path: Path) -> str:
             continue
         paragraph_lines.append(line)
 
-    paragraph = _nfc(" ".join(paragraph_lines))
+    paragraph = _resolve_wikilinks(_nfc(" ".join(paragraph_lines)))
     match = _SENTENCE_END_RE.search(paragraph)
     sentence = paragraph[: match.end()] if match else paragraph
 
@@ -177,10 +189,48 @@ def _moc_lookup(tags: list[str], moc: dict[str, list[str]]) -> list[str] | None:
     return None
 
 
+def _find_existing_wiki_registration(
+    vault_root: Path, stem: str
+) -> tuple[str, str | None] | None:
+    """``Wiki/_MOC/MOC-*.md`` 전체에서 ``stem``이 이미 등록돼 있는지 찾는다.
+
+    태그로 고른 대상 파일 하나만 보면, 사람이 실제로는 다른 MOC에 등록해
+    둔 노트를 "아직 없음"으로 오판해 두 번째 MOC에 중복 등록하게 된다
+    (컨트롤러 fix 1). 찾으면 ``(실제 MOC stem, 그 안의 절 이름)``을
+    반환한다 — 절 이름은 알아낼 수 없으면 ``None``.
+    """
+    moc_dir = vault_root / "Wiki" / "_MOC"
+    stem_nfc = _nfc(stem)
+    pattern = re.compile(r"\[\[" + re.escape(stem_nfc) + r"(?=[|\]#\\])")
+
+    for moc_path in sorted(moc_dir.glob("MOC-*.md")):
+        text = moc_path.read_text(encoding="utf-8")
+        if not _exists_in(text, stem):
+            continue
+        section = None
+        current_section = None
+        for raw_line in _nfc(text).splitlines():
+            heading = re.match(r"^## (.+)$", raw_line)
+            if heading:
+                current_section = heading.group(1).strip()
+                continue
+            if pattern.search(raw_line):
+                section = current_section
+                break
+        return moc_path.stem, section
+
+    return None
+
+
 def _register_wiki(
     note_path: Path, filename: str, policy: Policy, *, dry_run: bool
 ) -> RegisterResult:
     stem = Path(filename).stem
+
+    existing = _find_existing_wiki_registration(policy.vault_root, stem)
+    if existing is not None:
+        moc_stem, section = existing
+        return RegisterResult("exists", moc_stem, section, None)
 
     tags = _read_normalized_tags(note_path, policy, "wiki-only")
     if not tags:
@@ -196,8 +246,6 @@ def _register_wiki(
         return RegisterResult("unclassified", None, None, None)
 
     target_text = target_path.read_text(encoding="utf-8")
-    if _exists_in(target_text, stem):
-        return RegisterResult("exists", moc_stem, section, None)
 
     summary = summary_line(note_path)
     new_line = f"- [[{stem}]] — {summary}"
@@ -212,11 +260,25 @@ def _register_wiki(
     return RegisterResult("added", moc_stem, section, new_line)
 
 
+def _ensure_trailing_newline(text: str) -> str:
+    """``text``가 개행 없이 끝나면 개행 하나를 붙여 돌려준다.
+
+    Obsidian은 끝 개행을 강제하지 않는다. 개행 없이 끝난 파일에 줄 단위로
+    삽입하면 새 줄이 기존 마지막 줄에 그대로 붙어 항목이 깨진다
+    (컨트롤러 fix 2). 파일에서 이미 쓰인 개행 방식(``\\r\\n``)을 따른다.
+    """
+    if text == "" or text.endswith(("\n", "\r\n")):
+        return text
+    nl = "\r\n" if "\r\n" in text else "\n"
+    return text + nl
+
+
 def _insert_into_section(text: str, section: str, new_line: str) -> str | None:
     """``## {section}`` 절의 마지막 ``- `` 항목 뒤에 ``new_line``을 삽입한다.
 
     절을 찾지 못하면 ``None``을 반환한다.
     """
+    text = _ensure_trailing_newline(text)
     lines = text.splitlines(keepends=True)
     section_nfc = _nfc(section)
 
@@ -271,7 +333,8 @@ def _register_project(
 ) -> RegisterResult:
     matched = _match_hub(rel_nfc, policy.hubs)
     if matched is None:
-        return RegisterResult("skipped", None, None, None)
+        # spec D3: 대응(허브)이 없으면 미분류로 보고한다(컨트롤러 fix 3).
+        return RegisterResult("unclassified", None, None, None)
 
     prefix, cfg, remainder = matched
     if remainder == "":
@@ -341,7 +404,7 @@ def _register_patchnote(
     *,
     dry_run: bool,
 ) -> RegisterResult:
-    target_text = target_path.read_text(encoding="utf-8")
+    target_text = _ensure_trailing_newline(target_path.read_text(encoding="utf-8"))
     if _exists_in(target_text, stem):
         return RegisterResult("exists", hub_name, None, None)
 
