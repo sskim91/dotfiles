@@ -397,6 +397,43 @@ should be skipped.
             self.assertNotIn("[[", result)
             self.assertNotIn("]]", result)
 
+    def test_summary_line_skips_horizontal_rule(self):
+        # 실제 사례: 등록 줄이 `— ---`로 기록됐다.
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "노트.md"
+            _write(
+                path,
+                "---\ntitle: \"x\"\ntags:\n  - til\n---\n"
+                "## 핵심 아이디어\n\n---\n\n***\n\n___\n\n"
+                "수평선 다음 문단이 요약이다. 두 번째 문장.\n",
+            )
+
+            self.assertEqual(summary_line(path), "수평선 다음 문단이 요약이다.")
+
+    def test_summary_line_uses_plain_blockquote(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "노트.md"
+            _write(
+                path,
+                "---\ntitle: \"x\"\ntags:\n  - til\n---\n"
+                "## 핵심 아이디어\n\n"
+                "> [!summary] callout 제목\n> callout 본문은 제외된다.\n\n"
+                "> 일반 인용문이 요약 후보다. 두 번째 문장.\n\n"
+                "---\n\n뒤 문단.\n",
+            )
+
+            self.assertEqual(summary_line(path), "일반 인용문이 요약 후보다.")
+
+    def test_summary_line_falls_back_to_title_when_empty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            titled = Path(tmp) / "a.md"
+            _write(titled, "---\ntitle: \"제목 있음\"\ntags:\n  - til\n---\n## H\n\n---\n")
+            untitled = Path(tmp) / "파일이름.md"
+            _write(untitled, "## H\n\n---\n")
+
+            self.assertEqual(summary_line(titled), "제목 있음")
+            self.assertEqual(summary_line(untitled), "파일이름")
+
 
 PATCHNOTE_TABLE = """---
 title: "GenOS 버전별 변경 요약"

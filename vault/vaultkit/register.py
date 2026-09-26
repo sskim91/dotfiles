@@ -59,6 +59,7 @@ def _newline_of(text: str) -> str:
 
 
 _HEADING_RE = re.compile(r"^#{1,6}\s")
+_HR_RE = re.compile(r"^(?:-{3,}|\*{3,}|_{3,})$")
 _LIST_ITEM_RE = re.compile(r"^- ")
 _SENTENCE_END_RE = re.compile(r"[.?!](?=\s|$)")
 _WIKILINK_RE = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
@@ -78,40 +79,59 @@ def _resolve_wikilinks(text: str) -> str:
 def summary_line(path: Path) -> str:
     """노트 본문 첫 문단의 첫 문장을 반환한다.
 
-    callout(``>``로 시작하는 줄), heading, 코드블록(```` ``` ````로 감싼
-    구간)은 건너뛴다. 위키링크는 평문으로 푼다. 60자(코드포인트 기준)
-    초과 시 60자에서 잘라 ``…``을 붙인다.
+    callout(``> [!``로 시작하는 블록 전체), heading, 수평선(``---``·
+    ``***``·``___``), 코드블록(```` ``` ````로 감싼 구간)은 건너뛴다.
+    callout이 아닌 일반 인용문(``> 텍스트``)은 ``>``를 벗겨 문단으로 쓴다.
+    위키링크는 평문으로 푼다. 60자(코드포인트 기준) 초과 시 60자에서
+    잘라 ``…``을 붙인다. 후보가 없으면 frontmatter ``title``(없으면 파일
+    stem)을 반환한다.
     """
     text = path.read_text(encoding="utf-8")
     doc = frontmatter.parse(text)
     body = doc.body if doc is not None else text
 
     in_code = False
+    in_callout = False
+    in_quote = False
     paragraph_lines: list[str] = []
     for raw_line in body.splitlines():
         line = raw_line.strip()
+        is_quote = line.startswith(">")
+        if not is_quote:
+            in_callout = False
         if line.startswith("```"):
             in_code = not in_code
             continue
         if in_code:
             continue
-        if line == "":
+        if line == "" or _HEADING_RE.match(line) or _HR_RE.match(line):
             if paragraph_lines:
                 break
             continue
-        if _HEADING_RE.match(line):
-            if paragraph_lines:
+        if is_quote:
+            content = line[1:].strip()
+            if content.startswith("[!"):
+                in_callout = True
+            if in_callout or content == "":
+                if paragraph_lines:
+                    break
+                continue
+            if paragraph_lines and not in_quote:
                 break
+            in_quote = True
+            paragraph_lines.append(content)
             continue
-        if line.startswith(">"):
-            if paragraph_lines:
-                break
-            continue
+        if in_quote:
+            break
         paragraph_lines.append(line)
 
     paragraph = _resolve_wikilinks(_nfc(" ".join(paragraph_lines)))
     match = _SENTENCE_END_RE.search(paragraph)
     sentence = paragraph[: match.end()] if match else paragraph
+
+    if not sentence:
+        titles = frontmatter.get_list(doc, "title") if doc is not None else []
+        sentence = _nfc(titles[0]) if titles and titles[0] else _nfc(path.stem)
 
     if len(sentence) > 60:
         sentence = sentence[:60] + "…"
