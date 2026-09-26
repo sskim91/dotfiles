@@ -131,6 +131,7 @@ class BackportTest(unittest.TestCase):
             VAULTKIT_PATH=str(VAULT_DIR),
             VAULTKIT_POLICY=str(self.policy_path),
             SYNC_STATE_PATH=str(self.state_path),
+            VAULTKIT_BACKUP_DIR=str(self.root / "backups"),  # sync 백업이 ~/.local/state로 가지 않도록
         )
         for key, value in extra.items():
             if value is None:
@@ -197,8 +198,12 @@ class BackportTest(unittest.TestCase):
 
         c = notes["노트C"]
         self.assertEqual(c["source_append"], ["https://example.com/c", "https://example.com/c2"])
+        # 기본 새 원문에는 출처를 붙이지 않고, --carry-sources용 사본에만 붙인다
         new_c = (self.out / "new" / "python" / "노트C.md").read_text(encoding="utf-8")
-        self.assertTrue(new_c.endswith("## 출처\n\n- <https://example.com/c>\n- <https://example.com/c2>\n"), new_c)
+        self.assertEqual(new_c, TIL_C)
+        carry_c = (self.out / c["new_carry_file"]).read_text(encoding="utf-8")
+        self.assertTrue(carry_c.endswith("## 출처\n\n- <https://example.com/c>\n- <https://example.com/c2>\n"), carry_c)
+        self.assertIsNone(notes["노트B"]["new_carry_file"])
 
         diff = (self.out / "노트E.diff").read_text(encoding="utf-8")
         self.assertIn("+Wiki에서 고친 문장.", diff)
@@ -280,7 +285,7 @@ class BackportTest(unittest.TestCase):
 
     def test_apply_unresolved_text(self) -> None:
         self.plan()
-        self.call("--apply", "--out", str(self.out), "--unresolved", "text")
+        self.call("--apply", "--out", str(self.out), "--unresolved", "text", "--carry-sources")
         new_b = self.paths["노트B"].read_text(encoding="utf-8")
         self.assertIn("Wiki 전용 위키 노트도 있다.", new_b)
         self.assertIn("[[코드-안]]", new_b)  # 코드 안은 그대로
@@ -307,7 +312,8 @@ class BackportTest(unittest.TestCase):
         self.plan()
         self.paths["노트C"].write_text(TIL_C + "\n계획 뒤에 고침.\n", encoding="utf-8")
         proc = self.call(
-            "--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text", expect=1
+            "--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text",
+            "--carry-sources", expect=1,
         )
         self.assertIn("노트C", proc.stdout + proc.stderr)
         self.assertNotEqual(self.paths["노트B"].read_text(encoding="utf-8"), TIL_B)
@@ -321,6 +327,103 @@ class BackportTest(unittest.TestCase):
         self.plan()
         proc = self.call("--apply", "--out", str(self.out), "--only", "없는노트", "--unresolved", "text", expect=2)
         self.assertIn("없는노트", proc.stderr)
+
+    # -- diverged / carry-sources ----------------------------------------
+
+    def _diverged_fixture(self) -> None:
+        """노트F: 옛 TIL 사본 / 노트E: Wiki·TIL 양쪽 수정 — 둘 다 commits_after > 0."""
+        self.til_note("python", "노트F", "# 에프\n\n옛 내용.\n")
+        self.wiki_note("노트F", "\n옛 내용.\n")
+        self.git_commit("init")
+        self.paths["노트E"].write_text(TIL_E + "\nTIL에서 나중에 고침.\n", encoding="utf-8")
+        (self.til / "python" / "노트F.md").write_text("# 에프\n\n새 내용.\n", encoding="utf-8")
+        self.git_commit("later")
+
+    def test_apply_excludes_diverged_by_default(self) -> None:
+        self._diverged_fixture()
+        self.plan()
+        til_e = self.paths["노트E"].read_text(encoding="utf-8")
+        til_f = (self.til / "python" / "노트F.md").read_text(encoding="utf-8")
+        proc = self.call("--apply", "--out", str(self.out), "--unresolved", "text")
+        self.assertIn("diverged", proc.stdout)
+        self.assertIn("노트E", proc.stdout)
+        self.assertIn("노트F", proc.stdout)
+        self.assertEqual(self.paths["노트E"].read_text(encoding="utf-8"), til_e)
+        self.assertEqual((self.til / "python" / "노트F.md").read_text(encoding="utf-8"), til_f)
+        self.assertNotEqual(self.paths["노트B"].read_text(encoding="utf-8"), TIL_B)
+        self.assertEqual(json.loads((self.out / "applied.json").read_text(encoding="utf-8")), ["노트B"])
+
+        # --include만 주면 diverged 아닌 노트 전체 + 포함한 diverged(노트B는 이미 적용 → TIL 바뀜 실패)
+        proc = self.call("--apply", "--out", str(self.out), "--include", "노트E", "--unresolved", "text", expect=1)
+        self.assertIn("노트B", proc.stdout)
+        self.assertIn("Wiki에서 고친 문장.", self.paths["노트E"].read_text(encoding="utf-8"))
+        self.assertEqual((self.til / "python" / "노트F.md").read_text(encoding="utf-8"), til_f)
+
+    def test_apply_only_cannot_bypass_diverged(self) -> None:
+        self._diverged_fixture()
+        self.plan()
+        proc = self.call("--apply", "--out", str(self.out), "--only", "노트E", expect=2)
+        self.assertIn("--include", proc.stderr)
+        proc = self.call("--apply", "--out", str(self.out), "--include", "노트B", expect=2)
+        self.assertIn("노트B", proc.stderr)
+        self.call("--apply", "--out", str(self.out), "--only", "노트E", "--include", "노트E")
+        self.assertIn("Wiki에서 고친 문장.", self.paths["노트E"].read_text(encoding="utf-8"))
+
+    def test_summary_states_diverged_rule(self) -> None:
+        self._diverged_fixture()
+        self.plan()
+        summary = (self.out / "summary.md").read_text(encoding="utf-8")
+        self.assertIn("기본 제외", summary)
+        self.assertIn("--include", summary)
+        self.assertIn("노트E, 노트F", summary)
+        self.assertIn("--carry-sources", summary)
+        self.assertIn("첫 sync", summary)
+
+    def test_apply_without_carry_skips_source_only_note(self) -> None:
+        self.plan()
+        proc = self.call("--apply", "--out", str(self.out), "--only", "노트C")
+        self.assertEqual(self.paths["노트C"].read_text(encoding="utf-8"), TIL_C)
+        self.assertIn("--carry-sources", proc.stdout)
+        self.assertIn("https://example.com/c", proc.stdout)  # 첫 sync에서 Wiki에서 사라질 URL
+        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--carry-sources")
+        self.assertTrue(
+            self.paths["노트C"].read_text(encoding="utf-8").endswith(
+                "## 출처\n\n- <https://example.com/c>\n- <https://example.com/c2>\n"
+            )
+        )
+
+    def test_carry_sources_inserts_into_existing_section(self) -> None:
+        til_g = "# 지\n\n지 본문.\n\n## 출처\n\n- <https://example.com/a>\n"
+        self.paths["노트G"] = self.til_note("python", "노트G", til_g)
+        self.wiki_note(
+            "노트G",
+            "\n지 본문. Wiki에서 고침.\n\n## 출처\n\n- <https://example.com/a>\n",
+            source="source:\n  - https://example.com/a\n  - https://example.com/b\n",
+        )
+        g = self.plan()["notes"]["노트G"]
+        self.assertEqual(g["missing_sources"], ["https://example.com/b"])
+        self.assertTrue(g["roundtrip_ok"])
+        self.call("--apply", "--out", str(self.out), "--only", "노트G")
+        self.assertNotIn("example.com/b", self.paths["노트G"].read_text(encoding="utf-8"))
+        self.paths["노트G"].write_text(til_g, encoding="utf-8")  # 되돌리고 carry로 다시
+        self.call("--apply", "--out", str(self.out), "--only", "노트G", "--carry-sources")
+        text = self.paths["노트G"].read_text(encoding="utf-8")
+        self.assertIn("지 본문. Wiki에서 고침.", text)
+        self.assertTrue(
+            text.endswith("## 출처\n\n- <https://example.com/a>\n- <https://example.com/b>\n"), text
+        )
+
+    def test_plan_includes_equal_body_with_missing_source(self) -> None:
+        til_h = "# 에이치\n\n본문.\n\n## 출처\n\n- <https://example.com/a>\n"
+        self.til_note("python", "노트H", til_h)
+        self.wiki_note(
+            "노트H",
+            "\n본문.\n\n## 출처\n\n- <https://example.com/a>\n",
+            source="source:\n  - https://example.com/a\n  - https://example.com/z\n",
+        )
+        h = self.plan()["notes"]["노트H"]
+        self.assertFalse(h["body_changed"])
+        self.assertEqual(h["missing_sources"], ["https://example.com/z"])
 
     # -- build-state -----------------------------------------------------
 
@@ -343,10 +446,10 @@ class BackportTest(unittest.TestCase):
 
     def test_apply_records_union_of_runs(self) -> None:
         self.plan()
-        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--unresolved", "text")
+        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--carry-sources")
         self.call("--apply", "--out", str(self.out), "--only", "노트B", "--unresolved", "text")
         # 이미 적용한 편을 다시 넣으면 TIL이 바뀌어 실패하지만 목록에서 빠지지 않는다
-        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--unresolved", "text", expect=1)
+        self.call("--apply", "--out", str(self.out), "--only", "노트C", "--carry-sources", expect=1)
         self.assertEqual(
             json.loads((self.out / "applied.json").read_text(encoding="utf-8")), ["노트B", "노트C"]
         )
@@ -401,7 +504,9 @@ class BackportTest(unittest.TestCase):
             stem: fm.parse(p.read_text(encoding="utf-8")).body
             for stem, p in ((_nfc(p.stem), p) for p in self.wiki.glob("*.md"))
         }
-        self.call("--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text")
+        self.call(
+            "--apply", "--out", str(self.out), "--only", "노트B,노트C", "--unresolved", "text", "--carry-sources"
+        )
         self.call("--build-state", "--out", str(self.out))
 
         first = self.sync_counts(self.call("--verbose", script=SYNC_SCRIPT))

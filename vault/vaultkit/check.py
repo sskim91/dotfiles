@@ -35,7 +35,11 @@ KINDS = (
     "name-conflict",  # 예약: Task 6 이후 연결
     "wiki-only-til-tag",
     "skill-drift",
+    "tag-empty",
 )
+
+# tags가 비었거나 없으면 안 되는 scope(분류·MOC 등록이 태그에 의존).
+TAG_REQUIRED_SCOPES = ("wiki-til", "wiki-only", "projects")
 
 # 규칙 문서를 가리켜야 하는 노트 관련 스킬(Claude판·Codex판 공통).
 NOTE_SKILLS = (
@@ -178,6 +182,8 @@ def run_check(policy: Policy) -> Report:
             continue
 
         tags = frontmatter.get_list(doc, "tags")
+        if note.scope in TAG_REQUIRED_SCOPES and not any(t.strip() for t in tags):
+            add("tag-empty", note.rel, "tags 없음" if "tags" not in doc.fields else "tags 비어 있음")
         for reason in tag_violations(tags, policy, note.scope):
             add("tag", note.rel, reason)
         if note.scope == "wiki-only" and "til" in (t.strip() for t in tags):

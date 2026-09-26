@@ -66,6 +66,7 @@ class TilScriptTest(unittest.TestCase):
         self.til.mkdir()
         (self.til / "tag-mapping.json").write_text("{}", encoding="utf-8")
         self.state_path = self.wiki / ".til-sync-state.json"
+        self.backups = self.root / "backups"
 
         raw = json.loads((VAULT_DIR / "vault-policy.json").read_text(encoding="utf-8"))
         raw["paths"]["vault_root"] = str(self.vault)
@@ -74,6 +75,7 @@ class TilScriptTest(unittest.TestCase):
         self.policy_path.write_text(json.dumps(raw, ensure_ascii=False), encoding="utf-8")
 
     def tearDown(self) -> None:
+        self.wiki.chmod(stat.S_IRWXU)
         for p in self.root.rglob("*"):
             if p.is_file():
                 p.chmod(stat.S_IRUSR | stat.S_IWUSR)
@@ -88,6 +90,7 @@ class TilScriptTest(unittest.TestCase):
             OBSIDIAN_PATH=str(self.wiki),
             VAULTKIT_PATH=str(VAULT_DIR),
             VAULTKIT_POLICY=str(self.policy_path),
+            VAULTKIT_BACKUP_DIR=str(self.backups),  # 기본 ~/.local/state에 쓰지 않도록
         )
         env.pop("SYNC_STATE_PATH", None)
         env.update(extra)
@@ -172,6 +175,7 @@ class TilScriptTest(unittest.TestCase):
         self.assertEqual(self.wiki_md_names(), set())
         self.assertEqual(self.state_path.read_bytes(), before_state)
         self.assertEqual((self.wiki / "_MOC" / "MOC-Python.md").read_text(encoding="utf-8"), MOC_PYTHON)
+        self.assertFalse(self.backups.exists())
 
     def test_create_registers_moc(self) -> None:
         self.write_state({})
@@ -233,6 +237,59 @@ class TilScriptTest(unittest.TestCase):
         self.assertIn("새 본문.", new)
         self.assertIn("[[Wiki전용]]", new)
         self.assertEqual(self.read_state()["notes"]["노트A"]["body_sha"], body_sha("새 본문.\n"))
+
+    def test_update_backs_up_existing_file_first(self) -> None:
+        old_body = "\n옛 본문.\n"
+        p = self.wiki_note(_nfd("노트A"), old_body)  # 디스크 파일명 NFD
+        original = p.read_bytes()
+        self.write_state({"노트A": {"body_sha": body_sha(old_body), "status": "synced"}})
+        self.til_note("python", "노트A", "새 본문.\n")
+        self.til_note("python", "노트B")  # create: 기존 파일 없음 → 백업 대상 아님
+        proc = self.run_script()
+        dirs = list(self.backups.iterdir())
+        self.assertEqual(len(dirs), 1)
+        self.assertTrue(dirs[0].name.startswith("til-sync-"), dirs[0].name)
+        self.assertIn(str(dirs[0]), proc.stdout)
+        backed = list(dirs[0].iterdir())
+        self.assertEqual([_nfc(b.name) for b in backed], ["노트A.md"])
+        self.assertEqual(backed[0].read_bytes(), original)
+        self.assertIn("새 본문.", p.read_text(encoding="utf-8"))
+        self.assertEqual(self.wiki_md_names(), {"노트A.md", "노트B.md"})
+        self.assertEqual([x.name for x in self.wiki.iterdir() if x.name.endswith(".tmp")], [])
+
+    def test_create_only_makes_no_backup(self) -> None:
+        self.write_state({})
+        self.til_note("python", "노트A")
+        self.run_script()
+        self.assertFalse(self.backups.exists())
+
+    def test_readonly_wiki_dir_keeps_original_intact(self) -> None:
+        old_body = "\n옛 본문.\n"
+        p = self.wiki_note("노트A", old_body)
+        original = p.read_bytes()
+        state = self.root / "state.json"
+        entry = {"body_sha": body_sha(old_body), "status": "synced"}
+        state.write_text(json.dumps({"version": 2, "notes": {"노트A": entry}}), encoding="utf-8")
+        self.til_note("python", "노트A", "새 본문.\n")
+        self.wiki.chmod(stat.S_IRUSR | stat.S_IXUSR)  # 임시 파일을 만들 수 없음
+        proc = self.run_script(SYNC_STATE_PATH=str(state))
+        self.wiki.chmod(stat.S_IRWXU)
+        self.assertIn("쓰기 실패", proc.stdout)
+        self.assertEqual(p.read_bytes(), original)
+        self.assertEqual([x.name for x in self.wiki.iterdir() if x.name.endswith(".tmp")], [])
+        self.assertEqual(json.loads(state.read_text(encoding="utf-8"))["notes"]["노트A"], entry)
+
+    def test_create_refuses_case_only_wiki_match(self) -> None:
+        p = self.wiki_note("foo-bar", "\nWiki 전용 본문.\n", tags="  - python/basics\n")
+        before = p.read_bytes()
+        self.write_state({})
+        self.til_note("python", "Foo-Bar")
+        proc = self.run_script()
+        self.assertIn("conflict: 1", proc.stdout)
+        self.assertIn("대소문자", proc.stdout)
+        self.assertEqual(p.read_bytes(), before)
+        self.assertNotIn("Foo-Bar", self.read_state()["notes"])
+        self.assertFalse(self.backups.exists())
 
     def test_frontmatter_only_reported(self) -> None:
         self.wiki_note("노트A", "\nWiki에서 고친 본문.\n")

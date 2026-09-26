@@ -61,7 +61,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 python3 ~/.dotfiles/vault/vk check
 ```
 
-출력은 `[kind] 경로: 내용` 줄과 마지막 `합계:` 줄이다. kind별로 묶어 보고한다. 태그(`tag`), frontmatter, MOC·허브 누락·중복(`moc-*`, `hub-missing`), 개수 표기(`count`), 깨진 링크(`link`), TIL 원본(`til-*`, `name-conflict`, `wiki-only-til-tag`), 스킬 사본 차이(`skill-drift`)가 여기서 판정된다. 아래 단계에서 같은 항목을 다시 세지 않는다.
+출력은 `[kind] 경로: 내용` 줄과 마지막 `합계:` 줄이다. kind별로 묶어 보고한다. 태그(`tag`), frontmatter, MOC·허브 누락·중복(`moc-*`, `hub-missing`), 개수 표기(`count`), 빈 태그(`tag-empty`), 깨진 링크(`link`), TIL 원본(`til-*`, `name-conflict`, `wiki-only-til-tag`), 스킬 사본 차이(`skill-drift`)가 여기서 판정된다. 아래 단계에서 같은 항목을 다시 세지 않는다.
 
 ### Step 0.5: 기계적 수정 (`--apply`, 명시 요청 시에만)
 
@@ -70,7 +70,8 @@ python3 ~/.dotfiles/vault/vk apply --dry-run   # 항상 먼저. 바뀔 파일 �
 python3 ~/.dotfiles/vault/vk apply             # 사용자 승인 후에만
 ```
 
-- `apply`는 태그 rename·drop, frontmatter 순서, 대응표로 정해지는 등록, MOC 개수 표기만 고친다. 실행 전 대상 파일을 `$TMPDIR/vaultkit-backup/<timestamp>/`에 복사한다.
+- `apply`는 태그 rename·drop, frontmatter 순서, 대응표로 정해지는 등록, MOC 개수 표기만 고친다. 실행 전 대상 파일을 `~/.local/state/vaultkit/backups/<timestamp>/`에 복사한다(`--backup-dir` 또는 `VAULTKIT_BACKUP_DIR`로 바꿈). 출력의 `백업:` 경로를 사용자에게 알린다.
+- `건너뜀(empty-after-normalize)` 노트는 정규화하면 태그가 모두 사라지는 노트다. 쓰지 않았으므로 태그·위치를 사용자와 정한다. `til_root`가 없으면 `apply`는 쓰기를 거부한다(exit 2).
 - TIL 파생 노트의 태그는 Wiki에서 고치지 않는다. `vk apply --til-mapping --dry-run`으로 `tag-mapping.json` 변경을 확인한 뒤 TIL 쪽에서 반영한다(til-tagger).
 - 적용 후 `vk check`를 다시 실행해 남은 항목(판단 필요)만 보고한다.
 

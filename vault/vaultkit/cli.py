@@ -1,7 +1,7 @@
 """vaultkit 명령줄 진입점.
 
 ``python3 -m vaultkit <명령>`` 또는 ``python3 ~/.dotfiles/vault/vk <명령>``.
-명령: ``check [--json]``, ``apply [--dry-run] [--til-mapping]``,
+명령: ``check [--json]``, ``apply [--dry-run] [--til-mapping] [--backup-dir DIR]``,
 ``register <file>...``, ``derive-maps``.
 """
 
@@ -13,7 +13,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from .apply import run_apply
+from .apply import ApplyRefused, run_apply
 from .check import run_check
 from .policy import load_policy
 from .register import derive_maps, register_note
@@ -29,6 +29,11 @@ def _build_parser() -> argparse.ArgumentParser:
     apply = sub.add_parser("apply", help="기계적 수정 적용")
     apply.add_argument("--dry-run", action="store_true", help="쓰지 않고 바뀔 파일만 보고")
     apply.add_argument("--til-mapping", action="store_true", help="TIL tag-mapping.json도 정규화")
+    apply.add_argument(
+        "--backup-dir",
+        type=Path,
+        help="백업 루트(기본 VAULTKIT_BACKUP_DIR 또는 ~/.local/state/vaultkit/backups)",
+    )
 
     register = sub.add_parser("register", help="노트를 MOC/허브에 등록")
     register.add_argument("files", nargs="+", type=Path)
@@ -56,16 +61,7 @@ def main(argv: list[str] | None = None) -> int:
         return report.exit_code
 
     if args.command == "apply":
-        result = run_apply(policy, dry_run=args.dry_run, til_mapping=args.til_mapping)
-        prefix = "변경 예정" if args.dry_run else "변경"
-        for rel in result.changed:
-            print(f"{prefix}: {rel}")
-        for rel in result.skipped_unparseable:
-            print(f"건너뜀(파싱 불가): {rel}")
-        print(f"{prefix} {len(result.changed)}건, 파싱 불가 {len(result.skipped_unparseable)}건")
-        if result.backup_dir is not None:
-            print(f"백업: {result.backup_dir}")
-        return 0
+        return _apply(policy, args)
 
     if args.command == "register":
         for path in args.files:
@@ -78,3 +74,41 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     return 2
+
+
+def _apply(policy, args) -> int:
+    backup: list[Path] = []
+
+    def announce(path: Path) -> None:
+        backup.append(path)
+        print(f"백업 위치: {path}", file=sys.stderr, flush=True)
+
+    try:
+        result = run_apply(
+            policy,
+            dry_run=args.dry_run,
+            til_mapping=args.til_mapping,
+            backup_root=args.backup_dir,
+            on_backup_dir=announce,
+        )
+        for warning in result.warnings:
+            print(f"경고: {warning}", file=sys.stderr)
+        prefix = "변경 예정" if args.dry_run else "변경"
+        for rel in result.changed:
+            print(f"{prefix}: {rel}")
+        for rel in result.skipped_unparseable:
+            print(f"건너뜀(파싱 불가): {rel}")
+        for rel in result.empty_after_normalize:
+            print(f"건너뜀(empty-after-normalize): {rel}")
+        print(
+            f"{prefix} {len(result.changed)}건, 파싱 불가 {len(result.skipped_unparseable)}건, "
+            f"empty-after-normalize {len(result.empty_after_normalize)}건"
+        )
+        return 0
+    except ApplyRefused as exc:
+        print(f"vk apply: {exc}", file=sys.stderr)
+        return 2
+    finally:
+        # 정상 종료든 예외든 백업 경로를 마지막에 다시 보인다
+        if backup:
+            print(f"백업: {backup[0]}", flush=True)

@@ -143,5 +143,6 @@ python3 ~/.dotfiles/vault/vk apply --dry-run  # 바뀔 파일만 출력
 python3 ~/.dotfiles/vault/vk apply            # 사용자 승인 후에만
 ```
 
-- `apply`는 태그 rename·drop, frontmatter 순서, 대응표로 정해지는 등록, MOC 개수 표기만 기계적으로 고친다. 실행 전 대상 파일을 `$TMPDIR/vaultkit-backup/<timestamp>/`에 복사한다.
+- `apply`는 태그 rename·drop, frontmatter 순서, 대응표로 정해지는 등록, MOC 개수 표기만 기계적으로 고친다. 실행 전 대상 파일을 `~/.local/state/vaultkit/backups/<timestamp>/`에 복사한다(`--backup-dir` 또는 `VAULTKIT_BACKUP_DIR`로 바꿈). 백업 위치는 첫 쓰기 전과 종료 때(오류 포함) 출력된다.
+- 정규화하면 `tags`가 비는 노트는 쓰지 않고 `건너뜀(empty-after-normalize)`로 보고한다. `til_root`(TIL 저장소)가 없으면 `apply`는 쓰기를 거부한다(exit 2).
 - TIL 파생 노트의 태그는 Wiki가 아니라 `vk apply --til-mapping`(tag-mapping.json 정규화) 뒤 동기화로 고친다.

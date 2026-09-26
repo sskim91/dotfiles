@@ -8,17 +8,26 @@
 (scope ``til-source``).
 
 모든 쓰기는 내용이 달라질 때만 하며, 쓰기 직전 원본을
-``$TMPDIR/vaultkit-backup/<YYYYmmdd-HHMMSS>/<상대경로>``에 복사한다.
+``<백업 루트>/<YYYYmmdd-HHMMSS>/<상대경로>``에 복사한다. 백업 루트는
+``backup_root`` 인자(``--backup-dir``) > ``VAULTKIT_BACKUP_DIR`` >
+``~/.local/state/vaultkit/backups`` 순으로 정한다(``$TMPDIR``은 macOS가
+주기적으로 지우므로 쓰지 않는다).
+
+안전 가드:
+- 비어 있지 않던 ``tags``가 정규화로 비게 되는 노트는 쓰지 않고
+  ``empty_after_normalize``로 보고한다(다른 수정도 하지 않는다).
+- ``til_root``가 없으면 TIL 파생 노트를 구분할 수 없으므로 쓰기 모드는
+  :class:`ApplyRefused`로 거부하고, dry-run은 경고와 함께 진행한다.
 """
 
 from __future__ import annotations
 
 import json
 import os
-import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
 
 from . import frontmatter
 from .check import FRONTMATTER_KEY, iter_notes, nfc, parse_note, read_text, til_stems
@@ -30,20 +39,55 @@ APPLY_SCOPES = frozenset({"projects", "archive", "sources", "templates", "inbox"
 REGISTER_SCOPES = frozenset({"wiki-til", "wiki-only", "projects"})
 
 
+class ApplyRefused(Exception):
+    """쓰기 전에 apply를 거부한다(아무것도 쓰지 않음)."""
+
+
 @dataclass
 class ApplyResult:
     changed: list[str]
     backup_dir: Path | None
     skipped_unparseable: list[str]
+    empty_after_normalize: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+
+def backup_root(explicit: Path | None = None) -> Path:
+    """백업 루트: ``explicit`` > ``VAULTKIT_BACKUP_DIR`` > ``~/.local/state/vaultkit/backups``."""
+    if explicit is not None:
+        return Path(explicit).expanduser()
+    env = os.environ.get("VAULTKIT_BACKUP_DIR")
+    if env:
+        return Path(env).expanduser()
+    return Path.home() / ".local/state/vaultkit/backups"
+
+
+def new_backup_dir(root: Path, prefix: str = "") -> Path:
+    """``root/<prefix><YYYYmmdd-HHMMSS>[-n]``을 새로 만들어 돌려준다."""
+    stamp = prefix + datetime.now().strftime("%Y%m%d-%H%M%S")
+    candidate = root / stamp
+    n = 1
+    while candidate.exists():
+        candidate = root / f"{stamp}-{n}"
+        n += 1
+    candidate.mkdir(parents=True)
+    return candidate
 
 
 class _Writer:
     """변경 기록·백업·쓰기를 한곳에서 처리한다(dry-run이면 기록만)."""
 
-    def __init__(self, dry_run: bool) -> None:
+    def __init__(
+        self,
+        dry_run: bool,
+        backup_root: Path | None = None,
+        on_backup_dir: Callable[[Path], None] | None = None,
+    ) -> None:
         self.dry_run = dry_run
         self.changed: list[str] = []
         self.backup_dir: Path | None = None
+        self._backup_root = backup_root
+        self._on_backup_dir = on_backup_dir
         self._backed_up: set[str] = set()
 
     def mark(self, label: str) -> None:
@@ -55,7 +99,10 @@ class _Writer:
         if self.dry_run or backup_rel in self._backed_up or not path.is_file():
             return
         if self.backup_dir is None:
-            self.backup_dir = _new_backup_dir()
+            # 첫 쓰기 전에 위치를 알린다 — 이후 예외가 나도 호출자가 경로를 안다
+            self.backup_dir = new_backup_dir(backup_root(self._backup_root))
+            if self._on_backup_dir is not None:
+                self._on_backup_dir(self.backup_dir)
         dest = self.backup_dir / backup_rel
         dest.parent.mkdir(parents=True, exist_ok=True)
         dest.write_bytes(path.read_bytes())
@@ -72,25 +119,30 @@ class _Writer:
             fh.write(new)
 
 
-def _new_backup_dir() -> Path:
-    base = Path(os.environ.get("TMPDIR", tempfile.gettempdir())) / "vaultkit-backup"
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    candidate = base / stamp
-    n = 1
-    while candidate.exists():
-        candidate = base / f"{stamp}-{n}"
-        n += 1
-    candidate.mkdir(parents=True)
-    return candidate
+def run_apply(
+    policy: Policy,
+    *,
+    dry_run: bool,
+    til_mapping: bool = False,
+    backup_root: Path | None = None,
+    on_backup_dir: Callable[[Path], None] | None = None,
+) -> ApplyResult:
+    """정책 수정을 적용한다. ``on_backup_dir``는 백업 디렉터리를 만든 직후(첫 쓰기 전) 불린다."""
+    stems = til_stems(policy)
+    warnings: list[str] = []
+    if stems is None:
+        message = f"til_root 없음({policy.til_root}): TIL 파생 노트를 구분할 수 없음"
+        if not dry_run:
+            raise ApplyRefused(message + " → 쓰기 거부")
+        warnings.append(message + " → 모든 Wiki 노트를 wiki-only로 판정한 결과(쓰기 모드는 거부됨)")
 
-
-def run_apply(policy: Policy, *, dry_run: bool, til_mapping: bool = False) -> ApplyResult:
-    writer = _Writer(dry_run)
+    writer = _Writer(dry_run, backup_root, on_backup_dir)
     skipped: list[str] = []
+    emptied: list[str] = []
     root = policy.vault_root
     to_register = []
 
-    for note in iter_notes(policy, til_stems(policy)):
+    for note in iter_notes(policy, stems):
         if note.scope not in APPLY_SCOPES and note.scope not in REGISTER_SCOPES:
             continue
         doc = parse_note(note.path)
@@ -101,7 +153,10 @@ def run_apply(policy: Policy, *, dry_run: bool, til_mapping: bool = False) -> Ap
         if note.scope in APPLY_SCOPES:
             old = read_text(note.path)
             new = _fix_note(doc, note.scope, policy)
-            writer.write(note.path, _rel(note.path, root), note.rel, old, new)
+            if new is None:
+                emptied.append(note.rel)
+            else:
+                writer.write(note.path, _rel(note.path, root), note.rel, old, new)
         if note.scope in REGISTER_SCOPES:
             to_register.append(note)
 
@@ -111,21 +166,32 @@ def run_apply(policy: Policy, *, dry_run: bool, til_mapping: bool = False) -> Ap
     if til_mapping:
         _apply_til_mapping(policy, writer)
 
-    return ApplyResult(changed=writer.changed, backup_dir=writer.backup_dir, skipped_unparseable=skipped)
+    return ApplyResult(
+        changed=writer.changed,
+        backup_dir=writer.backup_dir,
+        skipped_unparseable=skipped,
+        empty_after_normalize=emptied,
+        warnings=warnings,
+    )
 
 
 def _rel(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
 
 
-def _fix_note(doc: frontmatter.Doc, scope: str, policy: Policy) -> str:
-    """태그 정규화·topics 표기·필드 순서를 적용한 텍스트. frontmatter 없으면 그대로."""
+def _fix_note(doc: frontmatter.Doc, scope: str, policy: Policy) -> str | None:
+    """태그 정규화·topics 표기·필드 순서를 적용한 텍스트. frontmatter 없으면 그대로.
+
+    비어 있지 않던 ``tags``가 정규화로 비게 되면 ``None``(그 파일은 쓰지 않는다).
+    """
     if not doc.has_fm:
         return frontmatter.render(doc)
 
     if "tags" in doc.fields:
         tags = frontmatter.get_list(doc, "tags")
         normalized = normalize_tags(tags, policy, scope)
+        if not normalized and any(t.strip() for t in tags):
+            return None
         if normalized != tags:
             frontmatter.set_list(doc, "tags", normalized)
 

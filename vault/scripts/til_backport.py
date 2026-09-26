@@ -7,7 +7,11 @@ TIL -> Wiki 동기화 상태 파일(v2)을 만든다. 1회용이다.
 단계:
   --plan --out DIR         읽기 전용. DIR에 편별 diff·새 원문·plan.json·summary.md를 쓴다.
   --apply --out DIR        plan 결과대로 TIL 파일을 쓴다(사용자 승인 후).
-      [--only a,b] [--unresolved text|github]
+      [--only a,b] [--include a,b] [--unresolved text|github] [--carry-sources]
+      - plan이 diverged(Wiki가 갈라진 뒤 TIL도 커밋됨: 양쪽 수정·옛 TIL 사본)로 분류한
+        노트는 기본 제외한다. --include에 적은 것만 쓴다(--only로는 포함되지 않음).
+      - Wiki source 중 TIL ``## 출처``에 없는 URL은 --carry-sources일 때만 TIL에 넣는다
+        (기본 끔). 넣지 않으면 첫 sync가 Wiki source를 TIL 값으로 바꿔 그 URL이 사라진다.
   --build-state --out DIR  SYNC_STATE_PATH에 state v2를 만든다(apply 뒤).
 
 경로(환경변수로 덮어씀):
@@ -191,6 +195,24 @@ def append_sources(text: str, urls: list[str]) -> str:
     return text.rstrip("\n") + "\n\n## 출처\n\n" + items
 
 
+def carry_sources(text: str, append: list[str], missing: list[str]) -> str:
+    """``--carry-sources``: ``## 출처``가 없으면 절을 붙이고, 있으면 그 절 끝에 URL을 더한다."""
+    if append:
+        return append_sources(text, append)
+    if not missing:
+        return text
+    m = tilsync._SOURCE_SECTION.search(text)
+    if m is None:
+        return append_sources(text, missing)
+    end = m.start(1) + len(m.group(1).rstrip())
+    return text[:end] + "".join(f"\n- <{u}>" for u in missing) + text[end:]
+
+
+def _diverged(notes: dict) -> list[str]:
+    """Wiki가 갈라진 뒤 TIL도 커밋된 노트(역이관하면 TIL 커밋이 되돌려짐)."""
+    return [s for s, n in notes.items() if n["base"]["commits_after"] > 0]
+
+
 def _til_frontmatter_prefix(text: str) -> str:
     """build_note가 벗기는 TIL frontmatter 블록(없으면 빈 문자열)."""
     if text.startswith("---"):
@@ -287,41 +309,38 @@ def cmd_plan(out: Path, paths: dict) -> int:
             doc.body = doc.body.lstrip("\n")
             ported, unresolved = tilsync.reverse_port(fm.render(doc), gen.title, folder_of, folder)
             new_text = _til_frontmatter_prefix(til_text) + ported
+        # Wiki source 중 새 원문 `## 출처`에 없는 URL: 절이 없으면 전부(append), 있으면 빠진 것만
         present = tilsync.extract_sources(new_text)
         source_append: list[str] = []
+        missing_sources: list[str] = []
         if wiki_sources and not tilsync._SOURCE_SECTION.search(new_text):
             source_append = list(wiki_sources)
-            new_text = append_sources(new_text, source_append)
-        missing_sources = [u for u in wiki_sources if u not in present and u not in source_append]
-        if same and not source_append:
+        else:
+            missing_sources = [u for u in wiki_sources if u not in present]
+        if same and not source_append and not missing_sources:
             equal_count += 1
             continue
 
         new_path = out / "new" / folder / src.name
         _write(new_path, new_text)
-        diff_lines = list(
-            difflib.unified_diff(
-                til_text.splitlines(keepends=True),
-                new_text.splitlines(keepends=True),
-                fromfile=f"a/{folder}/{src.name}",
-                tofile=f"b/{folder}/{src.name}",
-            )
-        )
-        _write(out / f"{stem}.diff", "".join(diff_lines))
-        changed = sum(
-            1 for ln in diff_lines if ln[:1] in "+-" and not ln.startswith(("+++", "---"))
-        )
+        changed = _write_diff(out / f"{stem}.diff", til_text, new_text, folder, src.name)
 
-        # 새 원문을 다시 생성했을 때 Wiki 본문(+붙인 출처)과 동등한지
-        rt_path = out / "_roundtrip" / folder / src.name
-        _write(rt_path, new_text)
-        gen2 = tilsync.build_note(rt_path, folder, policy, mapping)
-        intended = fm.parse(wiki_text).body
-        if source_append:
-            intended = append_sources(intended, source_append)
-        roundtrip_ok = equivalent(intended, gen2.body) and (
-            not source_append or gen2.sources == source_append
-        )
+        # 새 원문을 다시 생성했을 때 Wiki 본문과 동등한지(carry 사본은 붙인 출처까지)
+        wiki_body = fm.parse(wiki_text).body
+        roundtrip_ok = equivalent(wiki_body, _regen(out, "_roundtrip", new_text, folder, src.name, policy, mapping).body)
+        carry_file = None
+        if source_append or missing_sources:
+            carry_text = carry_sources(new_text, source_append, missing_sources)
+            carry_path = out / "new-carry" / folder / src.name
+            _write(carry_path, carry_text)
+            _write_diff(out / f"{stem}.carry.diff", til_text, carry_text, folder, src.name)
+            carry_file = str(carry_path.relative_to(out))
+            gen_c = _regen(out, "_roundtrip-carry", carry_text, folder, src.name, policy, mapping)
+            roundtrip_ok = (
+                roundtrip_ok
+                and equivalent(carry_sources(wiki_body, source_append, missing_sources), gen_c.body)
+                and all(u in gen_c.sources for u in wiki_sources)
+            )
 
         notes[stem] = {
             "folder": folder,
@@ -329,6 +348,7 @@ def cmd_plan(out: Path, paths: dict) -> int:
             "til_sha": _sha(til_text),
             "wiki_body_sha": tilsync.body_sha(fm.parse(wiki_text).body),
             "new_file": str(new_path.relative_to(out)),
+            "new_carry_file": carry_file,
             "body_changed": not same,
             "source_append": source_append,
             "missing_sources": missing_sources,
@@ -359,6 +379,26 @@ def cmd_plan(out: Path, paths: dict) -> int:
     _write(out / "summary.md", _render_summary(plan))
     print(f"plan: 이관 대상 {len(notes)}편, 동등 {equal_count}편, retired 후보 {len(retired)}편 → {out}")
     return 0
+
+
+def _write_diff(path: Path, old: str, new: str, folder: str, name: str) -> int:
+    """unified diff를 쓰고 바뀐 줄 수를 돌려준다."""
+    lines = list(
+        difflib.unified_diff(
+            old.splitlines(keepends=True),
+            new.splitlines(keepends=True),
+            fromfile=f"a/{folder}/{name}",
+            tofile=f"b/{folder}/{name}",
+        )
+    )
+    _write(path, "".join(lines))
+    return sum(1 for ln in lines if ln[:1] in "+-" and not ln.startswith(("+++", "---")))
+
+
+def _regen(out: Path, sub: str, text: str, folder: str, name: str, policy, mapping):
+    path = out / sub / folder / name
+    _write(path, text)
+    return tilsync.build_note(path, folder, policy, mapping)
 
 
 def wiki_base(
@@ -419,20 +459,22 @@ def _render_summary(plan: dict) -> str:
     notes = plan["notes"]
     body = [n for n in notes.values() if n["body_changed"]]
     src_only = [s for s, n in notes.items() if n["source_append"]]
+    carry = [(s, n["source_append"] or n["missing_sources"]) for s, n in notes.items() if n["new_carry_file"]]
     folders = Counter(n["folder"] for n in notes.values())
     top = sorted(notes.items(), key=lambda kv: (-kv[1]["changed_lines"], kv[0]))[:10]
     unresolved = sum(len(n["unresolved"]) for n in notes.values())
     bad = [s for s, n in notes.items() if not n["roundtrip_ok"]]
-    missing = [(s, n["missing_sources"]) for s, n in notes.items() if n["missing_sources"]]
-    diverged = [(s, n) for s, n in notes.items() if n["base"]["commits_after"] > 0]
+    diverged = [(s, notes[s]) for s in _diverged(notes)]
 
     lines = [
         "# TIL 역이관 plan 요약",
         "",
-        f"- 이관 대상: {len(notes)}편 (본문 역이관 {len(body)}편, 출처 추가 {len(src_only)}편)",
+        f"- 이관 대상: {len(notes)}편 (본문 역이관 {len(body)}편, 출처 후보 {len(carry)}편"
+        f" — `## 출처` 없음 {len(src_only)}편 포함, `--carry-sources`일 때만 추가)",
         f"- 이미 동등해 건너뜀: {plan['equal']}편",
         f"- unresolved 링크: {unresolved}건",
-        f"- Wiki가 갈라진 뒤 TIL도 고쳐진 노트: {len(diverged)}편 (아래 절 확인)",
+        f"- Wiki가 갈라진 뒤 TIL도 고쳐진 노트(diverged): {len(diverged)}편"
+        f" — `--apply` 기본 제외, `--include`로만 포함: {', '.join(s for s, _ in diverged) or '없음'}",
         f"- build-state에서 retired로 기록할 TIL 노트(Wiki에 없음): {len(plan['retired'])}편",
         f"- GitHub 링크 기준: {plan['github_base'] or '없음(origin이 GitHub 아님)'}",
         "",
@@ -458,8 +500,11 @@ def _render_summary(plan: dict) -> str:
         "## Wiki가 갈라진 뒤 TIL도 고쳐진 노트 (역이관하면 TIL 변경이 되돌려짐 → 검토 필요)",
         "",
         "Wiki 본문과 가장 닮은 TIL 버전(작업트리+커밋 이력)이 최신이 아닌 노트."
-        " 유형 '옛 TIL 사본'은 Wiki 수정이 없어 역이관이 TIL 변경만 되돌리므로 `--only`에서 뺀다"
-        "(build-state가 Wiki 본문 해시로 기록해 다음 sync가 Wiki를 새 TIL로 맞춘다).",
+        " **`--apply`는 이 노트들을 기본 제외한다** — `--only`에 적어도 포함되지 않고,"
+        " `--include <stem,...>`에 적은 것만 쓴다."
+        " 유형 '옛 TIL 사본'은 Wiki 수정이 없어 역이관이 TIL 변경만 되돌리므로 포함하지 않는다"
+        "(build-state가 Wiki 본문 해시로 기록해 다음 sync가 Wiki를 새 TIL로 맞춘다)."
+        " '양쪽 수정'을 제외하면 build-state가 TIL 생성 본문 해시로 기록해 첫 sync에서 `frontmatter-only`(이관 필요)로 남는다.",
         "",
         "| 노트 | Wiki 기준 TIL 버전 | 이후 TIL 커밋 | 유사도 | 유형 | 변경 줄 |",
         "|---|---|---|---|---|---|",
@@ -470,18 +515,16 @@ def _render_summary(plan: dict) -> str:
             for s, n in diverged
         ],
         "",
-        "## Wiki에만 source가 있는 노트 (TIL 끝에 `## 출처` 추가)",
+        "## Wiki에만 있는 source (`--carry-sources`로만 TIL `## 출처`에 추가, 기본 끔)",
         "",
-        *([f"- {s}" for s in src_only] or ["- 없음"]),
+        "TIL `## 출처`에 없는 Wiki source URL. `## 출처`가 없는 노트는 절을 붙이고, 있는 노트는 그 절 끝에 더한다"
+        "(미리보기: `new-carry/`, `<노트>.carry.diff`)."
+        " **넣지 않으면 첫 sync가 Wiki `source`를 TIL 값으로 바꾸므로 이 URL은 Wiki에서 제거된다**"
+        "(TIL에 출처가 하나도 없으면 `source` 키째 제거).",
+        "",
+        *([f"- {s}: {', '.join(urls)}" for s, urls in carry] or ["- 없음"]),
         "",
     ]
-    if missing:
-        lines += [
-            "## Wiki source 중 새 원문 `## 출처`에 없는 URL (자동 추가 안 함)",
-            "",
-            *[f"- {s}: {', '.join(urls)}" for s, urls in missing],
-            "",
-        ]
     lines += [
         "## 왕복 검증 (새 원문 → build_note → Wiki 본문과 동등)",
         "",
@@ -514,23 +557,48 @@ def _load_plan(out: Path, paths: dict) -> dict:
     return plan
 
 
-def cmd_apply(out: Path, paths: dict, only: list[str] | None, mode: str | None) -> int:
+def cmd_apply(
+    out: Path,
+    paths: dict,
+    only: list[str] | None,
+    mode: str | None,
+    include: list[str] | None = None,
+    carry: bool = False,
+) -> int:
     plan = _load_plan(out, paths)
     notes = plan["notes"]
+    diverged = _diverged(notes)
+    include = include or []
+    bad_include = [s for s in include if s not in diverged]
+    if bad_include:
+        raise UsageError(f"--include는 diverged 노트만 받음(plan: {', '.join(diverged) or '없음'}): {', '.join(bad_include)}")
     if only is not None:
         unknown = [s for s in only if s not in notes]
         if unknown:
             raise UsageError(f"--only에 plan에 없는 노트: {', '.join(unknown)}")
-        selected = [s for s in notes if s in set(only)]
+        blocked = [s for s in only if s in diverged and s not in include]
+        if blocked:
+            raise UsageError(f"--only에 diverged 노트: {', '.join(blocked)} → 포함하려면 --include에도 적기")
+        wanted = set(only) | set(include)
+        selected = [s for s in notes if s in wanted]
     else:
-        selected = list(notes)
+        selected = [s for s in notes if s not in diverged or s in include]
+    excluded = [s for s in diverged if s not in include]
     if mode is None and any(notes[s]["unresolved"] for s in selected):
         raise UsageError("unresolved 링크가 있음 → --unresolved text|github 지정 필요")
 
     applied: list[str] = []
     failures: list[tuple[str, str]] = []
+    source_only: list[str] = []
+    dropped: list[tuple[str, list[str]]] = []
     for stem in selected:
         n = notes[stem]
+        use_carry = carry and n["new_carry_file"] is not None
+        if n["new_carry_file"] is not None and not carry:
+            dropped.append((stem, n["source_append"] or n["missing_sources"]))
+        if not n["body_changed"] and not use_carry:
+            source_only.append(stem)
+            continue
         target = paths["til"] / n["til_file"]
         try:
             current = _read(target)
@@ -540,7 +608,7 @@ def cmd_apply(out: Path, paths: dict, only: list[str] | None, mode: str | None) 
         if _sha(current) != n["til_sha"]:
             failures.append((stem, "plan 뒤 TIL 파일이 바뀜 → 쓰지 않음(다시 --plan)"))
             continue
-        text = _read(out / n["new_file"])
+        text = _read(out / (n["new_carry_file"] if use_carry else n["new_file"]))
         if n["unresolved"]:
             text = resolve_unresolved(text, mode, {u["link"]: u for u in n["unresolved"]})
         try:
@@ -556,6 +624,14 @@ def cmd_apply(out: Path, paths: dict, only: list[str] | None, mode: str | None) 
     recorded = sorted(set(previous) | set(applied))
     _write(applied_path, json.dumps(recorded, ensure_ascii=False) + "\n")
     print(f"apply: {len(applied)}편 씀")
+    if excluded:
+        print(f"  diverged 기본 제외 {len(excluded)}편(--include로만 포함): {', '.join(excluded)}")
+    if source_only:
+        print(f"  출처만 다른 노트 {len(source_only)}편 건너뜀(--carry-sources 없음): {', '.join(source_only)}")
+    if dropped:
+        print("  ⚠️ --carry-sources 없음 → 첫 sync에서 Wiki source에서 제거될 URL:")
+        for stem, urls in dropped:
+            print(f"    - {stem}: {', '.join(urls)}")
     for stem, why in failures:
         print(f"  ❌ {stem}: {why}")
     return 1 if failures else 0
@@ -629,6 +705,10 @@ def cmd_build_state(out: Path, paths: dict) -> int:
 # ------------------------------------------------------------------
 
 
+def _stems(value: str) -> list[str]:
+    return [_nfc(s.strip()) for s in value.split(",") if s.strip()]
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="TIL <- Wiki 최초 이관")
     group = parser.add_mutually_exclusive_group(required=True)
@@ -636,7 +716,11 @@ def main(argv: list[str] | None = None) -> int:
     group.add_argument("--apply", action="store_true", help="plan대로 TIL 파일 쓰기")
     group.add_argument("--build-state", action="store_true", help="state v2 생성")
     parser.add_argument("--out", required=True, type=Path, help="plan 결과 디렉터리")
-    parser.add_argument("--only", help="apply할 노트 stem 목록(쉼표 구분)")
+    parser.add_argument("--only", help="apply할 노트 stem 목록(쉼표 구분, diverged는 --include 필요)")
+    parser.add_argument("--include", help="apply에 포함할 diverged 노트 stem 목록(쉼표 구분, 기본 제외)")
+    parser.add_argument(
+        "--carry-sources", action="store_true", help="Wiki에만 있는 source URL을 TIL `## 출처`에 추가(기본 끔)"
+    )
     parser.add_argument("--unresolved", choices=("text", "github"), help="unresolved 링크 처리")
     parser.add_argument("--real", action="store_true", help="실제 TIL·Wiki 경로 쓰기 허용(사용자 승인 후)")
     args = parser.parse_args(argv)
@@ -649,8 +733,9 @@ def main(argv: list[str] | None = None) -> int:
             return cmd_plan(out, paths)
         _check_out(out, paths)
         if action == "apply":
-            only = [_nfc(s.strip()) for s in args.only.split(",") if s.strip()] if args.only else None
-            return cmd_apply(out, paths, only, args.unresolved)
+            only = _stems(args.only) if args.only else None
+            include = _stems(args.include) if args.include else None
+            return cmd_apply(out, paths, only, args.unresolved, include, args.carry_sources)
         return cmd_build_state(out, paths)
     except UsageError as exc:
         print(f"til_backport: {exc}", file=sys.stderr)

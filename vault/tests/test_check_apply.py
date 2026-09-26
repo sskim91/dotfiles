@@ -1,12 +1,14 @@
 """vaultkit.check / vaultkit.apply 테스트.
 
 kind별 위반을 하나씩 심은 미니 vault를 tempfile로 만들어 검증한다.
-실제 vault·TIL은 전혀 건드리지 않는다(백업 위치도 TMPDIR을 테스트
-임시 폴더로 바꿔 격리한다).
+실제 vault·TIL은 전혀 건드리지 않는다(백업 위치도 ``VAULTKIT_BACKUP_DIR``을
+테스트 임시 폴더로 바꿔 격리한다 — 기본값 ``~/.local/state``에 쓰지 않도록).
 """
 
 from __future__ import annotations
 
+import contextlib
+import io
 import json
 import os
 import tempfile
@@ -14,7 +16,8 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from vaultkit.apply import run_apply
+from vaultkit import cli
+from vaultkit.apply import ApplyRefused, backup_root, run_apply
 from vaultkit.check import KINDS, Finding, Report, run_check
 from vaultkit.policy import Policy
 
@@ -72,7 +75,10 @@ class _TempVaultCase(unittest.TestCase):
         self.vault = self.root / "vault"
         self.vault.mkdir()
         (self.root / "TIL").mkdir()
-        env = mock.patch.dict(os.environ, {"TMPDIR": str(self.root / "tmp")})
+        self.backups = self.root / "backups"
+        env = mock.patch.dict(
+            os.environ, {"TMPDIR": str(self.root / "tmp"), "VAULTKIT_BACKUP_DIR": str(self.backups)}
+        )
         env.start()
         self.addCleanup(env.stop)
         (self.root / "tmp").mkdir()
@@ -201,6 +207,17 @@ class CheckTest(_TempVaultCase):
         til_tag = {f.path for f in report.findings if f.kind == "wiki-only-til-tag"}
         self.assertEqual(til_tag, {"Wiki/Hidden-Readme.md", "Wiki/Script-Doc.md"})
 
+    def test_check_tag_empty(self) -> None:
+        _write(self.vault / "Wiki/Empty-List.md", '---\ntitle: "E"\ntags: []\n---\n본문\n')
+        _write(self.vault / "Wiki/No-Tags.md", '---\ntitle: "N"\n---\n본문\n')
+        _write(self.vault / "Projects/Misc/No-Tags-P.md", "---\ncreated: 2026-01-01\n---\n본문\n")
+        _write(self.vault / "Wiki/Has-Tags.md", _note("H", ["python/x"]))
+        _write(self.vault / "Sources/Empty-S.md", '---\ntitle: "S"\ntags: []\n---\n본문\n')
+        report = run_check(_make_policy(self.root))
+        empty = {f.path for f in report.findings if f.kind == "tag-empty"}
+        self.assertEqual(empty, {"Wiki/Empty-List.md", "Wiki/No-Tags.md", "Projects/Misc/No-Tags-P.md"})
+        self.assertIn("tag-empty", KINDS)
+
     def test_report_counts(self) -> None:
         report = Report(findings=[Finding("tag", "a", "x"), Finding("tag", "b", "y"), Finding("link", "a", "z")])
         self.assertEqual(report.counts(), {"link": 1, "tag": 2})
@@ -282,7 +299,7 @@ class ApplyTest(_TempVaultCase):
         originals = {rel: (self.vault / rel).read_bytes() for rel in ("Wiki/Messy.md", "Wiki/_MOC/MOC-Kubernetes.md")}
         result = run_apply(policy, dry_run=False)
         self.assertIsNotNone(result.backup_dir)
-        self.assertEqual(result.backup_dir.parent, self.root / "tmp" / "vaultkit-backup")
+        self.assertEqual(result.backup_dir.parent, self.backups)
         for rel, data in originals.items():
             self.assertEqual((result.backup_dir / rel).read_bytes(), data)
         for rel in result.changed:
@@ -321,12 +338,125 @@ class ApplyTest(_TempVaultCase):
         self.assertEqual(second.changed, [])
         self.assertEqual(mapping.read_bytes(), after_first)
 
+    def test_apply_skips_note_emptied_by_normalize(self) -> None:
+        policy = self._build_apply_vault()
+        # Projects 밖 facet만 있어 정규화하면 빈 목록 → 쓰지 않고 보고(순서 위반도 고치지 않음).
+        emptied = '---\ntags:\n  - customer/x\n  - work/genon\ntitle: "E"\n---\n본문\n'
+        _write(self.vault / "Wiki/Emptied.md", emptied)
+        # 원래 비어 있던 tags는 대상이 아니다(순서만 고친다).
+        _write(self.vault / "Archive/Was-Empty.md", "---\ntags: []\nsource: x\n---\n본문\n")
+        dry = run_apply(policy, dry_run=True)
+        self.assertEqual(dry.empty_after_normalize, ["Wiki/Emptied.md"])
+        self.assertNotIn("Wiki/Emptied.md", dry.changed)
+        real = run_apply(policy, dry_run=False)
+        self.assertEqual(real.empty_after_normalize, ["Wiki/Emptied.md"])
+        self.assertNotIn("Wiki/Emptied.md", real.changed)
+        self.assertEqual((self.vault / "Wiki/Emptied.md").read_text(encoding="utf-8"), emptied)
+        self.assertIn("Archive/Was-Empty.md", real.changed)
+
+    def test_apply_refuses_without_til_root(self) -> None:
+        policy = self._build_apply_vault()
+        for p in sorted((self.root / "TIL").rglob("*"), reverse=True):
+            p.unlink() if p.is_file() else p.rmdir()
+        (self.root / "TIL").rmdir()
+        before = _snapshot(self.root)
+        with self.assertRaises(ApplyRefused):
+            run_apply(policy, dry_run=False)
+        self.assertEqual(_snapshot(self.root), before)
+        dry = run_apply(policy, dry_run=True)
+        self.assertEqual(len(dry.warnings), 1)
+        self.assertIn("til_root", dry.warnings[0])
+
+    def test_backup_root_precedence(self) -> None:
+        home = self.root / "home"
+        with mock.patch.dict(os.environ, {"HOME": str(home)}):
+            os.environ.pop("VAULTKIT_BACKUP_DIR")
+            self.assertEqual(backup_root(), home / ".local/state/vaultkit/backups")
+            os.environ["VAULTKIT_BACKUP_DIR"] = "~/bk"
+            self.assertEqual(backup_root(), home / "bk")
+            self.assertEqual(backup_root(Path("~/explicit")), home / "explicit")
+
+    def test_backup_dir_announced_before_first_write(self) -> None:
+        policy = self._build_apply_vault()
+        original = (self.vault / "Wiki/Messy.md").read_bytes()
+        seen: list[tuple[Path, bytes]] = []
+        explicit = self.root / "explicit-backups"
+        result = run_apply(
+            policy,
+            dry_run=False,
+            backup_root=explicit,
+            on_backup_dir=lambda d: seen.append((d, (self.vault / "Wiki/Messy.md").read_bytes())),
+        )
+        self.assertEqual(len(seen), 1)
+        self.assertEqual(seen[0][0], result.backup_dir)
+        self.assertEqual(result.backup_dir.parent, explicit)
+        self.assertEqual(seen[0][1], original)  # 알림 시점에는 아직 쓰지 않음
+        self.assertFalse(self.backups.exists())
+
     def test_til_mapping_not_touched_without_flag(self) -> None:
         policy = self._build_apply_vault()
         mapping = self.root / "TIL/tag-mapping.json"
         _write(mapping, '{"n": ["k8s/old"]}\n')
         run_apply(policy, dry_run=False)
         self.assertEqual(mapping.read_text(encoding="utf-8"), '{"n": ["k8s/old"]}\n')
+
+
+class CliApplyTest(_TempVaultCase):
+    def _policy(self) -> Policy:
+        _write(self.vault / "Wiki/Messy.md", '---\ntags:\n  - k8s/old\ntitle: "M"\n---\n본문\n')
+        return _make_policy(self.root)
+
+    def _main(self, *argv: str, policy: Policy) -> tuple[int, str, str]:
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(cli, "load_policy", return_value=policy), contextlib.redirect_stdout(
+            out
+        ), contextlib.redirect_stderr(err):
+            code = cli.main(list(argv))
+        return code, out.getvalue(), err.getvalue()
+
+    def test_backup_dir_option_and_output(self) -> None:
+        policy = self._policy()
+        target = self.root / "opt-backups"
+        code, out, err = self._main("apply", "--backup-dir", str(target), policy=policy)
+        self.assertEqual(code, 0)
+        dirs = list(target.iterdir())
+        self.assertEqual(len(dirs), 1)
+        self.assertIn(f"백업 위치: {dirs[0]}", err)
+        self.assertIn(f"백업: {dirs[0]}", out)
+        self.assertTrue((dirs[0] / "Wiki/Messy.md").is_file())
+
+    def test_backup_dir_printed_again_on_error(self) -> None:
+        policy = self._policy()
+        out, err = io.StringIO(), io.StringIO()
+        with mock.patch.object(cli, "load_policy", return_value=policy), mock.patch(
+            "vaultkit.apply._counts", side_effect=RuntimeError("boom")
+        ), contextlib.redirect_stdout(out), contextlib.redirect_stderr(err):
+            with self.assertRaises(RuntimeError):
+                cli.main(["apply"])
+        dirs = list(self.backups.iterdir())
+        self.assertEqual(len(dirs), 1)
+        self.assertIn(f"백업 위치: {dirs[0]}", err.getvalue())
+        self.assertIn(f"백업: {dirs[0]}", out.getvalue())
+
+    def test_refuses_without_til_root(self) -> None:
+        policy = self._policy()
+        (self.root / "TIL").rmdir()
+        before = _snapshot(self.vault)
+        code, out, err = self._main("apply", policy=policy)
+        self.assertEqual(code, 2)
+        self.assertIn("til_root", err)
+        self.assertEqual(_snapshot(self.vault), before)
+        self.assertFalse(self.backups.exists())
+        code, out, err = self._main("apply", "--dry-run", policy=policy)
+        self.assertEqual(code, 0)
+        self.assertIn("경고", err)
+        self.assertIn("변경 예정: Wiki/Messy.md", out)
+
+    def test_empty_after_normalize_reported(self) -> None:
+        _write(self.vault / "Wiki/Emptied.md", '---\ntitle: "E"\ntags:\n  - customer/x\n---\n본문\n')
+        code, out, _err = self._main("apply", "--dry-run", policy=_make_policy(self.root))
+        self.assertEqual(code, 0)
+        self.assertIn("건너뜀(empty-after-normalize): Wiki/Emptied.md", out)
 
 
 if __name__ == "__main__":
