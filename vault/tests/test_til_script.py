@@ -257,6 +257,18 @@ class TilScriptTest(unittest.TestCase):
         self.assertEqual(self.wiki_md_names(), {"노트A.md", "노트B.md"})
         self.assertEqual([x.name for x in self.wiki.iterdir() if x.name.endswith(".tmp")], [])
 
+    def test_update_long_name(self) -> None:
+        # 이름 한도(255) 가까운 노트: 임시 파일 이름이 원래 이름보다 길어지면 안 된다
+        stem = "a" * 245
+        old_body = "\n옛 본문.\n"
+        p = self.wiki_note(stem, old_body)
+        self.write_state({stem: {"body_sha": body_sha(old_body), "status": "synced"}})
+        self.til_note("python", stem, "새 본문.\n")
+        proc = self.run_script()
+        self.assertIn("update: 1", proc.stdout)
+        self.assertNotIn("실패", proc.stdout)
+        self.assertIn("새 본문.", p.read_text(encoding="utf-8"))
+
     def test_create_only_makes_no_backup(self) -> None:
         self.write_state({})
         self.til_note("python", "노트A")
