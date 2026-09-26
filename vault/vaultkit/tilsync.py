@@ -99,8 +99,12 @@ def _nfc(text: str) -> str:
 # ------------------------------------------------------------------
 
 
-def _plain_spans(text: str) -> Iterator[tuple[int, int]]:
-    """fenced code block·인라인 코드 밖의 (start, end) 구간을 순서대로 낸다."""
+def _matches_outside_code(text: str, pattern: re.Pattern) -> Iterator[re.Match]:
+    """fenced code block 밖에서, 인라인 코드 안에서 시작하지 않는 매치를 순서대로 낸다.
+
+    인라인 코드로 구간을 자르지 않고 매치 시작 위치로만 거른다 — 그래야
+    ``[`code`](./a.md)``처럼 레이블 안에 백틱이 든 링크도 인식된다.
+    """
     pos = 0
     plain_start = 0
     fence: str | None = None
@@ -118,24 +122,20 @@ def _plain_spans(text: str) -> Iterator[tuple[int, int]]:
         regions.append((plain_start, len(text)))
 
     for start, end in regions:
-        cursor = start
-        for m in _INLINE_CODE.finditer(text, start, end):
-            if m.start() > cursor:
-                yield cursor, m.start()
-            cursor = m.end()
-        if cursor < end:
-            yield cursor, end
+        code = [c.span() for c in _INLINE_CODE.finditer(text, start, end)]
+        for m in pattern.finditer(text, start, end):
+            if not any(a <= m.start() < b for a, b in code):
+                yield m
 
 
 def _sub_outside_code(text: str, pattern: re.Pattern, repl) -> str:
     """코드 밖에서만 ``pattern``을 치환한다. ``repl(match, text)``."""
     out: list[str] = []
     last = 0
-    for start, end in _plain_spans(text):
-        for m in pattern.finditer(text, start, end):
-            out.append(text[last : m.start()])
-            out.append(repl(m, text))
-            last = m.end()
+    for m in _matches_outside_code(text, pattern):
+        out.append(text[last : m.start()])
+        out.append(repl(m, text))
+        last = m.end()
     out.append(text[last:])
     return "".join(out)
 
@@ -168,12 +168,11 @@ def extract_related_notes(content: str) -> list[str]:
     """코드 밖 내부 링크 대상을 ``[[stem]]``으로, 중복 없이 순서 유지."""
     seen: set[str] = set()
     notes: list[str] = []
-    for start, end in _plain_spans(content):
-        for m in INTERNAL_LINK_PATTERN.finditer(content, start, end):
-            stem = m.group(2)
-            if _nfc(stem) not in seen:
-                seen.add(_nfc(stem))
-                notes.append(f"[[{stem}]]")
+    for m in _matches_outside_code(content, INTERNAL_LINK_PATTERN):
+        stem = m.group(2)
+        if _nfc(stem) not in seen:
+            seen.add(_nfc(stem))
+            notes.append(f"[[{stem}]]")
     return notes
 
 

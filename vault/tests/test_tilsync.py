@@ -317,6 +317,12 @@ class TestBuildNote(_TmpDirCase):
         self.assertEqual(gen.body, "```\n[x](./a.md)\n```\n\n`[y](./b.md)` [[c|z]]\n")
         self.assertEqual(gen.til_links, ["[[c]]"])
 
+    def test_backtick_label_link_converted(self):
+        src = self.write("web/n.md", "# t\n\n[`web/a...`](a.md) 와 `[y](./b.md)`\n")
+        gen = build_note(src, "web", self.policy, {})
+        self.assertEqual(gen.body, "[[a|`web/a...`]] 와 `[y](./b.md)`\n")
+        self.assertEqual(gen.til_links, ["[[a]]"])
+
     def test_existing_til_frontmatter_stripped(self):
         src = self.write("ai/n.md", "---\nfoo: bar\n---\n# t\n본문\n")
         gen = build_note(src, "ai", self.policy, {})
@@ -357,6 +363,11 @@ class TestReversePort(unittest.TestCase):
         body = "```\n[[a]]\n```\n`[[a]]`\n"
         til, unresolved = reverse_port(self._wiki(body), "T", self.INDEX, "ai")
         self.assertEqual(til, "# T\n\n" + body)
+        self.assertEqual(unresolved, [])
+
+    def test_reverse_port_backtick_alias(self):
+        til, unresolved = reverse_port(self._wiki("[[a|`코드 별칭`]]\n"), "T", self.INDEX, "ai")
+        self.assertEqual(til, "# T\n\n[`코드 별칭`](./a.md)\n")
         self.assertEqual(unresolved, [])
 
     def test_reverse_port_table_escaped_pipe(self):
