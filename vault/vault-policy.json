@@ -270,9 +270,1149 @@
     "proxy": "network",
     "design-pattern": "cs"
   },
-  "moc": {},
-  "hubs": {},
-  "genos_subfolders": {},
+  "moc": {
+    "ai/*": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/agent": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "ai/agentic-coding": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/coding-assistant": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/conversation": [
+      "MOC-AI-LLM",
+      "LangChain·LangGraph"
+    ],
+    "ai/dev-methodology": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/dev-platform": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/embedding": [
+      "MOC-AI-LLM",
+      "검색·RAG·임베딩"
+    ],
+    "ai/engineering": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/hardware": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/harness": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/inference": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/langchain": [
+      "MOC-AI-LLM",
+      "LangChain·LangGraph"
+    ],
+    "ai/langgraph": [
+      "MOC-AI-LLM",
+      "LangChain·LangGraph"
+    ],
+    "ai/llm": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/mcp": [
+      "MOC-AI-LLM",
+      "MCP·프로토콜"
+    ],
+    "ai/ml-serving": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/moe": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/orchestration": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "ai/prompt": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "ai/quantization": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/rag": [
+      "MOC-AI-LLM",
+      "검색·RAG·임베딩"
+    ],
+    "ai/search": [
+      "MOC-AI-LLM",
+      "검색·RAG·임베딩"
+    ],
+    "ai/streaming": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "ai/synthetic-data": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "ai/vector-db": [
+      "MOC-AI-LLM",
+      "검색·RAG·임베딩"
+    ],
+    "ai/vllm": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "ai/workflow": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "aws/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "IaC·클라우드"
+    ],
+    "aws/boto3": [
+      "MOC-컨테이너-IaC-개발환경",
+      "IaC·클라우드"
+    ],
+    "aws/terraform": [
+      "MOC-컨테이너-IaC-개발환경",
+      "IaC·클라우드"
+    ],
+    "backend/*": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "backend/baas": [
+      "MOC-컨테이너-IaC-개발환경",
+      "IaC·클라우드"
+    ],
+    "backend/microservice": [
+      "MOC-Data-Messaging",
+      "메시징·흐름 제어"
+    ],
+    "backend/rest-api": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "backend/sdk": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "backend/session": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "career/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "career/open-source": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "cloud/*": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "cloud/aws": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "cloud/azure": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "cloud/msp": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "cs/*": [
+      "MOC-CS-아키텍처-기타",
+      "디자인 패턴"
+    ],
+    "cs/async": [
+      "MOC-CS-아키텍처-기타",
+      "동시성·비동기 개념"
+    ],
+    "cs/back-pressure": [
+      "MOC-Data-Messaging",
+      "메시징·흐름 제어"
+    ],
+    "cs/cardinality": [
+      "MOC-Data-Messaging",
+      "인덱스·설계"
+    ],
+    "cs/concurrency": [
+      "MOC-CS-아키텍처-기타",
+      "동시성·비동기 개념"
+    ],
+    "cs/data-structure": [
+      "MOC-CS-아키텍처-기타",
+      "CS 이론·언어"
+    ],
+    "cs/design-pattern": [
+      "MOC-CS-아키텍처-기타",
+      "디자인 패턴"
+    ],
+    "cs/pub-sub": [
+      "MOC-Data-Messaging",
+      "메시징·흐름 제어"
+    ],
+    "cs/variance": [
+      "MOC-CS-아키텍처-기타",
+      "CS 이론·언어"
+    ],
+    "cs/virtualization": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "database": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "database/*": [
+      "MOC-Data-Messaging",
+      "인덱스·설계"
+    ],
+    "database/connector": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "database/data-mart": [
+      "MOC-Data-Messaging",
+      "분석·DW·지표"
+    ],
+    "database/index": [
+      "MOC-Data-Messaging",
+      "인덱스·설계"
+    ],
+    "database/key-design": [
+      "MOC-Data-Messaging",
+      "인덱스·설계"
+    ],
+    "database/lock": [
+      "MOC-Data-Messaging",
+      "RDB 내부·트랜잭션"
+    ],
+    "database/oracle": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "database/ords": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "database/redis": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "database/replication": [
+      "MOC-Data-Messaging",
+      "RDB 내부·트랜잭션"
+    ],
+    "database/transaction": [
+      "MOC-Data-Messaging",
+      "RDB 내부·트랜잭션"
+    ],
+    "database/wal": [
+      "MOC-Data-Messaging",
+      "RDB 내부·트랜잭션"
+    ],
+    "devops": [
+      "MOC-배포-CI-CD-GitOps",
+      "ArgoCD·GitOps"
+    ],
+    "devops/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "devops/airgap": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "devops/automation": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "devops/dotfiles": [
+      "MOC-AI-LLM",
+      "코딩 에이전트·도구"
+    ],
+    "devops/gitops": [
+      "MOC-배포-CI-CD-GitOps",
+      "ArgoCD·GitOps"
+    ],
+    "devops/local-dev": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "devops/reverse-proxy": [
+      "MOC-네트워크-원격접속",
+      "프록시·로드밸런서"
+    ],
+    "devops/tmux": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "devops/tools": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "docker/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Docker"
+    ],
+    "docker/compose": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Docker"
+    ],
+    "docker/container": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Docker"
+    ],
+    "docker/filesystem": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Docker"
+    ],
+    "docker/image": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Docker"
+    ],
+    "docker/mcp": [
+      "MOC-AI-LLM",
+      "MCP·프로토콜"
+    ],
+    "economics/*": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "economics/business": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "economics/wage": [
+      "MOC-CS-아키텍처-기타",
+      "도메인·교양"
+    ],
+    "elasticsearch/*": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "elasticsearch/config": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "frontend/*": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "frontend/trend": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "frontend/zustand": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "git/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "git/branching": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "git/contribution": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "git/workflow": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "infra/*": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "infra/bastion": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "infra/devops": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "infra/git": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "infra/remote-access": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "infra/runtime": [
+      "MOC-Data-Messaging",
+      "Oracle·ORDS"
+    ],
+    "infra/ssh": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "infra/vpn": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "java/*": [
+      "MOC-CS-아키텍처-기타",
+      "디자인 패턴"
+    ],
+    "java/collection": [
+      "MOC-Java-Spring",
+      "JDK·언어"
+    ],
+    "java/guava": [
+      "MOC-Java-Spring",
+      "라이브러리"
+    ],
+    "java/io": [
+      "MOC-Java-Spring",
+      "JDK·언어"
+    ],
+    "java/jackson": [
+      "MOC-Java-Spring",
+      "라이브러리"
+    ],
+    "java/jdk": [
+      "MOC-Java-Spring",
+      "JDK·언어"
+    ],
+    "java/jvm": [
+      "MOC-CS-아키텍처-기타",
+      "동시성·비동기 개념"
+    ],
+    "java/language": [
+      "MOC-CS-아키텍처-기타",
+      "디자인 패턴"
+    ],
+    "java/logging": [
+      "MOC-Java-Spring",
+      "라이브러리"
+    ],
+    "java/netty": [
+      "MOC-Java-Spring",
+      "라이브러리"
+    ],
+    "java/null-safety": [
+      "MOC-Java-Spring",
+      "라이브러리"
+    ],
+    "java/parameter-passing": [
+      "MOC-Java-Spring",
+      "JDK·언어"
+    ],
+    "java/serialization": [
+      "MOC-Java-Spring",
+      "JDK·언어"
+    ],
+    "java/ssh": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "javascript/*": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "javascript/prototype": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "kafka/*": [
+      "MOC-Data-Messaging",
+      "메시징·흐름 제어"
+    ],
+    "kafka/intro": [
+      "MOC-Data-Messaging",
+      "메시징·흐름 제어"
+    ],
+    "kubernetes": [
+      "MOC-Kubernetes",
+      "확장·보안·관측"
+    ],
+    "kubernetes/*": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/config": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/deployment": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/gpu": [
+      "MOC-Kubernetes",
+      "확장·보안·관측"
+    ],
+    "kubernetes/harbor": [
+      "MOC-배포-CI-CD-GitOps",
+      "Helm·Harbor"
+    ],
+    "kubernetes/helm": [
+      "MOC-배포-CI-CD-GitOps",
+      "Helm·Harbor"
+    ],
+    "kubernetes/ingress": [
+      "MOC-Kubernetes",
+      "네트워킹·트래픽"
+    ],
+    "kubernetes/intro": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/namespace": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/networking": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/pod": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/probe": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/service": [
+      "MOC-Kubernetes",
+      "네트워킹·트래픽"
+    ],
+    "kubernetes/statefulset": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/volume": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "kubernetes/workload": [
+      "MOC-Kubernetes",
+      "핵심 리소스"
+    ],
+    "learning/*": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "learning/reading": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "learning/research": [
+      "MOC-CS-아키텍처-기타",
+      "동시성·비동기 개념"
+    ],
+    "linux/*": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "linux/shell": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "macos/*": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "macos/launchd": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "macos/power-management": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "network/*": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "network/c10k": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "network/dns": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "network/load-balancer": [
+      "MOC-네트워크-원격접속",
+      "프록시·로드밸런서"
+    ],
+    "network/proxy": [
+      "MOC-네트워크-원격접속",
+      "프록시·로드밸런서"
+    ],
+    "network/terminology": [
+      "MOC-Kubernetes",
+      "네트워킹·트래픽"
+    ],
+    "network/vpn": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "nginx/*": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/architecture": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/config": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/performance": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/production": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/reverse-proxy": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nginx/routing": [
+      "MOC-네트워크-원격접속",
+      "NGINX·C10K"
+    ],
+    "nodejs/*": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "nodejs/event-loop": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "product-analytics/*": [
+      "MOC-Data-Messaging",
+      "분석·DW·지표"
+    ],
+    "product-analytics/metrics": [
+      "MOC-Data-Messaging",
+      "분석·DW·지표"
+    ],
+    "productivity/*": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "productivity/pkm": [
+      "MOC-AI-LLM",
+      "Agent 개념·패턴"
+    ],
+    "python/*": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/args": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/asyncio": [
+      "MOC-Python",
+      "동시성"
+    ],
+    "python/basics": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/built-in": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/client": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/collection": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/concurrency": [
+      "MOC-Python",
+      "동시성"
+    ],
+    "python/context-manager": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/database": [
+      "MOC-Python",
+      "데이터"
+    ],
+    "python/dataclass": [
+      "MOC-Python",
+      "OOP·타입·데이터 모델"
+    ],
+    "python/deployment": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "python/enum": [
+      "MOC-Python",
+      "OOP·타입·데이터 모델"
+    ],
+    "python/enumerate": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/exception": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/f-string": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/fastapi": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "python/gil": [
+      "MOC-Python",
+      "동시성"
+    ],
+    "python/http": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "python/httpx": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "python/lambda": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/module": [
+      "MOC-Python",
+      "OOP·타입·데이터 모델"
+    ],
+    "python/oop": [
+      "MOC-Python",
+      "OOP·타입·데이터 모델"
+    ],
+    "python/package": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/pandas": [
+      "MOC-Python",
+      "데이터"
+    ],
+    "python/parameter-passing": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/pip": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/pycharm": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/pydantic": [
+      "MOC-Python",
+      "웹·HTTP·배포"
+    ],
+    "python/ray-serve": [
+      "MOC-AI-LLM",
+      "추론·서빙·모델 내부"
+    ],
+    "python/ruff": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/tools": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/typing": [
+      "MOC-Python",
+      "OOP·타입·데이터 모델"
+    ],
+    "python/unpacking": [
+      "MOC-Python",
+      "언어 기초·문법"
+    ],
+    "python/uv": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "python/version": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "react/*": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "react/tanstack-query": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "redis/*": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/architecture": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/cache": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/cluster": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/data-structure": [
+      "MOC-AI-LLM",
+      "LangChain·LangGraph"
+    ],
+    "redis/intro": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/operations": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/patterns": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/pub-sub": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "redis/stream": [
+      "MOC-Data-Messaging",
+      "Redis"
+    ],
+    "security": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/*": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/kdf": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/mitm": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/password": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/pii": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "security/ssh": [
+      "MOC-네트워크-원격접속",
+      "SSH·VPN·DNS"
+    ],
+    "security/tls": [
+      "MOC-Python",
+      "패키징·환경"
+    ],
+    "spring/*": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/di": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/event": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/jpa": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/spring-ai": [
+      "MOC-AI-LLM",
+      "Spring AI"
+    ],
+    "spring/spring-boot": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/spring-framework": [
+      "MOC-Java-Spring",
+      "Spring"
+    ],
+    "spring/web": [
+      "MOC-네트워크-원격접속",
+      "프록시·로드밸런서"
+    ],
+    "testing/*": [
+      "MOC-CS-아키텍처-기타",
+      "테스팅·실험"
+    ],
+    "testing/ab-test": [
+      "MOC-CS-아키텍처-기타",
+      "테스팅·실험"
+    ],
+    "testing/canary": [
+      "MOC-배포-CI-CD-GitOps",
+      "배포 전략"
+    ],
+    "testing/feature-flag": [
+      "MOC-CS-아키텍처-기타",
+      "테스팅·실험"
+    ],
+    "testing/methodology": [
+      "MOC-CS-아키텍처-기타",
+      "테스팅·실험"
+    ],
+    "testing/test-pyramid": [
+      "MOC-CS-아키텍처-기타",
+      "테스팅·실험"
+    ],
+    "web/*": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "web/cors": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "web/dpop": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "web/fetch": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "web/jwt": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "web/katex": [
+      "MOC-컨테이너-IaC-개발환경",
+      "Git·터미널·도구"
+    ],
+    "web/oauth": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "web/passkey": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ],
+    "web/sse": [
+      "MOC-보안-인증-웹",
+      "웹·브라우저"
+    ],
+    "web/token-storage": [
+      "MOC-보안-인증-웹",
+      "인증·암호"
+    ]
+  },
+  "hubs": {
+    "Projects/GenonAI/GenOS": {
+      "hub": "00 GenOS 시작하기",
+      "section_by_subfolder": true
+    },
+    "Projects/GenonAI/삼성증권": {
+      "hub": "00 삼성증권 시작하기",
+      "section_by_tag": {
+        "backend/db": "운영·진단·반입",
+        "backend/integration": "AIDP 제공 API·인증",
+        "docker/registry": "운영·진단·반입",
+        "feature/adb-egress": "ADB·Oracle 연동과 egress",
+        "feature/agent-list": "AIDP 제공 API·인증",
+        "feature/aidp": "AIDP 제공 API·인증",
+        "feature/airgap-import": "코드서빙 CI/CD",
+        "feature/auth": "AIDP 제공 API·인증",
+        "feature/cicd": "코드서빙 CI/CD",
+        "feature/code-serving": "코드서빙 CI/CD",
+        "feature/data-analysis": "ADB·Oracle 연동과 egress",
+        "feature/data-source": "AIDP 제공 API·인증",
+        "feature/deployment": "운영·진단·반입",
+        "feature/istio": "운영·진단·반입",
+        "feature/lineage": "AIDP 제공 API·인증",
+        "feature/network": "ADB·Oracle 연동과 egress",
+        "feature/ords": "ORDS·SDK 연계 설계",
+        "feature/sdk": "ORDS·SDK 연계 설계",
+        "feature/security": "코드서빙 CI/CD",
+        "feature/vector-db": "기획·회의록",
+        "feature/version-port": "AIDP 제공 API·인증",
+        "git/branching": "AIDP 제공 API·인증",
+        "git/workflow": "AIDP 제공 API·인증",
+        "kubernetes/k9s": "운영·진단·반입",
+        "kubernetes/operations": "코드서빙 CI/CD",
+        "type/api-spec": "AIDP 제공 API·인증",
+        "type/checklist": "ADB·Oracle 연동과 egress",
+        "type/confluence-draft": "AIDP 제공 API·인증",
+        "type/decision": "ORDS·SDK 연계 설계",
+        "type/design": "기획·회의록",
+        "type/explanation": "코드서빙 CI/CD",
+        "type/field-note": "AIDP 제공 API·인증",
+        "type/handout": "ADB·Oracle 연동과 egress",
+        "type/howto": "운영·진단·반입",
+        "type/meeting": "기획·회의록",
+        "type/onboarding": "코드서빙 CI/CD",
+        "type/pattern": "ADB·Oracle 연동과 egress",
+        "type/project-tracking": "기획·회의록",
+        "type/reference": "ADB·Oracle 연동과 egress",
+        "type/worklog": "ORDS·SDK 연계 설계"
+      }
+    },
+    "Projects/GenonAI/삼성카드": {
+      "hub": "00 삼성카드 시작하기",
+      "section_by_tag": {
+        "backend/integration": "PIMS 행위로그 연동",
+        "devops/cicd": "CI/CD 설계와 토폴로지",
+        "devops/gitops": "구축 진행과 이관",
+        "feature/audit-log": "PIMS 행위로그 연동",
+        "feature/cicd": "구축 진행과 이관",
+        "feature/customer-id": "PIMS 행위로그 연동",
+        "feature/deployment": "CI/CD 설계와 토폴로지",
+        "feature/model-serving": "CI/CD 설계와 토폴로지",
+        "feature/pims": "PIMS 행위로그 연동",
+        "frontend/dialog": "PIMS 행위로그 연동",
+        "kubernetes/rbac": "구축 진행과 이관",
+        "type/context": "CI/CD 설계와 토폴로지",
+        "type/onboarding": "CI/CD 설계와 토폴로지",
+        "type/pattern": "CI/CD 설계와 토폴로지",
+        "type/runbook": "구축 진행과 이관"
+      }
+    },
+    "Projects/GenonAI/삼성카드_모니모": {
+      "hub": "00 모니모 시작하기",
+      "section_by_tag": {
+        "devops/cicd": "설계와 개념",
+        "devops/gitops": "설계와 개념",
+        "feature/cicd": "코드서빙 CI/CD 리허설",
+        "feature/code-serving": "코드서빙 CI/CD 리허설",
+        "feature/deployment": "설계와 개념",
+        "feature/model-serving": "설계와 개념",
+        "type/context": "설계자료 원문 컨텍스트",
+        "type/onboarding": "코드서빙 CI/CD 리허설",
+        "type/pattern": "설계와 개념",
+        "type/plan": "코드서빙 CI/CD 리허설",
+        "type/reference": "설계자료 원문 컨텍스트"
+      }
+    },
+    "Projects/GenonAI/인사연동 배치 분석": {
+      "hub": "00 인사연동 배치 분석 시작하기",
+      "section_by_tag": {
+        "backend/temporal": "Temporal 배치 코드 구조",
+        "docker/image": "Temporal 배치 코드 구조",
+        "feature/iam": "인사연동 As-Is와 To-Be",
+        "kubernetes/operations": "Temporal 배치 코드 구조",
+        "python/design": "인사연동 As-Is와 To-Be",
+        "python/source-analysis": "Temporal 배치 코드 구조",
+        "type/design": "인사연동 As-Is와 To-Be"
+      }
+    },
+    "Projects/GenonAI/GenOS/패치노트": {
+      "hub": "GenOS 버전별 변경 요약",
+      "mode": "patchnote-table"
+    }
+  },
+  "genos_subfolders": {
+    "01 온보딩·로컬개발": [
+      "type/onboarding",
+      "type/pattern",
+      "python/fastapi",
+      "frontend/nextjs",
+      "backend/db"
+    ],
+    "02 아키텍처·K8s·Istio": [
+      "feature/kubernetes",
+      "type/pattern",
+      "type/onboarding",
+      "kubernetes/operations",
+      "feature/network"
+    ],
+    "03 배포·CI-CD": [
+      "type/pattern",
+      "devops/gitops",
+      "feature/cicd",
+      "feature/deployment",
+      "kubernetes/helm"
+    ],
+    "04 서빙·MCP": [
+      "type/pattern",
+      "feature/code-serving",
+      "feature/gateway",
+      "feature/serving",
+      "feature/flowise"
+    ],
+    "05 IAM·인증": [
+      "feature/admin-front",
+      "feature/admin-api",
+      "security/rbac",
+      "type/pattern",
+      "security/iam"
+    ],
+    "06 데이터·SDK": [
+      "type/pattern",
+      "feature/data-analysis",
+      "feature/data-source",
+      "feature/sdk",
+      "type/onboarding"
+    ],
+    "07 패키지·레지스트리": [
+      "type/pattern",
+      "docker/registry",
+      "feature/kubernetes",
+      "feature/deployment",
+      "feature/mcp"
+    ],
+    "08 운영·런북": [
+      "kubernetes/operations",
+      "type/pattern",
+      "type/runbook",
+      "docker/registry",
+      "feature/config"
+    ]
+  },
   "paths": {
     "vault_root": "~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note",
     "til_root": "~/dev/TIL",
