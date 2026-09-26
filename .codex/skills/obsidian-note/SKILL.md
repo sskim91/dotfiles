@@ -29,7 +29,6 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 
 - 글쓰기 톤이나 설명 예시: [writing-style.md](references/writing-style.md), [complete-example.md](references/complete-example.md)
 - Callout, embed, block ID 등 Obsidian 문법: [obsidian-syntax.md](references/obsidian-syntax.md)
-- 팀 조사·심층 검증을 명시적으로 요청한 노트: `agentic-notes`가 수집·검증을 맡고 이 스킬은 최종 작성 규칙을 제공한다.
 - GenOS 지식·패치노트, TIL, 영상은 해당 전용 스킬의 저장 형식을 따른다.
 
 새로 만든 링크는 실제 파일 존재를 확인하고, Mermaid를 추가·변경했다면 렌더링해서 문법과 가독성을 확인한다. 사용하지 않은 기능의 검증은 추가하지 않는다.

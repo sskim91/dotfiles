@@ -94,13 +94,11 @@
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
     "adr": "off",
-    "agentic-notes": "off",
     "api-design": "off",
     "codex-changelog-review": "off",
     "devlog": "off",
     "excalidraw-diagram": "off",
     "github-actions": "off",
-    "learning-tracker": "off",
     "sns-writer": "off",
     "sql-optimization-patterns": "off",
     "tech-blog-writer": "off",

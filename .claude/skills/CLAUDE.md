@@ -9,9 +9,9 @@
 | 내용 구분 | 예시 | 재검토 시점 |
 |---|---|---|
 | 원칙·판단 기준 | `adr`의 결정 근거, `api-design`의 계약 검토, SQL의 측정 기준 | 새로운 근거·적용 조건이 생길 때 |
-| 개인·팀 컨벤션 | `git-commit`·`git-push`·`git-commit-and-push`, `session-handoff`, `devlog`, `learning-tracker`, `tech-blog-writer`, `sns-writer`의 형식·범위 | 사용자·팀·프로젝트 합의가 바뀔 때 |
+| 개인·팀 컨벤션 | `git-commit`·`git-push`·`git-commit-and-push`, `session-handoff`, `devlog`, `tech-blog-writer`, `sns-writer`의 형식·범위 | 사용자·팀·프로젝트 합의가 바뀔 때 |
 | 버전·환경 의존 지침 | `ast-grep`, `skill-guide`, `cc-changelog-review`, `codex-changelog-review`, `github-actions`, `youtube-summarizer`, `translate-article`, SQL의 도구·명령 | 도구·API·DB·실행 환경이 바뀔 때 |
-| 업무 절차·자원 | `excalidraw-diagram`, `obsidian-note`, `til`, `til-tagger`, `vault-linter`, `agentic-notes`, `genos-knowledge-capture`, `write-genos-patch-notes` | 업무 흐름·저장 위치·산출물 형식이 바뀔 때 |
+| 업무 절차·자원 | `excalidraw-diagram`, `obsidian-note`, `til`, `til-tagger`, `vault-linter`, `genos-knowledge-capture`, `write-genos-patch-notes` | 업무 흐름·저장 위치·산출물 형식이 바뀔 때 |
 
 일반 지식·도구 설명의 중복은 줄이고, 사용자의 선택·실제 실패 기록·진단 스크립트·템플릿은 필요성에 따라 남긴다. 버전별 사용법은 대상 프로젝트 버전을 확인한 뒤 공식 문서·실제 코드와 대조한다.
 
