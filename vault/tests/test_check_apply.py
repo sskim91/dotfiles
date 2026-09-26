@@ -191,6 +191,16 @@ class CheckTest(_TempVaultCase):
         report = run_check(_make_policy(self.root))
         self.assertEqual([f for f in report.findings if f.kind == "link"], [])
 
+    def test_til_stems_skip_hidden_and_scripts_dirs(self) -> None:
+        _write(self.root / "TIL/.github/Hidden-Readme.md", "# x\n")
+        _write(self.root / "TIL/scripts/Script-Doc.md", "# x\n")
+        _write(self.root / "TIL/python/Real-Til.md", "# x\n")
+        for name in ("Hidden-Readme", "Script-Doc", "Real-Til"):
+            _write(self.vault / f"Wiki/{name}.md", _note(name, ["til", "python/x"]))
+        report = run_check(_make_policy(self.root))
+        til_tag = {f.path for f in report.findings if f.kind == "wiki-only-til-tag"}
+        self.assertEqual(til_tag, {"Wiki/Hidden-Readme.md", "Wiki/Script-Doc.md"})
+
     def test_report_counts(self) -> None:
         report = Report(findings=[Finding("tag", "a", "x"), Finding("tag", "b", "y"), Finding("link", "a", "z")])
         self.assertEqual(report.counts(), {"link": 1, "tag": 2})
@@ -288,12 +298,20 @@ class ApplyTest(_TempVaultCase):
     def test_til_mapping_normalized_idempotent(self) -> None:
         policy = self._build_apply_vault()
         mapping = self.root / "TIL/tag-mapping.json"
-        _write(mapping, '{\n  "b-note": ["k8s/old", "junk", "customer/x"],\n  "a-note": ["python/x"]\n}\n')
+        _write(
+            mapping,
+            '{\n  "b-note": ["k8s/old", "junk", "customer/x", "work/genon"],\n  "a-note": ["python/x"],\n'
+            '  "s-note": "k8s/old",\n  "t-note": "python/x"\n}\n',
+        )
         first = run_apply(policy, dry_run=False, til_mapping=True)
         self.assertIn(str(mapping), first.changed)
         data = json.loads(mapping.read_text(encoding="utf-8"))
-        self.assertEqual(list(data), ["b-note", "a-note"])
-        self.assertEqual(data["b-note"], ["kubernetes/basics"])
+        self.assertEqual(list(data), ["b-note", "a-note", "s-note", "t-note"])
+        # til-source scope: facet 태그는 TIL 원본에서 지우지 않는다.
+        self.assertEqual(data["b-note"], ["kubernetes/basics", "customer/x", "work/genon"])
+        # 문자열 값은 1원소 리스트로 취급(문자 단위로 쪼개지 않음), 그대로면 문자열 유지.
+        self.assertEqual(data["s-note"], ["kubernetes/basics"])
+        self.assertEqual(data["t-note"], "python/x")
         self.assertEqual(data["a-note"], ["python/x"])
         self.assertEqual(mapping.read_text(encoding="utf-8"), json.dumps(data, indent=2, ensure_ascii=False) + "\n")
         self.assertTrue((first.backup_dir / "TIL/tag-mapping.json").is_file())

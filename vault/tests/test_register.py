@@ -277,6 +277,20 @@ Wiki의 기타 노트 1개를 주제별로 묶은 목차다.
         self.assertEqual(result.status, "added")
         self.assertEqual(before, after)
 
+    def test_crlf_moc_keeps_crlf_after_register_and_count_update(self):
+        moc_path = self.vault_root / "Wiki" / "_MOC" / "MOC-Kubernetes.md"
+        with open(moc_path, "w", encoding="utf-8", newline="") as fh:
+            fh.write(MOC_KUBERNETES.replace("\n", "\r\n"))
+        note = self._write_note("CRLF-노트.md", tag="kubernetes/pod", body="CRLF 테스트 요약이다.")
+
+        self.assertEqual(register_note(note, self.policy).status, "added")
+        update_counts(self.policy)
+
+        data = moc_path.read_bytes().decode("utf-8")
+        self.assertIn("- [[CRLF-노트]] — CRLF 테스트 요약이다.\r\n", data)
+        self.assertIn("노트 3개를", data)
+        self.assertEqual(data.count("\n"), data.count("\r\n"))
+
     def test_insert_into_missing_trailing_newline_does_not_corrupt(self):
         # 리뷰 repro: 파일이 줄바꿈 없이 끝나면 새 줄이 기존 마지막 줄에
         # 그대로 붙었다 — 컨트롤러 fix 2.

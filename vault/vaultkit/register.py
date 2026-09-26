@@ -42,6 +42,22 @@ def _nfc(value: str) -> str:
     return unicodedata.normalize("NFC", value)
 
 
+def _read(path: Path) -> str:
+    """줄 끝(CRLF 등)을 바꾸지 않고 읽는다 — 목차 파일의 줄바꿈 방식 보존."""
+    with open(path, encoding="utf-8", newline="") as fh:
+        return fh.read()
+
+
+def _write(path: Path, text: str) -> None:
+    """``text``의 줄 끝을 그대로 쓴다(플랫폼 변환 없음)."""
+    with open(path, "w", encoding="utf-8", newline="") as fh:
+        fh.write(text)
+
+
+def _newline_of(text: str) -> str:
+    return "\r\n" if "\r\n" in text else "\n"
+
+
 _HEADING_RE = re.compile(r"^#{1,6}\s")
 _LIST_ITEM_RE = re.compile(r"^- ")
 _SENTENCE_END_RE = re.compile(r"[.?!](?=\s|$)")
@@ -204,7 +220,7 @@ def _find_existing_wiki_registration(
     pattern = re.compile(r"\[\[" + re.escape(stem_nfc) + r"(?=[|\]#\\])")
 
     for moc_path in sorted(moc_dir.glob("MOC-*.md")):
-        text = moc_path.read_text(encoding="utf-8")
+        text = _read(moc_path)
         if not _exists_in(text, stem):
             continue
         section = None
@@ -245,7 +261,7 @@ def _register_wiki(
     if not target_path.exists():
         return RegisterResult("unclassified", None, None, None)
 
-    target_text = target_path.read_text(encoding="utf-8")
+    target_text = _read(target_path)
 
     summary = summary_line(note_path)
     new_line = f"- [[{stem}]] — {summary}"
@@ -255,7 +271,7 @@ def _register_wiki(
         return RegisterResult("unclassified", None, None, None)
 
     if not dry_run:
-        target_path.write_text(new_text, encoding="utf-8")
+        _write(target_path, new_text)
 
     return RegisterResult("added", moc_stem, section, new_line)
 
@@ -284,7 +300,7 @@ def _insert_into_section(text: str, section: str, new_line: str) -> str | None:
 
     heading_idx = None
     for i, raw in enumerate(lines):
-        stripped = raw.rstrip("\n")
+        stripped = raw.rstrip("\r\n")
         if stripped.startswith("## ") and _nfc(stripped[3:].strip()) == section_nfc:
             heading_idx = i
             break
@@ -293,16 +309,16 @@ def _insert_into_section(text: str, section: str, new_line: str) -> str | None:
 
     end_idx = len(lines)
     for i in range(heading_idx + 1, len(lines)):
-        if lines[i].rstrip("\n").startswith("## "):
+        if lines[i].rstrip("\r\n").startswith("## "):
             end_idx = i
             break
 
     insert_at = heading_idx + 1
     for i in range(heading_idx + 1, end_idx):
-        if _LIST_ITEM_RE.match(lines[i].rstrip("\n")):
+        if _LIST_ITEM_RE.match(lines[i].rstrip("\r\n")):
             insert_at = i + 1
 
-    nl = "\n"
+    nl = _newline_of(text)
     new_lines = lines[:insert_at] + [new_line + nl] + lines[insert_at:]
     return "".join(new_lines)
 
@@ -353,7 +369,7 @@ def _register_project(
     if cfg.get("mode") == "patchnote-table":
         return _register_patchnote(note_path, stem, target_path, hub_name, dry_run=dry_run)
 
-    target_text = target_path.read_text(encoding="utf-8")
+    target_text = _read(target_path)
     if _exists_in(target_text, stem):
         return RegisterResult("exists", hub_name, None, None)
 
@@ -381,7 +397,7 @@ def _register_project(
         return RegisterResult("unclassified", None, None, None)
 
     if not dry_run:
-        target_path.write_text(new_text, encoding="utf-8")
+        _write(target_path, new_text)
 
     return RegisterResult("added", hub_name, section, new_line)
 
@@ -404,7 +420,7 @@ def _register_patchnote(
     *,
     dry_run: bool,
 ) -> RegisterResult:
-    target_text = _ensure_trailing_newline(target_path.read_text(encoding="utf-8"))
+    target_text = _ensure_trailing_newline(_read(target_path))
     if _exists_in(target_text, stem):
         return RegisterResult("exists", hub_name, None, None)
 
@@ -417,29 +433,29 @@ def _register_patchnote(
 
     header_idx = None
     for i, raw in enumerate(lines):
-        s = raw.rstrip("\n")
+        s = raw.rstrip("\r\n")
         if s.startswith("|") and header_idx is None and i + 1 < len(lines):
-            sep = lines[i + 1].rstrip("\n")
+            sep = lines[i + 1].rstrip("\r\n")
             if re.match(r"^\|[\s:|-]+\|$", sep):
                 header_idx = i
                 break
     if header_idx is None:
         return RegisterResult("unclassified", None, None, None)
 
-    header_cells = [c.strip() for c in lines[header_idx].rstrip("\n").strip("|").split("|")]
+    header_cells = [c.strip() for c in lines[header_idx].rstrip("\r\n").strip("|").split("|")]
     n_cols = len(header_cells)
 
     row_start = header_idx + 2
     row_end = row_start
     for i in range(row_start, len(lines)):
-        if lines[i].rstrip("\n").startswith("|"):
+        if lines[i].rstrip("\r\n").startswith("|"):
             row_end = i + 1
         else:
             break
 
     insert_at = row_end
     for i in range(row_start, row_end):
-        row_text = lines[i].rstrip("\n")
+        row_text = lines[i].rstrip("\r\n")
         existing_version = _version_tuple(row_text)
         if existing_version is not None and existing_version > version_tuple:
             insert_at = i
@@ -463,12 +479,12 @@ def _register_patchnote(
 
     new_line = "| " + " | ".join(cells) + " |"
 
-    nl = "\n"
+    nl = _newline_of(target_text)
     new_lines = lines[:insert_at] + [new_line + nl] + lines[insert_at:]
     new_text = "".join(new_lines)
 
     if not dry_run:
-        target_path.write_text(new_text, encoding="utf-8")
+        _write(target_path, new_text)
 
     return RegisterResult("added", hub_name, None, new_line)
 
@@ -492,7 +508,7 @@ def update_counts(policy: Policy, *, dry_run: bool = False) -> list[Path]:
     counts: dict[str, int] = {}
 
     for moc_path in sorted(moc_dir.glob("MOC-*.md")):
-        text = moc_path.read_text(encoding="utf-8")
+        text = _read(moc_path)
         actual = len(re.findall(r"^- \[\[", text, flags=re.MULTILINE))
         counts[_nfc(moc_path.stem)] = actual
 
@@ -500,11 +516,11 @@ def update_counts(policy: Policy, *, dry_run: bool = False) -> list[Path]:
         if n_subs and new_text != text:
             changed.append(moc_path)
             if not dry_run:
-                moc_path.write_text(new_text, encoding="utf-8")
+                _write(moc_path, new_text)
 
     index_path = moc_dir / "00-Wiki-MOC.md"
     if index_path.exists():
-        text = index_path.read_text(encoding="utf-8")
+        text = _read(index_path)
         original = text
 
         total = sum(counts.values())
@@ -526,7 +542,7 @@ def update_counts(policy: Policy, *, dry_run: bool = False) -> list[Path]:
         if text != original:
             changed.append(index_path)
             if not dry_run:
-                index_path.write_text(text, encoding="utf-8")
+                _write(index_path, text)
 
     return changed
 

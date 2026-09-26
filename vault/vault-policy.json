@@ -196,6 +196,8 @@
     },
     "Projects": {
       "order": [
+        "aliases",
+        "title",
         "source",
         "related_notes",
         "tags",
@@ -208,6 +210,7 @@
     },
     "Sources": {
       "order": [
+        "aliases",
         "title",
         "source",
         "related_notes",
@@ -220,7 +223,10 @@
     },
     "Archive": {
       "order": [
+        "aliases",
+        "title",
         "source",
+        "topics",
         "related_notes",
         "tags",
         "created"

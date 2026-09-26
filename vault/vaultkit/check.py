@@ -51,6 +51,9 @@ NOTE_SKILLS = (
 )
 RULE_DOC_REF = "vault/references/note-rules.md"
 
+# TIL 저장소에서 노트 폴더가 아닌 최상위 폴더.
+TIL_NON_NOTE_DIRS = frozenset({"scripts"})
+
 # scope -> policy.frontmatter 키. inbox/templates는 스키마가 없다.
 FRONTMATTER_KEY = {
     "wiki-til": "Wiki",
@@ -99,10 +102,19 @@ def read_text(path: Path) -> str:
 
 
 def til_stems(policy: Policy) -> set[str] | None:
-    """``til_root/*/*.md``의 stem(NFC) 집합. ``til_root``가 없으면 ``None``."""
+    """``til_root/*/*.md``의 stem(NFC) 집합. ``til_root``가 없으면 ``None``.
+
+    숨김 폴더(``.github``, ``.githooks`` 등)와 ``scripts``는 노트 폴더가
+    아니므로 제외한다 — 그 안의 README 등이 같은 이름의 Wiki 노트를
+    wiki-til로 오판하게 만들지 않도록.
+    """
     if not policy.til_root.is_dir():
         return None
-    return {nfc(p.stem) for p in policy.til_root.glob("*/*.md")}
+    return {
+        nfc(p.stem)
+        for p in policy.til_root.glob("*/*.md")
+        if not p.parent.name.startswith(".") and p.parent.name not in TIL_NON_NOTE_DIRS
+    }
 
 
 def iter_notes(policy: Policy, stems: set[str] | None) -> Iterator[Note]:

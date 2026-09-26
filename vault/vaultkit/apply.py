@@ -4,7 +4,8 @@
 태그 정규화, 폴더별 frontmatter 순서, wiki-only topics 표기, 대응표로
 결정되는 MOC/허브 등록(``added``만), MOC 개수 표기. Wiki의 TIL 노트
 (scope ``wiki-til``)는 노트 파일을 절대 쓰지 않는다 — 원본은 TIL이며,
-같은 규칙은 ``til_mapping=True``로 ``tag-mapping.json``에 적용한다.
+같은 규칙은 ``til_mapping=True``로 ``tag-mapping.json``에 적용한다
+(scope ``til-source``).
 
 모든 쓰기는 내용이 달라질 때만 하며, 쓰기 직전 원본을
 ``$TMPDIR/vaultkit-backup/<YYYYmmdd-HHMMSS>/<상대경로>``에 복사한다.
@@ -181,13 +182,23 @@ def _counts(policy: Policy, writer: _Writer) -> None:
 
 
 def _apply_til_mapping(policy: Policy, writer: _Writer) -> None:
-    """``tag-mapping.json`` 값에 archive scope와 같은 태그 규칙을 적용한다(키 순서 보존)."""
+    """``tag-mapping.json`` 값에 TIL 원본용 태그 규칙(scope ``til-source``)을 적용한다.
+
+    ``til-source``는 facet 접두사(``work/``·``customer/``)를 지우지 않는다 —
+    이 파일이 Wiki 태그의 원본이라, 여기서 지우면 다음 동기화에서 Wiki에서도
+    사라진다. 키 순서는 보존한다. 값이 문자열이면 1원소 리스트로 보고
+    정규화하며, 결과가 그대로면 문자열 형태를 유지한다.
+    """
     path = policy.til_root / "tag-mapping.json"
     if not path.is_file():
         return
     old = read_text(path)
     data = json.loads(old)
-    normalized = {key: normalize_tags(list(tags), policy, "archive") for key, tags in data.items()}
+    normalized = {}
+    for key, tags in data.items():
+        as_list = [tags] if isinstance(tags, str) else list(tags)
+        result = normalize_tags(as_list, policy, "til-source")
+        normalized[key] = tags if isinstance(tags, str) and result == as_list else result
     if normalized == data:
         return
     new = json.dumps(normalized, indent=2, ensure_ascii=False) + "\n"
