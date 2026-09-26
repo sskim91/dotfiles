@@ -11,8 +11,10 @@ import json
 import os
 import tempfile
 import unicodedata
+import dataclasses
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from vaultkit import frontmatter as fm
 from vaultkit import load_policy
@@ -216,6 +218,44 @@ class TestMergeDecisionTable(unittest.TestCase):
         self.assertEqual(d.entry, entry)
         self.assertIn("TIL로 이관 필요", d.message)
 
+    def test_frontmatter_only_exits_when_til_catches_up(self):
+        # 사용자가 Wiki 수정을 TIL로 옮겼다: Wiki 본문 == TIL 생성 본문(끝 공백만 다름).
+        gen = _gen()
+        existing = "---\ntitle: 옛 제목\n---\n" + gen.body.rstrip("\n") + "  \n\n"
+        entry = _synced("동기화 당시 본문\n")
+        d = merge(gen, existing, entry, TODAY)
+        self.assertEqual(d.action, "update")
+        self.assertEqual(fm.parse(d.text).body, gen.body)
+        self.assertEqual(d.entry, {"body_sha": body_sha(gen.body), "status": "synced"})
+
+    def test_frontmatter_only_exits_when_only_link_notation_differs(self):
+        gen = _gen(body="보기 [[a|별칭]] [[b]]\n\n| x | [[c\\|씨]] |\n")
+        wiki_body = "보기 [별칭](a.md) [[b|b]]\n\n| x | [[c|씨]] |\n"
+        existing = "---\ntitle: 노트 제목\n---\n" + wiki_body
+        entry = _synced("동기화 당시 본문\n")
+        d = merge(gen, existing, entry, TODAY)
+        self.assertEqual(d.action, "update")
+        self.assertEqual(fm.parse(d.text).body, gen.body)
+        self.assertEqual(d.entry, {"body_sha": body_sha(gen.body), "status": "synced"})
+
+    def test_frontmatter_only_stays_when_content_differs(self):
+        gen = _gen(body="보기 [[a|별칭]]\n")
+        existing = "---\ntitle: 노트 제목\n---\n보기 [다른 별칭](a.md)\n"
+        entry = _synced("동기화 당시 본문\n")
+        d = merge(gen, existing, entry, TODAY)
+        self.assertEqual(d.action, "frontmatter-only")
+        self.assertEqual(d.entry, entry)
+        self.assertEqual(fm.parse(d.text).body, "보기 [다른 별칭](a.md)\n")
+
+    def test_merge_uses_given_policy_order(self):
+        policy = load_policy()
+        custom = dataclasses.replace(
+            policy,
+            frontmatter={**policy.frontmatter, "Wiki": {"order": ["tags", "title"], "required": []}},
+        )
+        d = merge(_gen(sources=[], til_links=[]), None, None, TODAY, policy=custom)
+        self.assertEqual(fm.parse(d.text).order, ["tags", "title", "topics", "created"])
+
     def test_unchanged_returns_no_text(self):
         gen = _gen()
         created = merge(gen, None, None, TODAY)
@@ -353,6 +393,11 @@ class TestReversePort(unittest.TestCase):
             ["[[missing]]", "[[llms.txt-AI]]", "[[#로컬 절]]", "![[img.png]]"],
         )
 
+    def test_reverse_port_anchor_without_alias(self):
+        til, unresolved = reverse_port(self._wiki("[[a#h]] [[k8s-note#절 제목]]\n"), "T", self.INDEX, "ai")
+        self.assertEqual(til, "# T\n\n[a#h](./a.md#h) [k8s-note#절 제목](../kubernetes/k8s-note.md#절 제목)\n")
+        self.assertEqual(unresolved, [])
+
     def test_reverse_port_nfd_target_found(self):
         nfd = unicodedata.normalize("NFD", "한글-노트")
         til, unresolved = reverse_port(self._wiki(f"[[{nfd}|x]]\n"), "T", self.INDEX, "ai")
@@ -380,7 +425,7 @@ class TestRoundtrip(_TmpDirCase):
     def test_reverse_then_build_roundtrip(self):
         policy = load_policy()
         wiki_body = (
-            "소개 [[a]] 와 [[a|별칭]], [[a#h|절]], [[k8s-note|쿠버\n네티스]].\n\n"
+            "소개 [[a]] 와 [[a|별칭]], [[a#h|절]], [[a#h]], [[k8s-note|쿠버\n네티스]].\n\n"
             "| 표 | [[k8s-note\\|K8s]] |\n|---|---|\n\n"
             "```\n[[a]] 코드\n```\n\n## 출처\n\n- [공식](https://example.com)\n"
         )
@@ -421,6 +466,17 @@ class TestState(_TmpDirCase):
 
         with self.assertRaises(TypeError):
             save_state(p, {"version": 2, "notes": {"x": object()}})
+        self.assertEqual(load_state(p), state)
+        self.assertEqual(sorted(os.listdir(self.tmp)), ["state.json"])
+
+    def test_save_state_cleans_temp_when_replace_fails(self):
+        p = self.tmp / "state.json"
+        state = {"version": 2, "notes": {"a": {"status": "retired"}}}
+        save_state(p, state)
+        new_state = {"version": 2, "notes": {"b": {"status": "retired"}}}
+        with mock.patch("vaultkit.tilsync.os.replace", side_effect=OSError("iCloud busy")):
+            with self.assertRaises(OSError):
+                save_state(p, new_state)
         self.assertEqual(load_state(p), state)
         self.assertEqual(sorted(os.listdir(self.tmp)), ["state.json"])
 

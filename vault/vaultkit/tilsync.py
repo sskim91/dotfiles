@@ -17,7 +17,8 @@ Wiki 문서 / state        action              text         entry
 있음 / 없음               conflict            None         None (state에 기록하지 않음)
 있음(파싱 불가) / synced   conflict            None         기존 엔트리 그대로
 있음 / 본문 해시 일치      update              병합 문서     synced(gen 본문 해시)
-있음 / 본문 해시 불일치    frontmatter-only    병합 문서*    기존 엔트리 그대로
+있음 / 불일치·내용 동등**  update              병합 문서     synced(gen 본문 해시)
+있음 / 불일치·내용 다름    frontmatter-only    병합 문서*    기존 엔트리 그대로
 결과 == 기존 (update)      unchanged           None         synced(gen 본문 해시)
 ======================  ==================  ===========  ==============================
 
@@ -25,6 +26,10 @@ Wiki 문서 / state        action              text         entry
 ``text=None``으로 돌려준다 — "TIL로 이관 필요" 보고가 사라지면 안 되고,
 body_sha를 Wiki 본문 해시로 전진시키면 다음 TIL 변경이 Wiki 수정을 덮기
 때문이다. 호출자는 ``text``가 None이 아닐 때만 쓴다.
+
+``**`` 내용 동등: Wiki 본문과 TIL 생성 본문의 body_sha가 같거나, 링크
+표기만 정규화(역변환 -> 정방향)한 뒤 같을 때. 사용자가 Wiki 수정을 TIL로
+옮기면 다음 동기화에서 frontmatter-only를 벗어난다(컨트롤러 판정, 리뷰 1차).
 
 링크 변환(정방향/역방향)은 서로의 역이 되도록 맞춘다.
 
@@ -38,6 +43,7 @@ body_sha를 Wiki 본문 해시로 전진시키면 다음 TIL 변경이 Wiki 수�
 
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -244,13 +250,9 @@ def body_sha(body: str) -> str:
 
 
 @lru_cache(maxsize=1)
-def _wiki_order() -> tuple[str, ...]:
-    """Wiki frontmatter 키 순서(``policy.frontmatter["Wiki"]["order"]``).
-
-    ``merge``의 인터페이스에 policy가 없어 기본 정책에서 읽는다.
-    정책 로드 실패(PolicyError)는 그대로 올린다.
-    """
-    return tuple(load_policy().frontmatter["Wiki"]["order"])
+def _default_policy() -> Policy:
+    """``merge``에 policy를 넘기지 않았을 때 쓰는 기본 정책(로드 실패는 그대로 올림)."""
+    return load_policy()
 
 
 def _apply_fields(doc: fm.Doc, gen: Generated, today: str, order: list[str]) -> None:
@@ -279,9 +281,19 @@ def _apply_fields(doc: fm.Doc, gen: Generated, today: str, order: list[str]) -> 
     fm.reorder(doc, order)
 
 
-def merge(gen: Generated, existing: str | None, entry: dict | None, today: str) -> Decision:
-    """spec 5.2 판정표. 모듈 docstring의 표 참고."""
-    order = list(_wiki_order())
+def merge(
+    gen: Generated,
+    existing: str | None,
+    entry: dict | None,
+    today: str,
+    policy: Policy | None = None,
+) -> Decision:
+    """spec 5.2 판정표. 모듈 docstring의 표 참고.
+
+    frontmatter 키 순서는 ``policy.frontmatter["Wiki"]["order"]``
+    (policy가 None이면 기본 ``load_policy()``).
+    """
+    order = list((policy or _default_policy()).frontmatter["Wiki"]["order"])
     status = (entry or {}).get("status")
     new_entry = {"body_sha": body_sha(gen.body), "status": "synced"}
 
@@ -310,13 +322,18 @@ def merge(gen: Generated, existing: str | None, entry: dict | None, today: str) 
     if doc is None:
         return Decision("conflict", None, entry, "Wiki 문서 frontmatter 파싱 불가 → 쓰지 않음")
 
-    if body_sha(doc.body) == entry.get("body_sha"):
+    body_matches_state = body_sha(doc.body) == entry.get("body_sha")
+    if body_matches_state or _same_content(doc.body, gen.body):
         doc.body = gen.body
         _apply_fields(doc, gen, today, order)
         text = fm.render(doc)
         if text == existing:
             return Decision("unchanged", None, new_entry, "변경 없음")
-        return Decision("update", text, new_entry, "TIL 변경 반영(본문 교체 + frontmatter 병합)")
+        if body_matches_state:
+            return Decision("update", text, new_entry, "TIL 변경 반영(본문 교체 + frontmatter 병합)")
+        return Decision(
+            "update", text, new_entry, "Wiki 본문이 TIL과 내용 동등 → 동기화 재개(body_sha 갱신)"
+        )
 
     _apply_fields(doc, gen, today, order)
     text = fm.render(doc)
@@ -361,14 +378,27 @@ def save_state(path: Path, state: dict) -> None:
     text = json.dumps(state, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
     try:
-        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        try:
+            fh = os.fdopen(fd, "w", encoding="utf-8")
+        except BaseException:
+            os.close(fd)
+            raise
+        with fh:
             fh.write(text)
             fh.flush()
             os.fsync(fh.fileno())
         os.replace(tmp, path)
     except BaseException:
-        os.unlink(tmp)  # 이 함수가 만든 임시 파일만 정리
+        with contextlib.suppress(OSError):
+            os.unlink(tmp)  # 이 함수가 만든 임시 파일만 정리(원래 예외를 가리지 않음)
         raise
+    # rename 내구성: 디렉터리 fsync(지원하지 않는 파일시스템이면 건너뜀)
+    with contextlib.suppress(OSError):
+        dir_fd = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(dir_fd)
+        finally:
+            os.close(dir_fd)
 
 
 # ------------------------------------------------------------------
@@ -390,12 +420,20 @@ def reverse_port(
         raise ValueError("Wiki 문서 frontmatter 파싱 불가")
     index = {_nfc(k): v for k, v in til_index.items()}
     unresolved: list[str] = []
+    body = _reverse_links(doc.body, index.get, folder, unresolved)
+    return f"# {title}\n\n{body}", unresolved
+
+
+def _reverse_links(body: str, folder_of, folder: str, unresolved: list[str]) -> str:
+    """코드 밖 ``[[..]]``를 TIL 상대 링크로 바꾼다. ``folder_of(nfc_stem)``이
+    None이면(또는 정방향이 다시 인식할 수 없으면) 원문 그대로 두고
+    ``unresolved``에 넣는다."""
 
     def replace(m: re.Match, _text: str) -> str:
         bang, target, alias = m.group(1), m.group(2), m.group(4)
         stem, _, heading = target.partition("#")
         anchor = f"#{heading}" if "#" in target else ""
-        target_folder = index.get(_nfc(stem))
+        target_folder = folder_of(_nfc(stem))
         if (
             bang
             or target_folder is None
@@ -409,5 +447,20 @@ def reverse_port(
         label = target if alias is None else alias
         return f"[{label}]({prefix}{stem}.md{anchor})"
 
-    body = _sub_outside_code(doc.body, _WIKI_LINK_PATTERN, replace)
-    return f"# {title}\n\n{body}", unresolved
+    return _sub_outside_code(body, _WIKI_LINK_PATTERN, replace)
+
+
+def _canonical_link_form(body: str) -> str:
+    """링크 표기만 정규화한 본문(역변환 -> 정방향 변환).
+
+    대상 폴더는 정방향 결과에 남지 않으므로 모든 대상을 같은 폴더로 보고
+    역변환한다. 두 본문의 이 값이 같으면 링크 표기(``[x](s.md)`` vs
+    ``[[s|x]]``, 표 안 ``\\|``, ``[[a|a]]`` vs ``[[a]]``)만 다르다.
+    """
+    return convert_internal_links(_reverse_links(body, lambda _stem: "", "", []))
+
+
+def _same_content(wiki_body: str, gen_body: str) -> bool:
+    if body_sha(wiki_body) == body_sha(gen_body):
+        return True
+    return body_sha(_canonical_link_form(wiki_body)) == body_sha(_canonical_link_form(gen_body))
