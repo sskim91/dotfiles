@@ -5,5 +5,13 @@
 """
 
 from .policy import Policy, PolicyError, load_policy, scope_of
+from .tags import normalize_tags, tag_violations
 
-__all__ = ["Policy", "PolicyError", "load_policy", "scope_of"]
+__all__ = [
+    "Policy",
+    "PolicyError",
+    "load_policy",
+    "normalize_tags",
+    "scope_of",
+    "tag_violations",
+]
