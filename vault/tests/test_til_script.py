@@ -312,6 +312,7 @@ class TilScriptTest(unittest.TestCase):
     def test_diff_mode_only_head_changes(self) -> None:
         self.write_state({})
         self.til_note("python", "노트A")
+        self.til_note("python", "노트C")  # 커밋 a에만 있고 b에서는 안 바뀜, state에도 없음
         git = ["git", "-C", str(self.til), "-c", "user.name=t", "-c", "user.email=t@t", "-c", "core.hooksPath=/dev/null"]
         subprocess.run(["git", "init", "-q", str(self.til)], check=True)
         subprocess.run([*git, "add", "-A"], check=True)
@@ -323,7 +324,35 @@ class TilScriptTest(unittest.TestCase):
         subprocess.run([*git, "commit", "-qm", "b"], check=True)
         proc = self.run_script("--diff")
         self.assertTrue(proc.stdout.startswith("🔄 TIL → Obsidian 동기화 (diff)"), proc.stdout)
-        self.assertEqual(self.wiki_md_names(), {"노트B.md"})
+        self.assertEqual(self.wiki_md_names(), {"노트B.md"})  # 노트C는 diff 대상 아님
+        self.assertNotIn("노트C", self.read_state()["notes"])
+        # 대조: 같은 조건에서 full 모드는 노트C를 만든다
+        proc = self.run_script()
+        self.assertTrue(proc.stdout.startswith("🔄 TIL → Obsidian 동기화 (full)"), proc.stdout)
+        self.assertEqual(self.wiki_md_names(), {"노트B.md", "노트C.md"})
+
+    def test_failed_frontmatter_only_reported_only_as_failure(self) -> None:
+        locked = self.wiki_note("노트A", "\nWiki에서 고친 본문.\n")
+        entry = {"body_sha": body_sha("\n옛 본문.\n"), "status": "synced"}
+        self.write_state({"노트A": entry})
+        self.til_note("python", "노트A", "TIL 본문.\n")
+        locked.chmod(stat.S_IRUSR)
+        proc = self.run_script()
+        self.assertIn("❌ 실패", proc.stdout)
+        self.assertNotIn("이관 필요", proc.stdout)
+        self.assertIn("frontmatter-only: 0", proc.stdout)
+        self.assertEqual(self.read_state()["notes"]["노트A"], entry)
+
+    def test_vaultkit_import_error_other_than_importerror(self) -> None:
+        broken = self.root / "broken-vaultkit"
+        (broken / "vaultkit").mkdir(parents=True)
+        (broken / "vaultkit" / "__init__.py").write_text("raise RuntimeError('boom')\n", encoding="utf-8")
+        self.write_state({})
+        self.til_note("python", "노트A")
+        proc = self.run_script(VAULTKIT_PATH=str(broken))
+        self.assertIn("vaultkit 없음 — 동기화 건너뜀", proc.stdout)
+        self.assertIn("RuntimeError: boom", proc.stdout)
+        self.assertEqual(self.wiki_md_names(), set())
 
 
 if __name__ == "__main__":
