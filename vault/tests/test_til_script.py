@@ -49,7 +49,11 @@ def _nfd(s: str) -> str:
     return unicodedata.normalize("NFD", s)
 
 
-@unittest.skipUnless(SCRIPT.exists(), f"sync script 없음: {SCRIPT}")
+# 환경변수 덮어쓰기를 모르는 옛 스크립트는 실제 Wiki에 state를 쓰므로 실행하지 않는다.
+_SCRIPT_OK = SCRIPT.exists() and 'os.environ.get("OBSIDIAN_PATH")' in SCRIPT.read_text(encoding="utf-8")
+
+
+@unittest.skipUnless(_SCRIPT_OK, f"환경변수 덮어쓰기를 지원하는 sync script 없음: {SCRIPT}")
 class TilScriptTest(unittest.TestCase):
     def setUp(self) -> None:
         self._tmp = tempfile.TemporaryDirectory()
