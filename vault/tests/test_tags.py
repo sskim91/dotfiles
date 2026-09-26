@@ -10,8 +10,9 @@ rename 키/값·drop 항목·conditional 태그·각 domain의 하위 태그가
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
-from vaultkit import load_policy
+from vaultkit import Policy, load_policy
 from vaultkit.tags import normalize_tags, tag_violations
 
 _ALL_SCOPES = (
@@ -114,6 +115,32 @@ class TestNormalizeTagsScopes(unittest.TestCase):
     def test_unknown_scope_raises(self):
         with self.assertRaises(ValueError):
             normalize_tags(["ai"], self.policy, "not-a-real-scope")
+
+    def test_conditional_missing_key_raises_instead_of_inserting_none(self):
+        # policy.py 로더가 conditional 항목의 네 키(tag/if_other_prefix/
+        # then/else)를 모두 필수로 검증하므로, tags.py는 검증된 값만 믿고
+        # 바로 인덱싱한다. 검증을 우회해 만든 malformed 정책이 들어오면
+        # 조용히 None을 끼워넣는 대신 KeyError로 즉시 드러나야 한다.
+        malformed_policy = Policy(
+            domains=self.policy.domains,
+            facets=self.policy.facets,
+            single_allowed=self.policy.single_allowed,
+            rename={},
+            drop=frozenset(),
+            conditional=[{"tag": "ai", "if_other_prefix": "ai/"}],
+            drop_outside_projects=self.policy.drop_outside_projects,
+            frontmatter={},
+            topics={},
+            til_folder_domain={},
+            moc={},
+            hubs={},
+            genos_subfolders={},
+            vault_root=Path("/nonexistent"),
+            til_root=Path("/nonexistent"),
+            skill_roots=[],
+        )
+        with self.assertRaises(KeyError):
+            normalize_tags(["ai"], malformed_policy, "wiki-only")
 
 
 class TestTagViolations(unittest.TestCase):

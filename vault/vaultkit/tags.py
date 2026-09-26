@@ -47,10 +47,13 @@ def _apply_drop(tags: list[str], drop: frozenset[str]) -> list[str]:
 def _apply_conditional(tags: list[str], conditional: list[dict[str, Any]]) -> list[str]:
     result = list(tags)
     for rule in conditional:
+        # policy.py 로더가 tag/if_other_prefix/then/else 네 키를 모두 필수로
+        # 검증했으므로 여기서는 .get() 기본값으로 조용히 None을 흘리지 않고
+        # 바로 인덱싱한다(빠지면 KeyError로 즉시 드러나야 정상).
         target_tag = rule["tag"]
         prefix = rule["if_other_prefix"]
-        then_action = rule.get("then")
-        else_action = rule.get("else")
+        then_action = rule["then"]
+        else_action = rule["else"]
 
         if target_tag not in result:
             continue

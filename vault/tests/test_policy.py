@@ -82,6 +82,60 @@ class TestLoadPolicy(unittest.TestCase):
                 load_policy(policy_path)
             self.assertIn("a/x", str(cm.exception))
 
+    def test_rejects_conditional_missing_then_or_else(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            policy_dict = _minimal_policy_dict(
+                tags={
+                    "domains": ["ai"],
+                    "conditional": [
+                        {"tag": "ai", "if_other_prefix": "ai/"}
+                    ],
+                }
+            )
+            policy_path = _write_policy(tmp_path, policy_dict)
+            with self.assertRaises(PolicyError) as cm:
+                load_policy(policy_path)
+            message = str(cm.exception)
+            self.assertIn("then", message)
+
+    def test_rejects_conditional_missing_tag_or_prefix(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            policy_dict = _minimal_policy_dict(
+                tags={
+                    "domains": ["ai"],
+                    "conditional": [
+                        {"if_other_prefix": "ai/", "then": "drop", "else": "ai/llm"}
+                    ],
+                }
+            )
+            policy_path = _write_policy(tmp_path, policy_dict)
+            with self.assertRaises(PolicyError) as cm:
+                load_policy(policy_path)
+            self.assertIn("tag", str(cm.exception))
+
+    def test_rejects_conditional_null_then_or_else(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            policy_dict = _minimal_policy_dict(
+                tags={
+                    "domains": ["ai"],
+                    "conditional": [
+                        {
+                            "tag": "ai",
+                            "if_other_prefix": "ai/",
+                            "then": None,
+                            "else": "ai/llm",
+                        }
+                    ],
+                }
+            )
+            policy_path = _write_policy(tmp_path, policy_dict)
+            with self.assertRaises(PolicyError) as cm:
+                load_policy(policy_path)
+            self.assertIn("then", str(cm.exception))
+
 
 class TestScopeOf(unittest.TestCase):
     def test_scope_of(self):

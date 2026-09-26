@@ -140,12 +140,25 @@ def _validate_rename_and_conditional(
             )
         _validate_target(value, key)
 
-    # conditional의 then/else 값 중 "drop"이 아닌 것은 rename과 같은 규칙으로 검증한다.
+    # conditional 항목은 네 키(tag/if_other_prefix/then/else)가 모두 있어야
+    # 한다 — 하나라도 빠지면 tags.py가 .get()의 None 기본값을 그대로 결과
+    # 태그로 흘려보내게 된다.
     for item in conditional:
-        tag = item.get("tag", "<unknown>")
+        for required_key in ("tag", "if_other_prefix", "then", "else"):
+            if required_key not in item:
+                raise PolicyError(
+                    f"conditional 항목에 필수 키 누락: '{required_key}' (item={item!r})"
+                )
+
+        tag = item["tag"]
         for field_name in ("then", "else"):
-            value = item.get(field_name)
-            if value is None or value == "drop":
+            value = item[field_name]
+            if value is None:
+                raise PolicyError(
+                    f"conditional[{tag}].{field_name}는 null일 수 없음"
+                    " ('drop' 또는 태그 문자열이어야 함)"
+                )
+            if value == "drop":
                 continue
             _validate_target(value, f"conditional[{tag}].{field_name}")
 
