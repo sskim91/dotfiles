@@ -49,6 +49,19 @@ def extract_summary(path: Path) -> str:
     return ''
 
 
+def render_frontmatter(date: str) -> str:
+    """Index frontmatter. Keys follow the Wiki order in vault-policy.json and
+    the tag is already policy-normalized, so `vk apply` leaves it unchanged."""
+    return (
+        f"---\n"
+        f'title: "Vault Index"\n'
+        f"tags:\n"
+        f"  - productivity/vault-maintenance\n"
+        f"created: {date}\n"
+        f"---\n"
+    )
+
+
 def main() -> int:
     entries: dict[str, list[tuple[str, str]]] = defaultdict(list)
 
@@ -74,12 +87,8 @@ def main() -> int:
     INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(INDEX_FILE, 'w', encoding='utf-8') as f:
         f.write(
-            f"---\n"
-            f"tags:\n"
-            f"  - vault/maintenance\n"
-            f"created: {DATE}\n"
-            f"---\n\n"
-            f"# Vault Index\n\n"
+            render_frontmatter(DATE)
+            + f"\n# Vault Index\n\n"
             f"> 자동 생성 (vault-linter --index). 수동 편집 금지.\n"
             f"> 생성일: {DATE} | 총 {total}개 노트\n\n"
         )
