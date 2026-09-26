@@ -4,6 +4,7 @@
 
 - 기계가 읽는 정본: `~/.dotfiles/vault/vault-policy.json` (허용 분야, rename·drop 표, 폴더별 frontmatter, MOC·허브 대응표)
 - 도구: `python3 ~/.dotfiles/vault/vk {check|apply|register|derive-maps}`
+- 운영 가이드·경고 대응·백업 위치·작업 기록: `~/.dotfiles/vault/README.md` (동기화 경고가 나오거나 vault 구조가 헷갈리면 먼저 읽는다)
 - 설계 문서: `~/.dotfiles/docs/superpowers/specs/2026-09-26-vault-policy-design.md`
 - Vault: `~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note` (공백 포함, 셸에서는 항상 따옴표. 따옴표 안에서는 `~`가 풀리지 않으므로 `"$HOME/..."`로 쓴다)
 
