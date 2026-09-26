@@ -9,7 +9,7 @@ GenOS 현장 작업(FDE)에서 *한 번 배운 걸 다음 세션·다음 고객�
 
 이 스킬은 사용자 개인 자산(`~/.agents/skills/`)이다. **회사 레포의 `.claude/skills/genos-*`(genos-session-close 등)는 회사 공유 자산이라 절대 건드리지 않는다.** 세션 상태는 회사 HANDOFF가, 재사용 지식은 이 스킬이 담당한다 — 둘은 분리된 관심사다.
 
-> 노트 본문 형식(frontmatter 규약, 8섹션 spine, Mermaid·문체 규칙)은 [references/note-format.md](references/note-format.md)에 있다. 워크플로우 4단계에서 그 파일을 읽고 따른다.
+> 노트 본문 형식(frontmatter 규약, 7섹션 spine, Mermaid·문체 규칙)은 [references/note-format.md](references/note-format.md)에 있다. 워크플로우 4단계에서 그 파일을 읽고 따른다.
 
 ## 핵심 원칙 (왜 이렇게 하나)
 
@@ -61,7 +61,7 @@ grep -rl "<핵심 키워드>" "<vault>/Projects/GenonAI/"
 사용자가 "그냥 해" 류면 확인 생략 가능.
 
 ### 4. 노트 작성 — 형식은 references/note-format.md
-[references/note-format.md](references/note-format.md)의 frontmatter 규약·8섹션 spine·Mermaid·문체 규칙을 따른다. `obsidian-note`와 **frontmatter 규약은 공유하되 본문 spine은 별도**다(저쪽은 Zettelkasten, 이쪽은 입문자 자기완결 field note). **Tavily 웹 리서치는 생략한다** — 출처는 웹 개념이 아니라 이 세션의 실작업·레포다.
+[references/note-format.md](references/note-format.md)의 frontmatter 규약·7섹션 spine·Mermaid·문체 규칙을 따른다. `obsidian-note`와 **frontmatter 규약은 공유하되 본문 spine은 별도**다(저쪽은 Zettelkasten, 이쪽은 입문자 자기완결 field note). **Tavily 웹 리서치는 생략한다** — 출처는 웹 개념이 아니라 이 세션의 실작업·레포다.
 
 핵심만 여기 박아둔다:
 - 1차 독자는 **처음 보는 사람**. `## 먼저 알아야 할 개념`으로 선행지식을 깔아 자기완결로 만든다.
@@ -111,7 +111,8 @@ grep -rl "<핵심 키워드>" "<vault>/Projects/GenonAI/"
 - **세션 상태를 지식으로 착각한다.** "오늘 chat_service 3줄 고쳤다"는 패턴이 아니라 상태다. "6개월 뒤 다른 고객사에서 시간을 아껴줄까?"를 통과 못 하면 HANDOFF로 보낸다.
 - **존재하지 않는 노트를 `[[링크]]`한다.** related_notes의 모든 wikilink는 실존 노트 + 이번에 함께 만드는 노트여야 한다. 미존재 링크는 깨진 그래프를 만든다.
 - **입문자 친화를 일반 튜토리얼로 만든다.** `## 먼저 알아야 할 개념`이 길어지는 건 괜찮지만, 매 문단이 "그래서 GenOS에선 ○○"로 착지하지 않으면 위키 복붙이다. 길이가 아니라 착지로 판정한다.
-- **근거 경로가 본문을 잡아먹는다.** 코드 근거가 많아 설명문에 `file:line`이 섞이면 읽는 사람이 핵심을 놓친다. 판단은 본문에, 경로는 `## 코드·근거`로 분리한다.
+- **근거를 경로 목록으로 남긴다.** `## 코드·근거`나 `file:line` 표는 아무도 열어보지 않는다. 독자가 레포를 열지 않아도 되게, 설명하는 자리에 실제 코드 조각(첫 줄 경로 주석, 핵심 줄만, 생략은 `...`)과 "여기서 볼 것"을 붙인다. 코드는 실제 파일에서 가져오고 지어내지 않는다.
+- **지식 노트에 현장 운영 양식을 넣는다.** 현장 체크리스트·데모 스크립트·체크박스는 지식이 아니라 작업 양식이다. 고유한 함정만 `헷갈리는 지점`에 문장으로 남긴다.
 - **고객사 노트 위치가 혼재한다.** 현재 삼성카드 노트는 `GenonAI/` loose에 있다. 한 고객사 노트가 3장 이상 쌓이면 `GenonAI/<고객사>/` 폴더 분리를 *제안*하되, 기존 파일 이동은 사용자 확인 후에만 — 임의로 옮기면 다른 노트의 `[[링크]]`가 깨진다.
 - **회사 자산을 건드린다.** 캡처 자동화가 아쉬워도 회사 레포 `.claude/skills/genos-*`는 절대 수정하지 않는다. 모든 자동화는 이 개인 스킬(`~/.agents/skills/genos-knowledge-capture/`) 안에서 끝낸다.
 - **Mermaid를 장식으로 넣는다.** diagram은 하나의 질문(책임 경계·요청 순서·상태 변화·데이터 관계)에 답해야 한다. 줄여주지 못하면 텍스트나 표가 낫다.
