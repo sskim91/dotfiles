@@ -87,6 +87,6 @@ vault 파일 삭제는 `trash`가 iCloud 경로에서 `Code=513` 권한 오류�
 - vault 정리: kubectl 노트 → `Projects/GenonAI/삼성증권`, `Templates/Prompts` → `Sources/Prompts`, `Genos 현장 FDE 학습 로드맵` 제거, 고객사 허브 `00 … 시작하기` 4편 신설(09-26)
 
 남은 것:
-- `Sources/Clippings`의 파일명에 `|`가 들어간 2편(`… | kciter.so`)은 Obsidian 링크로 가리킬 수 없어 `vk check`에 link 2건으로 남음
+- (해결 2026-09-27) `Sources/Clippings`의 파일명에서 ` | kciter.so`를 빼 `vk check` 위반 0
 - notebook-navigator 템플릿 폴더 설정(`Templates`)이 Obsidian 재시작 후에도 유지되는지 확인
 - 진행 원장(판정 35건 포함): `~/.dotfiles/.superpowers/sdd/2026-09-26-vault-policy/progress.md` (git 비추적)
