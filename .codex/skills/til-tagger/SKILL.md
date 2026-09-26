@@ -104,9 +104,11 @@ cd ~/dev/TIL && python3 .githooks/sync-to-obsidian.py --verbose
 |---|---|
 | `tags` | `tag-mapping.json` 값을 policy로 정규화한 결과 + `til` |
 | `title`·`source`·`topics`·본문 | TIL 원본 값 |
-| `related_notes`·`created` | 동기화 전 Wiki 값 그대로(덮어쓰지 않음) |
+| `related_notes` | 동기화 전 Wiki 목록 유지 + TIL 본문 링크 중 목록에 없는 것만 뒤에 추가 |
+| `created` | Wiki 값 유지(없으면 최초 동기화 날짜) |
 
-- 동기화 보고에 "이관 필요"(Wiki 본문이 수정됨)나 이름 충돌이 있으면 해당 노트는 쓰이지 않았으므로 사용자에게 그대로 보고한다.
+- "Wiki 본문 수정됨 → TIL로 이관 필요": 본문은 Wiki 값을 유지하고 frontmatter(태그 포함)는 병합해 쓴 상태다. 태그 검증은 그대로 하고, 본문 수정을 TIL로 옮기라고 사용자에게 보고한다. TIL로 옮겨 커밋하면 다음 동기화에서 정상화된다.
+- 이름 충돌(Wiki 전용 노트와 같은 이름): 해당 노트는 쓰이지 않았다. 사용자에게 그대로 보고한다.
 - 마지막으로 `python3 ~/.dotfiles/vault/vk check`에서 해당 노트의 `[tag]` 위반(`untagged`, 허용 분야 밖)이 없는지 확인한다.
 
 ## Tag Guidelines

@@ -26,7 +26,7 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 
 저장 후 [post-write linking](references/post-write-linking.md)의 범위·절차에 따라 관련 노트 연결을 처리한다. 추가 문서 변경은 그 절차와 사용자가 허용한 범위를 따른다.
 
-마지막으로 `python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이며, 노트를 Wiki로 옮기면 옮긴 경로로 다시 실행해 MOC에 등록한다.
+마지막으로 `python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이며, 노트를 Wiki로 옮기면 옮긴 경로로 다시 실행해 MOC에 등록한다. 허브·MOC 섹션은 `tags` 목록에서 처음 매칭되는 태그로 정해진다. MOC를 정할 주제 태그를 먼저 쓰고, 결과 섹션이 의도와 다르면 MOC에서 그 줄을 지우고 태그 순서를 고쳐 다시 실행한다.
 
 ## 필요한 경우에만 읽는 자료
 

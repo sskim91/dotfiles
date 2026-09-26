@@ -135,6 +135,10 @@ Wiki 목차는 `Wiki/_MOC/`에 있다. 최상위 목차 `00-Wiki-MOC.md`가 분�
 
 ```markdown
 ---
+title: "Vault-Lint-Report-{YYYY-MM-DD}"
+source: []
+topics: []
+related_notes: []
 tags:
   - productivity/vault-maintenance
 created: {YYYY-MM-DD}
@@ -228,6 +232,10 @@ ls scripts/semantic-review-queue.json 2>/dev/null && echo "리뷰 큐 있음 —
 
 ```markdown
 ---
+title: "Vault-Semantic-Report-{YYYY-MM-DD}"
+source: []
+topics: []
+related_notes: []
 tags:
   - productivity/vault-maintenance
 created: {YYYY-MM-DD}

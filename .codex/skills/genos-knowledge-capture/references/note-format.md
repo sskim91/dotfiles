@@ -21,14 +21,15 @@ related_notes:
   - "[[00 GenOS 시작하기]]"               # 등록할 허브 (고객사면 00 <고객사> 시작하기)
   - "[[실존하는_노트만]]"                  # 반드시 vault에 존재하는 노트 + 이번에 함께 만드는 노트
 tags:
-  - work/genos
+  - customer/samsung-card  # 고객사 노트일 때만, note-rules.md 5절 표의 값
+  - feature/<기능>         # 섹션을 정할 태그를 type보다 앞에
   - type/pattern
-  - feature/<기능>
+  - work/genos
 created: YYYY-MM-DD        # 오늘 날짜
 ---
 ```
 
-태그 어휘(`work/`, `customer/`, `feature/`, `type/` facet과 일반 `domain/sub`)는 policy `tags.project_facets`·`tags.domains`에서 고른다. 고객사 노트는 `customer/<고객사>`와 함께, 그 고객사 허브의 `section_by_tag`에 있는 태그를 하나 이상 단다(섹션 결정용). 플랫폼 노트의 허브 섹션은 태그가 아니라 하위폴더로 정해진다.
+태그 어휘(`work/`, `customer/`, `feature/`, `type/` facet과 일반 `domain/sub`)는 policy `tags.project_facets`·`tags.domains`에서 고른다. 태그 순서는 `customer/*`(해당 시) → `feature/<기능>` → `type/*` → `work/genos`다. 허브 섹션은 `tags`에서 처음 매칭되는 태그로 정해지고, 고객사 `section_by_tag`에는 `type/pattern` 같은 범용 태그도 있기 때문이다. 고객사 노트는 note-rules.md 5절 표의 `customer/` 태그와 함께, 그 고객사 허브의 `section_by_tag`에 있는 `feature/*` 태그를 하나 이상 단다. `vk register` 결과의 섹션이 의도와 다르면 허브에서 그 줄을 지우고 태그 순서를 고쳐 다시 실행한다. 플랫폼 노트의 허브 섹션은 태그가 아니라 하위폴더로 정해진다.
 
 `source`는 Obsidian 클릭 링크가 아니라 **근거 식별자**로 쓴다. URI-style prefix나 개인 PC 절대경로를 붙이지 않는다.
 - GenOS 레포 파일: `admin-front/src/layouts/UserLayout.js`처럼 repo-relative path.

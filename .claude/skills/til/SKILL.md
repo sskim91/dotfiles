@@ -108,7 +108,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 ```
 
 - `domain`은 policy 허용 목록에서 고른다: `jq -r '.tags.domains[]' ~/.dotfiles/vault/vault-policy.json`
-- 항목이 없으면 Wiki 노트에 `<폴더>/untagged` 태그가 붙어 `vk check`에 걸린다.
+- 항목이 없으면 Wiki 노트에 `<til_folder_domain 또는 폴더>/untagged` 태그(예: `computer-science` → `cs/untagged`)가 붙어 `vk check`에 걸린다.
 - `git add/commit`은 사용자가 요청할 때만 한다. 커밋 대상에 새 노트와 `tag-mapping.json`을 함께 넣는다.
 
 ### Step 9: Self-Check 실행

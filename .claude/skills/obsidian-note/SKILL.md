@@ -41,7 +41,7 @@ related_notes:       # 실존 노트 wikilink (없으면 [])
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
 tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
-  - domain/sub
+  - domain/sub       # MOC 섹션을 정할 주제 태그를 맨 앞에 (처음 매칭되는 태그가 섹션을 정한다)
 created: YYYY-MM-DD  # 작성일
 ---
 ```
@@ -129,7 +129,7 @@ created: YYYY-MM-DD  # 작성일
 vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한다.
 
 ### 6단계: 등록
-`python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이다. Wiki로 옮긴 뒤 다시 실행한다.
+`python3 ~/.dotfiles/vault/vk register "<노트 경로>"`를 실행하고 결과(상태·대상·섹션)를 보고한다. `_Inbox` 노트는 `skipped`가 정상이다. Wiki로 옮긴 뒤 다시 실행한다. 허브·MOC 섹션은 `tags` 목록에서 처음 매칭되는 태그로 정해진다. MOC를 정할 주제 태그를 먼저 쓰고, 결과 섹션이 의도와 다르면 MOC에서 그 줄을 지우고 태그 순서를 고쳐 다시 실행한다.
 
 ## Mermaid 핵심 규칙
 

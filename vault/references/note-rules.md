@@ -44,6 +44,7 @@ jq -r '.tags.domains[]' ~/.dotfiles/vault/vault-policy.json
 - `til` 태그는 TIL에서 파생된 Wiki 노트에만 붙는다(아래 4절). 직접 쓰는 노트에는 붙이지 않는다.
 - `untagged`, `status/*` 같은 임시 태그는 남기지 않는다.
 - 옛 태그(`infra/k8s`, `gotcha` 등)는 `tags.rename`이 새 태그로 바꾼다. 새 노트는 처음부터 rename 결과 쪽 태그를 쓴다.
+- 허브·MOC 섹션은 `tags` 목록에서 처음 매칭되는 태그로 정해진다. 섹션을 정할 태그(Wiki는 주제 `domain/sub`, 고객사 노트는 `feature/*`)를 범용 태그(`type/*`, `work/*`)보다 앞에 쓴다. 권장 순서는 `customer/*`(해당 시) → `feature/*`·`domain/sub` → `type/*` → `work/*`다.
 - `vk register`는 태그를 새로 짓거나 고치지 않는다. 허용 목록 밖 태그는 `vk check`에 `[tag]`로 드러나며, 쓰는 스킬이 대화 중에 다시 고른다.
 
 ## 3. 저장 후 등록 (필수)
@@ -66,6 +67,7 @@ python3 ~/.dotfiles/vault/vk register "<노트 절대 경로>"
 - 등록 대상은 `Wiki/` 바로 아래 노트와 `Projects/` 허브 아래 노트뿐이다. `_Inbox`, `Sources`, `Archive`, `Templates`는 `skipped`이므로 실행해도 아무것도 바뀌지 않는다. 그래도 저장 후에는 습관적으로 실행하고 결과를 보고한다.
 - Wiki 노트는 `tags`로 `Wiki/_MOC/MOC-*.md`의 섹션이 정해진다(policy `moc`).
 - 결과(상태, 대상, 섹션)는 사용자에게 그대로 보고한다.
+- `added`의 섹션이 의도와 다르면 허브에 들어간 줄을 옮기지 말고, 먼저 허브에서 그 줄을 지운 뒤 `tags` 순서를 고쳐 다시 실행한다(2절 첫 매칭 규칙).
 
 ## 4. 원본 규칙 — TIL 파생 노트와 Wiki 전용 노트
 
@@ -76,8 +78,20 @@ Wiki에는 두 종류의 노트가 섞여 있다.
 | TIL 파생 | `~/dev/TIL/<폴더>/<이름>.md` | `til` 태그 | 본문·제목·source·topics·tags는 TIL 원본과 `tag-mapping.json` |
 | Wiki 전용 | Wiki 파일 자체 | `til` 태그 없음 | Wiki 파일 |
 
-- TIL 파생 노트의 Wiki 본문은 직접 고치지 않는다. TIL에서 고치고 커밋하면 post-commit 동기화(`~/dev/TIL/.githooks/sync-to-obsidian.py`)가 반영한다. Wiki 본문을 고치면 다음 동기화에서 본문은 덮어쓰지 않고 "이관 필요"로 보고된다.
-- 동기화는 필드 단위로 병합한다. `title`·`source`·본문·`topics`·`tags`는 TIL 값, `related_notes`·`created`는 Wiki 값을 유지한다. 따라서 TIL 파생 노트의 `related_notes`는 Wiki에서 추가해도 된다.
+- TIL 파생 노트의 Wiki 본문은 직접 고치지 않는다. TIL에서 고치고 커밋하면 post-commit 동기화(`~/dev/TIL/.githooks/sync-to-obsidian.py`)가 반영한다.
+- Wiki 본문을 고치면 다음 동기화는 본문을 유지하고 frontmatter만 병합해 쓰며 "Wiki 본문 수정됨 → TIL로 이관 필요"로 보고한다. 그 수정을 TIL 원본으로 옮겨 커밋하면 다음 동기화에서 본문이 다시 TIL 값으로 정상화된다.
+- Wiki 전용 노트와 이름이 겹치는 TIL 노트는 쓰지 않고 충돌로 보고한다.
+- 동기화는 필드 단위로 병합한다.
+
+| 필드 | 원본 | 동작 |
+|---|---|---|
+| `title`, `source`, 본문 | TIL | TIL 값 |
+| `topics` | TIL 폴더 | policy `topics[폴더]` |
+| `tags` | `tag-mapping.json` | policy로 정규화 + `til`. 매핑이 없으면 `<til_folder_domain 또는 폴더>/untagged` |
+| `related_notes` | Wiki | Wiki 목록 유지 + TIL 본문 링크 중 목록에 없는 것만 뒤에 추가 |
+| `created` | Wiki | 있으면 유지, 없으면 최초 동기화 날짜 |
+
+- 따라서 TIL 파생 노트의 `related_notes`는 Wiki에서 추가해도 된다.
 - TIL 태그는 `~/dev/TIL/tag-mapping.json`(파일명 → 태그 배열)이 정본이다. 동기화가 policy로 정규화하고 `til`을 붙인다.
 - Wiki에서 지우거나 `Archive/`로 옮긴 TIL 노트는 다시 생성되지 않는다(retired).
 - Wiki 전용 노트는 TIL 노트와 같은 파일명을 쓰지 않는다(동기화 충돌).
@@ -97,7 +111,18 @@ Wiki에는 두 종류의 노트가 섞여 있다.
 | `Projects/GenonAI/인사연동 배치 분석/` | `00 인사연동 배치 분석 시작하기` | 태그 → `section_by_tag` |
 
 - GenOS 하위폴더는 `01 온보딩·로컬개발`부터 `08 운영·런북`까지 8개다(policy `genos_subfolders`, 폴더별 대표 태그 포함). `GenOS/` 바로 아래에 두면 `unclassified`가 된다.
-- 고객사 노트는 해당 고객사 `section_by_tag`에 있는 태그를 하나 이상 달아야 섹션이 정해진다.
+- 고객사 노트는 해당 고객사 `section_by_tag`에 있는 태그를 하나 이상 달아야 섹션이 정해진다. `section_by_tag`에는 `type/pattern` 같은 범용 태그도 들어 있으므로, 섹션을 정할 `feature/*` 태그를 `type/*`보다 앞에 둔다(2절 첫 매칭 규칙).
+
+고객사 폴더별 `customer/` 태그(기존 노트 기준, 새로 짓지 않는다):
+
+| 고객사 폴더 | `customer/` 태그 |
+|---|---|
+| `삼성증권/` | `customer/samsung-securities` |
+| `삼성카드/` | `customer/samsung-card` |
+| `삼성카드_모니모/` | `customer/samsung-card` |
+| `인사연동 배치 분석/` | 없음(달지 않는다) |
+
+표에 없는 폴더는 같은 폴더 기존 노트의 `customer/*` 태그를 그대로 쓰고, 기존 노트에도 없으면 사용자에게 묻는다.
 
 ```bash
 jq '.hubs, .genos_subfolders' ~/.dotfiles/vault/vault-policy.json

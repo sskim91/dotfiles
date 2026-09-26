@@ -108,6 +108,27 @@ class SkillDocsTest(unittest.TestCase):
                 self.assertIn("## 남은 질문", text)
                 self.assertNotIn("## 더 알아보기", text)
 
+    def test_first_matching_tag_rule_is_documented(self):
+        # register.py는 tags를 앞에서부터 보고 처음 매칭되는 태그로 허브·MOC 섹션을 정한다.
+        phrase = "처음 매칭되는 태그"
+        self.assertIn(phrase, RULE_DOC.read_text(encoding="utf-8"))
+        for root in SKILL_ROOTS:
+            for rel in (
+                "genos-knowledge-capture/SKILL.md",
+                "genos-knowledge-capture/references/note-format.md",
+                "obsidian-note/SKILL.md",
+            ):
+                with self.subTest(root=root.parent.name, file=rel):
+                    self.assertIn(phrase, (root / rel).read_text(encoding="utf-8"))
+
+    def test_genos_tag_example_puts_feature_before_type(self):
+        for root in SKILL_ROOTS:
+            with self.subTest(root=root.parent.name):
+                text = (root / "genos-knowledge-capture" / "references" / "note-format.md").read_text(
+                    encoding="utf-8"
+                )
+                self.assertLess(text.index("  - feature/<기능>"), text.index("  - type/pattern"))
+
     def test_vault_linter_uses_vk(self):
         for root in SKILL_ROOTS:
             with self.subTest(root=root.parent.name):

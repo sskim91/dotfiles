@@ -19,7 +19,7 @@ related_notes:       # 실존 노트 wikilink (없으면 [])
   - "[[실존하는_노트1]]"
   - "[[실존하는_노트2]]"
 tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
-  - domain/sub
+  - domain/sub       # MOC 섹션을 정할 주제 태그를 맨 앞에 (처음 매칭되는 태그가 섹션을 정한다)
 created: YYYY-MM-DD  # 작성일
 ---
 ```

@@ -98,7 +98,7 @@ title: "영상 제목 (한국어)"
 source:
   - YouTube URL
 topics:
-  - AI
+  - <분야>   # policy topics 값 중 하나 (예: AI, Kubernetes)
 related_notes:
   - "[[실존하는_관련노트]]"
 tags:
