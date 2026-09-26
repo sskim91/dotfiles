@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+"""vaultkit 래퍼: 어디서 실행해도 이 파일 옆의 vaultkit 패키지를 쓴다."""
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from vaultkit.cli import main  # noqa: E402
+
+sys.exit(main())
