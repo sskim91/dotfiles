@@ -82,7 +82,7 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 | Codex CLI | `AGENTS.md` (project) | `.codex/hooks/`, `.codex/config/`, `.codex/rules/`, `.codex/setup-mcp.sh` |
 | Antigravity / Gemini CLI | `GEMINI.md` (project) | `.gemini/antigravity-cli/{settings,hooks,mcp_config}.json` |
 
-`.codex/hooks/` mirrors `.claude/hooks/` (file-dispatcher, pre-commit-gate, check-* security gates, prompt-rewriter, language checks) so Codex sessions get the same guardrails.
+`.codex/hooks/` mirrors `.claude/hooks/` (file-dispatcher, pre-commit-gate, check-* security gates, block-rm, language checks) so Codex sessions get the same guardrails.
 
 **Parity checklist** — when changing any of these, update all three guidance files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`):
 - Commit convention (Conventional Commits, no emoji)
@@ -91,7 +91,7 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 - Gotchas (tmux reload, `ENABLE_*` toggles, primary terminal)
 - Security policy (secrets, `.env` handling)
 
-**Global collaboration style** (`.claude/docs/working-style.md`) is shared across all three tools via symlink — `~/.codex/AGENTS.md` and `~/.gemini/GEMINI.md` both symlink to it, and Claude's global `.claude/CLAUDE.md` `@import`s it. Edit collaboration conventions in that one file only; symlinks propagate automatically.
+**Global collaboration style** (`.claude/docs/working-style.md`) is shared by Claude and Antigravity — `~/.gemini/GEMINI.md` symlinks to it and Claude's global `.claude/CLAUDE.md` `@import`s it. Codex keeps its own contract in `.codex/AGENTS.md` (linked to `~/.codex/AGENTS.md`), so a collaboration change meant for Codex goes there as well.
 
 ## Gotchas
 
@@ -100,11 +100,11 @@ This repo configures three AI CLIs in parallel. Each reads its own guidance file
 - Ghostty/kitty 둘 다 설정 존재 — 현재 주 터미널은 Ghostty
 - `ssh host <command>`로 실행되는 원격 명령은 non-login·non-interactive 셸이라 `.zprofile`/`.zshrc`/`path_helper`가 모두 건너뛰어진다. brew 도구를 원격 명령에서 써야 하면 `.zshenv`에 PATH를 넣어야 한다 (mosh가 `mosh-server not found`로 실패하는 전형적 원인)
 - `.claude/hooks/` 스크립트는 `ENABLE_*` env var로 개별 제어 — 새 hook 추가 시 `path.zsh`에 변수 추가 필요
-- **마켓플레이스 `autoUpdate`는 설치된 플러그인까지 올린다** (공식 문서·2026-09-05 실측). 세션 시작 후 최대 10분 무작위 지연을 두고 백그라운드로 카탈로그 갱신과 설치본 업데이트를 함께 수행한다. 실행 중인 세션은 시작 시점 버전을 계속 쓰고, 새 버전은 다음 실행 또는 `/reload-plugins`에서 로드된다. 플러그인 자체의 "업데이트 있음" 경고가 새 릴리스 직후 첫 세션에 한 번 뜨는 것은 이 순서 때문이며 수동 조치가 필요 없다. 2026-08-29~09-05 사이 이 저장소는 "카탈로그만 갱신한다"고 잘못 적어 두었고, 그 전제로 `ccpu` 함수를 유지했다(09-05 삭제. `claude plugin update`는 플러그인 이름을 요구해 update-all 형태가 없다). 2026-07-01(`7e8eb77`)에 startup git pull이 간헐적 로드 에러를 내서 껐다가 2026-08-29에 다시 켠 이력은 그대로다. **startup에 plugin load 에러나 스킬 누락이 재발하면 `autoUpdate`부터 의심할 것**
+- **마켓플레이스 `autoUpdate`는 설치된 플러그인까지 올린다** (공식 문서·2026-09-05 실측). 세션 시작 후 최대 10분 무작위 지연을 두고 백그라운드로 카탈로그 갱신과 설치본 업데이트를 함께 수행한다. 실행 중인 세션은 시작 시점 버전을 계속 쓰고, 새 버전은 다음 실행 또는 `/reload-plugins`에서 로드된다. 플러그인 자체의 "업데이트 있음" 경고가 새 릴리스 직후 첫 세션에 한 번 뜨는 것은 이 순서 때문이며 수동 조치가 필요 없다. `claude plugin update`는 플러그인 이름을 요구해 일괄 갱신 형태가 없으므로 수동 갱신 래퍼를 두지 않는다. startup git pull이 간헐적 로드 에러를 낸 전례가 있으니 **startup에 plugin load 에러나 스킬 누락이 재발하면 `autoUpdate`부터 의심할 것**
 - `.claude/settings.json`은 **이중 역할**이다 — `~/.claude/settings.json` 심링크로 user 스코프이면서, `~/.dotfiles`에서 작업할 땐 같은 경로가 project 스코프다. Claude Code는 스킬은 inode로 중복 제거하지만 settings.json은 하지 않아 **양쪽 모두 로드된다**(실측: 동일 권한 규칙이 `userSettings`·`projectSettings` 양쪽에 적용). 그래서 `tipsFile`·`label`처럼 **user/managed 스코프에서만 유효한 키**를 쓰면 값은 정상 적용되지만 project 사본에 대해 `[WARN] ... are ignored` 한 줄이 남는다. 무해하지만 앞으로 그런 키마다 재발한다
 - 설정 관련 경고는 `claude -p` 출력에 안 나온다. `--debug-file <path>`로 받아야 보인다 (2026-08-29에 이걸 못 찾아 "검증 불가"로 오판한 적 있음)
 - `block-rm.sh`는 명령을 **줄 단위로** 검사한다 (2026-08-29 수정). 이전에는 개행을 공백으로 뭉개서 `touch x`⏎`rm x` 같은 멀티라인 삭제가 상시 가드를 그대로 통과했다. 대가로 heredoc 본문에 줄 처음부터 `rm`이 오면 오탐 차단되니, 그럴 때는 `\rm`을 쓴다. Codex 미러(`.codex/hooks/block-rm.sh`)는 exit 2가 아니라 `decision` 필드로 차단하므로 검증 기준이 다르다
-- **SessionStart 훅 페이로드에는 `model` 필드가 없다** (2026-09-03, 2.1.259 실측: `{hook_event_name, source}`만 옴). PostModelSwitch도 초기 모델에는 안 뜬다. 훅에서 모델을 판별해야 하면 `ANTHROPIC_MODEL` → settings `model` 키 순으로 폴백해야 하고, `claude --model X` 일회성 플래그는 이 경로로 보이지 않는다. 이 전제로 만든 `model-context.sh`(Opus 5 전용 지침 주입)는 Opus 5.5 전환 후 2026-09-23에 제거했다
+- **SessionStart 훅 페이로드에는 `model` 필드가 없다** (2026-09-03, 2.1.259 실측: `{hook_event_name, source}`만 옴). PostModelSwitch도 초기 모델에는 안 뜬다. 훅에서 모델을 판별해야 하면 `ANTHROPIC_MODEL` → settings `model` 키 순으로 폴백해야 하고, `claude --model X` 일회성 플래그는 이 경로로 보이지 않는다
 - **`claude-plugins-official`은 플러그인을 커밋 sha로 고정한다.** superpowers가 upstream 6.4.1인데 official은 6.3.0을 가리켜(2026-09-22) `obra/superpowers-marketplace`(sha 없이 upstream URL 추적)로 전환했다. 두 마켓플레이스에서 같은 플러그인을 동시에 켜면 스킬이 중복되니 하나만 활성화한다. 설치 스코프가 user·project 둘로 남아 있으면 `claude plugin uninstall`을 스코프별로 두 번 해야 레지스트리에서 사라진다
-- superpowers 플러그인 훅의 matcher는 `startup|clear|compact`라 **재개(resume) 세션에는 using-superpowers bootstrap이 들어오지 않는다** (6.4.1 기준). 재개 세션은 working-style.md의 프로세스 절과 글로벌 CLAUDE.md의 실행 방식 절만으로 동작한다. resume용 재주입 훅(`superpowers-context.sh`)을 2026-09-22에 만들었다가 두 번의 재개에서 실제 주입이 확인되지 않아 같은 날 제거했다. 스크립트 단독 실행은 정상이었으므로 원인은 미확인이다
+- superpowers 플러그인 훅의 matcher는 `startup|clear|compact`라 **재개(resume) 세션에는 using-superpowers bootstrap이 들어오지 않는다** (6.4.1 기준). 재개 세션은 working-style.md의 프로세스 절과 글로벌 CLAUDE.md의 실행 방식 절만으로 동작한다. resume용 재주입 훅은 스크립트 단독 실행은 정상이었지만 실제 재개 세션에서 주입이 확인되지 않았다(원인 미확인). 다시 만든다면 재개 세션에서 주입 여부부터 확인한다
 - Neovim plugin 충돌 시 `:Lazy clean` 후 재시작 — LazyVim 자동 sync가 해결 못하는 경우 있음

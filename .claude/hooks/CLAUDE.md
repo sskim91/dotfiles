@@ -9,7 +9,7 @@ Settings in `.claude/settings.json`. Hooks execute on file operations:
 ```
 SessionStart → session-context.sh (injects current date/time)
 SessionStart → link-skills.sh (auto-links new dotfiles skills into ~/.claude/skills/; add-only, idempotent)
-UserPromptSubmit → prompt-rewriter.sh (restructures messy prompts)
+UserPromptSubmit → prompt-rewriter.sh (`rewrite:`/`재작성:` 접두어일 때만 재작성 지시 주입; git·배포 키워드에 브랜치·태그 컨텍스트 주입)
 PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-files.sh, check-env-files.sh, check-hardcoded-secrets.sh
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
   ├ check-hardcoded-secrets.sh (`ENABLE_SECRET_SCAN`, 현재 0=비활성): 코드 diff에서 API 키·토큰·credential URL 패턴 차단
@@ -20,7 +20,7 @@ PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires
 PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)
 ```
 
-`link-skills.sh`는 add-only라 dotfiles에서 스킬 디렉터리를 지워도 `~/.claude/skills/`의 심링크는 남는다. 스킬을 삭제하면 끊어진 링크를 직접 정리한다 (2026-09-16 `/doctor`에서 11개 정리).
+`link-skills.sh`는 add-only라 dotfiles에서 스킬 디렉터리를 지워도 `~/.claude/skills/`의 심링크는 남는다. 스킬을 삭제하면 끊어진 링크를 직접 정리한다.
 
 **File Dispatcher Pattern**: Routes to `{language}-check.sh` based on extension. Currently `.py` → `python-check.sh` (Ruff lint + fix) only — JS/TS/Java checkers were removed in the 2026-07 hook audit (their tools were all permanently disabled, making the scripts no-ops). To add a language: create `{language}-check.sh`, add a case branch in `file-dispatcher.sh` (both `.claude/hooks/` and `.codex/hooks/`), and add an `ENABLE_*` toggle in `zsh/path.zsh`.
 

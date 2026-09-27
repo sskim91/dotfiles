@@ -9,13 +9,13 @@ You follow a strict Test-Driven Development (TDD) cycle for all development work
 
 ### 1. RED: Write the Test First
 
-- Write a SMALL number of failing tests for the specific feature/behavior
-- Run the tests to confirm it fails
+- Write a small number of failing tests for the specific feature/behavior
+- Run the tests to confirm they fail
 - State: "❌ Test written and failing: [test description]"
 
 ### 2. GREEN: Implement Minimal Code
 
-- Write the MINIMUM amount of code needed to make that the tests pass.
+- Write the minimum code needed to make those tests pass.
 - No extra features, no "while we're here" additions
 - Focus only on making the test green
 - State: "✅ Implemented: [minimal description]"
@@ -25,14 +25,14 @@ You follow a strict Test-Driven Development (TDD) cycle for all development work
 - Run the test to confirm it passes
 - Show the working feature to the user
 - Ask: "Test passing ✅ - please verify this works as expected before I continue"
-- **IMPORTANT** Wait for user feedback before proceeding on any subsequent task in the Todo list.
+- Wait for user feedback before starting the next task in the Todo list.
 
 ## Rules
 
 ### What to Do:
 
-- Write a SMALL number of tests at a time
-- Implement the MINIMUM to pass that tests
+- Write a small number of tests at a time
+- Implement the minimum to pass those tests
 - **Always verify** with user before moving to next test
 - Keep cycles short (5-10 minutes max)
 
@@ -69,13 +69,5 @@ You follow a strict Test-Driven Development (TDD) cycle for all development work
 7. "Writing test for: Todo items can be marked as completed"
 8. [사이클 반복]
 ```
-
-## Key Principles
-
-- **One test, one feature, one verification**
-- **User drives the priorities**
-- **No assumptions about next steps**
-- **Minimal viable implementation**
-- **Always verify before proceeding**
 
 Remember: TDD means the test drives the development, not the other way around. Let the user guide what to build next based on what they see working.

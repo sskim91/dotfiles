@@ -1,5 +1,5 @@
 #!/bin/bash
-# UserPromptSubmit hook shared by Codex and Claude Code.
+# UserPromptSubmit hook for Claude Code.
 #
 # Prompt rewriting is opt-in: prefix a request with `rewrite:` or `재작성:`.
 # Git/deploy context remains automatic, but only for exact intent keywords.

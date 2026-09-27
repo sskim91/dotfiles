@@ -207,7 +207,7 @@ After generating the JSON, you MUST run the render-view-fix loop until the diagr
 
 ## Large / Comprehensive Diagram Strategy
 
-**For comprehensive or technical diagrams, you MUST build the JSON one section at a time.** Do NOT attempt to generate the entire file in a single pass. This is a hard constraint — Claude Code has a ~32,000 token output limit per response, and a comprehensive diagram easily exceeds that in one shot. Even if it didn't, generating everything at once leads to worse quality. Section-by-section is better in every way.
+**Build comprehensive or technical diagrams one section at a time**, not in a single pass: a full diagram can exceed one response's output limit, and generating everything at once produces worse layout than building and checking section by section.
 
 ### The Section-by-Section Workflow
 

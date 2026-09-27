@@ -1,6 +1,6 @@
 # Web Search Protocol
 
-**CRITICAL**: Use `tavily_search` for general web searches. WebSearch is fallback only.
+Use `tavily_search` for general web searches; WebSearch is the last fallback.
 
 | Task | Tool | Fallback |
 |------|------|----------|
