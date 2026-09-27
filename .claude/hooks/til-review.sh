@@ -43,8 +43,8 @@ if [[ "$SKIP_TRANSLATED_REVIEW" -eq 1 ]] && grep -q "한국어로 번역한 글�
 fi
 
 # Model configuration
-CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-5.6-terra}"
-ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.6 Flash (Medium)}"
+CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-6-astra}"
+ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.8 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
 # Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
