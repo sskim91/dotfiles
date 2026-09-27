@@ -49,6 +49,8 @@ Codex는 `pre-commit-gate.sh`, `block-rm.sh`, `file-dispatcher.sh` 세 훅을 �
 
 중복 문맥·프롬프트 재작성·자동 링크·자동 다중 모델 리뷰를 수행하던 Codex의 `session-context.sh`, `link-skills.sh`, `prompt-rewriter.sh`, `til-review.sh`, `vault-linker.sh`는 등록과 복제본을 제거했다. Claude 훅은 유지한다. 제거한 Codex 훅은 Git 이력에서 복원할 수 있다.
 
+Codex의 TIL 교차 검토는 [`til` 스킬](skills/til/SKILL.md)의 Self-Check 다음 단계에서 실행한다. `python3 .codex/skills/til/scripts/review.py <문서.md>`가 Claude와 Antigravity(`agy`)를 병렬 호출하며 결과와 실패 상태를 보존한다. 전역 편집 훅은 추가하지 않는다.
+
 Codex 개인 스킬은 `.codex/skills/<name>/`에서 수정하거나 추가한다. 디렉터리 링크이므로 별도 Claude 동기화가 필요 없다. 스크립트의 로컬 의존성·캐시는 각 도구의 스킬 디렉터리에서 관리한다.
 
 ## 적용과 검증 범위
