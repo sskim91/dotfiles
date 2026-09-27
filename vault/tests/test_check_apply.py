@@ -401,6 +401,22 @@ class ApplyTest(_TempVaultCase):
         self.assertEqual(mapping.read_text(encoding="utf-8"), '{"n": ["k8s/old"]}\n')
 
 
+class CliRegisterTest(_TempVaultCase):
+    def test_register_updates_moc_counts(self) -> None:
+        moc = self.vault / "Wiki/_MOC/MOC-Kubernetes.md"
+        _write(moc, "# K8s\n\nWiki의 노트 1개를 묶은 목차다.\n\n## 핵심 리소스\n\n- [[Old]] — o\n")
+        _write(self.vault / "Wiki/Old.md", _note("Old", ["kubernetes/basics"]))
+        note = self.vault / "Wiki/New.md"
+        _write(note, _note("New", ["kubernetes/basics"]))
+        policy = _make_policy(self.root)
+        with mock.patch.object(cli, "load_policy", return_value=policy), contextlib.redirect_stdout(io.StringIO()):
+            code = cli.main(["register", str(note)])
+        self.assertEqual(code, 0)
+        text = moc.read_text(encoding="utf-8")
+        self.assertIn("- [[New]]", text)
+        self.assertIn("노트 2개를", text)
+
+
 class CliApplyTest(_TempVaultCase):
     def _policy(self) -> Policy:
         _write(self.vault / "Wiki/Messy.md", '---\ntags:\n  - k8s/old\ntitle: "M"\n---\n본문\n')

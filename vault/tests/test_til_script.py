@@ -190,6 +190,20 @@ class TilScriptTest(unittest.TestCase):
         text = (self.wiki / "노트A.md").read_text(encoding="utf-8")
         self.assertEqual(entry["body_sha"], body_sha(fm.parse(text).body))
 
+    def test_create_updates_moc_counts(self) -> None:
+        moc = self.wiki / "_MOC" / "MOC-Python.md"
+        moc.write_text(MOC_PYTHON.replace("---\n\n## 언어", "---\n\nWiki의 노트 1개를 묶은 목차다.\n\n## 언어"), encoding="utf-8")
+        (self.wiki / "_MOC" / "00-Wiki-MOC.md").write_text(
+            "# Wiki\n\nWiki의 노트 1개를 묶은 목차다.\n\n- [[MOC-Python]] — 1개 노트\n", encoding="utf-8"
+        )
+        self.write_state({})
+        self.til_note("python", "노트A")
+        self.run_script()
+        self.assertIn("노트 2개를", moc.read_text(encoding="utf-8"))
+        index = (self.wiki / "_MOC" / "00-Wiki-MOC.md").read_text(encoding="utf-8")
+        self.assertIn("노트 2개를", index)
+        self.assertIn("- [[MOC-Python]] — 2개 노트", index)
+
     def test_unclassified_reported(self) -> None:
         self.write_state({})
         self.til_note("zzz-unknown", "노트Z")

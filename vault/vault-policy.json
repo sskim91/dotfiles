@@ -1106,8 +1106,8 @@
       "Redis"
     ],
     "redis/data-structure": [
-      "MOC-AI-LLM",
-      "LangChain·LangGraph"
+      "MOC-Data-Messaging",
+      "Redis"
     ],
     "redis/intro": [
       "MOC-Data-Messaging",

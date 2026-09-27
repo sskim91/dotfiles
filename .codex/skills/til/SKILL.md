@@ -101,7 +101,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 ### Step 8: 태그 매핑 등록 (커밋 전)
 
-공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (4절 TIL 파생 노트, 2절 태그). TIL 노트는 커밋 시 post-commit 동기화가 Wiki 노트로 만든다. 태그는 `~/dev/TIL/tag-mapping.json`이 정본이므로, 커밋 전에 til-tagger 스킬의 분류 규칙으로 새 파일의 항목을 추가한다.
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (4절 TIL 파생 노트, 2절 태그). TIL 노트는 커밋 시 post-commit 동기화가 Wiki 노트로 만든다. 태그는 `~/dev/TIL/tag-mapping.json`이 정본이므로, 커밋 전에 til-tagger의 분류 규칙으로 새 파일의 항목을 추가한다. til-tagger는 스킬로 호출되지 않을 수 있으니 `~/.dotfiles/.codex/skills/til-tagger/SKILL.md`의 "2. Classify tags"·"Tag Guidelines" 절을 직접 읽고 따른다.
 
 ```json
 "<파일명-확장자-제외>": ["domain/sub"]

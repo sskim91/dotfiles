@@ -16,7 +16,7 @@ from pathlib import Path
 from .apply import ApplyRefused, run_apply
 from .check import run_check
 from .policy import load_policy
-from .register import derive_maps, register_note
+from .register import derive_maps, register_note, update_counts
 
 
 def _build_parser() -> argparse.ArgumentParser:
@@ -64,9 +64,14 @@ def main(argv: list[str] | None = None) -> int:
         return _apply(policy, args)
 
     if args.command == "register":
+        added = False
         for path in args.files:
             r = register_note(path.expanduser().resolve(), policy, dry_run=False)
             print(f"{r.status}\t{path}\t{r.target or '-'}\t{r.section or '-'}\t{r.line or '-'}")
+            added = added or r.status == "added"
+        if added:
+            # MOC 도입문·00-Wiki-MOC의 "노트 N개" 표기를 새 항목 수에 맞춘다
+            update_counts(policy, dry_run=False)
         return 0
 
     if args.command == "derive-maps":

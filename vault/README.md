@@ -90,3 +90,11 @@ vault 파일 삭제는 `trash`가 iCloud 경로에서 `Code=513` 권한 오류�
 - (해결 2026-09-27) `Sources/Clippings`의 파일명에서 ` | kciter.so`를 빼 `vk check` 위반 0
 - notebook-navigator 템플릿 폴더 설정(`Templates`)이 Obsidian 재시작 후에도 유지되는지 확인
 - 진행 원장(판정 35건 포함): `~/.dotfiles/.superpowers/sdd/2026-09-26-vault-policy/progress.md` (git 비추적)
+
+### 2026-09-27: til 스킬 전체 흐름 검증
+
+- 임시 사본(TIL 클론·vault 복사·경로만 바꾼 policy)에서 노트 작성 → tag-mapping 추가 → 커밋 → post-commit create → MOC 등록 → check까지 실행
+- 발견·수정: 새 노트 등록 뒤 MOC "노트 N개" 표기가 안 바뀌어 `count` 위반 → `vk register`와 동기화 create가 `update_counts` 호출
+- 발견·수정: `redis/data-structure`가 동점 판정으로 `MOC-AI-LLM`에 대응 → `MOC-Data-Messaging`/Redis
+- 발견·수정: til-tagger가 설정에서 꺼져 있어 til 스킬이 호출 못 함 → til 스킬에 SKILL.md 경로를 직접 적음
+- 확인: 매핑을 빠뜨리면 `<폴더>/untagged`가 붙고 `vk check`의 `[tag]`로 잡힘(동기화 출력에는 안 나옴)

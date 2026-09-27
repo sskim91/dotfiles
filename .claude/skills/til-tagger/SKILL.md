@@ -103,7 +103,8 @@ cd ~/dev/TIL && python3 .githooks/sync-to-obsidian.py --verbose
 | 필드 | 기대 값 |
 |---|---|
 | `tags` | `tag-mapping.json` 값을 policy로 정규화한 결과 + `til` |
-| `title`·`source`·`topics`·본문 | TIL 원본 값 |
+| `title`·`source`·본문 | TIL 원본 값 |
+| `topics` | TIL 폴더의 표시 이름(`vault-policy.json`의 `topics`, 예: `kubernetes` → `Kubernetes`) |
 | `related_notes` | 동기화 전 Wiki 목록 유지 + TIL 본문 링크 중 목록에 없는 것만 뒤에 추가 |
 | `created` | Wiki 값 유지(없으면 최초 동기화 날짜) |
 
