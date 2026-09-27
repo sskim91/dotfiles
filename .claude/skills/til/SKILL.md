@@ -1,6 +1,6 @@
 ---
 name: til
-description: Use when user mentions "TIL", "write TIL", "TIL 작성", "learning note", or /til command. Do NOT use for Obsidian notes (use obsidian-note) or blog posts (use tech-blog-writer).
+description: Use when user mentions "TIL", "write TIL", "TIL 작성", "learning note", or /til command. Do NOT use for Obsidian notes (use obsidian-note) or blog posts.
 ---
 
 # TIL Writer
@@ -27,20 +27,14 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 ### Step 1: 주제 확인
 
-**인자가 있는 경우** (`/til "주제"`):
-- 주제를 파악하고 적절한 카테고리 제안
-- 카테고리 선택 시 [category-guide.md](references/category-guide.md) 참조
-- 사용자 확인 후 작성 시작
-
-**인자가 없는 경우** (`/til`):
-- 어떤 주제로 TIL을 작성할지 질문
-- 카테고리 선택. 카테고리는 `~/dev/TIL`의 기존 최상위 폴더다(`scripts` 제외):
-  `agent`, `ai`, `aws`, `backend`, `computer-science`, `database`, `design-pattern`, `devops`, `docker`, `economics`, `frontend`, `infra`, `jackson`, `java`, `javascript`, `kafka`, `kubernetes`, `langgraph`, `mcp`, `network`, `nginx`, `nodejs`, `product-analytics`, `proxy`, `python`, `react`, `redis`, `security`, `spring`, `testing`, `web`
-- 목록은 바뀔 수 있으므로 작성 전에 `command ls -d ~/dev/TIL/*/`로 확인한다. 맞는 폴더가 없을 때만 새 폴더를 제안하고, 사용자 확인 후 만든다.
+- 인자가 있으면(`/til "주제"`) 그 주제로, 없으면(`/til`) 어떤 주제로 쓸지 먼저 묻는다.
+- 카테고리는 `~/dev/TIL`의 기존 최상위 폴더다(`scripts` 제외). 매번 `command ls -d ~/dev/TIL/*/`로 목록을 확인하고, 폴더별 작성 특성은 [category-guide.md](references/category-guide.md)를 참조해 하나를 제안한다.
+- 주제가 여러 카테고리에 걸치면 가장 핵심적인 기술 기준으로 고른다. 맞는 폴더가 없을 때만 새 폴더를 제안하고, 사용자 확인 후 만든다.
+- 사용자가 주제·카테고리를 확인하면 작성을 시작한다.
 
 ### Step 2: 리서치
 
-작성 전 `tavily_search` 또는 `WebSearch`로 주제를 검색하여 최신 정보와 공식 문서 URL을 확보한다. 할루시네이션 방지와 정확한 출처 확보를 위해 **항상 실행**한다.
+작성 전 `tavily_search`로 주제를 검색하여(쓸 수 없으면 `brave_web_search` → `WebSearch` 순) 최신 정보와 공식 문서 URL을 확보한다. 할루시네이션 방지와 정확한 출처 확보를 위해 **항상 실행**한다.
 
 ### Step 3: 문서 구조 작성
 
@@ -74,8 +68,6 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - 줄바꿈은 `<br>` 사용 (`\n` 아님)
 - subgraph에는 style 지정하지 않음
 - sequenceDiagram은 `style` 대신 `rect rgba()` 사용
-- **다이어그램 작성 즉시** 문법 검증: 블록 본문을 `.mmd`로 저장한 뒤
-  `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg` — exit 0이면 정상, exit 1이면 문법 오류
 
 ### Step 6: 스타일 규칙
 
@@ -95,7 +87,9 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 | `# Node.js가 싱글스레드라는 미신` | `Node.js가-싱글스레드라는-미신.md` |
 | `# 왜 Spring은 CGLIB을 선택했을까?` | `왜-Spring은-CGLIB을-선택했을까.md` |
 
-**특수문자 처리:** `/`, `?`, `:`, `*` 등은 제거 후 하이픈 변환
+**특수문자 처리:** 따옴표 `' "`는 그냥 지운다. `/ ? : * ( ) [ ] , @ =`는 공백으로 바꾼 뒤 공백을 하이픈으로 변환한다(단어가 붙지 않게). `.`은 유지한다(`Node.js`). 연속 하이픈은 하나로 줄이고, 앞뒤 하이픈은 지운다.
+
+예: `# Node.js/Deno 비교: list[tuple]은?` → `Node.js-Deno-비교-list-tuple-은.md`
 
 **저장 위치:** `/Users/sskim/dev/TIL/{category}/`
 
@@ -109,6 +103,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 - `domain`은 policy 허용 목록에서 고른다: `jq -r '.tags.domains[]' ~/.dotfiles/vault/vault-policy.json`
 - 항목이 없으면 Wiki 노트에 `<til_folder_domain 또는 폴더>/untagged` 태그(예: `computer-science` → `cs/untagged`)가 붙어 `vk check`에 걸린다.
+- 추가 후 JSON 유효성을 확인한다: `python3 -m json.tool ~/dev/TIL/tag-mapping.json > /dev/null`
 - `git add/commit`은 사용자가 요청할 때만 한다. 커밋 대상에 새 노트와 `tag-mapping.json`을 함께 넣는다.
 
 ### Step 9: Self-Check 실행
@@ -134,7 +129,6 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] mermaid style에 color가 있는가?
 - [ ] sequenceDiagram에서 `rect rgba()` 사용했는가?
 - [ ] subgraph에 style을 지정하지 않았는가?
-- [ ] `npx -y @mermaid-js/mermaid-cli`로 문법 검증을 통과했는가?
 
 #### 스타일 (CHECK)
 - [ ] Bold 닫는 `**` 다음에 띄어쓰기가 있는가?
@@ -142,31 +136,17 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - [ ] 출처를 명시했는가?
 - [ ] 문단 단위로 설명했는가?
 
-## Verification
-
-- mermaid 작성 즉시 → `npx -y @mermaid-js/mermaid-cli -i <파일>.mmd -o /tmp/mmd-check.svg`로 문법 검증 (exit 1이면 오류)
-- Self-Check 체크리스트 (Step 9) 통과 확인
-- `tag-mapping.json`에 새 파일 항목이 있고 JSON이 유효한지 확인: `python3 -m json.tool ~/dev/TIL/tag-mapping.json > /dev/null`
-
 ## Gotchas
 
 <!-- Claude가 자주 실수하는 패턴. 실패 시 추가 -->
 - ❌ mermaid에서 `\n` 사용 → `<br>` 사용해야 함
 - ❌ subgraph에 style 지정 → subgraph는 style 미지원
 - ❌ sequenceDiagram에서 `style` 사용 → `rect rgba()` 사용
+- ❌ mermaid style에 `color` 누락 → 글씨가 안 보이니 `fill`과 `color:#fff`를 함께 지정
+- ❌ Bold 닫는 `**` 바로 뒤에 글자를 붙임 → 렌더링이 깨지니 `**텍스트** 뒤`처럼 띄어쓰기
 - ❌ README.md 수정 시도 → GitHub Actions 자동 생성이므로 절대 금지
 - ❌ "~는 ~이다" 정의 나열 → Why 중심 스토리텔링으로
 - ❌ 핵심 용어를 정의 없이 사용 → 등장 시점에 1줄이라도 정의를 깔거나 빌드업 4단계(도구 정의→직관→직관 붕괴→해법)로 쌓아라
-- ❌ 리서치 없이 내부 지식만으로 작성 → 항상 tavily_search 먼저
-- ❌ 파일명에 `/`, `?`, `:` 특수문자 포함 → 제거 후 하이픈 변환
+- ❌ 리서치 없이 내부 지식만으로 작성 → Step 2 검색을 먼저 실행
+- ❌ 파일명에 특수문자 포함 → Step 7의 제거 목록대로 지운 뒤 하이픈 변환
 - ❌ `git add/commit/push` 자동 실행 → 사용자가 명시적으로 요청할 때만
-
-## Troubleshooting
-
-| 문제 | 원인 | 해결 |
-|------|------|------|
-| mermaid 렌더링 깨짐 | `\n` 사용 또는 color 누락 | `<br>` 사용, style에 color 명시 |
-| Bold 뒤 텍스트 붙음 | `**` 뒤 띄어쓰기 누락 | `**텍스트** 뒤` 형태로 수정 |
-| sequenceDiagram 스타일 무시됨 | `style` 미지원 | `rect rgba()` 사용 |
-| 카테고리 미결정 | 주제가 여러 카테고리에 걸침 | 가장 핵심적인 기술 기준으로 선택 |
-| 파일명 특수문자 에러 | 제목에 `/`, `?`, `:` 등 포함 | 특수문자 제거 후 하이픈 변환 |

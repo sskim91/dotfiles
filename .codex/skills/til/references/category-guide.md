@@ -45,7 +45,7 @@ Java 개발자가 Python으로 전환하는 관점에서 작성:
 | docker | Docker, 컨테이너 |
 | kubernetes | K8s 리소스, 배포 전략 |
 | network | 네트워크 프로토콜, 로드밸런서 |
-| ai | AI/ML, LLM, MCP |
+| ai | AI/ML, LLM 일반 |
 | testing | 테스팅 방법론 |
 | devops | CI/CD, 인프라 |
 | backend | 백엔드 일반 |
@@ -60,3 +60,9 @@ Java 개발자가 Python으로 전환하는 관점에서 작성:
 | react | React |
 | jackson | Jackson 라이브러리 |
 | javascript | JavaScript |
+| agent | AI 에이전트 설계·워크플로 패턴 |
+| langgraph | LangGraph |
+| mcp | Model Context Protocol |
+| nginx | Nginx |
+| product-analytics | 제품 분석, 지표 |
+| proxy | 프록시, 리버스 프록시 |
