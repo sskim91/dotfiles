@@ -72,22 +72,34 @@ run_with_timeout() {
 	"$@" &
 	local pid=$!
 	[[ $had_monitor -eq 1 ]] || set +m
+	# Run `sleep` in the background and `wait` on it so the TERM trap fires immediately
+	# and takes the sleep down with the watchdog. A foreground `sleep` survived the
+	# watchdog kill for up to $secs.
 	(
-		sleep "$secs"
+		sleep "$secs" &
+		sleep_pid=$!
+		trap 'kill "$sleep_pid" 2>/dev/null; exit 0' TERM
+		wait "$sleep_pid"
 		kill -TERM -- "-$pid" 2>/dev/null && {
 			sleep 2
 			kill -KILL -- "-$pid" 2>/dev/null
 		}
-	) &
+	# Detach the watchdog from the hook's stdio. While a stray child held the inherited
+	# stdout, Claude Code saw the pipe stay open after the JSON was printed and discarded
+	# the whole review as a suspect capture (hook_non_blocking_error, 2026-10-01).
+	) >/dev/null 2>&1 &
 	local watchdog=$!
 	wait "$pid" 2>/dev/null
 	local rc=$?
-	kill -TERM "$watchdog" 2>/dev/null
-	wait "$watchdog" 2>/dev/null
 	# 143 = 128 + SIGTERM; treat as timeout
 	if [[ $rc -eq 143 || $rc -eq 137 ]]; then
+		# The watchdog fired. Let it finish the TERM -> 2s -> KILL escalation; killing it
+		# here skipped the KILL, so a child that ignores TERM outlived the timeout.
+		wait "$watchdog" 2>/dev/null
 		return 124
 	fi
+	kill -TERM "$watchdog" 2>/dev/null
+	wait "$watchdog" 2>/dev/null
 	return $rc
 }
 
