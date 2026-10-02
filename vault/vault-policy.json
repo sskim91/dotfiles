@@ -1319,6 +1319,7 @@
         "feature/customer-id": "PIMS 행위로그 연동",
         "feature/deployment": "CI/CD 설계와 토폴로지",
         "feature/model-serving": "CI/CD 설계와 토폴로지",
+        "feature/notification": "에이전트 오류 알림 연동",
         "feature/pims": "PIMS 행위로그 연동",
         "frontend/dialog": "PIMS 행위로그 연동",
         "kubernetes/rbac": "구축 진행과 이관",
