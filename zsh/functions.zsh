@@ -344,7 +344,12 @@ ccv() {
       # only switch that neutralizes the global `Bash(*)` allow rule and
       # skipDangerousModePermissionPrompt, so use it for untrusted repos.
       # Deliberately not combinable with -y: restricted refuses bypassPermissions.
-      -R)  claude_args+=("--restricted"); shift ;;
+      # Ignoring settings also drops `defaultMode`, and since 2.1.284 a session
+      # with no permission mode starts in auto mode -- so the auto classifier
+      # alone would decide edits (the `Edit(.git/**)` deny is ignored too).
+      # Pin default (manual) mode so every edit asks. A later
+      # `--permission-mode plan` overrides it for read-only exploration.
+      -R)  claude_args+=("--restricted" "--permission-mode" "default"); shift ;;
       -ry|-yr) claude_args+=("--resume" "--dangerously-skip-permissions"); shift ;;
       -rd|-dr) claude_args+=("--resume" "--permission-mode" "dontAsk"); shift ;;
       *)   break ;;

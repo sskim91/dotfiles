@@ -64,7 +64,7 @@ Custom functions in `zsh/functions.zsh` for AI tool invocation:
 | `gem` | Antigravity CLI if installed, Gemini CLI fallback | `-y` `-r` `-ry` |
 | `cdx` | Codex CLI | default: `workspace-write` sandbox + `on-request` approval; `-y` (yolo/bypass), `-r`/`-ra`/`-rl` (resume: picker/all/last), `-ro` (read-only) |
 
-`ccv -R`(`--restricted`, v2.1.248+)은 명령·코드 실행 도구와 WebFetch를 제거하고, 파일 도구를 cwd 안으로 묶고, **user/project/local 설정을 전부 무시**한다. 마지막 항목이 핵심 — 전역 `Bash(*)` allow와 `skipDangerousModePermissionPrompt: true`를 무력화하는 유일한 스위치다. 신뢰하지 않는 저장소를 열 때 쓴다. `-y`와 함께 쓰지 않는다 (restricted는 `bypassPermissions`를 거부).
+`ccv -R`(`--restricted`, v2.1.248+)은 명령·코드 실행 도구와 WebFetch를 제거하고, 파일 도구를 cwd 안으로 묶고, **user/project/local 설정을 전부 무시**한다. 마지막 항목이 핵심 — 전역 `Bash(*)` allow와 `skipDangerousModePermissionPrompt: true`를 무력화하는 유일한 스위치다. 신뢰하지 않는 저장소를 열 때 쓴다. `-y`와 함께 쓰지 않는다 (restricted는 `bypassPermissions`를 거부). 설정을 무시하면 `defaultMode`도 빠지는데, 2.1.284부터 permission mode가 없는 세션은 auto 모드로 시작한다 (2026-10-03 실측: `claude --restricted`만 주면 `auto mode on`). 그래서 래퍼가 `--permission-mode default`를 붙여 편집마다 확인받게 한다. 읽기 전용 탐색은 `ccv -R --permission-mode plan`.
 
 백그라운드 세션 관리는 `claude attach <id>` / `logs` / `stop` / `respawn` / `rm` (v2.1.251에서 `--help`에 노출). 실행 중인 세션에 `--resume`을 걸면 정확한 `attach` 명령을 안내해준다.
 
