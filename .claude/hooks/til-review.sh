@@ -43,7 +43,9 @@ if [[ "$SKIP_TRANSLATED_REVIEW" -eq 1 ]] && grep -q "한국어로 번역한 글�
 fi
 
 # Model configuration
-CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-6-astra}"
+CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-6.1-sol}"
+# Pin effort here; otherwise codex exec inherits ~/.codex/config.toml (currently "max").
+CODEX_REASONING_EFFORT="${TIL_CODEX_REASONING_EFFORT:-high}"
 ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.8 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
 
@@ -276,6 +278,7 @@ _codex_invoke() {
 			--output-last-message "$TMPDIR_REVIEW/codex.txt" \
 			-c 'approval_policy="never"' \
 			-c 'web_search="live"' \
+			-c "model_reasoning_effort=\"$CODEX_REASONING_EFFORT\"" \
 			"$CODEX_REVIEW_PROMPT" \
 			>"$TMPDIR_REVIEW/codex.stdout" 2>"$TMPDIR_REVIEW/codex.err"
 }
