@@ -57,10 +57,13 @@ git push --force-with-lease origin $(git branch --show-current)
 
 ## Protected Branches
 
-다음 브랜치는 직접 push 전 확인 필요:
-- `main`, `master`
-- `develop`, `release`
-- `production`
+`pwd`로 경로를 확인한다 (구분은 `git-commit` 스킬의 경로 분기와 같다).
+
+- **개인 레포** (`~/work/*`, `~/company-src/*`, `~/dev/oss/*` 이외의 모든 경로): 일반 push는 main이어도 확인 없이 바로 실행한다.
+- **회사·OSS 레포**: 다음 브랜치는 직접 push 전 사용자 확인
+  - `main`, `master`
+  - `develop`, `release`
+  - `production`
 
 ---
 

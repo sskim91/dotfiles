@@ -27,29 +27,51 @@ description: 변경사항의 커밋만 요청했을 때 개인·회사·OSS 저�
 | `~/dev/oss/*` | OSS 기여 | English |
 | 그 외 모든 경로 | 개인 | Korean |
 
+**개인 레포의 브랜치**: main(기본 브랜치)에 직접 커밋하는 것이 기본 워크플로우다. 현재 브랜치가 main이어도 그 브랜치에 그대로 커밋한다. "기본 브랜치면 먼저 브랜치를 만든다"는 일반 지침보다 이 규칙이 우선한다.
+
 **Attribution**: 현재 프로젝트 지침과 실행 도구의 설정을 따른다. 도구별 설정 파일을 추정하거나 별도 요청 없이 attribution을 추가하지 않는다.
 
 ## 커밋 메시지 포맷
 
-```
-[제목 (한글 or English — 경로 분기 따름)]
+Conventional Commits가 모든 레포의 기본이다 (개인·회사 공통, dotfiles 전용 규칙이 아님).
 
-[본문 - 무엇을, 왜 변경했는지]
-- [상세 내용]
+```
+type(scope): 제목
+
+본문 - 무엇을, 왜 변경했는지
+- 상세 내용
+```
+
+- `type`: `feat` `fix` `docs` `refactor` `test` `perf` `build` `ci` `chore` 중 하나, 영어 소문자
+- `scope`: 변경 영역 한 단어 (선택). 예: `api`, `zsh`, `hooks`
+- 한국어 제목: 명사로 끝낸다 — `추가` `수정` `변경` `제거` `정리` `설정`
+- 영어 제목 (OSS): 명령형 소문자 — `add` `fix` `update`
+- OSS 레포는 그 레포의 컨벤션(CONTRIBUTING, 최근 `git log`)이 이 포맷보다 우선한다
+
+예시:
+
+```
+fix(zsh): 원격 명령에서 brew 도구를 못 찾는 문제 수정
+
+`ssh host <command>`는 non-login 셸이라 .zprofile을 읽지 않는다.
+- brew PATH 설정을 .zprofile에서 .zshenv로 이동
 ```
 
 ## 참고 자료
 
 | 파일 | 내용 |
 |------|------|
-| [commit-rules.md](references/commit-rules.md) | 7 Rules, Pre-Commit Checklist, Never Commit 목록 |
+| [commit-rules.md](references/commit-rules.md) | 메시지 규칙, Pre-Commit Checklist, Never Commit 목록 |
 
 ## Gotchas
 
 <!-- 실제로 확인한 실패가 반복될 때 갱신 -->
+- ❌ `type(scope):` 생략 ("dotfiles에만 있는 규칙"으로 판단) → 모든 레포에서 기본
+- ❌ 한국어 제목을 동사 어미로 끝냄 ("~설정해", "~고정해", "~추가한다") → 명사로 끝냄 ("~설정", "~고정", "~추가")
+- ❌ 개인 레포 main에서 새 브랜치 생성 → main에 그대로 커밋
 - ❌ Gitmoji 사용 → 사용하지 않음
 - ❌ 별도 요구 없는 Co-Authored-By·생성 도구 서명 추가 → 프로젝트 지침과 현재 도구 설정 확인
 - ❌ Subject에 마침표 붙임 → 마침표 없음
-- ❌ Past tense 사용 ("Added") → 명령형 ("Add")
+- ❌ 영어 제목에 Past tense ("added") → 명령형 ("add")
 - ❌ `git add .` 또는 `git add -A` → 파일 지정해서 스테이징
 - ❌ 개인 프로젝트에서 영어 커밋 → Korean이 기본, `~/dev/oss/*`만 English

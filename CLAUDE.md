@@ -13,7 +13,7 @@ zsh -n .zshrc zsh/*.zsh      # Syntax-check shell config changes
 
 ## Commit Convention
 
-Conventional Commits: `type(scope): subject` in imperative mood, no trailing period. No Gitmoji/emoji prefixes (e.g. `feat(codex-hooks): add lint dispatcher`).
+Conventional Commits: `type(scope): subject`, no trailing period. No Gitmoji/emoji prefixes. Korean subjects end with a noun such as 추가·수정·변경 (e.g. `feat(codex-hooks): lint dispatcher 추가`). Full rules live in the `git-commit` skill.
 
 ## Symlink Architecture
 

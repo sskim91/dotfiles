@@ -23,6 +23,6 @@
 
 ## 커밋
 
-- Conventional Commits: `type(scope): subject`. 개인·회사 작업은 한국어 명령형, 마침표·emoji 없음. 저장소별 규칙이 있으면 따른다.
+- Conventional Commits: `type(scope): subject`. 개인·회사 작업은 한국어 제목을 명사로 끝낸다(`추가`·`수정`·`변경`, 예: `feat(codex-hooks): lint dispatcher 추가`). 마침표·emoji 없음. 저장소별 규칙이 있으면 따른다.
 - 합의한 파일만 명시적으로 stage한다. PR에는 변경 이유·영향 경로·검증 결과를 적는다.
 - 실제 비밀값과 `.env`는 커밋하지 않는다. `.env.local.example`을 사용한다.

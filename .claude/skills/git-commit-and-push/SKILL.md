@@ -30,4 +30,4 @@ git push origin $(git branch --show-current)
 - [ ] 민감한 정보 없음
 - [ ] 테스트 통과
 - [ ] 커밋 메시지 규칙 준수 (/git-commit 참조)
-- [ ] Protected branch 직접 push 주의
+- [ ] 회사·OSS 레포의 protected branch 직접 push는 사용자 확인 (개인 레포는 main이어도 바로 push — `git-push` 참조)

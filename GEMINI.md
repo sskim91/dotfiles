@@ -83,7 +83,7 @@ The `.claude/skills/` directory contains specialized "skills" (e.g., `git-commit
 ## Validation & Commits
 - Before commit: `pre-commit run --all-files` (format, JSON/YAML checks, secret scan).
 - Shell changes: validate with `zsh -n .zshrc zsh/*.zsh`.
-- Commit convention: Conventional Commits `type(scope): subject`, imperative mood, no Gitmoji/emoji prefixes.
+- Commit convention: Conventional Commits `type(scope): subject`, no trailing period, no Gitmoji/emoji prefixes. Korean subjects end with a noun such as 추가·수정·변경 (e.g. `feat(codex-hooks): lint dispatcher 추가`).
 
 ## Gotchas
 - After editing `.tmux.conf`, reload with `Prefix(Ctrl+a) + r` — no tmux restart needed. Copy mode is `Prefix + y` (default `[` is rebound).
