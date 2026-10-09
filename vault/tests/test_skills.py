@@ -5,6 +5,7 @@ dotfiles checkout 안의 파일만 읽는다(실제 vault·TIL은 읽지 않는�
 
 from __future__ import annotations
 
+import re
 import unittest
 from pathlib import Path
 
@@ -137,6 +138,56 @@ class SkillDocsTest(unittest.TestCase):
                 self.assertIn("vk apply --dry-run", text)
                 self.assertIn("productivity/vault-maintenance", text)
                 self.assertNotIn("  - vault/maintenance", text)
+
+
+class TilTitleRuleTest(unittest.TestCase):
+    """til 스킬 제목 규칙: 핵심 기술명으로 시작 (spec 2026-10-09-til-title-prefix-design.md 6절)."""
+
+    def _til(self, root: Path, rel: str) -> str:
+        return (root / "til" / rel).read_text(encoding="utf-8")
+
+    def test_skill_md_title_rule(self):
+        for root in SKILL_ROOTS:
+            with self.subTest(root=root.parent.name):
+                text = self._til(root, "SKILL.md")
+                self.assertIn("# <기술명> — <부제>", text)
+                self.assertIn("제목이 핵심 기술명으로 시작하는가?", text)
+                self.assertNotIn("`# 제목` (호기심 유발)", text)
+                self.assertIn("`# Spring CGLIB — 왜 CGLIB 프록시를 기본으로 선택했을까?`", text)
+                self.assertIn("`Spring-CGLIB-왜-CGLIB-프록시를-기본으로-선택했을까.md`", text)
+                self.assertNotIn("`# 왜 Spring은 CGLIB을 선택했을까?`", text)
+
+    def test_skill_md_special_chars_cover_dash_and_backtick(self):
+        for root in SKILL_ROOTS:
+            with self.subTest(root=root.parent.name):
+                rule = next(
+                    line for line in self._til(root, "SKILL.md").splitlines() if line.startswith("**특수문자 처리:**")
+                )
+                self.assertIn("—", rule)
+                self.assertIn("백틱", rule)
+
+    def test_template_title_line(self):
+        for root in SKILL_ROOTS:
+            with self.subTest(root=root.parent.name):
+                first = next(
+                    line for line in self._til(root, "assets/til-template.md").splitlines() if line.startswith("# ")
+                )
+                self.assertEqual(first, "# [기술명] — [부제]")
+
+    def test_shared_files_identical(self):
+        claude, codex = SKILL_ROOTS
+        for rel in ("references/writing-style-guide.md", "assets/til-template.md"):
+            with self.subTest(file=rel):
+                self.assertEqual((claude / "til" / rel).read_bytes(), (codex / "til" / rel).read_bytes())
+
+    def test_style_guide_title_examples(self):
+        for root in SKILL_ROOTS:
+            with self.subTest(root=root.parent.name):
+                text = self._til(root, "references/writing-style-guide.md")
+                section = text.split("## 1. 제목", 1)[1].split("\n## 2.", 1)[0]
+                quoted = re.findall(r'"([^"\n]+)"', section)
+                self.assertGreaterEqual(sum("—" in q for q in quoted), 3, quoted)
+                self.assertEqual([q for q in quoted if q.startswith("왜 ")], [])
 
 
 if __name__ == "__main__":
