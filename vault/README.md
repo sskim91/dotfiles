@@ -27,6 +27,10 @@ python3 ~/.dotfiles/vault/vk apply              # 태그·frontmatter 정규화 
 python3 ~/.dotfiles/vault/vk apply --til-mapping # tag-mapping.json 정규화
 python3 ~/.dotfiles/vault/vk register <file>    # 노트 하나 정규화·등록 (스킬이 저장 후 호출)
 python3 ~/dev/TIL/.githooks/sync-to-obsidian.py [--dry-run] [--verbose]  # TIL→Wiki 전체 동기화
+python3 ~/.dotfiles/vault/scripts/til_rename.py --plan --mapping M --out DIR     # TIL 노트 이름 변경 미리보기(읽기 전용)
+python3 ~/.dotfiles/vault/scripts/til_rename.py --apply --mapping M --out DIR --real   # TIL·tag-mapping·Wiki·state·링크 일괄 이관
+python3 ~/.dotfiles/vault/scripts/til_rename.py --verify --mapping M --out DIR [--strict]
+python3 ~/.dotfiles/vault/scripts/til_rename.py --restore --out DIR --real   # 백업·작업 기록으로 되돌림
 cd ~/.dotfiles/vault && python3 -m unittest discover -s tests -v          # 테스트
 ```
 
