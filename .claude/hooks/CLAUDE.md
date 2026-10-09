@@ -14,7 +14,7 @@ PreToolUse: if Bash(git commit*) → pre-commit-gate.sh → check-sensitive-file
   ├ check-env-files.sh (`ENABLE_ENV_FILE_CHECK`, 현재 0=비활성) 차단 대상: ① 새로 추가되는 .env류 ② 구조화 설정 파일(credentials/secrets/config.local의 .json/.yaml/.toml — key: value 문법이라 값 검사 불가) ③ 추적 파일이라도 추가된 줄이 시크릿 키에 실값을 할당하는 경우. placeholder만 든 추적 .env의 수정은 허용
   ├ check-hardcoded-secrets.sh (`ENABLE_SECRET_SCAN`, 현재 0=비활성): 코드 diff에서 API 키·토큰·credential URL 패턴 차단
   └ check-sensitive-files.sh: 키 파일(id_rsa·.pem 등) 차단 — 토글 없이 상시 활성
-PreToolUse: if Bash(*rm *) → block-rm.sh (줄 단위 검사, trash 사용 제안; `\rm`·`command rm`은 허용)
+PreToolUse: if Bash(*rm *) → block-rm.sh (줄 단위 검사, trash 사용 제안; `\rm`·`command rm`은 허용; fail-closed — 파싱 실패는 exit 2, 시작 실패·timeout은 `onFailure: "block"`)
 PostToolUse(Write|Edit) → file-dispatcher.sh check (routes by extension)
 PostToolUse(Write|Edit) → til-review.sh (acts only on ~/dev/TIL/*.md; requires ENABLE_TIL_REVIEW=1)
 PostToolUse(Write|Edit) → vault-linker.sh (Obsidian vault 링킹 제안; requires ENABLE_VAULT_LINKER=1)

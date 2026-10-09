@@ -6,7 +6,13 @@
 # `decision` field with exit 0, not by exit 2.
 
 INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+# Fail closed: if jq is missing or the input doesn't parse, COMMAND would be
+# empty and the loop below would allow everything. printf is a builtin, so the
+# block decision still goes out when PATH itself is broken.
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty') || {
+    printf '%s\n' '{"decision": "block", "reason": "block-rm: tool_input을 파싱하지 못해 차단했습니다 (jq 설치 확인 필요)"}'
+    exit 0
+}
 
 # Check each line separately. Two normalizations were tried here and both
 # opened a silent hole in an always-on guard:

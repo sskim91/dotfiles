@@ -19,6 +19,7 @@
 - 수정한 Shell 파일마다 `zsh -n <파일>` 또는 `bash -n <파일>`로 문법을 확인한다. 셸 동작을 바꿨으면 실제 reload도 확인한다.
 - PR/merge 전에는 `pre-commit run --all-files`가 필요하다. 일반 수정은 영향을 받는 검증을 수행한다.
 - Codex 훅은 커밋 보호(`pre-commit-gate.sh`, `block-rm.sh`)와 Python/Ruff(`file-dispatcher.sh`)를 담당한다. Codex의 `CODEX_ENABLE_*` 설정은 `.codex/config/hook-settings.sh`, Claude의 `ENABLE_*` 설정은 `zsh/path.zsh`에서 관리한다.
+- `block-rm.sh`는 실패하면 차단한다(fail-closed). jq가 없거나 입력을 파싱하지 못하면 `decision: block`을 낸다. Codex 쪽 차단 신호는 exit code가 아니라 stdout의 `decision` 필드다.
 - 훅이 실제 위반을 보고하면 해당 내용을 수정한다. 작업을 통과시키려고 훅이나 `ENABLE_*` 설정을 우회하지 않는다.
 
 ## 커밋

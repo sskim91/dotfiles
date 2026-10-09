@@ -3,7 +3,13 @@
 # macOS 15+ has built-in 'trash' command at /usr/bin/trash
 
 INPUT=$(cat)
-COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+# Fail closed: if jq is missing or the input doesn't parse, COMMAND would be
+# empty and the loop below would allow everything. Exit 2 blocks on any
+# version; settings.json's `onFailure: "block"` covers can't-start/timeout.
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty') || {
+    echo "block-rm: tool_input을 파싱하지 못해 차단했습니다 (jq 설치 확인 필요)" >&2
+    exit 2
+}
 
 # Check each line separately. Two normalizations were tried here and both
 # opened a silent hole in an always-on guard:

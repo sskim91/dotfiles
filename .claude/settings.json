@@ -144,7 +144,8 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/block-rm.sh",
-            "if": "Bash(*rm *)"
+            "if": "Bash(*rm *)",
+            "onFailure": "block"
           }
         ]
       },
