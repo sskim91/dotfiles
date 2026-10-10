@@ -153,7 +153,17 @@
       "prompt-engineering": "ai/prompt",
       "research/output": "learning/research",
       "workflow/dotfiles": "devops/dotfiles",
-      "vault/maintenance": "productivity/vault-maintenance"
+      "vault/maintenance": "productivity/vault-maintenance",
+      "ai/agentic-coding": "ai/coding-assistant",
+      "ai/coding": "ai/coding-assistant",
+      "cs/study-method": "learning/study-method",
+      "network/loadbalancer": "network/load-balancer",
+      "network/rest-api": "backend/rest-api",
+      "python/async": "python/asyncio",
+      "spring/data": "spring/data-access",
+      "spring/spring-ai": "spring/ai",
+      "spring/spring-boot": "spring/boot",
+      "spring/test": "spring/testing"
     },
     "drop": [
       "status/in-progress",
