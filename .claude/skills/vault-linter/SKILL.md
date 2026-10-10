@@ -42,7 +42,7 @@ Karpathy의 "LLM Knowledge Base Linting" 패턴.
 | `scripts/vault-scan.sh extract-links <file>` | 파일에서 `[[wikilink]]` 추출 (alias 처리 포함) |
 | `scripts/vault-scan.sh check-links <file>` | 깨진 링크만 출력 |
 | `scripts/vault-scan.sh check-links-all` | 전체 vault의 깨진 링크를 한 번의 노트 인덱스로 TSV 출력 |
-| `scripts/vault-scan.sh find-orphans` | 어디서도 참조되지 않은 노트 목록 |
+| `scripts/vault-scan.sh find-orphans` | 어디서도 참조되지 않은 노트 목록 (Archive 노트는 후보에서 제외) |
 | `scripts/vault-scan.sh tag-list` | 태그별 사용 횟수 |
 | `scripts/semantic-linker.py` | bge-m3 임베딩 + 코사인 유사도 후보 추출 |
 | `scripts/semantic-linker.py --cache-only` | 임베딩 캐시만 빌드 (유사도 계산 생략) |
@@ -89,7 +89,9 @@ bash scripts/vault-scan.sh list-notes
 bash scripts/vault-scan.sh find-orphans
 ```
 
-결과로 나온 고아 노트에 대해 tags와 키워드 기반으로 연결 후보를 제안한다.
+`Archive/` 노트는 보관 노트라 고아 후보에서 뺀다. Archive 노트가 거는 링크는 참조로 인정한다.
+
+결과로 나온 고아 노트에 대해 tags와 키워드 기반으로 연결 후보를 제안한다. 연결할 곳이 없는 개인 읽을거리는 억지로 링크하지 말고 `Archive/`로 옮기기를 제안한다.
 
 ### Step 3: 깨진 위키링크 점검 (Broken Links)
 

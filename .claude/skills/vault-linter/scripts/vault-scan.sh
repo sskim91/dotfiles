@@ -111,6 +111,32 @@ build_link_index() {
     printf '%s\n%s\n' "$(build_note_index)" "$(build_attach_index)" | LC_ALL=C sort -u
 }
 
+# 고아 후보 = Archive/ 밖 노트 이름. Archive는 보관 노트라 연결 대상이 아니므로 후보에서 뺀다
+# (Archive 노트가 거는 링크는 참조로 계속 인정한다)
+build_orphan_candidates() {
+    local archive_prefix="$VAULT/Archive/"
+    local from_find from_mdfind
+    from_find=$(find_notes | grep -vF "$archive_prefix" | while read -r f; do basename "$f" .md; done | nfc || true)
+    if command -v mdfind >/dev/null 2>&1; then
+        from_mdfind=$(
+            mdfind -onlyin "$VAULT" 'kMDItemFSName == "*.md"' 2>/dev/null \
+                | grep -vF "$archive_prefix" \
+                | grep -v '/.obsidian/' \
+                | grep -v '/Templates/' \
+                | grep -v 'Vault-Lint-Report' \
+                | grep -v 'Vault-Semantic-Report' \
+                | grep -v '/Vault-Index.md$' \
+                | grep -v '/Vault-Log.md$' \
+                | while read -r f; do basename "$f" .md; done \
+                | nfc \
+            || true
+        )
+    else
+        from_mdfind=""
+    fi
+    printf '%s\n%s' "$from_find" "$from_mdfind" | LC_ALL=C sort -u
+}
+
 cmd_list_notes() {
     build_note_index
 }
@@ -170,10 +196,10 @@ cmd_find_orphans() {
         || true
     )
 
-    local index
-    index=$(build_note_index)
+    local candidates
+    candidates=$(build_orphan_candidates)
 
-    echo "$index" | while IFS= read -r name; do
+    echo "$candidates" | while IFS= read -r name; do
         [[ -z "$name" ]] && continue
         if ! grep -qxF -- "$name" <<< "$all_links"; then
             echo "$name"
