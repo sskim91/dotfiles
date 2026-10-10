@@ -163,7 +163,12 @@
       "spring/data": "spring/data-access",
       "spring/spring-ai": "spring/ai",
       "spring/spring-boot": "spring/boot",
-      "spring/test": "spring/testing"
+      "spring/test": "spring/testing",
+      "infra/git": "git/config",
+      "infra/ssh": "network/ssh",
+      "security/ssh": "network/ssh",
+      "react/tanstack-query": "frontend/tanstack-query",
+      "spring/di": "spring/ioc"
     },
     "drop": [
       "status/in-progress",
@@ -178,7 +183,8 @@
       "project/shinhanbank",
       "projects/shinhan-wma-wam",
       "project/asset-management",
-      "meeting/project"
+      "meeting/project",
+      "infra/devops"
     ],
     "conditional": [
       {
@@ -667,14 +673,6 @@
       "MOC-네트워크-원격접속",
       "SSH·VPN·DNS"
     ],
-    "infra/devops": [
-      "MOC-Kubernetes",
-      "핵심 리소스"
-    ],
-    "infra/git": [
-      "MOC-컨테이너-IaC-개발환경",
-      "Git·터미널·도구"
-    ],
     "infra/remote-access": [
       "MOC-네트워크-원격접속",
       "SSH·VPN·DNS"
@@ -682,10 +680,6 @@
     "infra/runtime": [
       "MOC-Data-Messaging",
       "Oracle·ORDS"
-    ],
-    "infra/ssh": [
-      "MOC-네트워크-원격접속",
-      "SSH·VPN·DNS"
     ],
     "infra/vpn": [
       "MOC-네트워크-원격접속",
@@ -1091,10 +1085,6 @@
       "MOC-보안-인증-웹",
       "웹·브라우저"
     ],
-    "react/tanstack-query": [
-      "MOC-보안-인증-웹",
-      "웹·브라우저"
-    ],
     "redis/*": [
       "MOC-Data-Messaging",
       "Redis"
@@ -1159,10 +1149,6 @@
       "MOC-보안-인증-웹",
       "인증·암호"
     ],
-    "security/ssh": [
-      "MOC-네트워크-원격접속",
-      "SSH·VPN·DNS"
-    ],
     "security/tls": [
       "MOC-Python",
       "패키징·환경"
@@ -1175,19 +1161,11 @@
       "MOC-AI-LLM",
       "Spring AI"
     ],
-    "spring/di": [
-      "MOC-Java-Spring",
-      "Spring"
-    ],
     "spring/event": [
       "MOC-Java-Spring",
       "Spring"
     ],
     "spring/jpa": [
-      "MOC-Java-Spring",
-      "Spring"
-    ],
-    "spring/spring-framework": [
       "MOC-Java-Spring",
       "Spring"
     ],
