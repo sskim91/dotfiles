@@ -133,7 +133,7 @@ cmd_check_links() {
 
     while IFS= read -r link; do
         # 인덱스에서 인메모리 매칭 (find 호출 제거)
-        if ! printf '%s\n' "$index" | LC_ALL=C grep -qxF "$link"; then
+        if ! LC_ALL=C grep -qxF -- "$link" <<< "$index"; then
             echo "$link"
             broken=$((broken + 1))
         fi
@@ -149,7 +149,7 @@ cmd_check_links_all() {
     while IFS= read -r -d '' file; do
         while IFS= read -r link; do
             [[ -z "$link" ]] && continue
-            if ! printf '%s\n' "$index" | LC_ALL=C grep -qxF "$link"; then
+            if ! LC_ALL=C grep -qxF -- "$link" <<< "$index"; then
                 printf '%s\t%s\n' "${file#"$VAULT"/}" "$link"
             fi
         done < <(cmd_extract_links "$file")
@@ -175,7 +175,7 @@ cmd_find_orphans() {
 
     echo "$index" | while IFS= read -r name; do
         [[ -z "$name" ]] && continue
-        if ! echo "$all_links" | grep -qxF "$name"; then
+        if ! grep -qxF -- "$name" <<< "$all_links"; then
             echo "$name"
         fi
     done
