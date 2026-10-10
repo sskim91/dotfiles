@@ -295,10 +295,6 @@
       "MOC-AI-LLM",
       "Agent 개념·패턴"
     ],
-    "ai/agentic-coding": [
-      "MOC-AI-LLM",
-      "코딩 에이전트·도구"
-    ],
     "ai/coding-assistant": [
       "MOC-AI-LLM",
       "코딩 에이전트·도구"
@@ -1175,6 +1171,10 @@
       "MOC-Java-Spring",
       "Spring"
     ],
+    "spring/ai": [
+      "MOC-AI-LLM",
+      "Spring AI"
+    ],
     "spring/di": [
       "MOC-Java-Spring",
       "Spring"
@@ -1184,14 +1184,6 @@
       "Spring"
     ],
     "spring/jpa": [
-      "MOC-Java-Spring",
-      "Spring"
-    ],
-    "spring/spring-ai": [
-      "MOC-AI-LLM",
-      "Spring AI"
-    ],
-    "spring/spring-boot": [
       "MOC-Java-Spring",
       "Spring"
     ],
