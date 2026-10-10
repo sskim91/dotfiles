@@ -14,6 +14,12 @@ nfc() {
     python3 -c "import sys,unicodedata; [print(unicodedata.normalize('NFC',l),end='') for l in sys.stdin]"
 }
 
+# 링크 문자열을 Obsidian의 해석 대상 이름으로 정규화
+# [[노트#제목]]·[[노트#^블록]] → 노트, [[폴더/노트]] → 노트, [[노트.md]] → 노트
+normalize_links() {
+    sed -E 's/#.*$//; s/\.md$//; s#^.*/##' | { grep -v '^$' || true; }
+}
+
 usage() {
     cat <<'EOF'
 Usage: vault-scan.sh <command> [args]
@@ -86,6 +92,25 @@ build_note_index() {
     echo "$_NOTE_INDEX"
 }
 
+# 첨부 파일 인덱스 (확장자 포함 basename). ![[그림.png]] 같은 링크 판정용
+_ATTACH_INDEX=""
+build_attach_index() {
+    if [[ -n "$_ATTACH_INDEX" ]]; then
+        echo "$_ATTACH_INDEX"
+        return
+    fi
+    _ATTACH_INDEX=$(
+        find "$VAULT" -type f -not -name "*.md" -not -path "*/.obsidian/*" -not -name ".*" 2>/dev/null \
+            | while read -r f; do basename "$f"; done | nfc | LC_ALL=C sort -u
+    )
+    echo "$_ATTACH_INDEX"
+}
+
+# 링크 판정용 인덱스 = 노트 이름 + 첨부 파일 이름
+build_link_index() {
+    printf '%s\n%s\n' "$(build_note_index)" "$(build_attach_index)" | LC_ALL=C sort -u
+}
+
 cmd_list_notes() {
     build_note_index
 }
@@ -97,14 +122,14 @@ cmd_extract_links() {
     # strip trailing \ (markdown table pipe escape: [[link\|alias]])
     sed '/^```/,/^```/d' "$file" 2>/dev/null \
         | { grep -oE '\[\[[^]|]+' || true; } \
-        | sed 's/\[\[//; s/\\$//' | nfc | LC_ALL=C sort -u
+        | sed 's/\[\[//; s/\\$//' | normalize_links | nfc | LC_ALL=C sort -u
 }
 
 cmd_check_links() {
     local file="$1"
     local broken=0
     local index
-    index=$(build_note_index)
+    index=$(build_link_index)
 
     while IFS= read -r link; do
         # 인덱스에서 인메모리 매칭 (find 호출 제거)
@@ -119,7 +144,7 @@ cmd_check_links() {
 
 cmd_check_links_all() {
     local index
-    index=$(build_note_index)
+    index=$(build_link_index)
 
     while IFS= read -r -d '' file; do
         while IFS= read -r link; do
@@ -139,6 +164,7 @@ cmd_find_orphans() {
         find_notes0 \
             | xargs -0 grep -ohE '\[\[[^]|]+' 2>/dev/null \
             | sed 's/\[\[//; s/\\$//' \
+            | normalize_links \
             | nfc \
             | LC_ALL=C sort -u \
         || true
