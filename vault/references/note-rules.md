@@ -110,6 +110,8 @@ Wiki에는 두 종류의 노트가 섞여 있다.
 | `Projects/GenonAI/삼성카드/` | `00 삼성카드 시작하기` | 태그 → `section_by_tag` |
 | `Projects/GenonAI/삼성카드_모니모/` | `00 모니모 시작하기` | 태그 → `section_by_tag` |
 | `Projects/GenonAI/인사연동 배치 분석/` | `00 인사연동 배치 분석 시작하기` | 태그 → `section_by_tag` |
+| `Projects/GenonAI/현대캐피탈/` | `00 현대캐피탈 시작하기` | 태그 → `section_by_tag` |
+| `Projects/GenonAI/NH투자증권/` | `00 NH투자증권 시작하기` | 태그 → `section_by_tag` |
 
 - GenOS 하위폴더는 `01 온보딩·로컬개발`부터 `08 운영·런북`까지 8개다(policy `genos_subfolders`, 폴더별 대표 태그 포함). `GenOS/` 바로 아래에 두면 `unclassified`가 된다.
 - 고객사 노트는 해당 고객사 `section_by_tag`에 있는 태그를 하나 이상 달아야 섹션이 정해진다. `section_by_tag`에는 `type/pattern` 같은 범용 태그도 들어 있으므로, 섹션을 정할 `feature/*` 태그를 `type/*`보다 앞에 둔다(2절 첫 매칭 규칙).
@@ -122,6 +124,8 @@ Wiki에는 두 종류의 노트가 섞여 있다.
 | `삼성카드/` | `customer/samsung-card` |
 | `삼성카드_모니모/` | `customer/samsung-card` |
 | `인사연동 배치 분석/` | 없음(달지 않는다) |
+| `현대캐피탈/` | `customer/hyundai-capital` |
+| `NH투자증권/` | `customer/nh-securities` |
 
 표에 없는 폴더는 같은 폴더 기존 노트의 `customer/*` 태그를 그대로 쓰고, 기존 노트에도 없으면 사용자에게 묻는다.
 

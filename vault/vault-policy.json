@@ -1357,6 +1357,24 @@
         "type/design": "인사연동 As-Is와 To-Be"
       }
     },
+    "Projects/GenonAI/현대캐피탈": {
+      "hub": "00 현대캐피탈 시작하기",
+      "section_by_tag": {
+        "devops/cicd": "코드서빙 CI/CD",
+        "feature/airgap-import": "코드서빙 CI/CD",
+        "feature/cicd": "코드서빙 CI/CD",
+        "feature/code-serving": "코드서빙 CI/CD"
+      }
+    },
+    "Projects/GenonAI/NH투자증권": {
+      "hub": "00 NH투자증권 시작하기",
+      "section_by_tag": {
+        "backend/integration": "메일 연동과 인증",
+        "feature/auth": "메일 연동과 인증",
+        "type/field-note": "메일 연동과 인증",
+        "web/oauth": "메일 연동과 인증"
+      }
+    },
     "Projects/GenonAI/GenOS/패치노트": {
       "hub": "GenOS 버전별 변경 요약",
       "mode": "patchnote-table"
