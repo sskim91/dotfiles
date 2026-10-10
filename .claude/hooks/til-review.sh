@@ -44,7 +44,7 @@ fi
 
 # Model configuration
 CODEX_MODEL="${TIL_CODEX_MODEL:-gpt-6.1-sol}"
-# Pin effort here; otherwise codex exec inherits ~/.codex/config.toml (currently "max").
+# Pin effort here; otherwise codex exec inherits ~/.codex/config.toml (currently "medium").
 CODEX_REASONING_EFFORT="${TIL_CODEX_REASONING_EFFORT:-high}"
 ANTIGRAVITY_MODEL="${TIL_ANTIGRAVITY_MODEL:-Gemini 3.8 Flash (Medium)}"
 ANTIGRAVITY_BACKEND="agy"
@@ -52,10 +52,10 @@ ANTIGRAVITY_BACKEND="agy"
 # Per-tool timeout (seconds). With 1 auto-retry, worst case = 2 × timeout per tool.
 # Hook timeout in settings.json must be > 2 × max(CODEX_TIMEOUT, ANTIGRAVITY_TIMEOUT).
 # Current: 2 × 190 = 380 → settings.json til-review.sh timeout set to 400.
-# Measured 2026-08-27 on gpt-5.6-terra: disabled 61s / live 96s on a 20KB doc,
-# live 132s on the largest doc (31KB). Search costs ~35s and fits well inside 190s.
-# (The earlier "live blows past 120s" note was measured on gpt-5.5, which was ~2.5x
-# slower; that is why web_search could be turned back on.)
+# Measured 2026-10-04 on gpt-6.1-sol, effort high, web_search live: 110s on an 81KB doc.
+# With effort max the same doc timed out at 190s on both attempts (385s total).
+# (web_search was turned back on after gpt-5.6-terra measured live 96s on a 20KB doc;
+# the earlier "live blows past 120s" note was measured on gpt-5.5, ~2.5x slower.)
 CODEX_TIMEOUT=${TIL_CODEX_TIMEOUT:-190}
 ANTIGRAVITY_TIMEOUT=${TIL_ANTIGRAVITY_TIMEOUT:-120}
 
