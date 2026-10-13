@@ -27,6 +27,8 @@
     conflictstyle = diff3         # 충돌 시 common ancestor 정보를 함께 보여줌 (3-way merge 보기 용이)
 [diff]
     colorMoved = default          # 이동된 코드 블록 색상 표시 방식 (default: Git 기본값 사용)
+[fetch]
+    prune = true                  # 원격에서 삭제된 브랜치의 추적 ref를 fetch/pull 시 자동 정리 (ref 이름 충돌 방지)
 [credential]
 	helper =                      # 시스템 gitconfig(Xcode CLT)의 osxkeychain 누적을 초기화 (-25308 fatal 방지)
 	helper = store
