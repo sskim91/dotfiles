@@ -302,7 +302,9 @@
     "temporal@temporal-marketplace": false,
     "slack@claude-plugins-official": false,
     "i-have-adhd@i-have-adhd": true,
-    "superpowers@superpowers-marketplace": true
+    "superpowers@superpowers-marketplace": true,
+    "eli5@claude-community": true,
+    "html-plan@claude-community": true
   },
   "extraKnownMarketplaces": {
     "claude-hud": {
@@ -387,6 +389,11 @@
     "tipsFile": "~/.claude/spinner-tips.json",
     "label": "내 팁"
   },
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "xhigh"
+    }
+  },
   "advisorModel": "fable",
   "showClearContextOnPlanAccept": true,
   "pluginConfigs": {
@@ -408,10 +415,5 @@
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
-  "voiceEnabled": true,
-  "modelSettings": {
-    "claude-opus-5-5": {
-      "effortLevel": "xhigh"
-    }
-  }
+  "voiceEnabled": true
 }
