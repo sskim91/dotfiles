@@ -21,8 +21,18 @@ fi
 #-------------------------------------------------------------------------------
 # Update dotfiles itself
 #-------------------------------------------------------------------------------
-if [ -d "$DOTFILES/.git" ]; then
+# bash reads a script incrementally while running it, so a pull that rewrites
+# install.sh would make the rest execute from a shifted offset. If the pull moved
+# HEAD, re-exec the fresh copy from the top. The whole `if` block is parsed before
+# it runs, so the exec here is safe; the env guard prevents a second pull.
+if [ -d "$DOTFILES/.git" ] && [ -z "$DOTFILES_SELF_UPDATED" ]; then
+  before=$(git -C "$DOTFILES" rev-parse HEAD 2>/dev/null)
   git --work-tree="$DOTFILES" --git-dir="$DOTFILES/.git" pull origin main
+  if [ "$(git -C "$DOTFILES" rev-parse HEAD 2>/dev/null)" != "$before" ]; then
+    echo "  ↻ dotfiles updated; re-running the new install.sh"
+    export DOTFILES_SELF_UPDATED=1
+    exec bash "$DOTFILES/install.sh" "$@"
+  fi
 fi
 
 #-------------------------------------------------------------------------------
@@ -166,8 +176,7 @@ fi
 for f in .gitconfig_personal .gitconfig_company .gitignore_global; do
     link_file "$DOTFILES/git/$f" "$HOME/$f"
 done
-git config --global core.excludesfile "$HOME/.gitignore_global"
-git config --global core.editor "nvim"
+# core.excludesfile / core.editor live in the tracked git/.gitconfig — not written here.
 
 # Git LFS: register global clean/smudge filters (binary comes from Brewfile).
 # --skip-repo avoids planting LFS hooks in this non-LFS dotfiles repo. Writes
@@ -342,6 +351,21 @@ npm install -g pyright 2>/dev/null && echo "  ✓ pyright"
 npm install -g typescript-language-server typescript 2>/dev/null && echo "  ✓ typescript-language-server"
 
 #-------------------------------------------------------------------------------
+# Install Codex CLI (npm, under mise node)
+# The codex-app cask is the desktop app only; .codex/setup-mcp.sh below needs the CLI.
+#-------------------------------------------------------------------------------
+echo "Setting up Codex CLI..."
+if ! command -v codex &>/dev/null; then
+    if npm install -g @openai/codex; then
+        echo "  ✓ Codex CLI installed"
+    else
+        echo "  ⚠️  Codex CLI install failed; Codex MCP setup will be skipped"
+    fi
+else
+    echo "  ✓ Codex CLI already installed ($(codex --version 2>/dev/null))"
+fi
+
+#-------------------------------------------------------------------------------
 # Install Claude Code (native binary)
 #-------------------------------------------------------------------------------
 echo "Setting up Claude Code..."
@@ -382,6 +406,18 @@ for src in "$DOTFILES/.claude/skills"/*/; do
     [ -d "$src" ] || continue
     name=$(basename "$src")
     ln -nfs "$src" "$HOME/.claude/skills/$name"
+done
+# Prune dangling links left by skills deleted from dotfiles (link-skills.sh is
+# add-only). Only links that point into $DOTFILES/.claude/skills are touched;
+# external/plugin siblings are left alone.
+for link in "$HOME/.claude/skills"/*; do
+    [ -L "$link" ] && [ ! -e "$link" ] || continue
+    case "$(readlink "$link")" in
+        "$DOTFILES/.claude/skills/"*)
+            unlink "$link"
+            echo "  ↳ removed stale skill link $(basename "$link")"
+            ;;
+    esac
 done
 echo "  ✓ custom skills linked"
 
