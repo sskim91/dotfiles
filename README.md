@@ -11,6 +11,25 @@ git clone https://github.com/sskim91/dotfiles.git ~/.dotfiles
 cd ~/.dotfiles && ./install.sh
 ```
 
+The installer updates a clean `main` checkout with `git pull --ff-only` before
+installing. It stops on local changes, another branch, or a failed update; it
+does not stash, reset, or merge divergent history.
+
+Existing Neovim data, sessions, and cache are preserved. Replaced configuration
+files/directories are backed up, and existing Git settings retain precedence over
+the included repository defaults. Configuration links use `XDG_CONFIG_HOME`
+(default: `~/.config`). Existing Codex runtime configuration is kept.
+
+Required-step failures stop installation. Optional-step failures are listed at
+the end with exit code `2` (partial completion); a fully completed run exits `0`.
+
+Installer regression tests run in temporary directories without installing apps:
+
+```bash
+python3 -m unittest discover -s tests -v
+bash -n install.sh
+```
+
 ## Structure
 
 - **zsh/** - Aliases, functions, PATH/env vars

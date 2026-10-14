@@ -1,6 +1,11 @@
 #!/bin/bash
 
-export DOTFILES=$HOME/.dotfiles
+# Required steps must not fall through to the final success message. pipefail
+# also catches a failed download piped into a shell that receives empty input.
+set -Ee -o pipefail
+trap 'status=$?; echo "❌ Installation stopped at line $LINENO (exit $status)." >&2; exit "$status"' ERR
+
+export DOTFILES="$HOME/.dotfiles"
 
 #-------------------------------------------------------------------------------
 # Bootstrap: Xcode Command Line Tools
@@ -25,9 +30,21 @@ fi
 # install.sh would make the rest execute from a shifted offset. If the pull moved
 # HEAD, re-exec the fresh copy from the top. The whole `if` block is parsed before
 # it runs, so the exec here is safe; the env guard prevents a second pull.
-if [ -d "$DOTFILES/.git" ] && [ -z "$DOTFILES_SELF_UPDATED" ]; then
-  before=$(git -C "$DOTFILES" rev-parse HEAD 2>/dev/null)
-  git --work-tree="$DOTFILES" --git-dir="$DOTFILES/.git" pull origin main
+if [ -e "$DOTFILES/.git" ] && [ -z "${DOTFILES_SELF_UPDATED:-}" ]; then
+  if [ "$(git -C "$DOTFILES" symbolic-ref --short -q HEAD || true)" != main ]; then
+    echo "❌ Self-update requires the main branch. Checkout main and re-run." >&2
+    exit 1
+  fi
+  if [ -n "$(git -C "$DOTFILES" status --porcelain)" ]; then
+    echo "❌ Self-update requires a clean checkout. Preserve local changes before re-running." >&2
+    exit 1
+  fi
+  before=$(git -C "$DOTFILES" rev-parse HEAD)
+  if ! git -C "$DOTFILES" -c pull.rebase=false -c merge.autostash=false \
+      pull --ff-only origin main; then
+    echo "❌ Self-update failed. No installation steps will follow." >&2
+    exit 1
+  fi
   if [ "$(git -C "$DOTFILES" rev-parse HEAD 2>/dev/null)" != "$before" ]; then
     echo "  ↻ dotfiles updated; re-running the new install.sh"
     export DOTFILES_SELF_UPDATED=1
@@ -38,18 +55,39 @@ fi
 #-------------------------------------------------------------------------------
 # Helper functions
 #-------------------------------------------------------------------------------
+optional_failures=()
+
+warn_optional() {
+    optional_failures+=("$1")
+    echo "  ⚠️  $1" >&2
+}
+
+# Use for individual optional commands, not multi-command shell functions:
+# running a function in an `if` disables errexit throughout that function.
+run_optional() {
+    local label="$1"
+    shift
+    if "$@"; then
+        echo "  ✓ $label"
+    else
+        warn_optional "$label failed; re-run after resolving the error"
+    fi
+}
+
 link_file() {
     local src="$1" dst="$2"
     if [ -e "$src" ] || [ -L "$src" ]; then
         if [ -e "$dst" ] && [ ! -L "$dst" ]; then
-            local backup="${dst}.backup.$(date +%Y%m%d%H%M%S)"
-            mv "$dst" "$backup"
+            local backup
+            backup=$(mktemp -d "${dst}.backup.XXXXXXXX") || return 1
+            mv "$dst" "$backup/$(basename "$dst")" || return 1
             echo "  ↳ backed up existing $(basename "$dst") to $(basename "$backup")"
         fi
-        ln -nfs "$src" "$dst"
+        ln -nfs "$src" "$dst" || return 1
         echo "  ✓ $(basename "$dst")"
     else
-        echo "  ⚠️  $(basename "$src") not found, skipping..."
+        echo "  ❌ Required source not found: $src" >&2
+        return 1
     fi
 }
 
@@ -73,7 +111,7 @@ merge_hooks_json() {
     fi
     if ! command -v jq >/dev/null 2>&1; then
         echo "  ⚠️  jq not found; left existing $(basename "$dst") untouched"
-        return
+        return 1
     fi
     local backup="${dst}.backup.$(date +%Y%m%d%H%M%S)"
     if ! command cp "$dst" "$backup"; then
@@ -112,9 +150,11 @@ if ! command -v brew &>/dev/null; then
     # /usr/bin/sudo calls (mkdir/chown under /opt/homebrew) succeed unattended.
     # CLT is guaranteed by the bootstrap block above.
     sudo -v
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew_installer=$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)
+    NONINTERACTIVE=1 /bin/bash -c "$brew_installer"
 
-    eval "$(/opt/homebrew/bin/brew shellenv)"
+    brew_environment=$(/opt/homebrew/bin/brew shellenv)
+    eval "$brew_environment"
 fi
 
 # Sanity check: abort early if brew install silently failed (sudo timeout,
@@ -135,7 +175,7 @@ fi
 if [ -f "$DOTFILES/Brewfile.cask" ]; then
     echo "Installing Homebrew GUI apps..."
     if ! brew bundle --file="$DOTFILES/Brewfile.cask"; then
-        echo "⚠️  Some Homebrew casks failed to install. Continuing bootstrap."
+        warn_optional "Some Homebrew casks failed to install"
         echo "   Re-run later: brew bundle --file=\"$DOTFILES/Brewfile.cask\""
     fi
 fi
@@ -149,6 +189,7 @@ cleanup_antigravity_installer_path_edits
 if ! command -v agy &>/dev/null; then
     curl -fsSL https://antigravity.google/cli/install.sh | bash
     cleanup_antigravity_installer_path_edits
+    command -v agy >/dev/null
     echo "  ✓ Antigravity CLI installed"
 else
     echo "  ✓ Antigravity CLI already installed ($(agy --version 2>/dev/null))"
@@ -173,6 +214,24 @@ if [ ! -e "$HOME/.gitconfig" ] || [ -L "$HOME/.gitconfig" ]; then
 GITCONFIG_STUB
     echo "  ✓ ~/.gitconfig stub created"
 fi
+git config --file "$HOME/.gitconfig" --no-includes --list >/dev/null
+if git_includes=$(git config --file "$HOME/.gitconfig" --no-includes --get-all include.path); then
+    :
+else
+    # A missing key is expected; other Git errors must stop installation.
+    [ "$?" -eq 1 ] || exit 1
+fi
+if ! printf '%s\n' "$git_includes" | grep -Fxq -e '~/.dotfiles/git/.gitconfig' -e "$DOTFILES/git/.gitconfig"; then
+    git_backup=$(mktemp "${HOME}/.gitconfig.backup.XXXXXXXX")
+    cp -p "$HOME/.gitconfig" "$git_backup"
+    git_stub=$(mktemp "${HOME}/.gitconfig.tmp.XXXXXXXX")
+    # Put the base first so the existing host layer keeps its precedence.
+    printf '[include]\n\tpath = ~/.dotfiles/git/.gitconfig\n\n' > "$git_stub"
+    cat "$HOME/.gitconfig" >> "$git_stub"
+    git config --file "$git_stub" --no-includes --list >/dev/null
+    mv -f "$git_stub" "$HOME/.gitconfig"
+    echo "  ✓ Git base include added (backup: $git_backup)"
+fi
 for f in .gitconfig_personal .gitconfig_company .gitignore_global; do
     link_file "$DOTFILES/git/$f" "$HOME/$f"
 done
@@ -184,24 +243,25 @@ done
 # need `git lfs install` run once in-repo for the pre-push hook (fresh clones
 # pick the hooks up on checkout).
 if command -v git-lfs &>/dev/null; then
-    git lfs install --skip-repo >/dev/null 2>&1 && echo "  ✓ Git LFS filters registered"
+    git lfs install --skip-repo
+    echo "  ✓ Git LFS filters registered"
 fi
 
 #-------------------------------------------------------------------------------
 # Tmux Plugin Manager
 #-------------------------------------------------------------------------------
+link_file "$DOTFILES/.tmux.conf" "$HOME/.tmux.conf"
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
-    git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 fi
-if [ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
-    "$HOME/.tmux/plugins/tpm/bin/install_plugins"
-fi
+"$HOME/.tmux/plugins/tpm/bin/install_plugins"
 
 #-------------------------------------------------------------------------------
 # Install Oh-my-zsh (non-interactive mode)
 #-------------------------------------------------------------------------------
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    omz_installer=$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)
+    RUNZSH=no KEEP_ZSHRC=yes sh -c "$omz_installer"
 fi
 
 # Set ZSH variables for current session
@@ -247,7 +307,7 @@ fi
 # Link home dotfiles
 #-------------------------------------------------------------------------------
 echo "Linking home dotfiles..."
-for f in .zshenv .zshrc .zprofile .tmux.conf .vimrc; do
+for f in .zshenv .zshrc .zprofile .vimrc; do
     link_file "$DOTFILES/$f" "$HOME/$f"
 done
 
@@ -264,36 +324,48 @@ done
 # Link .config directories
 #-------------------------------------------------------------------------------
 echo "Linking .config directories..."
-mkdir -p "${XDG_CONFIG_HOME:=$HOME/.config}"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+mkdir -p "$XDG_CONFIG_HOME"
 for dir in nvim ghostty kitty yazi; do
-    target="$HOME/.config/$dir"
-    if [ -d "$target" ] && [ ! -L "$target" ]; then
-        backup="${target}.backup.$(date +%Y%m%d%H%M%S)"
-        mv "$target" "$backup"
-        echo "  ↳ backed up existing $dir to $(basename "$backup")"
-    elif [ -L "$target" ]; then
-        rm -f "$target"
-    fi
-    ln -nfs "$DOTFILES/.config/$dir" "$target"
-    echo "  ✓ .config/$dir"
+    link_file "$DOTFILES/.config/$dir" "$XDG_CONFIG_HOME/$dir"
 done
 
 #-------------------------------------------------------------------------------
 # Neovim / LazyVim setup
 #-------------------------------------------------------------------------------
 echo "Setting up Neovim with LazyVim..."
-if [ -d "$HOME/.local/share/nvim" ] && [ ! -f "$HOME/.local/share/nvim/.lazyvim-installed" ]; then
-    echo "Cleaning up old Neovim data..."
-    rm -rf "$HOME/.local/share/nvim"
-    rm -rf "$HOME/.local/state/nvim"
-    rm -rf "$HOME/.cache/nvim"
-fi
+# Preserve existing data/state/cache, including sessions and undo history.
+nvim_data="${XDG_DATA_HOME:-$HOME/.local/share}/nvim"
 if command -v nvim &> /dev/null; then
     echo "Installing LazyVim plugins..."
-    nvim --headless "+Lazy! sync" +qa 2>/dev/null || true
-    mkdir -p "$HOME/.local/share/nvim"
-    touch "$HOME/.local/share/nvim/.lazyvim-installed"
-    echo "  ✓ LazyVim plugins installed"
+    # Neovim may exit 0 after command/task errors. Convert them to a failed
+    # process explicitly; Lazy! waits for sync before inspecting task results.
+    if nvim --headless -c 'lua
+        local ok, err = pcall(function()
+            assert(vim.v.errmsg == "", vim.v.errmsg)
+            vim.cmd("Lazy! sync")
+            local config = require("lazy.core.config")
+            local plugin = require("lazy.core.plugin")
+            for _, group in ipairs({ config.plugins, config.to_clean }) do
+                for _, item in pairs(group) do
+                    assert(not plugin.has_errors(item), "Lazy task failed: " .. item.name)
+                end
+            end
+            assert(vim.v.errmsg == "", vim.v.errmsg)
+        end)
+        if not ok then
+            vim.api.nvim_err_writeln(tostring(err))
+            vim.cmd("cquit 1")
+        end
+    ' +qa; then
+        mkdir -p "$nvim_data"
+        touch "$nvim_data/.lazyvim-installed"
+        echo "  ✓ LazyVim plugins installed"
+    else
+        warn_optional "LazyVim sync failed; existing Neovim data was preserved"
+    fi
+else
+    warn_optional "nvim not found; LazyVim setup skipped"
 fi
 
 #-------------------------------------------------------------------------------
@@ -303,7 +375,8 @@ if ! mise which node &>/dev/null; then
     echo "Installing Node.js LTS via mise..."
     mise install node@lts
     mise use -g node@lts
-    eval "$(mise activate bash)"
+    mise_activation=$(mise activate bash)
+    eval "$mise_activation"
 fi
 
 #-------------------------------------------------------------------------------
@@ -313,7 +386,8 @@ if ! mise which python &>/dev/null; then
     echo "Installing Python 3.12 via mise..."
     mise install python@3.12
     mise use -g python@3.12
-    eval "$(mise activate bash)"
+    mise_activation=$(mise activate bash)
+    eval "$mise_activation"
 fi
 
 #-------------------------------------------------------------------------------
@@ -325,6 +399,7 @@ if ! command -v uv &>/dev/null; then
     echo "Installing uv..."
     curl -LsSf https://astral.sh/uv/install.sh | UV_NO_MODIFY_PATH=1 sh
     export PATH="$HOME/.local/bin:$PATH"
+    command -v uv >/dev/null
     echo "  ✓ uv installed"
 else
     echo "  ✓ uv already installed"
@@ -332,23 +407,25 @@ fi
 
 if ! command -v poetry &>/dev/null; then
     echo "Installing Poetry..."
-    curl -sSL https://install.python-poetry.org | sed 's/symlinks=False/symlinks=True/' | python3 -
+    curl -fsSL https://install.python-poetry.org | sed 's/symlinks=False/symlinks=True/' | python3 -
     export PATH="$HOME/.local/bin:$PATH"
+    command -v poetry >/dev/null
     echo "  ✓ Poetry installed"
 else
     echo "  ✓ Poetry already installed"
 fi
 
-uv pip install --system youtube-transcript-api 2>/dev/null && echo "  ✓ youtube-transcript-api installed"
-uv pip install --system detect-secrets 2>/dev/null && echo "  ✓ detect-secrets installed"
+run_optional "youtube-transcript-api installation" uv pip install --system youtube-transcript-api
+run_optional "detect-secrets installation" uv pip install --system detect-secrets
 
 #-------------------------------------------------------------------------------
 # Install LSP server binaries (npm-based)
 #-------------------------------------------------------------------------------
 echo "Setting up LSP servers..."
-eval "$(mise activate bash)"
-npm install -g pyright 2>/dev/null && echo "  ✓ pyright"
-npm install -g typescript-language-server typescript 2>/dev/null && echo "  ✓ typescript-language-server"
+mise_activation=$(mise activate bash)
+eval "$mise_activation"
+run_optional "pyright installation" npm install -g pyright
+run_optional "typescript-language-server installation" npm install -g typescript-language-server typescript
 
 #-------------------------------------------------------------------------------
 # Install Codex CLI (npm, under mise node)
@@ -356,10 +433,10 @@ npm install -g typescript-language-server typescript 2>/dev/null && echo "  ✓ 
 #-------------------------------------------------------------------------------
 echo "Setting up Codex CLI..."
 if ! command -v codex &>/dev/null; then
-    if npm install -g @openai/codex; then
+    if npm install -g @openai/codex && command -v codex >/dev/null; then
         echo "  ✓ Codex CLI installed"
     else
-        echo "  ⚠️  Codex CLI install failed; Codex MCP setup will be skipped"
+        warn_optional "Codex CLI install failed; Codex MCP setup will be skipped"
     fi
 else
     echo "  ✓ Codex CLI already installed ($(codex --version 2>/dev/null))"
@@ -372,6 +449,7 @@ echo "Setting up Claude Code..."
 if ! command -v claude &> /dev/null; then
     echo "Installing Claude Code..."
     curl -fsSL https://claude.ai/install.sh | bash
+    command -v claude >/dev/null
     echo "  ✓ Claude Code installed"
 else
     echo "  ✓ Claude Code already installed ($(claude --version 2>/dev/null))"
@@ -430,7 +508,7 @@ link_file "$DOTFILES/.codex/skills" "$HOME/.agents/skills"
 #-------------------------------------------------------------------------------
 # Register Claude Code MCP servers (user scope)
 #-------------------------------------------------------------------------------
-"$DOTFILES/.claude/setup-mcp.sh"
+run_optional "Claude MCP setup" "$DOTFILES/.claude/setup-mcp.sh"
 
 #-------------------------------------------------------------------------------
 # Link Antigravity CLI configuration
@@ -477,33 +555,36 @@ if [ ! -f "$HOME/.codex/config.toml" ]; then
     cp "$HOME/.codex/config.toml.example" "$HOME/.codex/config.toml"
     echo "  ✓ config.toml created from example"
 fi
-"$DOTFILES/.codex/setup-mcp.sh"
+if command -v codex >/dev/null; then
+    run_optional "Codex MCP setup" "$DOTFILES/.codex/setup-mcp.sh"
+fi
 
 #-------------------------------------------------------------------------------
 # Link Karabiner-Elements configuration
 #-------------------------------------------------------------------------------
 echo "Setting up Karabiner-Elements..."
-mkdir -p "$HOME/.config/karabiner/assets/complex_modifications"
+mkdir -p "$XDG_CONFIG_HOME/karabiner/assets/complex_modifications"
 link_file "$DOTFILES/.config/karabiner/my_custom_key.json" \
-    "$HOME/.config/karabiner/assets/complex_modifications/my_custom_key.json"
+    "$XDG_CONFIG_HOME/karabiner/assets/complex_modifications/my_custom_key.json"
 
 #-------------------------------------------------------------------------------
 # Link .config files
 #-------------------------------------------------------------------------------
 echo "Linking .config files..."
 for file in ruff/ruff.toml zed/settings.json; do
-    mkdir -p "$HOME/.config/$(dirname "$file")"
-    link_file "$DOTFILES/.config/$file" "$HOME/.config/$file"
+    mkdir -p "$XDG_CONFIG_HOME/$(dirname "$file")"
+    link_file "$DOTFILES/.config/$file" "$XDG_CONFIG_HOME/$file"
 done
 
 #-------------------------------------------------------------------------------
 # Yazi plugins and flavors
 #-------------------------------------------------------------------------------
 if command -v ya &> /dev/null; then
-    ya pkg add yazi-rs/plugins:fzf 2>/dev/null
-    ya pkg add yazi-rs/flavors:catppuccin-mocha 2>/dev/null
-    ya pkg add yazi-rs/flavors:catppuccin-latte 2>/dev/null
-    echo "  ✓ Yazi plugins and flavors installed"
+    run_optional "Yazi fzf plugin" ya pkg add yazi-rs/plugins:fzf
+    run_optional "Yazi catppuccin-mocha flavor" ya pkg add yazi-rs/flavors:catppuccin-mocha
+    run_optional "Yazi catppuccin-latte flavor" ya pkg add yazi-rs/flavors:catppuccin-latte
+else
+    warn_optional "ya not found; Yazi packages skipped"
 fi
 
 #-------------------------------------------------------------------------------
@@ -514,7 +595,7 @@ if command -v pre-commit &> /dev/null; then
     (cd "$DOTFILES" && pre-commit install)
     echo "  ✓ pre-commit hooks installed"
 else
-    echo "  ⚠️  pre-commit not found, skipping..."
+    warn_optional "pre-commit not found; hook installation skipped"
 fi
 
 #-------------------------------------------------------------------------------
@@ -525,5 +606,14 @@ if [ "$SHELL" != "$(command -v zsh)" ]; then
     chsh -s "$(command -v zsh)"
 fi
 
+#-------------------------------------------------------------------------------
+# Installation summary
+#-------------------------------------------------------------------------------
+if [ "${#optional_failures[@]}" -gt 0 ]; then
+    echo "⚠️  Dotfiles installation partially completed:" >&2
+    printf '  - %s\n' "${optional_failures[@]}" >&2
+    echo "Resolve the errors above and re-run install.sh." >&2
+    exit 2
+fi
 echo "✅ Dotfiles installation completed!"
 echo "Please restart your terminal or run: source ~/.zshrc"
