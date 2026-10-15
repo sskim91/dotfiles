@@ -412,6 +412,7 @@
   "verbose": true,
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,
+  "idleCompaction": false,
   "switchModelsOnFlag": true,
   "teammateMode": "tmux",
   "agentPushNotifEnabled": true,
