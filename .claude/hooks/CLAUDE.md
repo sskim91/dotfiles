@@ -33,4 +33,4 @@ Each hook tool is individually controlled via `ENABLE_*` environment variables:
 
 ## Known slow path
 
-`til-review.sh`는 외부 CLI(Codex·Antigravity)를 호출하며 도구별 190초 타임아웃과 1회 재시도를 가진다(settings.json 훅 timeout 400). 2026-08-15~16 TIL 세션에서 45회 연속 약 190초로 끝난 기록이 있어, 한 도구가 매번 타임아웃에 걸린 것으로 보인다. 재발하면 어느 도구가 멈추는지 확인하거나 훅을 `async`로 전환한다.
+`til-review.sh`는 외부 CLI(Codex·Antigravity)를 호출하며 도구별 190초 타임아웃과 1회 재시도를 가진다(settings.json 훅 timeout 400). 2026-08-15~16 TIL 세션에서 45회 연속 약 190초로 끝난 기록이 있어, 한 도구가 매번 타임아웃에 걸린 것으로 보인다. 재발하면 어느 도구가 멈추는지 확인하거나 훅을 `async`로 전환한다. 재발 시 `ccv --debug-file <path>`로 세션을 시작하면 훅별 `finished with status N (Xms)` 줄이 남는다(2.1.296+). 이 로그는 훅 전체 시간만 보여주므로 어느 도구가 멈췄는지는 stderr의 재시도 경고로 판단한다.
