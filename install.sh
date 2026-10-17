@@ -338,12 +338,37 @@ echo "Setting up Neovim with LazyVim..."
 nvim_data="${XDG_DATA_HOME:-$HOME/.local/share}/nvim"
 if command -v nvim &> /dev/null; then
     echo "Installing LazyVim plugins..."
+    # lazy.nvim rewrites the tracked lockfile while installing: a fresh install
+    # imports LazyVim's specs in rounds and drops lock entries it has not seen
+    # yet, so later rounds clone the latest commits (and `Lazy! sync` would update
+    # past the lock anyway). Install first, put the committed lockfile back even
+    # if that fails, then pin every plugin to it with `Lazy! restore` (also after
+    # a failed install). Restore must run before `Lazy! clean`, which rewrites
+    # the lock from installed commits.
+    nvim_lock="$DOTFILES/.config/nvim/lazy-lock.json"
+    nvim_lock_snapshot=""
+    if [ -f "$nvim_lock" ]; then
+        nvim_lock_snapshot=$(mktemp)
+        cp "$nvim_lock" "$nvim_lock_snapshot"
+    fi
     # Neovim may exit 0 after command/task errors. Convert them to a failed
-    # process explicitly; Lazy! waits for sync before inspecting task results.
+    # process explicitly; Lazy! waits for each task before inspecting results.
+    nvim_install_status=0
+    nvim --headless -c 'lua
+        if vim.v.errmsg ~= "" then
+            vim.api.nvim_err_writeln(vim.v.errmsg)
+            vim.cmd("cquit 1")
+        end
+    ' +qa || nvim_install_status=$?
+    if [ -n "$nvim_lock_snapshot" ]; then
+        cp "$nvim_lock_snapshot" "$nvim_lock"
+        command rm -f "$nvim_lock_snapshot"
+    fi
     if nvim --headless -c 'lua
         local ok, err = pcall(function()
             assert(vim.v.errmsg == "", vim.v.errmsg)
-            vim.cmd("Lazy! sync")
+            vim.cmd("Lazy! restore")
+            vim.cmd("Lazy! clean")
             local config = require("lazy.core.config")
             local plugin = require("lazy.core.plugin")
             for _, group in ipairs({ config.plugins, config.to_clean }) do
@@ -357,12 +382,12 @@ if command -v nvim &> /dev/null; then
             vim.api.nvim_err_writeln(tostring(err))
             vim.cmd("cquit 1")
         end
-    ' +qa; then
+    ' +qa && [ "$nvim_install_status" -eq 0 ]; then
         mkdir -p "$nvim_data"
         touch "$nvim_data/.lazyvim-installed"
         echo "  ✓ LazyVim plugins installed"
     else
-        warn_optional "LazyVim sync failed; existing Neovim data was preserved"
+        warn_optional "LazyVim plugin setup failed; existing Neovim data was preserved"
     fi
 else
     warn_optional "nvim not found; LazyVim setup skipped"

@@ -171,6 +171,43 @@ class InstallerTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertTrue((self.home / "data/nvim/.lazyvim-installed").exists())
 
+    def test_nvim_setup_keeps_tracked_lockfile_and_restores_plugins(self):
+        # lazy.nvim rewrites the tracked lazy-lock.json while installing, which
+        # left the checkout dirty so the next self-update refused to run.
+        lock = self.repo / ".config/nvim/lazy-lock.json"
+        self.write(lock, "original")
+        code = (
+            'nvim() { printf "%s\\n" "$@" >> "$INSTALL_TEST_HOME/nvim-args"; '
+            'case "$*" in *restore*) ;; '
+            '*) echo clobbered > "$DOTFILES/.config/nvim/lazy-lock.json" ;; esac; }\n'
+        )
+        result = self.run_code(code + section("Neovim / LazyVim setup"))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(lock.read_text(), "original")
+        args = (self.home / "nvim-args").read_text()
+        self.assertIn("Lazy! restore", args)
+        self.assertNotIn("Lazy! sync", args)
+        self.assertNotIn("Lazy! update", args)
+        # `Lazy! clean` rewrites the lockfile from the installed commits, so a
+        # restore after it would pin plugins to whatever pass 1 cloned.
+        self.assertLess(args.index("Lazy! restore"), args.index("Lazy! clean"))
+
+    def test_nvim_install_failure_keeps_lockfile_still_restores_and_fails(self):
+        # Pass 1 failing must not skip the restore pass or count as success.
+        lock = self.repo / ".config/nvim/lazy-lock.json"
+        self.write(lock, "original")
+        code = (
+            'nvim() { printf "%s\\n" "$@" >> "$INSTALL_TEST_HOME/nvim-args"; '
+            'case "$*" in *restore*) return 0 ;; esac; '
+            'echo clobbered > "$DOTFILES/.config/nvim/lazy-lock.json"; return 42; }\n'
+        )
+        result = self.run_code(code + section("Neovim / LazyVim setup"))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(lock.read_text(), "original")
+        self.assertIn("Lazy! restore", (self.home / "nvim-args").read_text())
+        self.assertNotIn("✓ LazyVim plugins installed", result.stdout)
+        self.assertFalse((self.home / "data/nvim/.lazyvim-installed").exists())
+
     @unittest.skipUnless(
         shutil.which("nvim"), "Neovim required for real exit-code regression"
     )
