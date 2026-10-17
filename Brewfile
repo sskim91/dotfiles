@@ -30,6 +30,9 @@ brew "procs"
 # --- Editor & Multiplexer ---
 brew "neovim"
 brew "tmux"
+# nvim-treesitter (main) needs tree-sitter-cli 0.26.1+ from a package manager, not npm.
+# Without it the installer's headless LazyVim setup fails on a fresh Mac.
+brew "tree-sitter-cli"
 
 # --- Git Tooling ---
 brew "gh"
