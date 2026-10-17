@@ -41,7 +41,7 @@ KINDS = (
 # tags가 비었거나 없으면 안 되는 scope(분류·MOC 등록이 태그에 의존).
 TAG_REQUIRED_SCOPES = ("wiki-til", "wiki-only", "projects")
 
-# 규칙 문서를 가리켜야 하는 노트 관련 스킬(Claude판·Codex판 공통).
+# 규칙 문서를 가리켜야 하는 노트 관련 스킬(Claude판·Codex판). 한쪽에만 있는 스킬은 drift 검사를 건너뛴다.
 NOTE_SKILLS = (
     "obsidian-note",
     "youtube-summarizer",

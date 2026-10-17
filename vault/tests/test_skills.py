@@ -12,8 +12,13 @@ from pathlib import Path
 from vaultkit.check import NOTE_SKILLS, RULE_DOC_REF
 
 DOTFILES = Path(__file__).resolve().parents[2]
-SKILL_ROOTS = (DOTFILES / ".claude" / "skills", DOTFILES / ".codex" / "skills")
+CLAUDE_SKILLS = DOTFILES / ".claude" / "skills"
+CODEX_SKILLS = DOTFILES / ".codex" / "skills"
+SKILL_ROOTS = (CLAUDE_SKILLS, CODEX_SKILLS)
 RULE_DOC = DOTFILES / RULE_DOC_REF
+
+# Claude판을 삭제하고 Codex판만 남긴 노트 스킬(2026-10-17).
+CODEX_ONLY_NOTE_SKILLS = frozenset({"youtube-summarizer", "tech-blog-writer"})
 
 # 스킬 폴더 안 모든 .md에서 0건이어야 하는 문자열.
 FORBIDDEN = (
@@ -31,6 +36,10 @@ def _skill_md_files(root: Path, name: str) -> list[Path]:
     return sorted((root / name).rglob("*.md"))
 
 
+def _roots_for(name: str) -> tuple[Path, ...]:
+    return (CODEX_SKILLS,) if name in CODEX_ONLY_NOTE_SKILLS else SKILL_ROOTS
+
+
 class RuleDocTest(unittest.TestCase):
     def test_rule_doc_exists_and_is_short(self):
         self.assertTrue(RULE_DOC.is_file(), RULE_DOC)
@@ -43,8 +52,8 @@ class RuleDocTest(unittest.TestCase):
 
 class SkillDocsTest(unittest.TestCase):
     def test_every_note_skill_points_to_rule_doc(self):
-        for root in SKILL_ROOTS:
-            for name in NOTE_SKILLS:
+        for name in NOTE_SKILLS:
+            for root in _roots_for(name):
                 with self.subTest(root=root.parent.name, skill=name):
                     skill_md = root / name / "SKILL.md"
                     self.assertTrue(skill_md.is_file(), skill_md)
@@ -66,8 +75,13 @@ class SkillDocsTest(unittest.TestCase):
                     with self.subTest(file=str(path.relative_to(DOTFILES))):
                         self.assertNotIn("§", path.read_text(encoding="utf-8"))
 
+    def test_codex_only_note_skills_have_no_claude_copy(self):
+        for name in CODEX_ONLY_NOTE_SKILLS:
+            with self.subTest(skill=name):
+                self.assertFalse((CLAUDE_SKILLS / name).exists())
+
     def test_youtube_summarizer_has_no_link_section(self):
-        for root in SKILL_ROOTS:
+        for root in _roots_for("youtube-summarizer"):
             with self.subTest(root=root.parent.name):
                 text = (root / "youtube-summarizer" / "SKILL.md").read_text(encoding="utf-8")
                 self.assertNotIn("## 연결 고리", text)

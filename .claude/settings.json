@@ -94,18 +94,9 @@
   ],
   "enableAllProjectMcpServers": true,
   "skillOverrides": {
-    "adr": "off",
-    "api-design": "off",
-    "codex-changelog-review": "off",
-    "devlog": "off",
     "excalidraw-diagram": "off",
-    "github-actions": "off",
-    "sns-writer": "off",
-    "sql-optimization-patterns": "off",
-    "tech-blog-writer": "off",
     "til-tagger": "off",
-    "translate-article": "off",
-    "youtube-summarizer": "off"
+    "translate-article": "off"
   },
   "hooks": {
     "SessionStart": [

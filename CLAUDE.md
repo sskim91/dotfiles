@@ -44,7 +44,7 @@ Settings in `.claude/settings.json`. The hook flow, file-dispatcher pattern, and
 
 Located in `.claude/skills/`. Classification, review criteria, authoring conventions, and removal history are in `.claude/skills/CLAUDE.md`.
 
-2026-09에 삭제한 스킬은 복원하지 않는다. `.claude/skills/`와 `.codex/skills/`는 독립된 정본이다 — 한쪽에만 필요한 스킬의 추가·삭제를 다른 쪽에 강제하지 않는다. Codex 구성은 [.codex/README.md](.codex/README.md)를 참고한다.
+삭제한 스킬(이력은 `.claude/skills/CLAUDE.md`)은 복원하지 않는다. `.claude/skills/`와 `.codex/skills/`는 독립된 정본이다 — 한쪽에만 필요한 스킬의 추가·삭제를 다른 쪽에 강제하지 않는다. Codex 구성은 [.codex/README.md](.codex/README.md)를 참고한다.
 
 ### Agents
 

@@ -23,13 +23,9 @@
 - `docs/runtime-diagnostics.md`는 실제 환경의 버전·원시 증거·재현 자격을 확인하는 Codex 참고 문서다. 해당 진단에서만 읽는다.
 - 일반 검색은 native `web_search = "live"`를 사용한다. Brave와 Tavily MCP는 접속 설정을 보존한 채 비활성화했다. Context7은 챗앱에서 연결한 플러그인을 사용하며, 중복되는 `[mcp_servers.context7]`은 `enabled = false`로 보관한다. 새 환경에서는 플러그인 연결을 확인하고, 플러그인을 사용할 수 없으면 기존 MCP의 재활성화를 검토한다. 공식 OpenAI Docs와 기존 업무 연결은 유지한다.
 
-개인 스킬 26개 중 다음 4개는 Codex의 `[skills].config`에서 비활성화하고 원본을 보관한다. 경로는 모두 `.codex/skills/` 아래다.
+개인 스킬 21개 중 Claude 스킬 설계 참고용 `skill-guide`는 Codex의 `[skills].config`에서 비활성화하고 원본을 보관한다. 경로는 `.codex/skills/skill-guide/`다.
 
-- 일반 설계·탐색: `adr`, `api-design`
-- Claude 스킬 설계 참고: `skill-guide`
-- 일반 SQL 지침: `sql-optimization-patterns`
-
-나머지 22개는 GenOS·개인 vault·TIL·커밋 규칙·문서 변환·전용 도구 등 업무 지식과 자원을 제공한다. Codex 사본의 description을 짧게 정리하고 Obsidian 형식과 Excalidraw 예시는 필요할 때 읽는 references로 옮겼다. 재활성화가 필요하면 적용 조건·도구·버전·경로를 확인한 뒤 템플릿과 실제 설정의 해당 override만 변경한다.
+나머지 20개는 GenOS·개인 vault·TIL·커밋 규칙·문서 변환·전용 도구 등 업무 지식과 자원을 제공한다. Codex 사본의 description을 짧게 정리하고 Obsidian 형식과 Excalidraw 예시는 필요할 때 읽는 references로 옮겼다. 재활성화가 필요하면 적용 조건·도구·버전·경로를 확인한 뒤 템플릿과 실제 설정의 해당 override만 변경한다.
 
 Superpowers는 양쪽 모두 유지한다. Codex 쪽은 원격 설치본(`source: remote`)이라 버전을 고정할 수 없고 자동으로 upstream을 따른다. 설치·활성 상태와 현재 버전은 `codex plugin list --json`으로 확인한다. Claude는 `superpowers@superpowers-marketplace`(obra/superpowers-marketplace, upstream 추적)를 별도로 활성화한다. 공식 마켓플레이스(`claude-plugins-official`)는 커밋 sha를 고정해 upstream보다 뒤처지므로 2026-09-22에 전환했다. Astra 정리는 Superpowers를 제거하는 조건이 아니다.
 
@@ -39,7 +35,7 @@ Codex의 기본 개발 프로세스는 Superpowers이며, 적용 규칙과 승�
 
 스킬의 원칙·컨벤션·버전 의존 지침·업무 자원을 구분한다. 한 스킬에 여러 성격이 섞일 수 있으며, 안정적인 원칙이 있어도 실행 명령과 환경은 재확인한다. 분류 예시는 [CLAUDE.md의 Skills 절](../CLAUDE.md#skills)을 참고한다.
 
-유지·삭제는 변화 속도가 아니라 고유한 규칙·실패 기록·재사용 자원과 실제 사용 필요성으로 판단한다. `find-docs`·`project-overview`는 일반 도구 설명·탐색 절차와 중복돼 제거했다. 먼저 삭제한 Java/Spring/JPA/Python 스킬 9개도 복원하지 않는다.
+유지·삭제는 변화 속도가 아니라 고유한 규칙·실패 기록·재사용 자원과 실제 사용 필요성으로 판단한다. `find-docs`·`project-overview`는 일반 도구 설명·탐색 절차와 중복돼 제거했다. 먼저 삭제한 Java/Spring/JPA/Python 스킬 9개와 2026-10-17에 삭제한 `adr`·`api-design`·`sql-optimization-patterns`(양쪽 모두 비활성이던 일반 지식)도 복원하지 않는다.
 
 공통 스킬을 정리할 때는 양쪽 영향을 확인한다. 도구별 스킬을 같은 목록으로 강제하거나 Claude 설정을 Codex에 그대로 적용하지 않는다. 실제 앱 설정은 삭제한 스킬 override 등 필요한 항목만 정리한다.
 

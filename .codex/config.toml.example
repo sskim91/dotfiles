@@ -67,10 +67,7 @@ experimental_mode = true
 
 [skills]
 config = [
-    { path = "~/.dotfiles/.codex/skills/adr/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/api-design/SKILL.md", enabled = false },
     { path = "~/.dotfiles/.codex/skills/skill-guide/SKILL.md", enabled = false },
-    { path = "~/.dotfiles/.codex/skills/sql-optimization-patterns/SKILL.md", enabled = false },
 ]
 
 [tui]

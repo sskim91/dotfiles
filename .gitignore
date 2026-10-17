@@ -123,6 +123,3 @@ _session/
 node_modules/
 __pycache__
 poetry-installer-error-*.log
-
-# Codex skill SQL resources (override the global *.sql ignore)
-!.codex/skills/sql-optimization-patterns/scripts/*.sql

@@ -1,6 +1,6 @@
 ---
 name: translate-article
-description: Use when user provides a URL and asks to "translate", "번역", "한국어로", "Korean translation". Do NOT use for YouTube videos (use youtube-summarizer), original content (use tech-blog-writer), or Obsidian notes (use obsidian-note).
+description: Use when user provides a URL and asks to "translate", "번역", "한국어로", "Korean translation". Do NOT use for YouTube videos, original writing, or Obsidian notes (use obsidian-note).
 ---
 
 # Article Translator
