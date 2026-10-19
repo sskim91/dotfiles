@@ -39,7 +39,9 @@ font-size = 12
 # font-variation =
 
 # 특정 유니코드를 특정 폰트로 매핑
-# font-codepoint-map =
+# 한글(호환 자모·완성형)은 D2Coding으로 고정 — 미지정 시 앞서 로드된 폴백 폰트(예: PCMyungjo)로 그려질 수 있음
+# 첫가끝 자모(U+1100-U+11FF)는 D2Coding에 글리프가 없어 제외
+font-codepoint-map = U+3130-U+318F,U+AC00-U+D7A3=D2KodingLigature Nerd Font Mono
 
 # macOS에서 폰트 두껍게 (서브픽셀 AA용)
 # font-thicken = false
