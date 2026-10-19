@@ -5,6 +5,8 @@ description: GenOS 코드·운영에서 얻은 지식을 개인 vault의 Project
 
 # GenOS Knowledge Capture
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 GenOS 현장 작업(FDE)에서 *한 번 배운 걸 다음 세션·다음 고객사에서 다시 파헤치지 않도록* 만드는 개인 스킬이다. AI의 세션 기억은 끊기지만, vault에 원자적 노트로 남기고 **허브(`00 GenOS 시작하기`, 고객사별 `00 <고객사> 시작하기`)와 그 허브의 처음 읽는 순서에 엮어두면** 새 세션이 필요한 노트를 발견하고, 처음 읽을 순서까지 빠르게 잡는다.
 
 이 스킬은 사용자 개인 자산(`~/.agents/skills/`)이다. **회사 레포의 `.claude/skills/genos-*`(genos-session-close 등)는 회사 공유 자산이라 절대 건드리지 않는다.** 세션 상태는 회사 HANDOFF가, 재사용 지식은 이 스킬이 담당한다 — 둘은 분리된 관심사다.

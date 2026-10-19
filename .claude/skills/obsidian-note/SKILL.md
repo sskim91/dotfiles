@@ -5,6 +5,8 @@ description: Use when user mentions "Obsidian", "옵시디언", "write as note",
 
 # Zettelkasten Note Writer
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 **원자적 노트로 지식을 연결하는 Obsidian 노트 작성 가이드**
 
 ## 책임 경계
@@ -28,7 +30,7 @@ description: Use when user mentions "Obsidian", "옵시디언", "write as note",
 
 ### Frontmatter 템플릿
 
-공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (폴더별 필드 순서, 태그 형식과 허용 분야, 저장 후 등록, 링크 규칙). `_Inbox` 노트는 Wiki 형식 6필드로 쓴다.
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (폴더별 필드 순서, 태그 형식과 허용 분야, 저장 후 등록, 링크 규칙). `_Inbox` 노트는 Wiki 형식 7필드로 쓴다.
 
 ```yaml
 ---
@@ -43,6 +45,7 @@ related_notes:       # 실존 노트 wikilink (없으면 [])
 tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
   - domain/sub       # MOC 섹션을 정할 주제 태그를 맨 앞에 (처음 매칭되는 태그가 섹션을 정한다)
 created: YYYY-MM-DD  # 작성일
+updated: YYYY-MM-DD
 ---
 ```
 
@@ -171,7 +174,7 @@ vault에서 관련 노트를 검색하고 양방향 `[[wikilink]]`를 연결한�
 □ 짧게 요약하려고 정보를 압축하지 않았는가 (미래의 내가 읽어도 맥락 복원 가능)
 □ 위키피디아 톤이 아닌 엔지니어링 블로그 톤
 □ 대화의 모든 번호 항목이 동일 깊이로 포함되었는가 (축약/생략 없음)
-□ 파일명이 순수 제목 (접두사 없음), created 날짜 현재
+□ 파일명이 순수 제목 (접두사 없음), 신규는 created·updated 오늘 날짜, 기존 created 보존·내용 수정 시에만 updated 갱신
 □ mermaid 사용 시 렌더링 검증 완료
 □ Post-write linking 실행 완료 (관련 노트 검색 + related_notes 업데이트)
 □ `vk register` 실행 결과 보고 (Wiki로 옮겼다면 옮긴 뒤 재실행)

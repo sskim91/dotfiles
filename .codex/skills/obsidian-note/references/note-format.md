@@ -6,7 +6,7 @@
 
 ### Frontmatter 템플릿
 
-공통 규칙은 `~/.dotfiles/vault/references/note-rules.md`에 있다. `_Inbox`·Wiki 노트는 아래 6필드를 이 순서로 쓴다.
+공통 규칙은 `~/.dotfiles/vault/references/note-rules.md`에 있다. `_Inbox`·Wiki 노트는 아래 7필드를 이 순서로 쓴다.
 
 ```yaml
 ---
@@ -21,6 +21,7 @@ related_notes:       # 실존 노트 wikilink (없으면 [])
 tags:                # domain/sub 두 세그먼트, domain은 policy 허용 목록
   - domain/sub       # MOC 섹션을 정할 주제 태그를 맨 앞에 (처음 매칭되는 태그가 섹션을 정한다)
 created: YYYY-MM-DD  # 작성일
+updated: YYYY-MM-DD
 ---
 ```
 

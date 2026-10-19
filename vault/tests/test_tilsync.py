@@ -87,6 +87,7 @@ class TestMergeDecisionTable(unittest.TestCase):
             "  - ai/llm\n"
             "  - til\n"
             f"created: {TODAY}\n"
+            f"updated: {TODAY}\n"
             "---\n" + gen.body
         )
         self.assertEqual(d.text, expected)
@@ -94,7 +95,7 @@ class TestMergeDecisionTable(unittest.TestCase):
     def test_create_omits_empty_source_and_related(self):
         d = merge(_gen(sources=[], til_links=[]), None, None, TODAY)
         doc = fm.parse(d.text)
-        self.assertEqual(doc.order, ["title", "topics", "tags", "created"])
+        self.assertEqual(doc.order, ["title", "topics", "tags", "created", "updated"])
 
     def test_retired_not_recreated(self):
         d = merge(_gen(), None, {"status": "retired"}, TODAY)
@@ -174,7 +175,7 @@ class TestMergeDecisionTable(unittest.TestCase):
         self.assertEqual(fm.get_list(doc, "aliases"), ["별칭"])
         self.assertEqual(
             doc.order,
-            ["title", "source", "topics", "related_notes", "tags", "created", "aliases"],
+            ["title", "source", "topics", "related_notes", "tags", "created", "updated", "aliases"],
         )
 
     def test_update_related_dedup_is_nfc(self):
@@ -185,10 +186,10 @@ class TestMergeDecisionTable(unittest.TestCase):
         doc = fm.parse(d.text)
         self.assertEqual(len(fm.get_list(doc, "related_notes")), 1)
 
-    def test_update_adds_created_when_missing(self):
+    def test_update_preserves_unknown_created(self):
         existing = "---\ntitle: x\n---\n옛\n"
         d = merge(_gen(), existing, _synced("옛\n"), TODAY)
-        self.assertEqual(fm.get_list(fm.parse(d.text), "created"), [TODAY])
+        self.assertEqual(fm.get_list(fm.parse(d.text), "created"), [])
 
     def test_update_removes_source_when_til_has_none(self):
         existing = "---\ntitle: x\nsource: https://old\n---\n옛\n"
@@ -254,7 +255,7 @@ class TestMergeDecisionTable(unittest.TestCase):
             frontmatter={**policy.frontmatter, "Wiki": {"order": ["tags", "title"], "required": []}},
         )
         d = merge(_gen(sources=[], til_links=[]), None, None, TODAY, policy=custom)
-        self.assertEqual(fm.parse(d.text).order, ["tags", "title", "topics", "created"])
+        self.assertEqual(fm.parse(d.text).order, ["tags", "title", "topics", "created", "updated"])
 
     def test_unchanged_returns_no_text(self):
         gen = _gen()

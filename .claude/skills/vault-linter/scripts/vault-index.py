@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """vault-index.py — Generate vault index markdown file.
 
-Writes $VAULT/_Inbox/Vault-Index.md (full overwrite each run).
+Writes $VAULT/_Inbox/Vault-Index.md only when catalog content changes.
 """
 import os
 import sys
@@ -9,13 +9,17 @@ import unicodedata
 import datetime
 from pathlib import Path
 from collections import defaultdict
+from zoneinfo import ZoneInfo
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "vault"))
+from vaultkit import frontmatter as fm
 
 VAULT = Path(os.environ.get(
     'VAULT',
     os.path.expanduser('~/Library/Mobile Documents/iCloud~md~obsidian/Documents/Note')
 ))
 INDEX_FILE = VAULT / '_Inbox' / 'Vault-Index.md'
-DATE = datetime.date.today().isoformat()
+DATE = datetime.datetime.now(ZoneInfo("Asia/Seoul")).date().isoformat()
 
 EXCLUDE_DIRS = {'Templates', 'Attachments', '.obsidian'}
 EXCLUDE_PREFIXES = ('Vault-Lint-Report', 'Vault-Semantic-Report')
@@ -49,7 +53,7 @@ def extract_summary(path: Path) -> str:
     return ''
 
 
-def render_frontmatter(date: str) -> str:
+def render_frontmatter(date: str, updated: str | None = None) -> str:
     """Index frontmatter. Keys follow the Wiki order in vault-policy.json and
     the tag is already policy-normalized, so `vk apply` leaves it unchanged."""
     return (
@@ -58,6 +62,7 @@ def render_frontmatter(date: str) -> str:
         f"tags:\n"
         f"  - productivity/vault-maintenance\n"
         f"created: {date}\n"
+        f"updated: {updated or date}\n"
         f"---\n"
     )
 
@@ -84,25 +89,38 @@ def main() -> int:
 
     total = sum(len(v) for v in entries.values())
 
-    INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with open(INDEX_FILE, 'w', encoding='utf-8') as f:
-        f.write(
-            render_frontmatter(DATE)
-            + f"\n# Vault Index\n\n"
-            f"> 자동 생성 (vault-linter --index). 수동 편집 금지.\n"
-            f"> 생성일: {DATE} | 총 {total}개 노트\n\n"
+    # Dates are not part of catalog identity. Keep legacy files untouched on a no-op.
+    sections = []
+    for folder in sorted(entries):
+        items = entries[folder]
+        sections.append(f"## {folder} ({len(items)})\n\n")
+        for name, summary in items:
+            sections.append(f"- [[{name}]]" + (f" — {summary}" if summary else "") + "\n")
+        sections.append("\n")
+    catalog = "".join(sections)
+    existing = INDEX_FILE.read_text(encoding="utf-8") if INDEX_FILE.exists() else None
+    doc = fm.parse(existing) if existing is not None else None
+    if doc is not None and not doc.has_fm:
+        raise ValueError("기존 인덱스 frontmatter 없음 — 날짜를 추정하지 않고 중단")
+    old_catalog = ""
+    if doc is not None:
+        offset = doc.body.find("## ")
+        old_catalog = doc.body[offset:] if offset >= 0 else ""
+    if existing is not None and old_catalog == catalog:
+        print(f"Unchanged: {INDEX_FILE}")
+    else:
+        if doc is None:
+            doc = fm.parse(render_frontmatter(DATE))
+        # Preserve original creation date and unknown metadata on existing indexes.
+        fm.set_scalar(doc, "updated", DATE)
+        doc.body = (
+            "\n# Vault Index\n\n"
+            "> 자동 생성 (vault-linter --index). 수동 편집 금지.\n"
+            f"> 총 {total}개 노트\n\n" + catalog
         )
-        for folder in sorted(entries.keys()):
-            items = entries[folder]
-            f.write(f"## {folder} ({len(items)})\n\n")
-            for name, summary in items:
-                if summary:
-                    f.write(f"- [[{name}]] — {summary}\n")
-                else:
-                    f.write(f"- [[{name}]]\n")
-            f.write("\n")
-
-    print(f"Wrote: {INDEX_FILE}")
+        INDEX_FILE.parent.mkdir(parents=True, exist_ok=True)
+        INDEX_FILE.write_text(fm.render(doc), encoding="utf-8")
+        print(f"Wrote: {INDEX_FILE}")
     print(f"Total: {total} notes across {len(entries)} folders")
 
     return 0

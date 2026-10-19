@@ -16,20 +16,30 @@
 
 | 위치 | 필드 순서 | 필수 |
 |---|---|---|
-| `Wiki/`, `_Inbox/` | `title`, `source`, `topics`, `related_notes`, `tags`, `created` | `title`, `tags` |
-| `Projects/` | `aliases`, `title`, `source`, `related_notes`, `tags`, `created` | `tags`, `created` |
-| `Sources/` | `aliases`, `title`, `source`, `related_notes`, `tags`, `created` | `tags` |
-| `Archive/` | `aliases`, `title`, `source`, `topics`, `related_notes`, `tags`, `created` | 없음 |
+| `Wiki/`, `_Inbox/` | `title`, `source`, `topics`, `related_notes`, `tags`, `created`, `updated` | `title`, `tags` |
+| `Projects/` | `aliases`, `title`, `source`, `related_notes`, `tags`, `created`, `updated` | `tags`, `created` |
+| `Sources/` | `aliases`, `title`, `source`, `related_notes`, `tags`, `created`, `updated` | `tags` |
+| `Archive/` | `aliases`, `title`, `source`, `topics`, `related_notes`, `tags`, `created`, `updated` | 없음 |
 
 - `_Inbox`는 Wiki로 옮겨 갈 노트의 대기실이므로 Wiki 형식으로 쓴다.
 - `aliases`는 선택 필드다. 필요할 때만 맨 앞에 둔다.
-- `title`은 파일명과 같은 순수 제목이다. `created`는 `YYYY-MM-DD`.
+- `title`은 파일명과 같은 순수 제목이다. `created`·`updated`는 한국 시간(`Asia/Seoul`) 기준 `YYYY-MM-DD`.
 - `source`는 리스트다(URL 또는 근거 식별자). `related_notes`는 `"[[실존하는 노트]]"` 리스트다.
 - `topics`(Wiki만)는 Wiki 상위 주제 1~2개다. 값은 policy `topics`의 값 중에서 고른다(예: `AI`, `Kubernetes`, `Computer Science`).
 
 ```bash
 jq -r '.topics[]' ~/.dotfiles/vault/vault-policy.json | sort -u
 ```
+
+### 작성일과 내용 수정일
+
+- `created`는 최초 작성일이며 기존 값은 편집·이동·동기화에서 보존한다.
+- 새 노트는 `created`와 `updated`를 같은 오늘 날짜로 작성한다. 위치는 `created` 다음 `updated`다.
+- 기존 노트의 본문 설명·코드 예시·오류 정정 등 실제 내용을 수정하면 `updated`를 오늘 날짜로 갱신한다. 기존 `updated`가 없으면 그때 추가한다.
+- 조회·검토만 수행하거나 태그 정규화·자동 관련 링크 추가·필드 순서 정리·변경 없는 동기화만 하면 두 날짜를 유지한다. 자동 허브 등록과 개수 정리도 날짜 갱신 대상이 아니다.
+- 기존 노트 전체에 날짜를 일괄 보충하지 않는다. 과거 날짜를 오늘·파일 mtime·created로 추정하지 않는다. `updated` 누락과 기존 빈 날짜(`created:`·`updated:`)는 미상으로 허용한다.
+- 날짜가 있으면 유효한 달력 날짜여야 하며 `updated >= created`다. `updated`는 문서 전체 재검증 완료일을 뜻하지 않는다.
+- 기본 Templates의 날짜는 삽입 시 초기값이다. Obsidian에서 직접 본문을 수정하면 `updated`도 직접 갱신한다. 자동 편집 감지 기능은 구성하지 않는다.
 
 ## 2. 태그
 
@@ -90,7 +100,8 @@ Wiki에는 두 종류의 노트가 섞여 있다.
 | `topics` | TIL 폴더 | policy `topics[폴더]` |
 | `tags` | `tag-mapping.json` | policy로 정규화 + `til`. 매핑이 없으면 `<til_folder_domain 또는 폴더>/untagged` |
 | `related_notes` | Wiki | Wiki 목록 유지 + TIL 본문 링크 중 목록에 없는 것만 뒤에 추가 |
-| `created` | Wiki | 있으면 유지, 없으면 최초 동기화 날짜 |
+| `created` | Wiki | 신규 생성만 최초 동기화 날짜. 기존 값·빈값·누락은 그대로 유지 |
+| `updated` | Wiki·동기화 | 신규는 오늘, TIL 본문이 실제로 바뀔 때 오늘. 태그·링크 병합, 무변경 재실행, Wiki 사용자 본문 보존 분기는 기존 값·누락 상태 유지 |
 
 - 따라서 TIL 파생 노트의 `related_notes`는 Wiki에서 추가해도 된다.
 - TIL 태그는 `~/dev/TIL/tag-mapping.json`(파일명 → 태그 배열)이 정본이다. 동기화가 policy로 정규화하고 `til`을 붙인다.

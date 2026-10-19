@@ -106,7 +106,8 @@ cd ~/dev/TIL && python3 .githooks/sync-to-obsidian.py --verbose
 | `title`·`source`·본문 | TIL 원본 값 |
 | `topics` | TIL 폴더의 표시 이름(`vault-policy.json`의 `topics`, 예: `kubernetes` → `Kubernetes`) |
 | `related_notes` | 동기화 전 Wiki 목록 유지 + TIL 본문 링크 중 목록에 없는 것만 뒤에 추가 |
-| `created` | Wiki 값 유지(없으면 최초 동기화 날짜) |
+| `created` | Wiki 값·빈값·누락 유지(신규 생성만 최초 동기화 날짜) |
+| `updated` | 신규·TIL 본문 변경 시 한국 시간 오늘. 태그·링크 정리·무변경 동기화는 기존 값과 누락 상태 유지 |
 
 - "Wiki 본문 수정됨 → TIL로 이관 필요": 본문은 Wiki 값을 유지하고 frontmatter(태그 포함)는 병합해 쓴 상태다. 태그 검증은 그대로 하고, 본문 수정을 TIL로 옮기라고 사용자에게 보고한다. TIL로 옮겨 커밋하면 다음 동기화에서 정상화된다.
 - 이름 충돌(Wiki 전용 노트와 같은 이름): 해당 노트는 쓰이지 않았다. 사용자에게 그대로 보고한다.

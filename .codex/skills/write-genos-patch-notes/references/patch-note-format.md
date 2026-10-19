@@ -29,6 +29,7 @@ tags:
   - type/reference
   - feature/release-notes
 created: YYYY-MM-DD
+updated: YYYY-MM-DD
 ---
 ```
 

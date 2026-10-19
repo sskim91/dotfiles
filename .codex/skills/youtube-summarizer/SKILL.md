@@ -5,6 +5,8 @@ description: YouTube URL이나 영상 transcript를 요약해 노트로 정리�
 
 # YouTube → Obsidian Note
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 YouTube 영상을 Obsidian Zettelkasten 노트로 변환하는 스킬.
 URL만 주면 트랜스크립트 자동 다운로드 → 번역/요약 → Obsidian 저장.
 
@@ -104,6 +106,7 @@ related_notes:
 tags:
   - domain/sub
 created: YYYY-MM-DD
+updated: YYYY-MM-DD
 ---
 
 ## 핵심 요약
@@ -218,7 +221,7 @@ created: YYYY-MM-DD
 
 ## Frontmatter
 
-공통 규칙: `~/.dotfiles/vault/references/note-rules.md`. `_Inbox` 노트이므로 Wiki 형식 6필드(`title` → `source` → `topics` → `related_notes` → `tags` → `created`)를 쓴다. 태그 형식·허용 분야, `topics` 값, 링크 규칙도 그 문서를 따른다. 이 스킬 고유 값은 다음뿐이다.
+공통 규칙: `~/.dotfiles/vault/references/note-rules.md`. `_Inbox` 노트이므로 Wiki 형식 7필드(`title` → `source` → `topics` → `related_notes` → `tags` → `created` → `updated`)를 쓴다. 태그 형식·허용 분야, `topics` 값, 링크 규칙도 그 문서를 따른다. 이 스킬 고유 값은 다음뿐이다.
 
 - `title`: 파일명과 같은 순수 제목
 - `source`: 원본 YouTube URL

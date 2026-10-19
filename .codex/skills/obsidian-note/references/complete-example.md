@@ -16,6 +16,7 @@ tags:
   - database/replication
   - cs/architecture
 created: 2024-01-15
+updated: 2024-01-15
 ---
 
 ## 핵심 아이디어

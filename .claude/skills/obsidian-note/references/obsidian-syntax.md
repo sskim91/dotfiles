@@ -157,7 +157,7 @@ flowchart TD
 ## 8. Frontmatter 속성 타입
 
 > [!info] vault 규약 우선
-> 일반적인 Obsidian frontmatter는 아래 타입을 지원하지만, **이 vault에서는 `~/.dotfiles/vault/references/note-rules.md`의 폴더별 필드만 사용**한다(`_Inbox`·Wiki는 `title`, `source`, `topics`, `related_notes`, `tags`, `created`, 이 순서). 임의로 `aliases`, `cssclasses` 같은 필드를 추가하지 말 것.
+> 일반적인 Obsidian frontmatter는 아래 타입을 지원하지만, **이 vault에서는 `~/.dotfiles/vault/references/note-rules.md`의 폴더별 필드만 사용**한다(`_Inbox`·Wiki는 `title`, `source`, `topics`, `related_notes`, `tags`, `created`, `updated`, 이 순서). 임의로 `aliases`, `cssclasses` 같은 필드를 추가하지 말 것.
 
 참고용 전체 타입:
 
@@ -198,6 +198,7 @@ tags:
   - cs/architecture
   - cs/distributed
 created: 2026-05-28
+updated: 2026-05-28
 ---
 
 ## 핵심 아이디어

@@ -203,7 +203,8 @@
         "topics",
         "related_notes",
         "tags",
-        "created"
+        "created",
+        "updated"
       ],
       "required": [
         "title",
@@ -217,7 +218,8 @@
         "source",
         "related_notes",
         "tags",
-        "created"
+        "created",
+        "updated"
       ],
       "required": [
         "tags",
@@ -231,7 +233,8 @@
         "source",
         "related_notes",
         "tags",
-        "created"
+        "created",
+        "updated"
       ],
       "required": [
         "tags"
@@ -245,7 +248,8 @@
         "topics",
         "related_notes",
         "tags",
-        "created"
+        "created",
+        "updated"
       ],
       "required": []
     }

@@ -5,6 +5,8 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 
 # 개인 Obsidian 노트
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 일반 지식 노트 한 장을 개인 vault의 형식에 맞춰 작성·수정한다. 사용자가 준 자료와 현재 대화의 맥락·판단 근거를 충분히 보존한다.
 
 ## 저장 위치와 형식
@@ -13,7 +15,7 @@ description: 개인 Obsidian vault에 일반 지식 노트를 작성·수정할 
 - 기본 저장 폴더: `_Inbox`; 템플릿: `Templates/Zettelkasten`
 - 파일명: `{Title}.md` — 분류 접두사 없는 순수 제목
 - 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (폴더별 frontmatter 순서, 태그 형식과 허용 분야, 저장 후 등록, 링크 규칙).
-- 새 노트 또는 구조 변경은 [노트 형식](references/note-format.md)을 읽는다. `_Inbox` 노트는 Wiki 형식 6필드(`title`, `source`, `topics`, `related_notes`, `tags`, `created`)와 Reading Spine을 따른다.
+- 새 노트 또는 구조 변경은 [노트 형식](references/note-format.md)을 읽는다. `_Inbox` 노트는 Wiki 형식 7필드(`title`, `source`, `topics`, `related_notes`, `tags`, `created`, `updated`)와 Reading Spine을 따른다.
 - 기존 문서를 수정할 때는 요청 범위와 기존 frontmatter를 보존한다.
 
 ## 작성 기준

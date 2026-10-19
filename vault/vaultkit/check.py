@@ -10,6 +10,7 @@ scope ``other``(``Wiki/_MOC``, ``Attachments``, ``Excalidraw`` 등)의
 from __future__ import annotations
 
 import re
+from datetime import date
 import unicodedata
 from collections import Counter
 from collections.abc import Iterator
@@ -208,6 +209,24 @@ def run_check(policy: Policy) -> Report:
 
 
 def _check_frontmatter(doc, note: Note, policy: Policy, topic_names: set[str], add) -> None:
+    # Existing notes may omit dates; present dates must be scalar ISO calendar dates.
+    dates = {}
+    if note.scope in (*FRONTMATTER_KEY, "inbox"):
+        for key in ("created", "updated"):
+            if key not in doc.fields:
+                continue
+            raw = doc.fields[key]
+            if raw is None or (isinstance(raw, str) and not frontmatter._unquote(raw).strip()):
+                continue  # Legacy blank dates mean unknown, not an invented date.
+            value = frontmatter._unquote(raw) if isinstance(raw, str) else ""
+            try:
+                if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", value):
+                    raise ValueError
+                dates[key] = date.fromisoformat(value)
+            except ValueError:
+                add("frontmatter", note.rel, f"{key}: YYYY-MM-DD 형식의 유효한 날짜 필요")
+        if "created" in dates and "updated" in dates and dates["updated"] < dates["created"]:
+            add("frontmatter", note.rel, "updated가 created보다 이전임")
     schema = policy.frontmatter.get(FRONTMATTER_KEY.get(note.scope, ""))
     if not schema:
         return

@@ -5,6 +5,8 @@ description: 웹 문서 URL을 받아 한국어 번역문을 작성할 때 사�
 
 # Article Translator
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 웹 문서를 원문 구조를 보존한 한국어 Markdown으로 번역한다. 개인 기본 저장 위치는 Obsidian vault의 `Sources/Translations/`이며, 사용자가 지정한 산출물·경로가 우선한다.
 
 ## 원문 확보
@@ -54,6 +56,7 @@ tags:
   - translation
   - ai/agent
 created: YYYY-MM-DD
+updated: YYYY-MM-DD
 ---
 ```
 

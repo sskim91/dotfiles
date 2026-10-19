@@ -5,6 +5,8 @@ description: Use when user says "vault lint", "노트 점검", "vault 정리", "
 
 # Vault Linter
 
+날짜는 공통 `note-rules.md`의 "작성일과 내용 수정일"을 따른다. 신규는 `created`·`updated`를 한국 시간 오늘로, 기존 `created`는 보존하고 실제 본문 수정 때만 `updated`를 갱신한다. 태그·자동 링크·순서 정리·조회만 하면 날짜와 누락 상태를 유지한다.
+
 Obsidian Vault의 건강 상태를 점검하고 지식 그래프의 일관성을 유지하는 스킬.
 Karpathy의 "LLM Knowledge Base Linting" 패턴.
 
@@ -103,7 +105,7 @@ Step 0의 `[link]` 항목을 쓴다(코드블록, 표 안 `\|`, 같은 노트 `#
 
 90일 이상 된 노트 중, 버전/날짜 의존적 내용이 있는 것을 찾는다.
 
-- 날짜 판단 우선순위: frontmatter `created` → 없으면 파일 수정 시간(`stat -f %Sm` macOS / `stat -c %y` Linux)
+- 날짜 판단 우선순위: frontmatter `updated` → 없으면 `created` → 둘 다 없으면 파일 수정 시간(`stat -f %Sm` macOS / `stat -c %y` Linux). mtime은 보조 판단에만 쓰며 노트 날짜에 복사하지 않는다
 - 본문에서 연도(`202X`), 버전(`v1.x`, `버전 N`), "최신", "현재" 등 시간 의존적 표현 검색
 - 해당 노트 목록 출력 + tavily_search로 정보 유효성 확인 제안
 
@@ -145,6 +147,7 @@ related_notes: []
 tags:
   - productivity/vault-maintenance
 created: {YYYY-MM-DD}
+updated: {YYYY-MM-DD}
 ---
 
 ## Vault Lint Report — {YYYY-MM-DD}
@@ -242,6 +245,7 @@ related_notes: []
 tags:
   - productivity/vault-maintenance
 created: {YYYY-MM-DD}
+updated: {YYYY-MM-DD}
 ---
 
 ## Vault Semantic Link Report — {YYYY-MM-DD}

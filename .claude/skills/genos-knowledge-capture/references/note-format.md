@@ -26,6 +26,7 @@ tags:
   - type/pattern
   - work/genos
 created: YYYY-MM-DD        # 오늘 날짜
+updated: YYYY-MM-DD
 ---
 ```
 

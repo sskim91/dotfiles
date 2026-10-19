@@ -279,8 +279,6 @@ def _apply_fields(doc: fm.Doc, gen: Generated, today: str, order: list[str]) -> 
         fm.set_list(doc, "related_notes", related)
 
     fm.set_list(doc, "tags", gen.tags)
-    if not fm.get_list(doc, "created"):
-        fm.set_scalar(doc, "created", today)
     fm.reorder(doc, order)
 
 
@@ -314,6 +312,9 @@ def merge(
         doc = fm.parse("---\n---\n")
         doc.body = gen.body
         _apply_fields(doc, gen, today, order)
+        fm.set_scalar(doc, "created", today)
+        fm.set_scalar(doc, "updated", today)
+        fm.reorder(doc, order)
         return Decision("create", fm.render(doc), new_entry, "Wiki에 새로 생성")
 
     if entry is None:
@@ -327,7 +328,10 @@ def merge(
 
     body_matches_state = body_sha(doc.body) == entry.get("body_sha")
     if body_matches_state or _same_content(doc.body, gen.body):
+        content_changed = not _same_content(doc.body, gen.body)
         doc.body = gen.body
+        if content_changed:
+            fm.set_scalar(doc, "updated", today)
         _apply_fields(doc, gen, today, order)
         text = fm.render(doc)
         if text == existing:
