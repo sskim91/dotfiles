@@ -25,7 +25,7 @@ tags:
   - feature/<기능>         # 섹션을 정할 태그를 type보다 앞에
   - type/pattern
   - work/genos
-created: YYYY-MM-DD        # 오늘 날짜
+created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 ```
