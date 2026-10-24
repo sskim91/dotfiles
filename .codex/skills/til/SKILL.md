@@ -19,6 +19,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 | 파일 | 내용 |
 |------|------|
 | [mermaid-style-guide.md](references/mermaid-style-guide.md) | mermaid 다이어그램 스타일 규칙 (색상, sequenceDiagram, subgraph) |
+| [svg-style-guide.md](references/svg-style-guide.md) | SVG 선택·작성·렌더 검증, TIL 자산과 Obsidian 첨부 경로 |
 | [writing-style-guide.md](references/writing-style-guide.md) | 작성 철학, 스토리텔링, Bold, LaTeX, 출처 |
 | [category-guide.md](references/category-guide.md) | 카테고리별 작성 특성 |
 | [til-template.md](assets/til-template.md) | TIL 문서 템플릿 |
@@ -61,9 +62,20 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 ### Step 5: 시각화 규칙
 
-[mermaid-style-guide.md](references/mermaid-style-guide.md)를 읽고 아래 규칙을 적용:
+**독자가 이해해야 할 관계에 따라 형식을 고른다.** 그림이 본문의 어떤 질문에 답하는지 정하고, 설명에 도움이 되는 곳에 추가한다.
 
-- ASCII 박스 금지 → 테이블 또는 mermaid 사용
+| 설명할 내용 | 우선 선택 |
+|---|---|
+| 항목별 차이·설정·장단점 | 표 |
+| 처리 순서·분기·컴포넌트 간 호출 | Mermaid |
+| 공간 배치가 중요한 실행 위치·계층·포함 관계·격리 경계 | SVG |
+| 서로 다른 요청 경로를 나란히 비교하는 구조 | 공간 배치가 이해를 도우면 SVG |
+
+단순한 설명에는 그림을 생략할 수 있다. 기존 Mermaid를 일괄 SVG로 바꾸거나 그림 개수를 채우지 않는다. SVG를 선택하면 [SVG 가이드](references/svg-style-guide.md)의 저장·캡션·실제 렌더 확인을 적용한다.
+
+Mermaid를 선택하면 [mermaid-style-guide.md](references/mermaid-style-guide.md)를 읽고 아래 규칙을 적용:
+
+- ASCII 박스 대신 표·Mermaid·SVG 중 설명에 맞는 형식 사용
 - 어두운 배경 + 흰 글씨: `style Node fill:#1565C0,color:#fff`
 - 줄바꿈은 `<br>` 사용 (`\n` 아님)
 - subgraph에는 style 지정하지 않음
@@ -99,6 +111,8 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 **저장 위치:** `/Users/sskim/dev/TIL/{category}/`
 
+**SVG 자산:** `{category}/assets/{문서 또는 시리즈}/`에 두고 본문에서 상대 경로로 참조한다. Obsidian으로 내보내는 경우 첨부 위치는 vault의 `Attachments/images`를 기준으로 실제 설정을 확인한다. TIL 상대 경로를 평탄화된 Wiki에 그대로 복사하지 않는다. 자산 복사·링크 변환·동기화 상태 보존의 완료 조건은 [SVG 가이드](references/svg-style-guide.md)를 따른다.
+
 ### Step 8: 태그 매핑 등록 (커밋 전)
 
 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (4절 TIL 파생 노트, 2절 태그). TIL 노트는 커밋 시 post-commit 동기화가 Wiki 노트로 만든다. 태그는 `~/dev/TIL/tag-mapping.json`이 정본이므로, 커밋 전에 til-tagger의 분류 규칙으로 새 파일의 항목을 추가한다. til-tagger는 스킬로 호출되지 않을 수 있으니 `~/.dotfiles/.codex/skills/til-tagger/SKILL.md`의 "2. Classify tags"·"Tag Guidelines" 절을 직접 읽고 따른다.
@@ -110,7 +124,7 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 - `domain`은 policy 허용 목록에서 고른다: `jq -r '.tags.domains[]' ~/.dotfiles/vault/vault-policy.json`
 - 항목이 없으면 Wiki 노트에 `<til_folder_domain 또는 폴더>/untagged` 태그(예: `computer-science` → `cs/untagged`)가 붙어 `vk check`에 걸린다.
 - 추가 후 JSON 유효성을 확인한다: `python3 -m json.tool ~/dev/TIL/tag-mapping.json > /dev/null`
-- `git add/commit`은 사용자가 요청할 때만 한다. 커밋 대상에 새 노트와 `tag-mapping.json`을 함께 넣는다.
+- `git add/commit`은 사용자가 요청할 때만 한다. 커밋 대상에 새 노트와 `tag-mapping.json`, 본문이 참조하는 새·변경 자산을 함께 넣는다. 그림 생성 코드를 사용했다면 유지보수에 필요한 코드도 포함한다.
 
 ### Step 9: Self-Check 실행
 
@@ -128,14 +142,19 @@ TIL 저장소에 "왜(Why)" 중심의 스토리텔링 기술 문서를 작성합
 
 #### 권장 (SHOULD)
 - [ ] Before/After 비교가 있는가?
-- [ ] 복잡한 개념은 mermaid로 시각화했는가?
-- [ ] ASCII 박스 대신 테이블/mermaid를 사용했는가?
+- [ ] 시각화가 필요한 관계에 표·Mermaid·SVG 중 적절한 형식을 골랐는가?
+- [ ] 그림이 본문의 구체적인 질문에 답하며 설명과 일치하는가?
 
 #### 시각화 (CHECK)
+- 선택한 형식의 항목만 검사한다.
 - [ ] mermaid에서 `\n` 대신 `<br>` 사용했는가?
 - [ ] mermaid style에 color가 있는가?
 - [ ] sequenceDiagram에서 `rect rgba()` 사용했는가?
 - [ ] subgraph에 style을 지정하지 않았는가?
+- [ ] SVG의 대체 텍스트·`title`·`desc`와 캡션에 의미·생략 조건을 설명했는가?
+- [ ] SVG를 실제 렌더해 한글·잘림·겹침·화살표·대비를 확인했는가?
+- [ ] 본문의 상대 링크와 SVG 자산이 함께 존재하는가?
+- [ ] Obsidian 내보내기가 작업 범위라면 첨부 복사·Wiki 링크·표시를 확인했는가? 미지원·미확인 범위를 완료 보고에 구분했는가?
 
 #### 스타일 (CHECK)
 - [ ] Bold 닫는 `**` 다음에 띄어쓰기가 있는가?
