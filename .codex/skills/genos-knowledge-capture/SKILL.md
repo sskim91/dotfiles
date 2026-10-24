@@ -11,7 +11,7 @@ GenOS 현장 작업(FDE)에서 *한 번 배운 걸 다음 세션·다음 고객�
 
 이 스킬은 사용자 개인 자산(`~/.agents/skills/`)이다. **회사 레포의 `.claude/skills/genos-*`(genos-session-close 등)는 회사 공유 자산이라 절대 건드리지 않는다.** 세션 상태는 회사 HANDOFF가, 재사용 지식은 이 스킬이 담당한다 — 둘은 분리된 관심사다.
 
-> 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (Projects frontmatter 순서, 태그 형식과 허용 분야, 저장 후 `vk register`, 허브 대응표). 노트 본문 형식(이 스킬 고유의 source 식별자, 7섹션 spine, Mermaid·문체 규칙)은 [references/note-format.md](references/note-format.md)에 있다. 워크플로우 4단계에서 두 파일을 읽고 따른다.
+> 공통 규칙: `~/.dotfiles/vault/references/note-rules.md` (Projects frontmatter 순서, 태그 형식과 허용 분야, 저장 후 `vk register`, 허브 대응표). 노트 본문 형식(이 스킬 고유의 source 식별자, 7섹션 spine, 시각 자료·문체 규칙)은 [references/note-format.md](references/note-format.md)에 있다. 워크플로우 4단계에서 두 파일을 읽고 따른다.
 
 ## 핵심 원칙 (왜 이렇게 하나)
 
@@ -19,7 +19,7 @@ GenOS 현장 작업(FDE)에서 *한 번 배운 걸 다음 세션·다음 고객�
 
 **② 재사용 가능한 일반화만 담는다.** 토큰 절감은 "재탐색(re-grep·재독)을 대체할 때 + 선택적으로 1~2개만 읽을 때"만 생긴다. 그러니 노트엔 패턴·함정·결정만 담고, "오늘 무슨 파일 고쳤는지" 같은 휘발성 상태는 vault에 넣지 않는다(노이즈만 쌓인다).
 
-**③ 1차 독자는 "이 기술을 처음 보는 사람"이다.** 노트는 입사 직후의 동료나 다음 세션의 AI가 *이 문서 한 장만으로* 개념을 잡고 GenOS에서의 위치를 이해할 수 있는 **자기완결 field note**다. 먼저 사람이 읽는 흐름으로 열고, 판단·분기·함정은 bullet·표·Mermaid로 스캔 가능하게 만든다. 형식 상세는 references/note-format.md.
+**③ 1차 독자는 "이 기술을 처음 보는 사람"이다.** 노트는 입사 직후의 동료나 다음 세션의 AI가 *이 문서 한 장만으로* 개념을 잡고 GenOS에서의 위치를 이해할 수 있는 **자기완결 field note**다. 먼저 사람이 읽는 흐름으로 열고, 판단·분기·함정은 bullet·표·Mermaid·SVG로 스캔 가능하게 만든다. 형식 상세는 references/note-format.md.
 
 ## 3계층 — 무엇을 캡처하고 무엇을 버리나
 
@@ -92,7 +92,9 @@ grep -rl "<핵심 키워드>" "$VAULT/Projects/GenonAI/"
 사용자가 "그냥 해" 류면 확인 생략 가능.
 
 ### 4. 노트 작성 — 형식은 references/note-format.md
-frontmatter 순서·태그는 공통 규칙 `note-rules.md`를, source 식별자·7섹션 spine·Mermaid·문체 규칙은 [references/note-format.md](references/note-format.md)를 따른다. `obsidian-note`와 **공통 규칙은 공유하되 본문 spine은 별도**다(저쪽은 Zettelkasten, 이쪽은 입문자 자기완결 field note). **Tavily 웹 리서치는 생략한다** — 출처는 웹 개념이 아니라 이 세션의 실작업·레포다.
+frontmatter 순서·태그는 공통 규칙 `note-rules.md`를, source 식별자·7섹션 spine·시각 자료·문체 규칙은 [references/note-format.md](references/note-format.md)를 따른다. `obsidian-note`와 **공통 규칙은 공유하되 본문 spine은 별도**다(저쪽은 Zettelkasten, 이쪽은 입문자 자기완결 field note). **Tavily 웹 리서치는 생략한다** — 출처는 웹 개념이 아니라 이 세션의 실작업·레포다.
+
+시각 자료는 설명할 질문에 맞춰 고른다. 짧은 비교는 표, 요청 순서·상태 변화는 Mermaid, 실행 위치·포함 관계·망 경계의 배치는 SVG가 유용하다. SVG를 선택하면 [references/svg-style-guide.md](references/svg-style-guide.md)의 근거 표시·첨부 저장·본문 연결·렌더 검증을 따른다. 그림이 이해를 돕지 않으면 본문이나 표로 설명한다.
 
 핵심은 **용어를 다 설명하는 것보다, 독자가 궁금한 변화 한 가지를 끝까지 따라가게 하는 것**이다.
 - 독자의 질문으로 시작한다. 예: "사이트 values에 replicas를 바꾸면 실제로 어디가 달라질까?"
@@ -124,9 +126,9 @@ python3 ~/.dotfiles/vault/vk register "<노트 절대 경로>"
 3. 그 사이에 `[[새 노트]] — 한 줄 요지`를 추가하거나, 변경이 불필요하면 결과 보고에 사유를 남긴다.
 
 ### 7. 검증 + 결과 보고
-- **검증**: Mermaid를 썼으면 렌더 검증, `related_notes`의 모든 `[[wikilink]]`는 vault 실존(또는 이번에 함께 만드는 노트)을 확인한다. 추가로 `vk register` 결과(허브·섹션)와 처음 읽는 순서 링크/불필요 사유를 확인한다.
+- **검증**: Mermaid를 썼으면 렌더 검증, SVG를 썼으면 첨부 경로·실제 렌더·본문 표시 확인 범위를 보고한다. `related_notes`의 모든 `[[wikilink]]`는 vault 실존(또는 이번에 함께 만드는 노트)을 확인한다. 추가로 `vk register` 결과(허브·섹션)와 처음 읽는 순서 링크/불필요 사유를 확인한다.
 - **설명 검토**: 독자가 "무엇을 바꾸면, 누가 읽고, 무엇이 달라지며, 어디서 확인하는가"를 답할 수 있는지 본문만으로 확인한다. 코드 조각만 있고 설명이 없으면 흐름 설명을 보충한다. 설정 예시와 실제 확인 결과를 혼동시키지 않는다.
-- **보고**: 작성/갱신한 노트 목록, `vk register` 결과(상태·허브·섹션), 읽는 순서 변경(또는 불필요 사유), 검증 결과를 요약한다.
+- **보고**: 작성/갱신한 노트와 SVG 목록, `vk register` 결과(상태·허브·섹션), 읽는 순서 변경(또는 불필요 사유), 검증 결과를 요약한다.
 
 ## 평가 시나리오 — 스킬이 제대로 동작하는지 보는 법
 
@@ -141,6 +143,9 @@ python3 ~/.dotfiles/vault/vk register "<노트 절대 경로>"
 | 세션 상태 캡처 요청 | "오늘 무엇을 했다" 수준이면 vault 노트로 만들지 않고 GenOS 레포 HANDOFF 대상으로 분리한다. |
 | GenOS 외 일반 개념 요청 | 이 스킬을 쓰지 않고 `obsidian-note`나 다른 적절한 노트 스킬로 라우팅한다. |
 | 입문자가 values에서 Pod까지 질문 | 용어 사전으로 시작하지 않고 한 값의 입력·변환·결과를 전후 예시로 보여준다. 렌더 성공과 실제 Pod 기동 확인은 구분한다. |
+| 실행 위치·망 경계를 설명하는 그림 | SVG가 도움이 되면 선택하고 실제 첨부 설정을 확인해 저장한다. 로컬 chart 근거와 고객 환경 관찰을 그림에서도 구분한다. |
+| 기존 첨부 이름 충돌·렌더 도구 없음 | 다른 문서의 SVG를 덮지 않는다. XML 검사만으로 표시 완료를 선언하지 않고 미확인 항목을 보고한다. |
+| 짧은 비교나 요청 순서만 설명 | 표나 Mermaid로 충분하면 SVG를 추가하지 않는다. |
 | 저장소 지침과 사이트 설정이 충돌 | 각 근거의 범위를 적고 미확인 부분을 남긴다. 관리 방침을 기술적 불가능으로 설명하지 않는다. |
 
 ## Gotchas — 여기서 실제로 틀린다
@@ -159,7 +164,7 @@ python3 ~/.dotfiles/vault/vk register "<노트 절대 경로>"
 - **지식 노트에 현장 운영 양식을 넣는다.** 현장 체크리스트·데모 스크립트·체크박스는 지식이 아니라 작업 양식이다. 고유한 함정만 `헷갈리는 지점`에 문장으로 남긴다.
 - **기존 노트를 임의로 옮긴다.** 하위폴더가 더 맞아 보여도 기존 파일 이동은 사용자 확인 후에만 한다. 옮기면 허브 링크와 다른 노트의 `[[링크]]`를 함께 확인해야 한다.
 - **회사 자산을 건드린다.** 캡처 자동화가 아쉬워도 회사 레포 `.claude/skills/genos-*`는 절대 수정하지 않는다. 모든 자동화는 이 개인 스킬(`~/.agents/skills/genos-knowledge-capture/`) 안에서 끝낸다.
-- **Mermaid를 장식으로 넣는다.** diagram은 하나의 질문(책임 경계·요청 순서·상태 변화·데이터 관계)에 답해야 한다. 줄여주지 못하면 텍스트나 표가 낫다.
+- **Mermaid·SVG를 장식으로 넣는다.** diagram은 하나의 질문(책임 경계·요청 순서·상태 변화·데이터 관계)에 답해야 한다. 줄여주지 못하면 텍스트나 표가 낫다.
 
 ## 예시
 
