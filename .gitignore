@@ -70,6 +70,11 @@ Icon
 .omo/
 
 # ======================
+# Playwright MCP runtime
+# ======================
+.playwright-mcp/
+
+# ======================
 # Override global gitignore (/.config)
 # ======================
 !.config/
