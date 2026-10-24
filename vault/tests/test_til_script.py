@@ -133,6 +133,171 @@ class TilScriptTest(unittest.TestCase):
     def wiki_md_names(self) -> set[str]:
         return {_nfc(p.name) for p in self.wiki.glob("*.md")}
 
+    def image_fixture(self, body=None):
+        body = body or '![설명](./assets/book/map.svg)\n'
+        src = self.til_note("python", "Image", body)
+        asset = src.parent / "assets/book/map.svg"
+        asset.parent.mkdir(parents=True)
+        asset.write_bytes(b'<svg xmlns="http://www.w3.org/2000/svg"/>')
+        self.write_state({})
+        return src, asset
+
+    def test_image_sync_repairs_old_note_and_is_idempotent(self):
+        src, asset = self.image_fixture()
+        old_body = '![설명](./assets/book/map.svg)\n'
+        note = self.wiki_note("Image", old_body)
+        self.write_state({"Image": {"status": "synced", "body_sha": body_sha(old_body)}})
+        original, state_before = note.read_bytes(), self.state_path.read_bytes()
+        self.run_script()
+        images = list((self.vault / "Attachments/images").glob("*.svg"))
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0].read_bytes(), asset.read_bytes())
+        self.assertIn(f'![설명](../Attachments/images/{images[0].name})', note.read_text())
+        self.assertIn('./assets/book/map.svg', src.read_text())
+        self.assertEqual(self.read_state()["notes"]["Image"]["body_sha"], body_sha(fm.parse(note.read_text()).body))
+        self.assertTrue(any(p.read_bytes() == original for p in self.backups.rglob('Image.md')))
+        self.assertTrue(any(p.read_bytes() == state_before for p in self.backups.rglob('.til-sync-state.json')))
+        before = note.read_bytes()
+        self.assertIn('unchanged: 1', self.run_script().stdout)
+        self.assertEqual(note.read_bytes(), before)
+        self.assertEqual(len(list(images[0].parent.glob('*.svg'))), 1)
+
+    def test_image_dry_run_writes_no_assets_or_state(self):
+        self.image_fixture()
+        before = self.state_path.read_bytes()
+        self.run_script('--dry-run')
+        self.assertFalse((self.vault / 'Attachments').exists())
+        self.assertEqual(self.state_path.read_bytes(), before)
+        self.assertFalse(self.backups.exists())
+
+    def test_image_sync_preserves_manual_body_and_state(self):
+        self.image_fixture()
+        note = self.wiki_note('Image', '내가 추가한 내용\n')
+        entry = {'status': 'synced', 'body_sha': body_sha('이전 본문\n')}
+        self.write_state({'Image': entry})
+        self.assertIn('frontmatter-only: 1', self.run_script().stdout)
+        self.assertEqual(fm.parse(note.read_text()).body.strip(), '내가 추가한 내용')
+        self.assertEqual(self.read_state()['notes']['Image'], entry)
+        self.assertFalse((self.vault / 'Attachments').exists())
+
+    def test_image_missing_keeps_note_and_state(self):
+        _, asset = self.image_fixture()
+        asset.unlink()
+        note = self.wiki_note('Image', '기존 본문\n')
+        self.write_state({'Image': {'status': 'synced', 'body_sha': body_sha('기존 본문\n')}})
+        before, state = note.read_bytes(), self.read_state()
+        self.assertIn('실패', self.run_script().stdout)
+        self.assertEqual(note.read_bytes(), before)
+        self.assertEqual(self.read_state(), state)
+
+    def test_image_uses_configured_folder_and_ignores_code_and_remote(self):
+        body = ('![설명](./assets/book/map.svg)\n'
+                '`![code](./absent.svg)`\n'
+                '```md\n![code](./absent.svg)\n```\n'
+                '![remote](https://example.org/map.svg)\n')
+        self.image_fixture(body)
+        (self.vault / '.obsidian').mkdir()
+        (self.vault / '.obsidian/app.json').write_text('{"attachmentFolderPath":"Media/images"}')
+        self.run_script()
+        images = list((self.vault / 'Media/images').glob('*.svg'))
+        self.assertEqual(len(images), 1)
+        text = (self.wiki / 'Image.md').read_text()
+        self.assertIn('../Media/images/', text)
+        self.assertIn('`![code](./absent.svg)`', text)
+        self.assertIn('![remote](https://example.org/map.svg)', text)
+
+    def test_image_only_commit_refreshes_asset(self):
+        _, asset = self.image_fixture()
+        def git(*args):
+            subprocess.run(['git', *args], cwd=self.til, check=True, capture_output=True)
+        git('init')
+        git('config', 'user.email', 'test@example.invalid')
+        git('config', 'user.name', 'Test')
+        git('config', 'core.hooksPath', '/dev/null')
+        git('add', '.')
+        git('commit', '-m', 'initial')
+        self.run_script()
+        asset.write_bytes(b'<svg xmlns="http://www.w3.org/2000/svg"><title>new</title></svg>')
+        git('add', '.')
+        git('commit', '-m', 'image only')
+        self.run_script('--diff')
+        text = (self.wiki / 'Image.md').read_text()
+        import re
+        target = re.search(r'!\[설명\]\(([^)]+)\)', text).group(1)
+        self.assertEqual((self.wiki / target).read_bytes(), asset.read_bytes())
+
+    def test_note_option_limits_repair(self):
+        self.image_fixture()
+        self.til_note('python', 'Unrelated')
+        self.run_script('--note', 'Image')
+        self.assertTrue((self.wiki / 'Image.md').exists())
+        self.assertFalse((self.wiki / 'Unrelated.md').exists())
+        self.assertNotIn('Unrelated', self.read_state()['notes'])
+
+    def test_image_recreates_missing_export_without_changing_note(self):
+        self.image_fixture()
+        self.run_script()
+        image = next((self.vault / 'Attachments/images').glob('*.svg'))
+        original = image.read_bytes()
+        note = (self.wiki / 'Image.md').read_bytes()
+        image.unlink()
+        self.run_script()
+        self.assertEqual(image.read_bytes(), original)
+        self.assertEqual((self.wiki / 'Image.md').read_bytes(), note)
+
+    def test_image_collision_does_not_overwrite_local_attachment(self):
+        self.image_fixture()
+        self.run_script()
+        image = next((self.vault / 'Attachments/images').glob('*.svg'))
+        image.write_bytes(b'manually edited attachment')
+        before = (self.wiki / 'Image.md').read_bytes()
+        state = self.read_state()
+        self.assertIn('충돌', self.run_script().stdout)
+        self.assertEqual(image.read_bytes(), b'manually edited attachment')
+        self.assertEqual((self.wiki / 'Image.md').read_bytes(), before)
+        self.assertEqual(self.read_state(), state)
+
+    def test_image_outside_til_and_symlink_escape_are_rejected(self):
+        _, asset = self.image_fixture()
+        external = self.root / 'private.svg'
+        external.write_bytes(b'private')
+        asset.unlink()
+        asset.symlink_to(external)
+        self.assertIn('TIL 밖 이미지', self.run_script().stdout)
+        self.assertFalse((self.wiki / 'Image.md').exists())
+        self.assertFalse((self.vault / 'Attachments').exists())
+
+    def test_image_attachment_folder_outside_vault_is_rejected(self):
+        self.image_fixture()
+        (self.vault / '.obsidian').mkdir()
+        (self.vault / '.obsidian/app.json').write_text('{"attachmentFolderPath":"../outside"}')
+        self.assertIn('vault 밖', self.run_script().stdout)
+        self.assertFalse((self.wiki / 'Image.md').exists())
+        self.assertFalse((self.root / 'outside').exists())
+
+    def test_images_with_same_basename_and_spaces_keep_distinct_contents(self):
+        self.image_fixture('![one](./assets/book/map.svg)\n![two](<./assets/other folder/map.svg> "제목")\n')
+        other = self.til / 'python/assets/other folder/map.svg'
+        other.parent.mkdir()
+        other.write_bytes(b'<svg><title>other</title></svg>')
+        self.run_script()
+        images = list((self.vault / 'Attachments/images').glob('*.svg'))
+        self.assertEqual(len(images), 2)
+        self.assertEqual(len({p.read_bytes() for p in images}), 2)
+        self.assertIn('"제목")', (self.wiki / 'Image.md').read_text())
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'macOS hook')
+    def test_post_merge_hook_runs_image_sync(self):
+        self.image_fixture()
+        subprocess.run(['git', 'init', '-q', str(self.til)], check=True)
+        proc = subprocess.run(
+            ['git', '-c', f'core.hooksPath={SCRIPT.parent}', 'hook', 'run', 'post-merge', '--', '0'],
+            cwd=self.til, env=self.env(), capture_output=True, text=True,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stdout + proc.stderr)
+        self.assertTrue((self.wiki / 'Image.md').exists())
+        self.assertEqual(len(list((self.vault / 'Attachments/images').glob('*.svg'))), 1)
+
     # -- tests -----------------------------------------------------------
 
     def test_script_skips_without_vaultkit(self) -> None:

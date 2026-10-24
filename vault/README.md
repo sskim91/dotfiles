@@ -36,7 +36,9 @@ python3 ~/.dotfiles/vault/scripts/til_rename.py --restore --out DIR --real   # �
 cd ~/.dotfiles/vault && python3 -m unittest discover -s tests -v          # 테스트
 ```
 
-TIL git hook: post-commit은 `--diff`(바뀐 파일만), post-merge는 전체 동기화를 돌린다.
+TIL git hook: post-commit은 `--diff`(바뀐 파일만), post-merge는 전체 동기화를 돌린다. 훅 연결은 TIL checkout에서 `git config --local core.hooksPath .githooks`로 설정한다. 이미 최신인 pull이나 rebase는 post-merge 실행을 보장하지 않으므로 필요하면 위 수동 동기화 명령을 실행한다.
+
+로컬 Markdown 이미지도 `vaultkit.tilimages`를 통해 내보낸다. `.obsidian/app.json`의 `attachmentFolderPath`(설정이 없으면 `Attachments/images`)에 원본 경로·내용 해시를 포함한 이름으로 복사하고, Wiki 이미지 링크만 변환한다. 기존 첨부 파일은 덮거나 삭제하지 않는다. 이미지 파일만 변경한 커밋은 `--diff`에서도 전체 노트를 검사한다. 범위를 제한하려면 `--note <stem>`을 반복한다. 이미지 동기화 전 상태 파일과 변경할 Wiki 본문을 백업하고, 사용자가 수정한 본문은 기존 보호 규칙을 유지한다. 지원 형식·제약은 TIL의 `.githooks/README.md`를 참고한다.
 
 ## 3. 경고가 나오면
 
