@@ -307,7 +307,8 @@ fi
 # Link home dotfiles
 #-------------------------------------------------------------------------------
 echo "Linking home dotfiles..."
-for f in .zshenv .zshrc .zprofile .vimrc; do
+# .default-npm-packages must be linked before the mise node install below
+for f in .zshenv .zshrc .zprofile .vimrc .default-npm-packages; do
     link_file "$DOTFILES/$f" "$HOME/$f"
 done
 
